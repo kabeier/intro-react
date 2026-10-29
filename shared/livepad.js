@@ -167,6 +167,11 @@
       if (pad.err) pad.setStatus('✕ ' + pad.err, true)
       else pad.setStatus('app ✓ up to date')
     })
+    // A file that a step deleted hides its tab (Shift+N brings it back).
+    pad.syncTabs = () => {
+      el.querySelectorAll('.lp-tab').forEach((b) => (b.hidden = !(b.dataset.file in pad.files)))
+      if (!(pad.tab in pad.files)) { const first = pad.tabs.find((f) => f in pad.files); if (first) pad.showTab(first) }
+    }
     pad.showTab = (f) => {
       pad.tab = f
       el.querySelectorAll('.lp-tab').forEach((b) => b.classList.toggle('on', b.dataset.file === f))
@@ -183,6 +188,7 @@
     }
     pad.setFiles = (files) => {
       pad.files = { ...files }
+      pad.syncTabs()
       for (const f of pad.tabs) pad.setFile(f, pad.files[f] || '')
       if (pad.editor) pad.editor.show(pad.tab)
       pad.refresh()
@@ -191,6 +197,13 @@
     pad.next = async () => {
       if (pad.busy || pad.idx >= pad.steps.length) return
       const step = pad.steps[pad.idx]
+      if (step.mode === 'delete') {
+        delete pad.files[step.file]
+        pad.syncTabs()
+        pad.idx++
+        pad.refresh()
+        return
+      }
       const old = pad.files[step.file] || ''
       let text
       try { text = Course.applyStep(old, step) } catch (e) {
@@ -200,6 +213,7 @@
         throw e
       }
       pad.busy = true
+      if (!(step.file in pad.files)) { pad.files[step.file] = ''; pad.syncTabs() }
       pad.showTab(step.file)
       // Type only the part that changes, a few characters per frame.
       let p = 0

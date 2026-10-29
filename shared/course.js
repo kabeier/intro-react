@@ -93,7 +93,10 @@
     const steps = allSteps(lesson)
     const stop = steps.findIndex((s) => s.id === stepId)
     if (stop < 0) throw new Error(`No step ${stepId} in lesson ${lesson.id}`)
-    for (const step of steps.slice(0, stop + 1)) files[step.file] = applyLines(files[step.file] || [], step)
+    for (const step of steps.slice(0, stop + 1)) {
+      if (step.mode === 'delete') delete files[step.file]
+      else files[step.file] = applyLines(files[step.file] || [], step)
+    }
     return files
   }
 

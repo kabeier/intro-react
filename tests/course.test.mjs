@@ -188,3 +188,9 @@ test('a lesson built on another lesson tells the stories of the inherited lines'
   assert.equal(r.lessonId, 'base1')
   assert.equal(r.featureId, 'f1')
 })
+
+test('a delete step removes the file from the checkpoint', () => {
+  const l = Course.register({ id: 'del', title: 'Del', files: { 'a.txt': 'x', 'b.txt': 'y' }, features: [
+    { id: 'f1', title: 't', why: 'w', steps: [{ id: 's1', file: 'b.txt', mode: 'delete', code: '' }] }] })
+  assert.deepEqual(Course.filesAt(l, 's1'), { 'a.txt': 'x' })
+})
