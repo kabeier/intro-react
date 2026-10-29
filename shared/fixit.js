@@ -28,7 +28,7 @@
   function renderList() {
     const lessons = Course.all().filter((l) => (window.FIXIT || {})[l.id])
     listEl.innerHTML = `<div class="fx-lessons">${lessons.map((l, k) =>
-      `<a class="fx-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}">Lecture ${Course.all().indexOf(l) + 1}: ${esc(l.title)}</a>`).join('')}</div>` +
+      `<a class="fx-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}">${esc(l.label || 'Lecture ' + (Course.all().indexOf(l) + 1))}: ${esc(l.title)}</a>`).join('')}</div>` +
       '<h2>Problems</h2>' + problems.map((p, k) =>
       `<button type="button" class="fx-item${p === current ? ' on' : ''}" data-id="${p.id}"><span class="fx-mark">${solved.has(p.id) ? '✅' : k + 1}</span> ${esc(p.title)}</button>`).join('')
     listEl.querySelectorAll('.fx-item').forEach((b) => (b.onclick = () => show(problems.find((p) => p.id === b.dataset.id))))
@@ -54,7 +54,7 @@
         <p class="fx-hint-text" hidden></p>
         <div class="fx-answer" hidden></div>
       </section>`
-    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), editable: true })
+    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), assets: Course.assetsOf(lesson), editable: true })
     mainEl.querySelector('.fx-fix').onclick = check
     mainEl.querySelector('.fx-hint').onclick = () => { const h = mainEl.querySelector('.fx-hint-text'); h.hidden = false; h.textContent = '💡 ' + p.hint }
     mainEl.querySelector('.fx-solution').onclick = showSolution
@@ -92,7 +92,7 @@
     const out = mainEl.querySelector('.fx-result')
     out.className = 'fx-result'
     out.textContent = 'Checking…'
-    const html = Course.buildDoc(editor.getFiles())
+    const html = Course.buildDoc(editor.getFiles(), Course.assetsOf(lesson))
     await new Promise((resolve) => { checker.onload = resolve; checker.srcdoc = html })
     const doc = checker.contentDocument, win = checker.contentWindow
     await settle(doc)

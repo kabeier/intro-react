@@ -21,6 +21,12 @@
   const register = (lesson) => { lessons[lesson.id] = lesson; return lesson }
   const get = (id) => lessons[id]
   const all = () => Object.values(lessons)
+  // Binary files (images) of a lesson and the lessons it is built on.
+  const assetsOf = (lesson) => ({ ...(lesson.base && get(lesson.base.lesson) ? assetsOf(get(lesson.base.lesson)) : {}), ...(lesson.assets || {}) })
+  // Most useful files first: the components, their CSS, then the page and config.
+  const rank = (f) => (f === 'src/App.jsx' ? 0 : /^src\/.*\.jsx?$/.test(f) ? 1 : /^src\/.*\.css$/.test(f) ? 2 : f.startsWith('src/') ? 3
+    : f === 'index.html' ? 4 : /\.(js|css)$/.test(f) && !f.includes('/') ? 5 : f === 'package.json' ? 6 : 7)
+  const tabOrder = (names) => [...names].sort((a, b) => rank(a) - rank(b))
 
   const split = (text) => (text === '' ? [] : text.split('\n'))
   const tagged = (text, stepId) => split(text).map((t) => ({ text: t, stepId }))
@@ -332,5 +338,5 @@
     return /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + REPORTER) : REPORTER + doc
   }
 
-  return { register, get, all, applyStep, filesAt, checkpoint, origins, noteFor, buildDoc, StepMismatch }
+  return { register, get, all, assetsOf, tabOrder, applyStep, filesAt, checkpoint, origins, noteFor, buildDoc, StepMismatch }
 })

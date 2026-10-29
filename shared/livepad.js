@@ -346,7 +346,7 @@
     const steps = (el.dataset.steps || '').split(/\s+/).filter(Boolean).map((id) => all.find((s) => s.id === id))
     const files = Course.filesAt(lesson, start)
     const tabs = (el.dataset.files || Object.keys(files).join(' ')).split(/\s+/).filter(Boolean)
-    createPad(el, { lesson, start, steps, files, assets: lesson.assets, tabs, fontSize: Number(el.dataset.font || 18) })
+    createPad(el, { lesson, start, steps, files, assets: Course.assetsOf(lesson), tabs, fontSize: Number(el.dataset.font || 18) })
   }
 
   function current() {
@@ -360,7 +360,7 @@
   }
 
   function mount(el, opts) {
-    const tabs = opts.tabs || Object.keys(opts.files)
+    const tabs = opts.tabs || Course.tabOrder(Object.keys(opts.files))
     const pad = createPad(el, { files: opts.files, assets: opts.assets, tabs, editable: opts.editable, typeable: opts.editable !== false, onChange: opts.onChange, fontSize: opts.fontSize || 16 })
     return { setFiles: pad.setFiles, getFiles: () => ({ ...pad.files }), preview: pad.iframe, pad }
   }

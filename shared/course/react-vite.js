@@ -4,6 +4,7 @@
 // Needs create-vite-react.js loaded first.
 Course.register({
   id: 'react-vite',
+  label: 'Unit 2 · Lecture 1',
   title: 'React + Vite: Pokemon Project',
   files: { ...CREATE_VITE_REACT },
   assets: { 'src/assets/hero.png': 'shared/course/assets/react-vite/hero.png' },

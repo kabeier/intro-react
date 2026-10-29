@@ -7,7 +7,8 @@
   const feats = lesson.features
   let at = feats.some((f) => f.id === q.get('at')) ? q.get('at') : feats[0].id
   let showBefore = false
-  let tab = Object.keys(lesson.files)[0]
+  const assets = Course.assetsOf(lesson)
+  let tab = Course.tabOrder(Object.keys(lesson.files))[0]
   let picked = null
   const channel = new BroadcastChannel('livepad')
   let popWin = null
@@ -20,12 +21,12 @@
     const k = feats.findIndex((f) => f.id === fid)
     return k > 0 ? Course.checkpoint(lesson, feats[k - 1].id) : Course.filesAt(lesson, null)
   }
-  const lessonNo = (l) => Course.all().indexOf(l) + 1
+  const lessonName = (l) => l.label || 'Lecture ' + (Course.all().indexOf(l) + 1)
   const stepLabel = (stepId, from = lesson) => {
     for (const [k, f] of from.features.entries()) {
       const n = f.steps.findIndex((s) => s.id === stepId)
       if (n >= 0) {
-        const pre = from === lesson ? '' : `Lecture ${lessonNo(from)} (${from.title}): `
+        const pre = from === lesson ? '' : `${lessonName(from)} (${from.title}): `
         return { feature: f, lesson: from, text: `${pre}Feature ${k + 1} (${f.title}), step ${n + 1}` }
       }
     }
@@ -50,7 +51,7 @@
 
   function renderFeatures() {
     featuresEl.innerHTML = `<div class="ex-lessons">${Course.all().map((l) =>
-      `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}">Lecture ${lessonNo(l)}: ${esc(l.title)}</a>`).join('')}</div>` +
+      `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}">${esc(lessonName(l))}: ${esc(l.title)}</a>`).join('')}</div>` +
       '<h2>Features</h2>' + feats.map((f, k) =>
       `<button type="button" class="ex-feature${f.id === at ? ' on' : ''}" data-feature="${f.id}"><b>${k + 1}</b> ${esc(f.title)}</button>`).join('')
     featuresEl.querySelectorAll('.ex-feature').forEach((b) => (b.onclick = () => go(b.dataset.feature)))
@@ -60,6 +61,7 @@
     const f = featOf(at)
     const k = feats.indexOf(f)
     const files = filesAfter(at)
+    if (!(tab in files)) tab = Course.tabOrder(Object.keys(files))[0]
     const origins = Course.origins(lesson, lastStep(f))
     const mine = new Set(f.steps.map((s) => s.id))
     mainEl.innerHTML = `
@@ -88,7 +90,7 @@
       <section class="ex-card">
         <h3>All the code after this feature</h3>
         <p class="muted">Green lines were added in this feature. Click any line.</p>
-        <div class="ex-tabs">${Object.keys(files).map((n) => `<button type="button" class="ex-tab${n === tab ? ' on' : ''}" data-file="${esc(n)}">${esc(n)}</button>`).join('')}
+        <div class="ex-tabs">${Course.tabOrder(Object.keys(files)).map((n) => `<button type="button" class="ex-tab${n === tab ? ' on' : ''}" data-file="${esc(n)}">${esc(n)}</button>`).join('')}
           <button type="button" class="ex-copy">Copy file</button></div>
         <div class="ex-code">${(files[tab] || '').split('\n').map((l, n) => {
           const o = (origins[tab] || [])[n]
@@ -96,7 +98,7 @@
         }).join('')}</div>
       </section>`
     const frame = mainEl.querySelector('.ex-preview iframe')
-    frame.srcdoc = Course.buildDoc(showBefore ? filesBefore(at) : files)
+    frame.srcdoc = Course.buildDoc(showBefore ? filesBefore(at) : files, assets)
     send()
     mainEl.querySelector('.ex-before').onclick = () => { showBefore = true; renderMain() }
     mainEl.querySelector('.ex-after').onclick = () => { showBefore = false; renderMain() }
@@ -148,6 +150,9 @@
     const files = filesAfter(at)
     const zip = new JSZip()
     for (const [name, text] of Object.entries(files)) zip.file(name, text)
+    for (const [name, src] of Object.entries(assets)) {
+      try { zip.file(name, await (await fetch(src)).blob()) } catch {}
+    }
     const blob = await zip.generateAsync({ type: 'blob' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
@@ -157,7 +162,7 @@
   }
 
   function send() {
-    channel.postMessage({ type: 'doc', slide: null, doc: Course.buildDoc(showBefore ? filesBefore(at) : filesAfter(at)) })
+    channel.postMessage({ type: 'doc', slide: null, doc: Course.buildDoc(showBefore ? filesBefore(at) : filesAfter(at), assets) })
   }
   function popOut() {
     if (popWin && !popWin.closed) return popWin.focus()
