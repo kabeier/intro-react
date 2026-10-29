@@ -113,7 +113,7 @@
   function createPad(el, opts) {
     const pad = {
       el, lesson: opts.lesson || null, steps: opts.steps || [], idx: 0, start: opts.start ?? null,
-      files: { ...opts.files }, tabs: opts.tabs, tab: opts.tabs[0], editable: opts.editable !== false,
+      files: { ...opts.files }, assets: opts.assets || {}, tabs: opts.tabs, tab: opts.tabs[0], editable: opts.editable !== false,
       fontSize: opts.fontSize || 18, onChange: opts.onChange || null, typeable: !!opts.typeable,
       busy: false, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
     }
@@ -160,7 +160,7 @@
       pad.err = null
       pad.clearLog()
       pad.setStatus('loading…')
-      pad.iframe.srcdoc = Course.buildDoc(pad.files)
+      pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets)
       if (pad === active()) broadcast()
     }
     pad.iframe.addEventListener('load', () => {
@@ -276,7 +276,7 @@
     const pad = active()
     if (!pad) return
     lastSent = Date.now()
-    channel.postMessage({ type: 'doc', lesson: pad.lesson && pad.lesson.id, slide: slideNo(pad), doc: Course.buildDoc(pad.files) })
+    channel.postMessage({ type: 'doc', lesson: pad.lesson && pad.lesson.id, slide: slideNo(pad), doc: Course.buildDoc(pad.files, pad.assets) })
   }
   const setPop = (open) => { popOpen = open; paintAll() }
   function readGeom() {
@@ -332,14 +332,14 @@
     const steps = (el.dataset.steps || '').split(/\s+/).filter(Boolean).map((id) => all.find((s) => s.id === id))
     const files = Course.filesAt(lesson, start)
     const tabs = (el.dataset.files || Object.keys(files).join(' ')).split(/\s+/).filter(Boolean)
-    createPad(el, { lesson, start, steps, files, tabs, fontSize: Number(el.dataset.font || 18) })
+    createPad(el, { lesson, start, steps, files, assets: lesson.assets, tabs, fontSize: Number(el.dataset.font || 18) })
   }
 
   function current() {
     const pad = active()
     if (!pad) return null
     return {
-      lesson: pad.lesson && pad.lesson.id, files: { ...pad.files }, doc: Course.buildDoc(pad.files),
+      lesson: pad.lesson && pad.lesson.id, files: { ...pad.files }, doc: Course.buildDoc(pad.files, pad.assets),
       status: pad.status, busy: pad.busy, ready: pad.ready, tab: pad.tab,
       editorValue: pad.editor ? pad.editor.value : null, step: pad.idx,
     }
@@ -347,7 +347,7 @@
 
   function mount(el, opts) {
     const tabs = opts.tabs || Object.keys(opts.files)
-    const pad = createPad(el, { files: opts.files, tabs, editable: opts.editable, typeable: opts.editable !== false, onChange: opts.onChange, fontSize: opts.fontSize || 16 })
+    const pad = createPad(el, { files: opts.files, assets: opts.assets, tabs, editable: opts.editable, typeable: opts.editable !== false, onChange: opts.onChange, fontSize: opts.fontSize || 16 })
     return { setFiles: pad.setFiles, getFiles: () => ({ ...pad.files }), preview: pad.iframe, pad }
   }
 

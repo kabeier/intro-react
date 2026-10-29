@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>mount</title>
+<link rel="stylesheet" href="../../shared/livepad.css"></head>
+<body><div id="pad"></div>
+<script src="../../shared/course.js"></script>
+<script src="../../shared/livepad.js"></script>
+<script>
+  window.mountFiles = (files, assets) => { window.pad = Livepad.mount(document.getElementById('pad'), { files, assets, editable: true }) }
+</script>
+</body></html>

@@ -225,9 +225,88 @@
   }
   const REPORTER = '<script>(' + previewAgent.toString() + ')()</script>'
 
+  // ---------- React / Vite projects ----------
+  // Pinned packages the preview may import (an import map; esm.sh keeps a single React).
+  const IMPORTS = {
+    react: 'https://esm.sh/react@19.3.1',
+    'react/jsx-runtime': 'https://esm.sh/react@19.3.1/jsx-runtime',
+    'react/jsx-dev-runtime': 'https://esm.sh/react@19.3.1/jsx-dev-runtime',
+    'react-dom': 'https://esm.sh/react-dom@19.3.1?deps=react@19.3.1',
+    'react-dom/client': 'https://esm.sh/react-dom@19.3.1/client?deps=react@19.3.1',
+    axios: 'https://esm.sh/axios@1.20.0',
+  }
+  const BABEL = 'https://cdn.jsdelivr.net/npm/@babel/standalone@7.28.4/babel.min.js'
+  // Site root (for lesson assets): the folder above shared/.
+  const ROOT = typeof document !== 'undefined' && document.currentScript ? new URL('..', document.currentScript.src).href : ''
+
+  // Runs inside the preview (as source text, so it must be self-contained): turn the
+  // project's files into ES modules the browser can load, like Vite does on your laptop.
+  function reactRunner(FILES, ASSETS, ENTRY) {
+    var norm = function (p) { var out = []; p.split('/').forEach(function (s) { if (!s || s === '.') return; if (s === '..') out.pop(); else out.push(s) }); return out.join('/') }
+    var dirOf = function (p) { return p.split('/').slice(0, -1).join('/') }
+    var blobUrl = function (text, type) { return URL.createObjectURL(new Blob([text], { type: type })) }
+    var ASSET = /\.(svg|png|jpe?g|gif|webp|ico)$/i
+    var publicUrls = {}
+    Object.keys(FILES).forEach(function (p) { if (p.indexOf('public/') === 0) publicUrls['/' + p.slice(7)] = blobUrl(FILES[p], /\.svg$/.test(p) ? 'image/svg+xml' : 'text/plain') })
+    Object.keys(ASSETS).forEach(function (p) { if (p.indexOf('public/') === 0) publicUrls['/' + p.slice(7)] = ASSETS[p] })
+    var withPublic = function (code) {
+      Object.keys(publicUrls).forEach(function (k) { code = code.split('"' + k).join('"' + publicUrls[k]).split("'" + k).join("'" + publicUrls[k]) })
+      return code
+    }
+    var find = function (from, spec) {
+      var base = norm(dirOf(from) + '/' + spec)
+      var tries = [base, base + '.jsx', base + '.js', base + '/index.jsx', base + '/index.js']
+      for (var i = 0; i < tries.length; i++) if (FILES[tries[i]] != null || ASSETS[tries[i]] != null) return tries[i]
+      return null
+    }
+    var cssDone = {}, mods = {}
+    var assetUrl = function (path) {
+      if (ASSETS[path] != null) return ASSETS[path]
+      return blobUrl(FILES[path], /\.svg$/i.test(path) ? 'image/svg+xml' : 'application/octet-stream')
+    }
+    var load = function (path) {
+      if (mods[path]) return mods[path]
+      var code
+      try {
+        code = Babel.transform(FILES[path], { presets: [['react', { runtime: 'automatic' }]], filename: '/' + path, sourceType: 'module' }).code
+      } catch (e) { throw new Error(e.message) }
+      code = code.replace(/(^|\n)(\s*)import\s+(?:([\w$]+)\s+from\s+)?(?:[^'"]*?\s+from\s+)?(['"])(\.{1,2}\/[^'"]+)\4;?/g, function (m, nl, sp, name, q, spec) {
+        var target = find(path, spec)
+        if (!target) throw new Error('/' + path + ': cannot find "' + spec + '"')
+        if (/\.css$/i.test(target)) {
+          if (!cssDone[target]) { cssDone[target] = 1; var st = document.createElement('style'); st.setAttribute('data-file', target); st.textContent = FILES[target]; document.head.append(st) }
+          return nl
+        }
+        if (ASSET.test(target)) return nl + sp + (name ? 'const ' + name + ' = ' + JSON.stringify(assetUrl(target)) + ';' : '')
+        return m.replace(q + spec + q, q + load(target) + q)
+      })
+      mods[path] = blobUrl(withPublic(code), 'text/javascript')
+      return mods[path]
+    }
+    try {
+      import(load(ENTRY)).catch(function (e) { console.error(String(e && e.message || e)) })
+    } catch (e) { console.error(e.message) }
+  }
+
+  const viteEntry = (html) => { const m = html.match(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?(src\/[^"']+\.jsx?)["'][^>]*>\s*<\/script>/i); return m && m[1] }
+  const safeJson = (v) => JSON.stringify(v).replace(/</g, '\\u003c')
+
+  function buildReactDoc(files, assets, entry) {
+    const abs = {}
+    for (const [k, v] of Object.entries(assets || {})) abs[k] = ROOT ? new URL(v, ROOT).href : v
+    let doc = files['index.html'].replace(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?src\/[^"']+["'][^>]*>\s*<\/script>/i, '')
+    doc = doc.replace(/<link\b[^>]*rel\s*=\s*["']icon["'][^>]*>/i, '')
+    const head = REPORTER + '<script type="importmap">' + JSON.stringify({ imports: IMPORTS }) + '</script><script src="' + BABEL + '"></script>'
+    const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ')</script>'
+    doc = /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + head) : head + doc
+    return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, run + '</body>') : doc + run
+  }
+
   // One HTML document for an iframe srcdoc: linked CSS/JS files are inlined.
-  function buildDoc(files) {
+  function buildDoc(files, assets) {
     const html = files['index.html'] || ''
+    const entry = viteEntry(html)
+    if (entry && files[entry] != null) return buildReactDoc(files, assets, entry)
     const local = (ref) => files[ref.replace(/^\.\//, '')]
     let doc = html.replace(/<link\b[^>]*>/gi, (tag) => {
       if (!/\brel\s*=\s*["']?stylesheet/i.test(tag)) return tag
