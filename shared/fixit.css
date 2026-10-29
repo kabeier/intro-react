@@ -1,0 +1,52 @@
+/* Fix It: same paper look as the landing page */
+:root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --red:#b42318; --sticky:#ffe76a; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.5;
+  background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+              linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.fx-top { padding: 24px 24px 8px; max-width: 1500px; margin: 0 auto; }
+.fx-home { color: var(--blue); font-weight: 700; }
+.fx-title { font: 800 clamp(34px, 5vw, 56px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.02em; margin: 10px 0 6px; }
+.fx-lede { color: var(--muted); margin: 0 0 12px; max-width: 70ch; }
+.fx-wrap { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 20px; padding: 0 24px 40px; max-width: 1500px; margin: 0 auto; align-items: start; }
+.fx-list { position: sticky; top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.fx-list h2 { font: 800 22px 'Bricolage Grotesque', sans-serif; margin: 0 0 4px; }
+.fx-item { text-align: left; font: inherit; font-size: 17px; background: #fff; border: 2px solid var(--grid); border-radius: 4px; padding: 10px 12px; cursor: pointer; color: var(--ink); display: flex; gap: 10px; align-items: baseline; }
+.fx-item.on { border-color: var(--ink); background: var(--sticky); }
+.fx-item:hover, .fx-item:focus-visible { border-color: var(--blue); }
+.fx-mark { font-weight: 700; color: var(--blue); min-width: 1.4em; }
+.fx-card { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 20px 22px; }
+.fx-card h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 0 0 8px; }
+.fx-kicker { margin: 0; color: var(--blue); font-weight: 700; }
+.fx-symptom { background: var(--sticky); padding: 12px 16px; margin: 0 0 12px; transform: rotate(-0.3deg); }
+.fx-pad .livepad { height: 520px; margin-top: 0; }
+/* The live page is always shown next to the code here. */
+.fx-pad .lp-body { grid-template-columns: 1.1fr 1fr; }
+.fx-pad .lp-preview { position: static; width: auto; height: auto; border-left: 1px solid #3c3c3c; }
+.fx-pad .lp-app { display: none; }
+.fx-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.fx-buttons button { font: 700 17px 'Atkinson Hyperlegible', sans-serif; padding: 9px 18px; border-radius: 4px; border: 2px solid var(--ink); background: #fff; cursor: pointer; color: var(--ink); }
+.fx-buttons .fx-fix { background: var(--ink); color: #fff; }
+.fx-result { min-height: 1.5em; }
+.fx-result.ok { color: var(--green); }
+.fx-result.bad { color: var(--red); }
+.fx-result ul { margin: 4px 0 0; padding-left: 20px; color: var(--ink); font-size: 16px; }
+.fx-hint-text { background: #eef3ff; border-left: 4px solid var(--blue); padding: 10px 14px; margin: 8px 0; }
+.fx-answer h3 { font: 800 22px 'Bricolage Grotesque', sans-serif; margin: 14px 0 6px; }
+.fx-file { font-weight: 700; margin: 6px 0 4px; }
+.fx-diff { background: #1f1f1f; color: #d4d4d4; padding: 10px 14px; border-radius: 4px; overflow-x: auto; font-size: 15px; margin: 0 0 8px; }
+.fx-diff .add { color: #7ee787; display: block; }
+.fx-diff .del { color: #ff7b72; display: block; }
+.fx-checker { position: absolute; left: -10000px; top: 0; width: 1280px; height: 800px; border: 0; }
+@media (max-width: 1000px) {
+  .fx-wrap { grid-template-columns: minmax(0, 1fr); }
+  .fx-list { position: static; }
+  .fx-pad .lp-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr 1fr; }
+  .fx-pad .lp-preview { border-left: 0; border-top: 1px solid #3c3c3c; }
+}
+@media (max-width: 600px) { .fx-top, .fx-wrap { padding-left: 16px; padding-right: 16px; } }
+.fx-lessons { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.fx-lesson { font-weight: 700; color: var(--blue); text-decoration: none; border-left: 4px solid transparent; padding-left: 8px; }
+.fx-lesson.on { border-left-color: var(--ink); color: var(--ink); }
+@media (max-width: 1000px) { .fx-lessons { flex-direction: row; flex-wrap: wrap; } }

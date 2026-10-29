@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/explore.css?v=1">
+</head>
+<body>
+<header class="ex-top">
+  <a class="ex-home" href="./">← Lectures</a>
+  <h1 class="ex-title">Code Explorer</h1>
+  <p class="ex-lede">Pick a feature. See the app, every change, and click <b>any line</b> to read its story.</p>
+</header>
+<div class="ex-wrap">
+  <nav class="ex-features" aria-label="Features"></nav>
+  <main class="ex-main"></main>
+  <aside class="ex-story" aria-live="polite"><p class="ex-hint">Click a line of code to see <b>what</b> it does, <b>why</b> it's there and <b>when</b> we added it.</p></aside>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="shared/course.js?v=1"></script>
+<!-- one line per lesson: <script src="shared/course/LESSON.js?v=1"></script> -->
+<script src="shared/explore.js?v=1"></script>
+</body>
+</html>

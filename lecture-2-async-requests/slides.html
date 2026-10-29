@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture N · TITLE</title>
+<link rel="stylesheet" href="../shared/deck.css">
+<!-- Slide-specific tweaks go in a small <style> here (e.g. pre b.ours { color: #ffe76a; }) -->
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<!--
+  One <section class="slide"> per slide. Attributes:
+    data-seg  = the segment name shown top-left (e.g. "Open", "Activity: Name", "Live: …", "Wrap up")
+    data-at   = the minute this slide should start at (drives the presenter clock)
+  Every slide gets <aside class="notes">: what to SAY and DO, as short bullets.
+  Slide types below: title · statement · diagram · table · two cards · activity · code/prompt · homework.
+  Delete the ones you don't need; keep ~12–16 slides for a 40-minute lecture.
+-->
+
+<!-- ============ OPEN (0–3) ============ -->
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Building Applications · TOPIC · Part 1 of 2</div>
+  <h1>Lecture title in sentence case</h1>
+  <p class="sub">One sentence: the question this lecture answers, in the running app's terms.</p>
+  <aside class="notes">
+    <p><b>Before class</b> (demo-kit/RUNBOOK.md): the state everything must be in.</p>
+    <p>Tabs to have open: … Press <b>T</b> to start the clock.</p>
+  </aside>
+</section>
+
+<section class="slide statement" data-seg="Open" data-at="1">
+  <h2>The hook: what's wrong / missing right now</h2>
+  <ul>
+    <li>Concrete fact about the running app</li>
+    <li>Why that's a problem</li>
+    <li>…</li>
+  </ul>
+  <p class="bottomline">Today: what we'll learn. Next lecture: what we'll build.</p>
+  <aside class="notes">
+    <p><b>** LIVE, 1 minute. **</b> The exact demo step that shows the problem.</p>
+  </aside>
+</section>
+
+<!-- ============ CONCEPT (3–8) ============ -->
+<section class="slide diagram" data-seg="Concept" data-at="3">
+  <img src="../diagrams/XX1-01-name.png" alt="Full description of the diagram for screen readers and for the zoom view.">
+  <div class="src">diagrams/XX1-01-name.tldr</div>
+  <aside class="notes">
+    <p>"The one sentence to say about this picture."</p>
+    <ul><li>Point 1</li><li>Point 2</li></ul>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="5">
+  <h2>Comparison table</h2>
+  <table class="dbt">
+    <tr><th></th><th>Option A</th><th>Option B</th></tr>
+    <tr><td><b>Row</b></td><td>…</td><td class="pk">highlighted cell</td></tr>
+  </table>
+  <p class="bottomline">The one line to remember.</p>
+  <aside class="notes"><p>…</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="6">
+  <h2>Two cards side by side</h2>
+  <div class="cols">
+    <div class="card blue"><h3>Left idea</h3><p>Short text.</p></div>
+    <div class="card red"><h3>Right idea</h3><p>Short text.</p></div>
+  </div>
+  <p class="bottomline">The contrast in one line.</p>
+  <aside class="notes"><p>…</p></aside>
+</section>
+
+<!-- ============ ACTIVITY (8–14) ============ -->
+<section class="slide activity" data-seg="Activity: Name" data-at="8">
+  <h2>Activity: Name</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>A situation appears</li>
+    <li>In chat on "go": <b>OPTION A</b>, <b>OPTION B</b> or <b>OPTION C</b></li>
+    <li>Bonus: …</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: activity-name/</p>
+  <aside class="notes">
+    <p>About 30 seconds a card; the first 6 are the core set. Space reveals.</p>
+    <p>Answers are also in your Notes (teacher guide).</p>
+  </aside>
+</section>
+
+<!-- ============ LIVE (14–30) ============ -->
+<section class="slide" data-seg="Live: the step" data-at="14">
+  <h2>The prompt</h2>
+  <p class="muted" style="font-size:19px; margin:-14px 0 8px">The curriculum's prompt, our paths in bold, <b style="color:#b8860b">our block in yellow</b>.</p>
+  <pre style="font-size:15px; line-height:1.4; padding:18px 26px; white-space:pre-wrap">Curriculum prompt text, word for word, with <b>our/paths</b> in bold.
+
+<b class="ours">Also for this project:
+- Answers to the questions Claude will ask (from the dry run).</b>
+
+Do you have any questions before …?</pre>
+  <aside class="notes">
+    <p><b>** LIVE. **</b> Where Claude runs, what to paste (also in demo-kit/prompts.md).</p>
+    <p><b>Its questions:</b> next slide.</p>
+  </aside>
+</section>
+
+<!-- ============ WRAP (35–40) ============ -->
+<section class="slide" data-seg="Wrap up" data-at="35">
+  <h2>What you now know</h2>
+  <ul class="small">
+    <li>Takeaway 1</li>
+    <li>Takeaway 2</li>
+  </ul>
+  <p class="bottomline">Next lecture: … (or "in future lectures")</p>
+  <aside class="notes"><p>…</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Homework, Part I</h2>
+  <ol style="list-style:none;padding-left:0" class="small">
+    <li><b>Priority 1, …:</b> …</li>
+    <li><b>Priority 2, …:</b> …</li>
+  </ol>
+  <aside class="notes"><p>Full steps are on the class site.</p></aside>
+</section>
+
+</div>
+<script src="../shared/deck.js?v=1"></script>
+</body>
+</html>

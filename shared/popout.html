@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live app</title>
+<style>
+  :root { --bar: #2b2b2b; --text: #ddd; }
+  html, body { margin: 0; height: 100%; background: #fff; }
+  body { display: flex; flex-direction: column; font: 600 15px/1 system-ui, sans-serif; }
+  .pop-bar { background: var(--bar); color: var(--text); padding: 8px 12px; display: flex; gap: 12px; align-items: center; }
+  .pop-title { flex: 1; }
+  .pop-hint { color: #9d9d9d; font-weight: 400; }
+  iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+  .waiting { padding: 24px; color: #555; font: 18px system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<div class="pop-bar"><span class="pop-title">Live app · waiting for the slides…</span><span class="pop-hint">Right-click → Inspect for DevTools</span></div>
+<iframe title="Live app"></iframe>
+<script>
+  // Shows the live app of the slide that is open in the deck (same browser).
+  const channel = new BroadcastChannel('livepad')
+  const frame = document.querySelector('iframe')
+  const title = document.querySelector('.pop-title')
+  let last = null
+  channel.onmessage = (e) => {
+    const d = e.data || {}
+    if (d.type === 'ping') channel.postMessage({ type: 'hello' })
+    if (d.type !== 'doc') return
+    title.textContent = 'Live app' + (d.slide ? ' · slide ' + d.slide : '')
+    if (d.doc !== last) { last = d.doc; frame.srcdoc = d.doc }
+  }
+  // The window title follows the page's <title>, like a real browser tab.
+  frame.addEventListener('load', () => {
+    let t = ''
+    try { t = frame.contentDocument.title } catch {}
+    document.title = t || 'Live app'
+  })
+  channel.postMessage({ type: 'hello' })
+  // A form submit nobody prevented: reload, like a real browser.
+  addEventListener('message', (e) => {
+    if (e.source === frame.contentWindow && e.data && e.data.type === 'livepad-reload') { frame.removeAttribute('srcdoc'); frame.srcdoc = last }
+  })
+  const save = () => {
+    try { localStorage.setItem('livepad-popout-geom', JSON.stringify({ w: outerWidth, h: outerHeight, x: screenX, y: screenY })) } catch {}
+  }
+  addEventListener('resize', save)
+  addEventListener('pagehide', () => { save(); channel.postMessage({ type: 'bye' }) })
+</script>
+</body>
+</html>
