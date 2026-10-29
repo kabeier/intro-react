@@ -74,7 +74,13 @@
       const d = checker.srcdoc; checker.removeAttribute('srcdoc'); checker.srcdoc = d
     }
   })
-  function settle(doc) {
+  // Pop-ups in the checked page are recorded, not shown (checks read ctx.alerts).
+  let alerts = []
+  checker.addEventListener('load', () => { try { checker.contentWindow.alert = (m) => { alerts.push(String(m)) } } catch {} })
+  async function settle(doc) {
+    // A React app renders after its modules load: wait for #root to fill (or give up after 8 s).
+    const rootEl = doc.getElementById('root')
+    for (let t = 0; rootEl && !rootEl.childElementCount && t < 8000; t += 100) await new Promise((r) => setTimeout(r, 100))
     const imgs = [...doc.images].filter((i) => !i.complete)
     return Promise.race([
       Promise.all(imgs.map((i) => new Promise((r) => { i.addEventListener('load', r); i.addEventListener('error', r) }))),
@@ -96,7 +102,8 @@
     await new Promise((resolve) => { checker.onload = resolve; checker.srcdoc = html })
     const doc = checker.contentDocument, win = checker.contentWindow
     await settle(doc)
-    const ctx = { wait: (ms) => new Promise((r) => setTimeout(r, ms)), doc: () => checker.contentDocument,
+    alerts = []
+    const ctx = { wait: (ms) => new Promise((r) => setTimeout(r, ms)), doc: () => checker.contentDocument, get alerts() { return alerts },
       settled: async () => { if (reloading) { await reloading; await settle(checker.contentDocument) } } }
     const results = []
     for (const c of p.checks) {

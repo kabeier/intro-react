@@ -4,7 +4,7 @@
 //   node tools/gen-notes.mjs lecture-1-html-css/slides.html          rewrite in place
 //   node tools/gen-notes.mjs --check lecture-1-html-css/slides.html  exit 1 if out of date
 // In the deck: <!-- steps:html-css:f2 --><!-- /steps -->
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -13,7 +13,10 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(import.meta.url)
 const Course = require(path.join(ROOT, 'shared/course.js'))
 globalThis.Course = Course
-for (const f of readdirSync(path.join(ROOT, 'shared/course'))) if (f.endsWith('.js')) await import(path.join(ROOT, 'shared/course', f))
+// Lessons load in manifest.json order when there is one (a lesson can build on another).
+const manifest = path.join(ROOT, 'shared/course/manifest.json')
+const order = existsSync(manifest) ? JSON.parse(readFileSync(manifest, 'utf8')) : readdirSync(path.join(ROOT, 'shared/course')).filter((f) => f.endsWith('.js')).sort()
+for (const f of order) await import(path.join(ROOT, 'shared/course', f))
 
 const args = process.argv.slice(2)
 const check = args[0] === '--check'
