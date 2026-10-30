@@ -16,6 +16,8 @@
   .lede { max-width: 60ch; color: var(--muted); font-size: 20px; margin: 0 0 48px; }
   .lectures { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
   section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 28px; }
+  h3 .date { font-size: 15px; margin: 0 0 0 10px; vertical-align: 4px; }
+  .date { display: inline-block; font: 700 17px 'Atkinson Hyperlegible', sans-serif; background: var(--ink); color: #fff; padding: 4px 12px; border-radius: 3px; margin: 0 0 14px; }
   .num { font: 800 64px/1 'Bricolage Grotesque', sans-serif; color: var(--blue); }
   h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 8px 0 6px; letter-spacing: -0.01em; }
   section > p { margin: 0 0 22px; color: var(--muted); }
@@ -62,11 +64,12 @@
 </head>
 <body>
 <main>
+  <p class="date">📅 November 5 – 18, 2026</p>
   <h1>React: the Pokemon Project</h1>
   <p class="lede">One app, built unit by unit: a Pokemon search that grows from a create-vite template into a tested, routed, deployed React app. Every lecture types the code in short steps with the live app beside it. Everything opens in a new tab, so keep this page open as your home base.</p>
 
-  <p class="jump"><b>Jump to:</b> <a href="#unit-2">Unit 2</a> · <a href="#unit-3">Unit 3</a> · <a href="#unit-4">Unit 4</a> · <a href="#unit-5">Unit 5</a> · <a href="#unit-6">Unit 6</a> · <a href="#unit-7">Unit 7</a> · <a href="#unit-8">Unit 8</a> · <a href="#unit-9">Unit 9</a><br><b>Homework:</b> <a href="#homework">2</a> · <a href="#homework-3">3</a> · <a href="#homework-4">4</a> · <a href="#homework-5">5</a> · <a href="#homework-6">6</a> · <a href="#homework-7">7</a> · <a href="#homework-8">8</a> · <a href="#homework-9">9</a></p>
-  <h3 id="unit-2" style="margin-top:0">Unit 2: React and Requests</h3>
+  <p class="jump"><b>Jump to:</b> <a href="#unit-2">Unit 2</a> · <a href="#unit-3">Unit 3</a> · <a href="#unit-4">Unit 4</a> · <a href="#unit-5">Unit 5</a> · <a href="#unit-6">Unit 6</a> · <a href="#unit-7">Unit 7</a> · <a href="#unit-8">Unit 8</a> · <a href="#unit-9">Unit 9</a><br><b>Terminal:</b> <a href="explore.html?view=commands" target="_blank" rel="noopener">every command, explained</a> (with and without Docker)<br><b>Homework:</b> <a href="#homework">2</a> · <a href="#homework-3">3</a> · <a href="#homework-4">4</a> · <a href="#homework-5">5</a> · <a href="#homework-6">6</a> · <a href="#homework-7">7</a> · <a href="#homework-8">8</a> · <a href="#homework-9">9</a></p>
+  <h3 id="unit-2" style="margin-top:0">Unit 2: React and Requests <span class="date">📅 Thursday, November 5</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -77,6 +80,7 @@
         <li><a href="fixit.html?lesson=react-vite" target="_blank" rel="noopener"><b>Activity: Fix It (JSX)</b><span>Ten broken components: a blank page, a missing import, a string style… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=react-vite&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The project after every step. Click any line for its story. Fell behind? Download the code at any feature.</span></a></li>
         <li><a href="optional-css-modules/" target="_blank" rel="noopener"><b>Optional: components in folders, and CSS Modules</b><span>Not part of the lecture. Why CSS in React is one big stylesheet, and how CSS Modules keep a component's styles to itself.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/1-react-and-vite/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -87,11 +91,12 @@
       <ol>
         <li><a href="fixit.html?lesson=async-requests" target="_blank" rel="noopener"><b>Activity: Fix It (requests)</b><span>Ten broken searches against the real PokeAPI. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=async-requests&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The search app after every step; lines from lecture 1 link back to it.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/2-async-requests/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-3">Unit 3: End-to-End Testing</h3>
+  <h3 id="unit-3">Unit 3: End-to-End Testing <span class="date">📅 Monday, November 9</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -101,6 +106,7 @@
       <ol>
         <li><a href="fixit.html?lesson=cypress-react" target="_blank" rel="noopener"><b>Activity: Fix It (Cypress setup)</b><span>The app works; the tests or the config don't. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=cypress-react&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every config line and test, explained.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-e2e-testing/1-cypress-react/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -111,11 +117,12 @@
       <ol>
         <li><a href="fixit.html?lesson=cypress-assertions" target="_blank" rel="noopener"><b>Activity: Fix It (assertions)</b><span>Broken tests, and tests too weak to ever fail. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=cypress-assertions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>pokemon.cy.js after every step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-e2e-testing/2-cypress-assertions/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-4">Unit 4: React Hooks</h3>
+  <h3 id="unit-4">Unit 4: React Hooks <span class="date">📅 Tuesday, November 10</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -123,8 +130,10 @@
       <p>State instead of DOM code: the title, a counter, a controlled input, the cards as a list, Remove. A failing test first, every time.</p>
       <a class="slides" href="lecture-5-hooks-usestate/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
       <ol>
-        <li><a href="fixit.html?lesson=hooks-usestate" target="_blank" rel="noopener"><b>Activity: Fix It (useState)</b><span>Too many re-renders, push instead of a new array, a missing key… The whole test suite checks your fix. Problems 1–6 first.</span></a></li>
+        <li><a href="state-hunt/" target="_blank" rel="noopener"><b>Activity: State Hunt</b><span>30 small apps. For each one, say what it remembers: that is its state.</span></a></li>
+        <li><a href="fixit.html?lesson=hooks-usestate" target="_blank" rel="noopener"><b>Practice: Fix It (useState)</b><span>Too many re-renders, push instead of a new array, a missing key… The whole test suite checks your fix. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=hooks-usestate&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>App.jsx and the specs after every step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-hooks/1-useState-hook/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -135,11 +144,12 @@
       <ol>
         <li><a href="fixit.html?lesson=hooks-useeffect" target="_blank" rel="noopener"><b>Activity: Fix It (useEffect)</b><span>Wrong dependencies, a bad cleanup, two Pikachus on load. Watch the Console. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=hooks-useeffect&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every effect, explained line by line.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-hooks/2-useEffect-hook/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-5">Unit 5: React Components</h3>
+  <h3 id="unit-5">Unit 5: React Components <span class="date">📅 Thursday, November 12</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -150,6 +160,7 @@
         <li><a href="fixit.html?lesson=components-props" target="_blank" rel="noopener"><b>Activity: Fix It (components)</b><span>A lowercase tag, a missing export, a prop with the wrong name… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=components-props&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every component file after every step.</span></a></li>
         <li><a href="optional-css-modules/" target="_blank" rel="noopener"><b>Optional: components in folders, and CSS Modules</b><span>Not part of the lecture. One folder per component with an index.js, and a CSS Module for each, step by step with a live editor.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-react-components/1-components-props/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -160,11 +171,12 @@
       <ol>
         <li><a href="fixit.html?lesson=component-state" target="_blank" rel="noopener"><b>Activity: Fix It (component state)</b><span>Toggles that stick, a plain variable instead of state, key={index}. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=component-state&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Where each piece of state lives, step by step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-react-components/2-component-lvl-state/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-6">Unit 6: Utility vs Component Libraries</h3>
+  <h3 id="unit-6">Unit 6: Utility vs Component Libraries <span class="date">📅 Friday, November 13</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -174,6 +186,7 @@
       <ol>
         <li><a href="fixit.html?lesson=utilities-tailwind" target="_blank" rel="noopener"><b>Activity: Fix It (Tailwind)</b><span>A missing plugin, a misspelt class, class instead of className… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=utilities-tailwind&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every class explained, step by step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-components-utilities/1-tailwind/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -184,11 +197,12 @@
       <ol>
         <li><a href="fixit.html?lesson=utilities-bootstrap" target="_blank" rel="noopener"><b>Activity: Fix It (React Bootstrap)</b><span>Missing CSS, a named import that isn't there, onClick={rmData}… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=utilities-bootstrap&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The Card, part by part.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-components-utilities/2-bootstrap/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-7">Unit 7: React Router</h3>
+  <h3 id="unit-7">Unit 7: React Router <span class="date">📅 Monday, November 16</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -198,6 +212,7 @@
       <ol>
         <li><a href="fixit.html?lesson=router-intro" target="_blank" rel="noopener"><b>Activity: Fix It (router setup)</b><span>Heading only? The router is half wired somewhere. Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=router-intro&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>router.jsx and main.jsx, step by step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-intro-to-react-router/1-intro-react-router/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -208,11 +223,12 @@
       <ol>
         <li><a href="fixit.html?lesson=router-pages" target="_blank" rel="noopener"><b>Activity: Fix It (pages and links)</b><span>Reloading links, a crash that hides the header, a typo in a path… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=router-pages&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every page and route explained.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-intro-to-react-router/2-adding-router-pages/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-8">Unit 8: React Router Hooks</h3>
+  <h3 id="unit-8">Unit 8: React Router Hooks <span class="date">📅 Tuesday, November 17</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -222,6 +238,7 @@
       <ol>
         <li><a href="fixit.html?lesson=router-hooks" target="_blank" rel="noopener"><b>Activity: Fix It (router hooks)</b><span>A wrong param name, a missing colon, a spinner that never stops… Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=router-hooks&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The details page, step by step.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-react-router-hooks/1-useParams-useNav/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -232,11 +249,12 @@
       <ol>
         <li><a href="fixit.html?lesson=outlet-context" target="_blank" rel="noopener"><b>Activity: Fix It (outlet context)</b><span>Leave and come back: does the state survive? Problems 1–6 first.</span></a></li>
         <li><a href="explore.html?lesson=outlet-context&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Where each piece of state lives now.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-react-router-hooks/2-useOutletContext/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="unit-9">Unit 9: CI/CD</h3>
+  <h3 id="unit-9">Unit 9: CI/CD <span class="date">📅 Wednesday, November 18</span></h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -246,6 +264,7 @@
       <ol>
         <li><a href="lecture-15-deploy-pages/slides.html" target="_blank" rel="noopener"><b>Activity: deploy your own copy</b><span>On your laptop: set base, npm run deploy, open your URL and refresh. (Slide 12.)</span></a></li>
         <li><a href="explore.html?lesson=deploy-pages&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>vite.config.js, router.jsx and the smoke test.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/1-gh-pages/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
     <section>
@@ -256,6 +275,7 @@
       <ol>
         <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: make and read your own red ✗</b><span>Break a test on a branch of your deployed repo, open a pull request, read the failure. (Slide 11.)</span></a></li>
         <li><a href="explore.html?lesson=ci-actions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Both workflow files, every line explained.</span></a></li>
+        <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/2-gh-actions/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
   </div>

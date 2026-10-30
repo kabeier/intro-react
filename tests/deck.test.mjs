@@ -46,7 +46,11 @@ test2('there is exactly one activity, and it opens the Fix it page', () => {
   const acts = slides.filter((s) => s.startsWith(' activity'))
   assert.equal(acts.length, 1)
   // Unit 9's activities happen on GitHub (deploy, read real runs), not in Fix it.
-  if (!['deploy-pages', 'ci-actions'].includes(lessonId)) assert.ok(acts[0].includes('href="../fixit.html?lesson=' + lessonId + '"'))
+  // useState's activity is the State Hunt round; its Fix it set is practice on the homework slide.
+  if (lessonId === 'hooks-usestate') {
+    assert.ok(acts[0].includes('href="../state-hunt/"'))
+    assert.ok(slides.some((s) => s.includes('href="../fixit.html?lesson=hooks-usestate"')), 'Fix it is still linked as practice')
+  } else if (!['deploy-pages', 'ci-actions'].includes(lessonId)) assert.ok(acts[0].includes('href="../fixit.html?lesson=' + lessonId + '"'))
 })
 
 test2('the step tables in the notes are generated from the lesson and up to date', () => {

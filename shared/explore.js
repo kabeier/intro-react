@@ -3,12 +3,14 @@
 //   explore.html?lesson=html-css&at=f3
 (() => {
   const q = new URLSearchParams(location.search)
-  const lesson = Course.get(q.get('lesson') || 'html-css')
-  const feats = lesson.features
-  let at = feats.some((f) => f.id === q.get('at')) ? q.get('at') : feats[0].id
+  // ?view=commands shows the terminal commands (explore-commands.js) instead of a lecture.
+  const commandsView = q.get('view') === 'commands' && !!Course.commands
+  const lesson = commandsView ? null : Course.get(q.get('lesson')) || Course.all()[0]
+  const feats = lesson ? lesson.features : []
+  let at = feats.some((f) => f.id === q.get('at')) ? q.get('at') : feats[0]?.id
   let showBefore = false
-  const assets = Course.assetsOf(lesson)
-  let tab = Course.tabOrder(Object.keys(lesson.files))[0]
+  const assets = lesson ? Course.assetsOf(lesson) : {}
+  let tab = lesson ? Course.tabOrder(Object.keys(lesson.files))[0] : null
   let picked = null
   const channel = new BroadcastChannel('livepad')
   let popWin = null
@@ -51,13 +53,16 @@
 
   // Left column: the lectures. The features of the open lecture sit in a row above the main content.
   function renderFeatures() {
-    featuresEl.innerHTML = '<h2>Lectures</h2><div class="ex-lessons">' + Course.all().map((l) =>
+    const cmds = Course.commands
+    featuresEl.innerHTML = (cmds ? `<a class="ex-cmd-link${commandsView ? ' on' : ''}" href="?view=commands"${commandsView ? ' aria-current="page"' : ''}>⌨ Terminal commands</a>` : '') +
+      '<h2>Lectures</h2><div class="ex-lessons">' + Course.all().map((l) =>
       `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}"${l === lesson ? ' aria-current="page"' : ''}>${esc(lessonName(l))}: ${esc(l.title)}</a>`).join('') + '</div>' +
       // Phones: one dropdown instead of the long list.
       '<select class="ex-lesson-select" aria-label="Lecture">' + Course.all().map((l) =>
       `<option value="${l.id}"${l === lesson ? ' selected' : ''}>${esc(lessonName(l))}: ${esc(l.title)}</option>`).join('') + '</select>'
     const sel = featuresEl.querySelector('.ex-lesson-select')
-    sel.onchange = () => { const l = Course.get(sel.value); location.href = `?lesson=${l.id}&at=${l.features[0].id}` }
+    if (commandsView) sel.insertAdjacentHTML('afterbegin', '<option value="" selected>Pick a lecture…</option>')
+    sel.onchange = () => { const l = Course.get(sel.value); if (l) location.href = `?lesson=${l.id}&at=${l.features[0].id}` }
   }
   const featureBar = () => `<nav class="ex-featbar" aria-label="Features of this lecture"><span class="ex-featbar-label">Features</span>` + feats.map((f, k) =>
     `<button type="button" class="ex-feature${f.id === at ? ' on' : ''}" data-feature="${f.id}"${f.id === at ? ' aria-current="step"' : ''}><b>${k + 1}</b> ${esc(f.title)}</button>`).join('') + '</nav>'
@@ -206,6 +211,7 @@
     renderFeatures(); renderMain(); storyHint()
   }
 
+  if (commandsView) { renderFeatures(); window.renderCommands(mainEl, storyEl, esc); return }
   document.title = lesson.title + ' · Code Explorer'
   renderFeatures(); renderMain()
 })()

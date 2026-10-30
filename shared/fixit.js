@@ -70,13 +70,21 @@
   let reloading = null
   // Console output of the checked page and the test runs (React warnings show up here).
   let consoleLines = []
+  let testing = false
   addEventListener('message', (e) => {
-    if (e.data && e.data.type === 'livepad-console' && (e.source === checker.contentWindow || (testPad && e.source === testPad.preview.contentWindow))) consoleLines.push(e.data.text)
+    // The hidden test page keeps showing the last files after a run (it can log the old app's warnings
+    // a moment later), so its lines only count while a run of the current files is going on.
+    if (e.data && e.data.type === 'livepad-console' && (e.source === checker.contentWindow || (testPad && testing && e.source === testPad.preview.contentWindow))) consoleLines.push(e.data.text)
   })
   addEventListener('message', (e) => {
     if (e.source === checker.contentWindow && e.data && e.data.type === 'livepad-reload') {
       reloading = new Promise((r) => { checker.onload = () => { reloading = null; r() } })
       const d = checker.srcdoc; checker.removeAttribute('srcdoc'); checker.srcdoc = d
+    }
+    // A plain <a href> (not a router Link): a full page load at that path, like the slides' preview.
+    if (e.source === checker.contentWindow && e.data && e.data.type === 'livepad-navigate') {
+      reloading = new Promise((r) => { checker.onload = () => { reloading = null; r() } })
+      checker.srcdoc = Course.buildDoc(editor.getFiles(), Course.assetsOf(lesson), { path: e.data.path })
     }
   })
   // Pop-ups in the checked page are recorded, not shown (checks read ctx.alerts).
@@ -102,7 +110,9 @@
       document.body.append(host)
       testPad = Livepad.mount(host, { files, assets: Course.assetsOf(lesson), editable: false })
     } else testPad.setFiles(files)
-    const results = (await testPad.pad.runTests()) || []
+    testing = true
+    let results
+    try { results = (await testPad.pad.runTests()) || [] } finally { testing = false }
     lastTestHtml = (testPad.pad.el.querySelector('.lp-tests') || {}).innerHTML || ''
     return results.flatMap((r) => (r.error && !r.tests.length ? [{ title: '(the spec could not run)', state: 'failed', error: r.error }] : r.tests))
   }

@@ -143,7 +143,7 @@
       current.visited = true
       hookWindow()
       const root = doc().getElementById('root')
-      for (let t = 0; root && !root.childElementCount && !current.appErrors.length && t < 8000; t += 50) await sleep(50)
+      for (let t = 0; root && !root.childElementCount && !current.appErrors.length && !(win() && win().__appStartFailed) && t < 8000; t += 50) await sleep(50)
       // Like cy.visit waiting for the page to settle: errors the first effects throw land in this test.
       await sleep(100)
     }

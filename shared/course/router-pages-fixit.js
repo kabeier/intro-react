@@ -75,6 +75,7 @@
         if (!a) return false
         a.click()
         await ctx.wait(600)
+        await ctx.settled()
         return ctx.doc().defaultView.__brandMark === true
       } }],
       testsPass: true,

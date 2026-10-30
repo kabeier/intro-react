@@ -96,17 +96,20 @@ Before class: as unit 3. From now on every feature starts with a failing test: p
 ## Lecture 1 · useState
 | # | Min | Do | Say |
 |---|---|---|---|
-| 1–4 | 0–4 | — | by hand vs state; event → setter → render; red, green, tidy |
-| 5 | 5 | **N** 1, ▶ (red); **N** 2–4, ▶ (green) | first state: the title |
-| 6 | 9 | — | [value, setter]; rules of hooks |
-| 7–8 | 10–13 | **N ×3**, ▶ red then green | functional update |
-| 9 | 14 | ▶, **N ×4**, ▶ (green both times) | a refactor keeps behaviour |
-| 10 | 18 | **N ×5**, ▶ all green | generateCard is gone; tests say users can't tell |
-| 11 | 24 | — | new arrays; spread (not "deconstruction") |
-| 12 | 25 | **N ×3**, ▶ red then green | Remove with filter |
-| 13 | 28 | — | mental model |
-| 14 | 29 | timer | Fix It (useState) 1–6 |
-| 15 | 37 | — | homework I |
+| 1–3 | 0–3 | — | by hand vs state; event → setter → render |
+| 4 | 4 | timer; open **state-hunt**; go round the room, type the box #, press **Answer** after each student | State Hunt: what does each box remember? (about 15 s a student) |
+| 5 | 12 | — | red, green, tidy |
+| 6 | 13 | **N** 1, ▶ (red); **N** 2–4, ▶ (green) | first state: the title |
+| 7 | 17 | — | [value, setter]; rules of hooks |
+| 8–9 | 18–21 | **N ×3**, ▶ red then green | functional update |
+| 10 | 22 | ▶, **N ×4**, ▶ (green both times) | a refactor keeps behaviour |
+| 11 | 26 | **N ×5**, ▶ all green | generateCard is gone; tests say users can't tell |
+| 12 | 32 | — | new arrays; spread (not "deconstruction") |
+| 13 | 33 | **N ×3**, ▶ red then green | Remove with filter |
+| 14 | 36 | — | mental model |
+| 15 | 37 | — | homework I; Fix It (useState) 1–6 is practice after class |
+
+State Hunt: the harder boxes (something changes but is not state) are 4, 8, 12, 13, 19, 20, 26, 27, 30. Fewer students than boxes: go round twice or press **Random box**.
 
 ## Lecture 2 · useEffect
 | # | Min | Do | Say |

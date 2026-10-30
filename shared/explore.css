@@ -86,3 +86,31 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
 /* Code we replace later (the step has later:). */
 .ex-later { margin: 6px 0 10px; padding: 8px 12px; background: #fff4d6; border-left: 4px solid #d97706; color: #5c3d00; border-radius: 4px; }
+
+/* Terminal commands view (?view=commands). */
+.ex-cmd-link { display: block; font-weight: 700; color: var(--ink); background: var(--sticky); border: 2px solid var(--ink); border-radius: 4px; padding: 8px 12px; margin-bottom: 14px; text-decoration: none; }
+.ex-cmd-link.on { background: var(--ink); color: #fff; }
+.ex-flows { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.ex-flow { border: 2px solid var(--grid); border-radius: 4px; padding: 10px 14px; }
+.ex-flow h3 { font-size: 18px !important; margin: 0 0 6px !important; }
+.ex-flow ol { margin: 0; padding-left: 1.3em; font-size: 16px; }
+.ex-flow li { margin-bottom: 4px; }
+.ex-cmd { border-top: 2px dashed var(--grid); padding: 14px 0 6px; }
+.ex-cmd p { margin: 0 0 6px; }
+.ex-cmd-head b { font: 800 22px 'Bricolage Grotesque', sans-serif; color: var(--blue); margin-right: 6px; }
+.ex-badge { display: inline-block; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: #eef0f3; color: #4a5568; vertical-align: 3px; }
+.ex-badge.t-docker { background: #e3ecff; color: #1d3f99; }
+.ex-badge.t-laptop { background: #e3f4ea; color: #0f5c44; }
+.ex-cmdline { display: flex; gap: 8px; align-items: flex-start; background: #1f1f1f; border-radius: 4px; padding: 10px 12px; margin: 4px 0 10px; }
+.ex-cmdline code { flex: 1; min-width: 0; color: #d4d4d4; font-size: 16px; line-height: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ex-part { font: inherit; color: #fff; background: #2f3a52; border: 1px solid #4b5a7a; border-radius: 4px; padding: 1px 6px; cursor: pointer; }
+.ex-part:hover, .ex-part:focus-visible { background: #3d4f78; outline: 2px solid var(--sticky); outline-offset: 1px; }
+.ex-part.picked { background: var(--sticky); color: var(--ink); border-color: var(--sticky); }
+.ex-copy-cmd { flex: none; font: 700 14px 'Atkinson Hyperlegible', sans-serif; padding: 4px 10px; border-radius: 4px; border: 0; background: var(--sticky); color: var(--ink); cursor: pointer; }
+.ex-cmd-mistakes { margin: 0 0 8px; padding-left: 1.2em; font-size: 16px; }
+.ex-cmd-mistakes li::marker { content: '⚠ '; }
+.ex-cmd details { margin: 4px 0 8px; }
+.ex-cmd summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+.ex-cmd .ex-api { margin-top: 8px; }
+.ex-cmd .ex-api code { overflow-wrap: anywhere; }
+.ex-cmd .ex-api td:first-child { width: 30%; }

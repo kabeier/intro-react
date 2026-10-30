@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; --warn:#fff4d6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.45;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 1500px; margin: 0 auto; padding: 28px 28px 80px; }
+  .back { color: var(--blue); font-weight: 700; }
+  h1 { font: 800 clamp(34px, 5vw, 56px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 14px 0 10px; }
+  .rules { display: flex; flex-wrap: wrap; gap: 10px 26px; margin: 0 0 14px; padding: 0; list-style: none; font-size: 19px; }
+  .rules b { color: var(--blue); }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 0; background: var(--paper); border-bottom: 2px solid var(--grid); margin-bottom: 18px; }
+  .bar button, .bar input { font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 7px 14px; border-radius: 4px; border: 2px solid var(--ink); background: #fff; cursor: pointer; }
+  .bar button.on { background: var(--sticky); }
+  .bar input { width: 6.5em; cursor: text; }
+  .bar .muted { font-size: 15px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+  .box { background: #fff; border: 2px solid var(--ink); border-radius: 6px; display: flex; flex-direction: column; min-height: 230px; scroll-margin-top: 80px; transition: box-shadow .2s; }
+  .box.focus { box-shadow: 0 0 0 6px var(--sticky), 0 0 0 9px var(--ink); }
+  .box header { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 2px solid var(--grid); }
+  .box .n { font: 800 30px/1 'Bricolage Grotesque', sans-serif; min-width: 1.4em; color: var(--blue); }
+  .box .t { font-weight: 700; }
+  .box .w { flex: 1; display: flex; align-items: center; justify-content: center; padding: 14px 12px; }
+  .box footer { border-top: 2px dashed var(--grid); padding: 6px 12px 10px; }
+  .box footer > button { font: 700 14px 'Atkinson Hyperlegible', sans-serif; background: none; border: 0; color: var(--blue); cursor: pointer; padding: 4px 0; }
+  .ans { font-size: 16px; }
+  .ans p { margin: 6px 0 2px; font-weight: 700; }
+  .ans ul { margin: 0; padding-left: 1.1em; }
+  .ans .yes li::marker { content: '✓ '; color: var(--green); }
+  .ans .no { color: var(--muted); } .ans .no li::marker { content: '✗ '; }
+  .ans code { display: block; font-size: 13px; background: #e8ecf3; padding: 3px 6px; border-radius: 3px; margin-top: 3px; overflow-wrap: anywhere; }
+  /* widgets */
+  .w button { font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 6px 12px; border-radius: 4px; border: 2px solid var(--ink); background: #fff; cursor: pointer; }
+  .w button:disabled { opacity: .35; cursor: default; }
+  .w button.on { background: var(--sticky); }
+  .w button.link { border: 0; padding: 2px 0; color: var(--blue); background: none; }
+  .w input:not([type]), .w input[type=text], .w input[type=password], .w input[type=number], .w textarea { font: 16px 'Atkinson Hyperlegible', sans-serif; padding: 6px 8px; border: 2px solid var(--ink); border-radius: 4px; width: 100%; max-width: 210px; }
+  .w input.num { width: 80px; }
+  .w input[type=range] { width: 190px; }
+  .w input[type=checkbox], .w input[type=radio] { width: 18px; height: 18px; vertical-align: -3px; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+  .col.left { align-items: flex-start; text-align: left; }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .tabs, .seats { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .seats button { padding: 6px 8px; }
+  .big { font: 800 30px 'Bricolage Grotesque', sans-serif; min-width: 1.5em; text-align: center; }
+  .muted { color: var(--muted); }
+  .bulb { font-size: 46px; filter: grayscale(1) opacity(.35); } .bulb.on { filter: drop-shadow(0 0 14px #ffd84d); }
+  .heart { font-size: 26px; color: #b42318; } .w button.heart.on { background: #fde2e1; }
+  .stars button { border: 0; background: none; font-size: 30px; padding: 0 2px; color: #d99a00; }
+  .lights { display: flex; flex-direction: column; gap: 5px; background: var(--ink); padding: 7px; border-radius: 8px; }
+  .lights i { width: 24px; height: 24px; border-radius: 50%; opacity: .2; } .lights i.on { opacity: 1; }
+  .lights .red { background: #e5484d; } .lights .yellow { background: #f5c400; } .lights .green { background: #30a46c; }
+  .die { font-size: 50px; line-height: 1; }
+  .preview { width: 170px; padding: 18px 0; border: 2px solid var(--ink); border-radius: 6px; background: #fff; }
+  .preview.dark { background: #1b2230; color: #f3f4f6; }
+  .w button.swatch { width: 28px; height: 28px; padding: 0; border-radius: 50%; }
+  .w button.swatch.on { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .paint { width: 120px; height: 60px; border-radius: 6px; border: 2px solid var(--ink); }
+  .done { text-decoration: line-through; color: var(--muted); }
+  .note { display: flex; gap: 10px; align-items: center; background: var(--warn); border: 2px solid #d97706; border-radius: 6px; padding: 8px 10px; }
+  .steps { display: flex; gap: 6px; font-size: 15px; } .steps span { padding: 3px 7px; border-radius: 999px; background: #eef2f8; } .steps span.on { background: var(--blue); color: #fff; }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (max-width: 760px) { main { padding: 18px 16px 60px; } .grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "react": "https://esm.sh/react@19.3.1?dev",
+  "react-dom/client": "https://esm.sh/react-dom@19.3.1/client?dev&deps=react@19.3.1,scheduler@0.28.0"
+} }
+</script>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← Lectures</a>
+  <h1>State Hunt: what does each box remember?</h1>
+  <ul class="rules">
+    <li><b>State</b> = something that can <b>change</b> while you use the box, and the box must <b>remember</b> it.</li>
+    <li><b>Not state:</b> labels, headings, button text.</li>
+    <li><b>Not state either:</b> anything you can <b>work out</b> from the state (a total, a count of a list).</li>
+  </ul>
+  <div id="root"></div>
+</main>
+<script type="module">
+import React, { useState, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+import { BOXES, useStateLines } from './boxes.js'
+
+const h = React.createElement
+
+function Box({ n, box, showAll, focused }) {
+  const [open, setOpen] = useState(false)
+  const shown = open || showAll
+  return h('article', { className: 'box' + (focused ? ' focus' : ''), id: 'box-' + n },
+    h('header', null, h('span', { className: 'n' }, n), h('span', { className: 't' }, box.title)),
+    h('div', { className: 'w' }, h(box.C)),
+    h('footer', null,
+      h('button', { type: 'button', onClick: () => setOpen(!open), 'aria-expanded': shown }, shown ? 'Hide answer' : 'Answer'),
+      shown && h('div', { className: 'ans' },
+        h('p', null, 'State'),
+        h('ul', { className: 'yes' }, box.state.map((s) => h('li', { key: s }, s))),
+        box.notState && h('p', null, 'Changes, but not state'),
+        box.notState && h('ul', { className: 'no' }, box.notState.map((s) => h('li', { key: s }, s))),
+        useStateLines(box.C).map((line) => h('code', { key: line }, line)))))
+}
+
+function Hunt() {
+  const [showAll, setShowAll] = useState(false)
+  const [round, setRound] = useState(0)
+  const [focus, setFocus] = useState(null)
+  const [typed, setTyped] = useState('')
+
+  useEffect(() => {
+    if (focus) document.getElementById('box-' + focus)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [focus])
+
+  const go = (e) => {
+    e.preventDefault()
+    const n = Number(typed)
+    if (n >= 1 && n <= BOXES.length) setFocus(n)
+    setTyped('')
+  }
+
+  return h(React.Fragment, null,
+    h('div', { className: 'bar' },
+      h('form', { onSubmit: go }, h('input', { value: typed, onChange: (e) => setTyped(e.target.value.replace(/\D/g, '')), placeholder: 'Box #', inputMode: 'numeric', 'aria-label': 'Go to box number' })),
+      h('button', { type: 'button', onClick: () => setFocus(1 + Math.floor(Math.random() * BOXES.length)) }, 'Random box'),
+      h('button', { type: 'button', className: showAll ? 'on' : '', onClick: () => setShowAll(!showAll) }, showAll ? 'Hide all answers' : 'Show all answers'),
+      h('button', { type: 'button', onClick: () => { setRound(round + 1); setShowAll(false); setFocus(null) } }, 'Reset every box'),
+      h('span', { className: 'muted' }, BOXES.length + ' boxes · every box is a real React component')),
+    h('div', { className: 'grid', key: round },
+      BOXES.map((box, i) => h(Box, { key: box.title, n: i + 1, box, showAll, focused: focus === i + 1 }))))
+}
+
+createRoot(document.getElementById('root')).render(h(Hunt))
+</script>
+</body>
+</html>

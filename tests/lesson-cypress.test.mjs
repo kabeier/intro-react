@@ -18,7 +18,8 @@ for (const [id, base, feats] of [['cypress-react', ['async-requests', 'f7'], 3],
     for (const f of lesson.features) assert.ok(f.why && f.why.length > 10, f.id)
     for (const s of steps) {
       assert.doesNotThrow(() => Course.filesAt(lesson, s.id), s.id)
-      assert.ok(lines(s.code) <= 6, s.id + ' short')
+      // One whole it() test may run to 8 lines; anything else is typed in steps of up to 6.
+      assert.ok(lines(s.code) <= (/^\n?it\(/.test(s.code) ? 8 : 6), s.id + ' short')
       assert.ok(s.say, s.id + ' say')
     }
   })

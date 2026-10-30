@@ -516,12 +516,18 @@
       // Module errors name blob: URLs; show the file path instead, like Vite does.
       var named = function (msg) { Object.keys(mods).forEach(function (p) { msg = msg.split(mods[p]).join('/' + p) }); return msg }
       import(load(ENTRY, ENTRY)).catch(function (e) {
+        window.__appStartFailed = true
         var msg = named(String(e && e.message || e))
         console.error(msg)
         // The app never started: for the Cypress runner this is an uncaught error while the page loads.
         try { parent.postMessage({ type: 'cy-app-error', message: msg, load: true }, '*') } catch (x) {}
       })
-    } catch (e) { console.error(e.message) }
+    } catch (e) {
+      // An import that cannot be resolved: like Vite, the page stays blank and only the console says why
+      // (real Cypress then times out on each query; no uncaught error). The flag stops cy.visit waiting.
+      window.__appStartFailed = true
+      console.error(e.message)
+    }
   }
 
   const viteEntry = (html) => { const m = html.match(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?(src\/[^"']+\.jsx?)["'][^>]*>\s*<\/script>/i); return m && m[1] }
