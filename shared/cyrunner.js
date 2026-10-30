@@ -37,7 +37,14 @@
   }
   const one = (e) => '<' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '>'
   const describeEls = (els) => (els.length === 1 ? one(els[0]) : els.length ? '[ ' + els.slice(0, 3).map((e) => '<' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '>').join(', ') + (els.length > 3 ? `, ${els.length - 3} more…` : '') + ' ]' : '[]')
-  const textOf = (el) => (el.textContent || '').replace(/\s+/g, ' ')
+  // Text as Cypress reads it: <script> and <style> contents are not page text.
+  const HIDDEN = /^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT)$/
+  const textOf = (el) => {
+    if (HIDDEN.test(el.tagName)) return ''
+    let out = ''
+    for (const n of el.childNodes) out += n.nodeType === 3 ? n.nodeValue : n.nodeType === 1 ? textOf(n) : ''
+    return out.replace(/\s+/g, ' ')
+  }
   const setNative = (el, value) => {
     const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
     const desc = Object.getOwnPropertyDescriptor(el.ownerDocument.defaultView[el.tagName === 'TEXTAREA' ? 'HTMLTextAreaElement' : 'HTMLInputElement'].prototype, 'value') || Object.getOwnPropertyDescriptor(proto, 'value')
@@ -119,7 +126,7 @@
       const w = win()
       w.alert = (m) => { current.alerts.push(String(m)); for (const fn of current.alertHandlers) fn(String(m)) }
       const root = doc().getElementById('root')
-      for (let t = 0; root && !root.childElementCount && t < 8000; t += 50) await sleep(50)
+      for (let t = 0; root && !root.childElementCount && !current.appErrors.length && t < 8000; t += 50) await sleep(50)
     }
 
     // A chain = the ops from one cy.* call and the methods chained on it.
@@ -219,10 +226,22 @@
       if (!e.data || e.data.type !== 'cy-intercepted' || e.source !== win()) return
       ;(intercepted[e.data.alias] = intercepted[e.data.alias] || []).push({ url: e.data.url, tagName: 'REQUEST' })
     })
+    // Errors the app throws (or promises it rejects without a catch) fail the running test.
+    addEventListener('message', (e) => {
+      if (!e.data || e.data.type !== 'cy-app-error' || e.source !== win() || !current) return
+      current.appErrors.push(appError(e.data))
+    })
     addEventListener('message', (e) => {
       if (!e.data || e.data.type !== 'cy-responded' || e.source !== win()) return
       ;(responded[e.data.alias] = responded[e.data.alias] || []).push({ url: e.data.url, tagName: 'RESPONSE' })
     })
+
+    function appError(d) {
+      const err = new Error(`The following error originated from your application code, not from Cypress.${d.rejection ? ' It was caused by an unhandled promise rejection.' : ''}\n\n  > ${d.message}\n\nWhen Cypress detects uncaught errors originating from your application it will automatically fail the current test.\n\nThis behavior is configurable, and you can choose to turn this off by listening to the \`uncaught:exception\` event.\n\nhttps://on.cypress.io/uncaught-exception-from-application`)
+      err.fromApp = true
+      return err
+    }
+    const checkApp = () => { if (current && current.appErrors.length) throw current.appErrors[0] }
 
     async function runChain(ops) {
       let subject = { els: [] }
@@ -243,6 +262,7 @@
         const end = Date.now() + TIMEOUT
         let lastErr
         for (;;) {
+          checkApp()
           try {
             let s = queries.length && seg[0].kind === 'query' && seg[0].start ? null : start
             for (const o of seg) {
@@ -270,7 +290,9 @@
           }
         }
         i = j
-        if (action) { subject = await action.run(subject); i++ }
+        // Like Cypress's command queue, give the page a moment after an action: errors it throws then fail the test.
+        if (action) { subject = await action.run(subject); i++; await sleep(20) }
+        checkApp()
       }
     }
 
@@ -278,7 +300,7 @@
       queue.length = 0
       routes.length = 0
       for (const m of [intercepted, responded, waited]) for (const k of Object.keys(m)) delete m[k]
-      current = { alerts: [], alertHandlers: [], errors: [] }
+      current = { alerts: [], alertHandlers: [], errors: [], appErrors: [] }
       // Like Cypress, every test starts on a blank page (cy.visit loads the app).
       await new Promise((resolve) => {
         const done = () => { pad.iframe.removeEventListener('load', done); resolve() }
@@ -294,6 +316,8 @@
             for (const ops of queue.splice(0)) await runChain(ops)
           }
         } catch (e) {
+          // An app error during a hook fails the test itself, and the next tests still run.
+          if (e && e.fromApp) return { title: t.title, state: 'failed', error: e.message, ms: Date.now() - t0 }
           // Like Cypress: the hook fails, under its own name, and the rest of the file is skipped.
           return { title: `"before each" hook for "${t.title}"`, state: 'failed', error: (e && e.message) || String(e), ms: Date.now() - t0, hookFailed: true }
         }

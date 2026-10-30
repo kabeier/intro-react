@@ -40,7 +40,7 @@
       why: '"return ignore = true" sets ignore at once and returns true. React later calls the return value to clean up, and true is not a function, so the app crashes. Return a function: return () => { ignore = true }.',
     },
     {
-      id: 'tracking', title: '"pokemon list changed" is logged only once', base: 'f4', tabs,
+      id: 'tracking', testsPass: true, title: '"pokemon list changed" is logged only once', base: 'f4', tabs,
       symptom: 'The tracking effect should log every time the list changes, but it logs once and never again.',
       breaks: [{ file: APP, mode: 'replace', find: '  }, [pokemonList])', code: '  }, [])' }],
       checks: [allPass, { name: 'the tracking effect logs again after a change', run: async (doc, win, ctx) => {
@@ -62,10 +62,10 @@
         { file: APP, mode: 'replace', find: 'setPokemonList((list) => (list.some((pokemon) => pokemon.id === data.id) ? list : [...list, data]))', code: 'setPokemonList((list) => [...list, data])' },
         { file: APP, mode: 'replace', find: '{ if (!ignore) addPokemonData(response.data) }', code: '{ addPokemonData(response.data) }' },
       ],
-      solve: [{ file: APP, mode: 'replace', find: 'setPokemonList((list) => (list.some((pokemon) => pokemon.id === data.id) ? list : [...list, data]))', code: 'setPokemonList((list) => [...list, data])' }],
+      racy: ['should render the Pikachu card on load'],
       checks: [allPass],
-      hint: 'StrictMode runs the effect twice in development. What should happen to the answer of the first (cleaned-up) run?',
-      why: 'The cleanup sets ignore = true; the first run\'s answer must be ignored: if (!ignore) addPokemonData(…). That fixes it even without the duplicate guard.',
+      hint: 'StrictMode runs the effect twice in development. What should happen to the answer of the first (cleaned-up) run? And what stops the same Pokemon being added twice?',
+      why: 'Two fixes: the cleanup sets ignore = true, so use the answer only if (!ignore); and addPokemonData must skip a Pokemon already in the list (list.some(…) ? list : [...list, data]).',
     },
     {
       id: 'async', title: 'Bonus: blank page after making an effect async', base: 'f4', tabs,
@@ -84,7 +84,7 @@
       why: "'count' is a string that never changes, so the effect never runs again. Use the variable: [count].",
     },
     {
-      id: 'nodeps', title: 'Bonus: Pikachu keeps coming back', base: 'f4', tabs,
+      id: 'nodeps', testsPass: true, title: 'Bonus: Pikachu keeps coming back', base: 'f4', tabs,
       symptom: 'Click Remove on Pikachu: a moment later Pikachu is back. The Network tab shows a new pikachu request after every click and every key you type.',
       breaks: [{ file: APP, mode: 'replace', find: '    return () => { ignore = true }\n  }, [])', code: '    return () => { ignore = true }\n  })' }],
       checks: [allPass, { name: 'a removed Pikachu stays removed', run: async (doc, win, ctx) => {

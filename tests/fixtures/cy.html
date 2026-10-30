@@ -14,6 +14,9 @@
     'document.querySelector("#warn").addEventListener("click", () => alert("Pokemon Does not Exist"));' +
     'document.querySelector("#poke-container").insertAdjacentHTML("afterend", "<button id=\\"f\\">fetch</button><button id=\\"x\\">xhr</button><p id=\\"out\\"></p>");' +
     'document.querySelector("#f").onclick = async () => { const r = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu"); document.querySelector("#out").textContent = r.status + " " + (await r.json()).name };' +
+    'document.querySelector("#out").insertAdjacentHTML("afterend", "<button id=\\"boom\\">boom</button><button id=\\"rej\\">rej</button>");' +
+    'document.querySelector("#boom").onclick = () => { null.x };' +
+    'document.querySelector("#rej").onclick = () => { Promise.reject(new Error("Request failed with status code 404")) };' +
     'document.querySelector("#x").onclick = () => { const q = new XMLHttpRequest(); q.open("GET", "https://pokeapi.co/api/v2/pokemon/bulbasaur"); q.onloadend = () => { document.querySelector("#out").textContent = q.status + " " + JSON.parse(q.responseText).name }; q.send() }' +
     '<\/script></body></html>'
   window.pad = Livepad.mount(document.getElementById('pad'), { files: { 'index.html': APP }, editable: true })

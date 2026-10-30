@@ -40,7 +40,7 @@
       why: 'A controlled input needs both: value={pokemonName} and onChange={(event) => setPokemonName(event.target.value)}.',
     },
     {
-      id: 'key', title: '"Each child in a list should have a unique key"', base: 'f5', tabs,
+      id: 'key', testsPass: true, title: '"Each child in a list should have a unique key"', base: 'f5', tabs,
       symptom: 'Everything works, but the console warns about a missing key prop as soon as a card shows.',
       breaks: [{ file: APP, mode: 'replace', find: ' key={pokemon.id}>', code: '>' }],
       checks: [allPass, noWarning(/unique "key" prop/, 'keys')],

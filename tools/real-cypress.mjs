@@ -38,7 +38,8 @@ if (!fixitMode) {
       const broken = apply(p.breaks)
       const bugs = p.checks.filter((c) => c.bug)
       // A weak test passes on the real app (that's the problem); the others must lose a test.
-      checkpoints.push({ name: `${id}/${p.id} broken`, files: broken, expect: bugs.length ? 'all-pass' : 'fewer-pass' })
+      // testsPass: the bug is caught by a check outside the tests (console, a click), so every test passes.
+      checkpoints.push({ name: `${id}/${p.id} broken`, files: broken, expect: bugs.length || p.testsPass ? 'all-pass' : 'fewer-pass', racy: p.racy || [] })
       checkpoints.push({ name: `${id}/${p.id} solution`, files: solution, expect: 'all-pass' })
       for (const c of bugs) {
         const withBug = (f) => ({ ...f, 'src/App.jsx': f['src/App.jsx'].replace(c.bug.find, '') })
@@ -119,19 +120,23 @@ for (const c of checkpoints) {
   await page.close()
 
   const realMap = new Map(real.map((t) => [t.title, t.state]))
-  let differ = real.length !== mine.length
+  // `cypress run` stops before any test when the config or the spec file is broken (no junit
+  // report); the runner reports the same failure as failed tests.
+  const stoppedEarly = real.length === 0 && mine.length > 0 && mine.every((t) => t.state === 'failed')
+  let differ = real.length !== mine.length && !stoppedEarly
   const lines = mine.map((t) => {
     const rs = realMap.get(t.title)
-    const same = rs === t.state
+    // A racy test can pass or fail in either, depending on timing.
+    const same = rs === t.state || (stoppedEarly && !rs) || (c.racy || []).includes(t.title)
     if (!same) differ = true
     return `  ${same ? '=' : '≠'} ${t.title}: runner ${t.state}, real Cypress ${rs || 'missing'}${t.error && t.state !== 'passed' ? '\n      ' + t.error.split('\n')[0] : ''}`
   })
-  if (real.length !== mine.length) lines.push(`  ≠ test count: runner ${mine.length}, real Cypress ${real.length}`)
+  if (real.length !== mine.length && !stoppedEarly) lines.push(`  ≠ test count: runner ${mine.length}, real Cypress ${real.length}`)
   // What this variant is supposed to do (judged on real Cypress).
   const allPass = real.length > 0 && real.every((t) => t.state === 'passed')
   const solutionCount = c.solutionCount
   const met = c.expect === 'all-pass' ? allPass
-    : c.expect === 'fewer-pass' ? real.filter((t) => t.state === 'passed').length < c.solutionCount
+    : c.expect === 'fewer-pass' ? stoppedEarly || real.filter((t) => t.state === 'passed').length < c.solutionCount
     : real.some((t) => t.title === c.expect.slice(6) && t.state === 'failed')
   if (differ || !met) bad++
   console.log(`${c.name}  [expect ${c.expect}: ${met ? 'yes' : 'NO'}${differ ? ', runner differs' : ''}]\n` + lines.join('\n'))

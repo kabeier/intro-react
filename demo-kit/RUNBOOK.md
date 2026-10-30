@@ -86,3 +86,36 @@ Before class: the unit 2 app running in Docker; Node 24 on your laptop; `npm ins
 | 13–14 | 35–37 | — | unit 4 preview; homework II |
 
 Things to expect: students running Cypress inside Docker (it must run on the laptop); Node 25 on the laptop (Cypress 16 refuses it: use 24); `cy:run` without the app running ("cy.visit() failed trying to load").
+
+# Runbook · Unit 4 (React Hooks)
+
+Before class: as unit 3. From now on every feature starts with a failing test: press **▶ Run tests** after the test step (red) and after the code (green).
+
+## Lecture 1 · useState
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–4 | 0–4 | — | by hand vs state; event → setter → render; red, green, tidy |
+| 5 | 5 | **N** 1, ▶ (red); **N** 2–4, ▶ (green) | first state: the title |
+| 6 | 9 | — | [value, setter]; rules of hooks |
+| 7–8 | 10–13 | **N ×3**, ▶ red then green | functional update |
+| 9 | 14 | ▶, **N ×4**, ▶ (green both times) | a refactor keeps behaviour |
+| 10 | 18 | **N ×5**, ▶ all green | generateCard is gone; tests say users can't tell |
+| 11 | 24 | — | new arrays; spread (not "deconstruction") |
+| 12 | 25 | **N ×3**, ▶ red then green | Remove with filter |
+| 13–14 | 28–29 | timer | Fix It (useState) 1–6 |
+| 15 | 37 | — | homework I |
+
+## Lecture 2 · useEffect
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–2 | 0–1 | — | rendering is pure; effects run after |
+| 3 | 3 | **N ×2**, **A**; read the Console | mounted, unmounted, mounted = StrictMode |
+| 4–5 | 7–9 | **N** | dependency array; track pokemonList |
+| 6 | 11 | — | mount, update, unmount |
+| 7 | 13 | **N** 1, ▶ (red); **N** 2, ▶ (green); click "Click me!" | a visible side effect |
+| 8–9 | 17–18 | **N** 1–5, ▶ (red); **N** 6–7, ▶ (green) | planned change: tests first |
+| 10–11 | 24–26 | — | the ignore flag; when not to use an effect |
+| 12 | 28 | timer | Fix It (useEffect) 1–6 |
+| 13–14 | 35–37 | — | mental model; homework II |
+
+Things to expect: "my effect runs twice" (StrictMode, development only: write the cleanup, keep StrictMode); `onClick={setX(…)}` (Too many re-renders); `list.push` then set (no re-render); an async effect function (blank page: destroy is not a function).

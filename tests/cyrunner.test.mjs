@@ -194,3 +194,26 @@ test("have.css checks a computed style", async () => {
   const bad = await run("it('t', () => { cy.visit('/'); cy.get('body').should('have.css', 'display', 'flex') })")
   assert.match(bad.tests[0].error, /expected <body> to have CSS property 'display' with the value 'flex', but the value was 'block'/)
 })
+
+test('an uncaught app error fails the running test with Cypress\'s message', async () => {
+  const r = await run("it('clicks boom', () => {\n  cy.visit('/')\n  cy.get('#boom').click()\n  cy.get('header').should('be.visible')\n})\nit('does not click', () => {\n  cy.visit('/')\n  cy.get('header').should('be.visible')\n})")
+  assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['clicks boom', 'failed'], ['does not click', 'passed']])
+  assert.match(r.tests[0].error, /^The following error originated from your application code, not from Cypress\.\n\n  > Cannot read properties of null \(reading 'x'\)\n\nWhen Cypress detects uncaught errors/)
+})
+
+test('an unhandled promise rejection fails the test, and names the cause', async () => {
+  const r = await run("it('t', () => {\n  cy.visit('/')\n  cy.get('#rej').click()\n  cy.get('header').should('be.visible')\n})")
+  assert.equal(r.tests[0].state, 'failed')
+  assert.match(r.tests[0].error, /not from Cypress\. It was caused by an unhandled promise rejection\.\n\n  > Request failed with status code 404/)
+})
+
+test('an app error during beforeEach fails the test itself and the next tests still run', async () => {
+  const r = await run("beforeEach(() => { cy.visit('/'); cy.get('#boom').click() })\nit('first', () => {})\nit('second', () => {})")
+  assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['first', 'failed'], ['second', 'failed']])
+})
+
+test('cy.contains ignores text inside <script> tags, like Cypress', async () => {
+  const r = await run("it('t', () => {\n  cy.visit('/')\n  cy.contains('querySelector')\n})")
+  assert.equal(r.tests[0].state, 'failed')
+  assert.match(r.tests[0].error, /Expected to find content: 'querySelector' but never did\./)
+})
