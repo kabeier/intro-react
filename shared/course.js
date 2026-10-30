@@ -198,7 +198,10 @@
       var keys = Object.keys(v)
       var cn = nameOf(v)
       var pre = cn && cn !== 'Object' ? cn + ' ' : ''
-      return keys.length ? pre + '{ ' + keys.map(function (k) { return k + ': ' + fmt(v[k], d + 1) }).join(', ') + ' }' : pre + '{}'
+      // A big object inside a log (a whole PokeAPI answer) is cut short so the console stays readable.
+      var shown = d >= 1 && keys.length > 6 ? keys.slice(0, 4) : keys
+      var more = keys.length - shown.length
+      return keys.length ? pre + '{ ' + shown.map(function (k) { return k + ': ' + fmt(v[k], d + 1) }).join(', ') + (more ? ', … ' + more + ' more' : '') + ' }' : pre + '{}'
     }
     var safe = function (a) { try { return fmt(a) } catch (e) { return '[unprintable]' } }
     // console.log("a %s b %d", x, y): fill the placeholders like DevTools does.
@@ -365,15 +368,27 @@
       var code = Babel.transform(FILES[path], { presets: [['react', { runtime: 'automatic', development: true }]], filename: '/' + path, sourceType: 'module', comments: false, retainLines: true }).code
       var target = function (spec) {
         var t = find(path, spec)
-        if (!t) throw new Error('/' + path + ': cannot find "' + spec + '"')
+        if (!t) throw new Error('[plugin:vite:import-analysis] Failed to resolve import "' + spec + '" from "' + path + '". Does the file exist?')
         return t
       }
       // import … from './x'  |  import './x'  (CSS, assets, modules)
       code = code.replace(/\bimport\s+((?:[\w$]+\s*,?\s*)?(?:\{[^}]*\}|\*\s+as\s+[\w$]+)?)\s*(?:from\s+)?(['"])(\.{1,2}\/[^'"]+)\2;?/g, function (m, clause, q, spec) {
         var t = target(spec)
         if (/\.css$/i.test(t)) {
-          if (!cssDone[t]) { cssDone[t] = 1; var st = document.createElement('style'); st.setAttribute('data-file', t); st.textContent = cssOf(t); document.head.append(st) }
-          return ''
+          // CSS Modules (*.module.css): every class gets a unique name, like Vite's _heading_1x2y3.
+          var names = null, css = cssOf(t)
+          if (/\.module\.css$/i.test(t)) {
+            names = {}
+            var h = 0
+            for (var k = 0; k < t.length; k++) h = (h * 31 + t.charCodeAt(k)) >>> 0
+            var tag = h.toString(36).slice(0, 5)
+            css = css.replace(/([^{}]+)\{/g, function (m, sel) {
+              return sel.replace(/\.(-?[_a-zA-Z][\w-]*)/g, function (x, n) { names[n] = '_' + n + '_' + tag; return '.' + names[n] }) + '{'
+            })
+          }
+          if (!cssDone[t]) { cssDone[t] = 1; var st = document.createElement('style'); st.setAttribute('data-file', t); st.textContent = css; document.head.append(st) }
+          var name = names && (clause.match(/^\s*([\w$]+)/) || [])[1]
+          return name ? 'const ' + name + ' = ' + JSON.stringify(names) + ';' : ''
         }
         if (ASSET.test(t)) {
           var def = (clause.match(/^\s*([\w$]+)/) || [])[1]
@@ -393,7 +408,9 @@
       return mods[path]
     }
     try {
-      import(load(ENTRY, ENTRY)).catch(function (e) { console.error(String(e && e.message || e)) })
+      // Module errors name blob: URLs; show the file path instead, like Vite does.
+      var named = function (msg) { Object.keys(mods).forEach(function (p) { msg = msg.split(mods[p]).join('/' + p) }); return msg }
+      import(load(ENTRY, ENTRY)).catch(function (e) { console.error(named(String(e && e.message || e))) })
     } catch (e) { console.error(e.message) }
   }
 

@@ -13,7 +13,7 @@ globalThis.Course = Course
 import { readFileSync as rf } from 'node:fs'
 for (const f of JSON.parse(rf(path.join(ROOT, 'shared/course/manifest.json'), 'utf8'))) await import('../shared/course/' + f)
 
-for (const [DECK, lessonId] of [['lecture-1-react-vite/slides.html', 'react-vite'], ['lecture-2-async-requests/slides.html', 'async-requests'], ['lecture-3-cypress-react/slides.html', 'cypress-react'], ['lecture-4-cypress-assertions/slides.html', 'cypress-assertions'], ['lecture-5-hooks-usestate/slides.html', 'hooks-usestate'], ['lecture-6-hooks-useeffect/slides.html', 'hooks-useeffect']]) {
+for (const [DECK, lessonId] of [['lecture-1-react-vite/slides.html', 'react-vite'], ['lecture-2-async-requests/slides.html', 'async-requests'], ['lecture-3-cypress-react/slides.html', 'cypress-react'], ['lecture-4-cypress-assertions/slides.html', 'cypress-assertions'], ['lecture-5-hooks-usestate/slides.html', 'hooks-usestate'], ['lecture-6-hooks-useeffect/slides.html', 'hooks-useeffect'], ['lecture-7-components-props/slides.html', 'components-props'], ['lecture-8-component-state/slides.html', 'component-state']]) {
 const lesson = Course.get(lessonId)
 const html = readFileSync(path.join(ROOT, DECK), 'utf8')
 const slides = html.split('<section class="slide').slice(1)

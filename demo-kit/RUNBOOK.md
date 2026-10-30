@@ -119,3 +119,39 @@ Before class: as unit 3. From now on every feature starts with a failing test: p
 | 13–14 | 35–37 | — | mental model; homework II |
 
 Things to expect: "my effect runs twice" (StrictMode, development only: write the cleanup, keep StrictMode); `onClick={setX(…)}` (Too many re-renders); `list.push` then set (no re-render); an async effect function (blank page: destroy is not a function).
+
+# Runbook · Unit 5 (React Components)
+
+Before class: as unit 4. Lecture 1 is a refactor: the 12 tests are green before and after every feature. Lecture 2 is red, green again.
+
+## Lecture 1 · Components and props
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | — | why components; function, PascalCase, import/export, used as a tag |
+| 4 | 5 | **N ×5**, ▶ green; type `<counter />` → ▶ red → fix | first component |
+| 5 | 10 | — | a refactor: green before and after |
+| 6 | 11 | **N ×6**, ▶ | one folder per component, index.js |
+| 7 | 14 | — | props: one object; children; read-only; destructuring |
+| 8 | 16 | **N ×6**, ▶ | Button with children |
+| 9 | 20 | **N ×3**, ▶ | PokeSearch owns the search |
+| 10 | 24 | **N ×3**, ▶; drop rmData → red → back | PokeCard with props |
+| 11 | 27 | — | data down, functions up; prop drilling |
+| 12–13 | 28–30 | **N ×3** each, ▶ all 12 green | PokeContainer, PokeForm |
+| 14 | 32 | timer | Fix It (components) 1–6 |
+| 15–16 | 38–39 | — | mental model; homework I |
+
+## Lecture 2 · Component-level state
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | — | parent → child; state as low as possible, lifted when shared |
+| 4 | 5 | **N** 1, ▶ red; **N** 2–8, ▶ green | All Shiny: state in the parent |
+| 5 | 11 | **N** 1, ▶ red; **N** 2–7, ▶ green | requirement changed: state moves into the card |
+| 6 | 17 | — | one state per card, found by key |
+| 7 | 18 | **N** 1 ▶ green; **N** 2 ▶ red; **N** 3 ▶ green | key={index} breaks it |
+| 8–9 | 22–24 | — | who owns the form text; common mistakes |
+| 10 | 25 | **N ×3**; inspect the h1 | CSS Module |
+| 11 | 28 | — | 14 tests, what each proves |
+| 12 | 30 | timer | Fix It (component state) 1–6 |
+| 13–14 | 37–38 | — | mental model; homework II |
+
+Things to expect: `<counter />` in lowercase (React: "The tag <counter> is unrecognized"); a prop renamed on one side only (undefined); `onClick={rmData(id)}` (cards vanish); a path in the wrong case works on a Mac but fails in Docker and on Linux.

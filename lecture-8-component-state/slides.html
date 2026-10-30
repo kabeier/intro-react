@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 5 · Lecture 2 · Component-level state</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=2">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 5: React Components · Lecture 2 of 2</div>
+  <h1>Where should state live?</h1>
+  <p class="sub">Shiny for every card, then shiny per card, and why keys matter.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Back to red, green: each feature starts with a failing test.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>Parent and child</h2>
+  <div class="loop"><div class="b">App</div><span>→</span><div class="b">PokeSearch</div><span>→</span><div class="b">PokeContainer</div><span>→</span><div class="g">PokeCard × n</div></div>
+  <ul class="small" style="margin-top:28px">
+    <li>A parent renders its children and passes them props</li>
+    <li>Data flows <b>down</b> only</li>
+    <li>A child asks for a change by calling a function it was given</li>
+  </ul>
+  <p class="bottomline">One-way data flow.</p>
+  <aside class="notes"><p>Draw the tree on the board if it helps.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>The rule for state</h2>
+  <table class="dbt small">
+    <tr><th>Who needs it?</th><th>Where it lives</th><th>Example</th></tr>
+    <tr><td>one component</td><td class="pk">in that component</td><td>one card's shiny</td></tr>
+    <tr><td>several components</td><td class="pk">in their closest common parent</td><td>"shiny for all cards"; the Pokemon list</td></tr>
+  </table>
+  <p class="bottomline">Keep state as low as you can; lift it only when it must be shared.</p>
+  <aside class="notes"><p>That is react.dev's rule ("lifting state up").</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: all shiny" data-at="5">
+  <h2>Shiny for all: state in the parent <span class="say">pokemon.cy.js · PokeSearch · PokeContainer · PokeCard</span></h2>
+  <div class="livepad" data-lesson="component-state" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4 f1s5 f1s6 f1s7 f1s8" data-files="cypress/e2e/pokemon.cy.js src/components/PokeSearch/PokeSearch.jsx src/components/PokeSearch/PokeContainer.jsx src/components/PokeSearch/PokeCard.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Red after N 1, green after N 8.</p>
+<!-- steps:component-state:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('makes every card shiny with one click', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: one click, every card shiny. Run it: red, there is no button.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import axios from 'axios'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Our Button from lecture 1.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [shiny, setShiny] = useState(false)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One shiny value for the whole list.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Button onClick={() =&gt; setShiny((shiny) =&gt; !…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The button flips it; the container gets it as a prop.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function PokeContainer({ pokemonList, rmData…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The container passes it on…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;PokeCard key={pokemon.id} pokemon={pokemon}…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…to every card.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 7</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function PokeCard({ pokemon, rmData, shiny })</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The card receives it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 8</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;img src={shiny ? pokemon.sprites.front_shin…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Pick the picture from the prop. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: one card" data-at="11">
+  <h2>State moves down into each card <span class="say">pokemon.cy.js · PokeSearch · PokeContainer · PokeCard</span></h2>
+  <div class="livepad" data-lesson="component-state" data-start="f1s8" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6 f2s7" data-files="cypress/e2e/pokemon.cy.js src/components/PokeSearch/PokeCard.jsx src/components/PokeSearch/PokeSearch.jsx src/components/PokeSearch/PokeContainer.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> The requirement changed, so the test changes first (red), then the code (green).</p>
+<!-- steps:component-state:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('makes only one card shiny', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The requirement changed, so the test changes first. Bulbasaur shiny, Pikachu NOT. Run it: red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;PokeContainer pokemonList={pokemonList} rmD…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Remove the parent button and the prop…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and the parent state.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeSearch no longer uses Button.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function PokeContainer({ pokemonList, rmData…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The container is back to two props.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;PokeCard key={pokemon.id} pokemon={pokemon}…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">No shiny prop.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 7</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The card owns its shiny state now. Every card on the page gets its own. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="17">
+  <h2>Every card has its own state</h2>
+  <table class="dbt small">
+    <tr><th>Card on the page</th><th>Its own shiny</th></tr>
+    <tr><td>&lt;PokeCard key=25&gt; Pikachu</td><td>false</td></tr>
+    <tr><td>&lt;PokeCard key=1&gt; Bulbasaur</td><td class="pk">true</td></tr>
+  </table>
+  <ul class="small" style="margin-top:20px">
+    <li>One component, many copies on the page, one state per copy</li>
+    <li>React finds each copy's state by its <b>key</b></li>
+  </ul>
+  <p class="bottomline">The key tells React which state belongs to which card.</p>
+  <aside class="notes"><p>Leads straight into the next code slide.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: keys" data-at="18">
+  <h2>Keys keep state with the right card <span class="say">pokemon.cy.js · PokeContainer.jsx</span></h2>
+  <div class="livepad" data-lesson="component-state" data-start="f2s7" data-steps="f3s1 f3s2 f3s3" data-files="cypress/e2e/pokemon.cy.js src/components/PokeSearch/PokeContainer.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> N 1: green. N 2 (key = index): ▶ red, Bulbasaur lost its shine. N 3: green again.</p>
+<!-- steps:component-state:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps a card shiny when another card is …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A test for something that already works. Run it: green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{pokemonList.map((pokemon, index) =&gt; (</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Break it on purpose: key = index. Run the test: red. Bulbasaur moved to position 0 and got Pikachu's state.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{pokemonList.map((pokemon) =&gt; (</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Back to the id. Run the tests: green. A test now guards the key.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="22">
+  <h2>Who should own the form's text?</h2>
+  <div class="cols">
+    <div class="card blue"><h3>Curriculum: PokemonForm owns it</h3><p>The form keeps <code>pokemonName</code> and calls the parent with the name on submit. The parent never sees the typing.</p></div>
+    <div class="card green"><h3>Ours: PokeSearch owns it</h3><p>PokeForm only shows the box. PokeSearch keeps the text, so it can clear it after a search.</p></div>
+  </div>
+  <p class="bottomline">Both work. Ask: who else needs this value?</p>
+  <aside class="notes"><p>If nothing outside the form needs the text, the curriculum's version is simpler. We keep ours: the search clears the box.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="24">
+  <h2>Common state mistakes</h2>
+  <table class="dbt small">
+    <tr><th>Mistake</th><th>What happens</th><th>Instead</th></tr>
+    <tr><td>changing a prop inside the child</td><td>nothing re-renders; React warns or crashes</td><td class="pk">call a function from the parent</td></tr>
+    <tr><td><code>key={index}</code> on a list that changes</td><td>state jumps to the wrong card</td><td class="pk"><code>key={pokemon.id}</code></td></tr>
+    <tr><td>shared state kept in a child</td><td>siblings can't see it</td><td class="pk">lift it to the common parent</td></tr>
+    <tr><td>one card's state kept in the parent</td><td>every card changes together</td><td class="pk">move it down into the card</td></tr>
+  </table>
+  <p class="bottomline">Wrong place = wrong behaviour. The tests catch it.</p>
+  <aside class="notes"><p>Fix It problems 1–6 are these mistakes.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: CSS Module" data-at="25">
+  <h2>Scoped styles: a CSS Module <span class="say">heading.module.css · Heading.jsx</span></h2>
+  <div class="livepad" data-lesson="component-state" data-start="f3s3" data-steps="f4s1 f4s2 f4s3" data-files="src/components/Heading/heading.module.css src/components/Heading/Heading.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Inspect the h1 in DevTools: the class is a generated name.</p>
+<!-- steps:component-state:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/heading.module.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.heading {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A CSS Module: the name must end in .module.css.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Button from '../Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Importing it gives an object: class name → unique name.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;h1 className={styles.heading}&gt;{heading}&lt;/h1&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Use it with className={styles.heading}. Inspect the h1: the class looks like _heading_x1y2.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="28">
+  <h2>Testing what we built today</h2>
+  <table class="dbt small">
+    <tr><th>Test</th><th>Proves</th></tr>
+    <tr><td>the 12 from before</td><td>the refactor broke nothing</td></tr>
+    <tr><td>makes only one card shiny</td><td class="pk">each card has its own state</td></tr>
+    <tr><td>keeps a card shiny when another is removed</td><td class="pk">keys keep state with the right card</td></tr>
+  </table>
+  <p class="bottomline">14 tests. Styling is not tested.</p>
+  <aside class="notes"><p>The curriculum's shiny test passes with parent state too; ours checks the OTHER card stays normal.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="30">
+  <h2>Activity: Fix it (component state)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 5 · Lecture 2</b></li>
+    <li>Read the symptom and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: all 14 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=component-state" target="_blank" rel="noopener">fixit.html?lesson=component-state</a></p>
+  <aside class="notes"><p>6 minutes.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Mental model</h2>
+  <ul>
+    <li>State lives as low as possible</li>
+    <li>Shared state lives in the closest common parent</li>
+    <li>Every copy of a component has its own state</li>
+    <li>Stable keys keep that state with the right item</li>
+  </ul>
+  <p class="bottomline">Next unit: styling with Tailwind and Bootstrap.</p>
+  <aside class="notes"><p>Unit 6 restyles these components; the tests stay green again.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>Whack A Mole</b></li>
+    <li><b>News Site I</b></li>
+  </ol>
+  <p class="bottomline">Links are on the class site.</p>
+  <aside class="notes"><p>Check the class site for setup notes: both repos predate React 19.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=3"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/livepad.js?v=2"></script>
+<script src="../shared/cyrunner.js?v=2"></script>
+</body>
+</html>

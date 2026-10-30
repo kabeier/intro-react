@@ -135,3 +135,35 @@ test('an uncaught promise rejection shows in the console like DevTools', async (
   await waitConsole(page, /Uncaught \(in promise\) AxiosError: Request failed with status code 404/)
   await page.close()
 })
+
+test('CSS Modules: classes get unique names and the styles apply', async () => {
+  const files = app("import styles from './heading.module.css'\nexport default function App() {\n  return <h1 id=\"t\" className={styles.heading}>Hi</h1>\n}")
+  files['src/heading.module.css'] = '.heading {\n  color: rgb(220, 20, 60);\n}\n.heading:hover, .other { color: blue }'
+  const page = await mount(files)
+  await until(page, () => { const f = [...document.querySelectorAll('iframe')].pop(); const h = f && f.contentDocument.getElementById('t'); return h && h.className }, null, 20000)
+  const r = await frame(page).evaluate(() => { const h = document.getElementById('t'); return [h.className, getComputedStyle(h).color] })
+  assert.match(r[0], /^_heading_\w+$/)
+  assert.equal(r[1], 'rgb(220, 20, 60)')
+  await page.close()
+})
+
+test('a wrong import path reads like Vite', async () => {
+  const page = await mount(app("import Card from './components/card'\nexport default function App() {\n  return <Card />\n}"))
+  await waitConsole(page, /\[plugin:vite:import-analysis\] Failed to resolve import "\.\/components\/card" from "src\/App\.jsx"\. Does the file exist\?/)
+  await page.close()
+})
+
+test('a missing default export names the file, not a blob URL', async () => {
+  const files = app("import Card from './Card.jsx'\nexport default function App() {\n  return <Card />\n}")
+  files['src/Card.jsx'] = 'export function Card() { return <p>x</p> }'
+  const page = await mount(files)
+  await waitConsole(page, /The requested module '\/src\/Card\.jsx' does not provide an export named 'default'/)
+  assert.doesNotMatch(await consoleText(page), /blob:/)
+  await page.close()
+})
+
+test('a big object inside a log is cut short; a small one is shown whole', async () => {
+  const page = await mount(app("export default function App() {\n  const big = { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7 }\n  console.log('list', [big], { x: 1, y: [1, 2] })\n  return <p>hi</p>\n}"))
+  await waitConsole(page, /list \[ \{ a: 1, b: 2, c: 3, d: 4, … 3 more \} \] \{ x: 1, y: \[ 1, 2 \] \}/)
+  await page.close()
+})

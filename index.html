@@ -135,6 +135,30 @@
     </section>
   </div>
 
+  <h3>Unit 5: React Components</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>Components and Props</h2>
+      <p>App.jsx becomes Heading, Counter, Button, PokeSearch, PokeContainer, PokeCard and PokeForm. The same 12 tests stay green after every move.</p>
+      <a class="slides" href="lecture-7-components-props/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=components-props" target="_blank" rel="noopener"><b>Activity: Fix It (components)</b><span>A lowercase tag, a missing export, a prop with the wrong name… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=components-props&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every component file after every step.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>Component-Level State</h2>
+      <p>Shiny for every card (state in the parent), then one card at a time (state in the card), why keys matter, and a CSS Module.</p>
+      <a class="slides" href="lecture-8-component-state/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=component-state" target="_blank" rel="noopener"><b>Activity: Fix It (component state)</b><span>Toggles that stick, a plain variable instead of state, key={index}. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=component-state&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Where each piece of state lives, step by step.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
   <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
     <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
@@ -183,6 +207,21 @@ npm run cy:open</code></pre><button type="button" class="copy">Copy</button></di
       <li><b>Assignment - Refactor Previous Assignments</b>: "Refactor yesterday’s assignments to utilize <code>useState</code> and <code>useEffect</code>"</li>
     </ol>
     <p class="fail"><b>"Too many re-renders"?</b> You called a setter while rendering: write <code>onClick={() =&gt; setX(…)}</code>, not <code>onClick={setX(…)}</code>. <b>Effect runs twice?</b> That is StrictMode in development; give the effect a cleanup.</p>
+  </section>
+
+  <h3 id="homework-5">Homework, unit 5</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-react-components/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
+    <h4>Part I</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-hangman" target="_blank" rel="noopener">Assignment - Hangman</a></li>
+    </ol>
+    <h4>Part II</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-whack-a-mole" target="_blank" rel="noopener">Assignment - Whack A Mole</a></li>
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-news-site-i" target="_blank" rel="noopener">Assignment - News Site I</a></li>
+    </ol>
+    <p class="fail"><b>"ReactDOM.render is not a function"?</b> React 19 removed it: use <code>createRoot(document.getElementById('root')).render(&lt;App /&gt;)</code> from <code>react-dom/client</code>. <b>A component shows nothing?</b> Check the capital letter, the <code>export default</code>, and the prop names on both sides.</p>
   </section>
 
   <h3>Kit</h3>
