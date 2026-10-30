@@ -111,6 +111,30 @@
     </section>
   </div>
 
+  <h3>Unit 4: React Hooks</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>useState</h2>
+      <p>State instead of DOM code: the title, a counter, a controlled input, the cards as a list, Remove. A failing test first, every time.</p>
+      <a class="slides" href="lecture-5-hooks-usestate/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=hooks-usestate" target="_blank" rel="noopener"><b>Activity: Fix It (useState)</b><span>Too many re-renders, push instead of a new array, a missing key… The whole test suite checks your fix. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=hooks-usestate&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>App.jsx and the specs after every step.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>useEffect</h2>
+      <p>Effects after the render, the dependency array, cleanup, and loading Pikachu when the app opens (with the tests changed first).</p>
+      <a class="slides" href="lecture-6-hooks-useeffect/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=hooks-useeffect" target="_blank" rel="noopener"><b>Activity: Fix It (useEffect)</b><span>Wrong dependencies, a bad cleanup, two Pikachus on load. Watch the Console. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=hooks-useeffect&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every effect, explained line by line.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
   <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
     <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
@@ -143,6 +167,22 @@ npm run dev</code></pre><button type="button" class="copy">Copy</button></div>
     <div class="cmdwrap"><pre class="cmd"><code>npm install cypress --save-dev
 npm run cy:open</code></pre><button type="button" class="copy">Copy</button></div>
     <p class="fail"><b>Cypress won't start?</b> It runs on your laptop (not in Docker) and needs Node 22, 24 or 26. Start the app first (port 5173), and set <code>supportFile: false</code> in cypress.config.js.</p>
+  </section>
+
+  <h3 id="homework-4">Homework, unit 4</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-hooks/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
+    <h4>Part I</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-mute-button" target="_blank" rel="noopener">Assignment - Mute Button</a></li>
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-vowels" target="_blank" rel="noopener">Assignment - React Vowels</a></li>
+    </ol>
+    <h4>Part II</h4>
+    <ol class="steps">
+      <li><a href="https://drive.google.com/file/d/1groEhrGvFKe7Jf_u3NfnoDQUJspU2alu/view?usp=drive_link" target="_blank" rel="noopener">Reading Assignment - Beginning React.js (Chapter 10)</a></li>
+      <li><b>Assignment - Refactor Previous Assignments</b>: "Refactor yesterday’s assignments to utilize <code>useState</code> and <code>useEffect</code>"</li>
+    </ol>
+    <p class="fail"><b>"Too many re-renders"?</b> You called a setter while rendering: write <code>onClick={() =&gt; setX(…)}</code>, not <code>onClick={setX(…)}</code>. <b>Effect runs twice?</b> That is StrictMode in development; give the effect a cleanup.</p>
   </section>
 
   <h3>Kit</h3>

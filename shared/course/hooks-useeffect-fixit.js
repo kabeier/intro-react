@@ -32,12 +32,12 @@
       why: 'The effect must request Pikachu and add it: axios.get(…pikachu).then((response) => { if (!ignore) addPokemonData(response.data) }).',
     },
     {
-      id: 'cleanup', title: 'No Pikachu, and a warning about the return value', base: 'f4', tabs,
-      symptom: 'No Pikachu on load. The console: An effect function must not return anything besides a function, which is used for clean-up.',
+      id: 'cleanup', title: 'Blank page: "destroy is not a function"', base: 'f4', tabs,
+      symptom: 'The page goes blank. The console: useEffect must not return anything besides a function, which is used for clean-up. You returned: true. Then: TypeError: destroy is not a function.',
       breaks: [{ file: APP, mode: 'replace', find: '    return () => { ignore = true }', code: '    return ignore = true' }],
-      checks: [allPass, noWarning(/must not return anything besides a function/, 'the effect\'s return value')],
+      checks: [allPass, noWarning(/must not return anything besides a function|destroy is not a function/, 'the effect\'s return value')],
       hint: 'What must an effect return: a value, or a function?',
-      why: '"return ignore = true" sets ignore right away (so the answer is ignored) and returns true. Return a function: return () => { ignore = true }.',
+      why: '"return ignore = true" sets ignore at once and returns true. React later calls the return value to clean up, and true is not a function, so the app crashes. Return a function: return () => { ignore = true }.',
     },
     {
       id: 'tracking', title: '"pokemon list changed" is logged only once', base: 'f4', tabs,
@@ -68,12 +68,12 @@
       why: 'The cleanup sets ignore = true; the first run\'s answer must be ignored: if (!ignore) addPokemonData(…). That fixes it even without the duplicate guard.',
     },
     {
-      id: 'async', title: 'Bonus: "useEffect must not return anything besides a function"', base: 'f4', tabs,
-      symptom: 'Someone made the logging effect async. The console warns: It looks like you wrote useEffect(async () => ...).',
+      id: 'async', title: 'Bonus: blank page after making an effect async', base: 'f4', tabs,
+      symptom: 'Someone made the logging effect async. The page goes blank. The console: useEffect must not return anything besides a function… It looks like you wrote useEffect(async () => ...). Then: TypeError: destroy is not a function.',
       breaks: [{ file: APP, mode: 'replace', find: "  useEffect(() => {\n    console.log('page mounted')", code: "  useEffect(async () => {\n    console.log('page mounted')" }],
-      checks: [allPass, noWarning(/useEffect must not return anything besides a function/, 'async effects')],
+      checks: [allPass, noWarning(/must not return anything besides a function|destroy is not a function/, 'async effects')],
       hint: 'An async function always returns a promise. What may an effect return?',
-      why: 'Effects may only return a cleanup function. Don\'t make the effect async; if you need await, put an async function inside and call it.',
+      why: 'An async function returns a promise; React tries to call it as the cleanup and crashes. Effects may only return a cleanup function. Don\'t make the effect async; if you need await, put an async function inside and call it.',
     },
     {
       id: 'stringdeps', title: 'Bonus: the background changes once, then never', base: 'f4', tabs,
@@ -84,16 +84,23 @@
       why: "'count' is a string that never changes, so the effect never runs again. Use the variable: [count].",
     },
     {
-      id: 'ignore', title: 'Bonus: Pikachu never shows', base: 'f4', tabs,
-      symptom: 'The Pikachu request succeeds (200), but no card appears and there is no error.',
-      breaks: [{ file: APP, mode: 'replace', find: '{ if (!ignore) addPokemonData(response.data) }', code: '{ if (ignore) addPokemonData(response.data) }' }],
-      checks: [allPass],
-      hint: 'When should the answer be used: when ignore is true, or false?',
-      why: 'Use the answer only if this effect was not cleaned up: if (!ignore).',
+      id: 'nodeps', title: 'Bonus: Pikachu keeps coming back', base: 'f4', tabs,
+      symptom: 'Click Remove on Pikachu: a moment later Pikachu is back. The Network tab shows a new pikachu request after every click and every key you type.',
+      breaks: [{ file: APP, mode: 'replace', find: '    return () => { ignore = true }\n  }, [])', code: '    return () => { ignore = true }\n  })' }],
+      checks: [allPass, { name: 'a removed Pikachu stays removed', run: async (doc, win, ctx) => {
+        await ctx.wait(1500)
+        const btn = ctx.doc().querySelector('#pikachu-card button')
+        if (!btn) return false
+        btn.click()
+        await ctx.wait(1500)
+        return !ctx.doc().querySelector('#pikachu-card')
+      } }],
+      hint: 'With no dependency array, when does an effect run?',
+      why: 'No array = after every render. Removing Pikachu renders again, so the effect loads Pikachu again. Start-up work needs []: }, []).',
     },
     {
       id: 'url', title: 'Bonus: "Request failed with status code 404" on load', base: 'f4', tabs,
-      symptom: 'No Pikachu, and the start-up request answers 404.',
+      symptom: 'No Pikachu. The console: Uncaught (in promise) AxiosError: Request failed with status code 404.',
       breaks: [{ file: APP, mode: 'replace', find: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')", code: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachuu')" }],
       checks: [allPass],
       hint: 'Read the URL letter by letter (the Network tab shows it).',

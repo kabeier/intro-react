@@ -271,6 +271,12 @@
       post({ type: 'livepad-error', message: String(m), line: l })
       post({ type: 'livepad-console', level: 'error', text: String(m) })
     }
+    // A rejected promise nobody caught (an axios error without .catch): the browser logs it like this.
+    window.addEventListener('unhandledrejection', function (e) {
+      var r = e.reason
+      var text = r && r.message ? (r.name || 'Error') + ': ' + r.message : String(r)
+      post({ type: 'livepad-console', level: 'error', text: 'Uncaught (in promise) ' + text })
+    })
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[href]')
       if (!a) return

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 4 · Lecture 2 · useEffect</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=2">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 4: React Hooks · Lecture 2 of 2</div>
+  <h1>useEffect: work that happens after the page is drawn.</h1>
+  <p class="sub">Logging, a side effect on the page, and loading Pikachu when the app opens.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Keep the Console panel in view: this lecture lives in it.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>Rendering vs effects</h2>
+  <div class="cols">
+    <div class="card blue"><h3>Rendering</h3><p>App() returns JSX. Must be <b>pure</b>: same state in, same JSX out. No requests, no timers, no touching the page.</p></div>
+    <div class="card green"><h3>Effects</h3><p>Run <b>after</b> React has updated the page: requests, logging, timers, changing things outside React (document.body).</p></div>
+  </div>
+  <p class="bottomline">Draw in the component; talk to the outside world in an effect.</p>
+  <aside class="notes"><p>Say: "If it isn't drawing, and it isn't a reaction to a click, it's probably an effect."</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: first effect" data-at="3">
+  <h2>Run code after the render <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-useeffect" data-start="null" data-steps="f1s1 f1s2" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Press <b>A</b>; the Console shows <b>mounted, unmounted, mounted</b>.</p>
+<!-- steps:hooks-useeffect:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState, useEffect } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Import useEffect next to useState.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Watch the Console: mounted, unmounted, mounted. That is StrictMode in development: React mounts twice to check the cleanup works. In production it runs once.</td></tr>
+</table>
+<!-- /steps -->
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">Console line</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Why</th></tr>
+      <tr><td style="padding:4px 10px">page mounted</td><td style="padding:4px 10px">the effect ran after the first render</td></tr>
+      <tr><td style="padding:4px 10px">page unmounted</td><td style="padding:4px 10px">StrictMode (development only) runs the cleanup on purpose…</td></tr>
+      <tr><td style="padding:4px 10px">page mounted</td><td style="padding:4px 10px">…and the effect again: your cleanup must undo the effect</td></tr>
+    </table>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="7">
+  <h2>The dependency array decides when</h2>
+  <table class="dbt small">
+    <tr><th>Array</th><th>Runs after</th><th>Use it for</th></tr>
+    <tr><td class="pk"><code>[]</code></td><td>the first render only</td><td>start-up work: load data</td></tr>
+    <tr><td class="pk"><code>[count]</code></td><td>the first render, and whenever count changes</td><td>keep something in sync with a value</td></tr>
+    <tr><td>(no array)</td><td>every render</td><td>rarely what you want</td></tr>
+  </table>
+  <p class="bottomline">List every value the effect reads.</p>
+  <aside class="notes"><p>Setting a value that is in the array, inside the effect = an endless loop.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: tracking" data-at="9">
+  <h2>Track a value <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-useeffect" data-start="f1s2" data-steps="f2s1" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b> Search and remove: the Console logs the list each time.</p>
+<!-- steps:hooks-useeffect:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Search a Pokemon: the Console logs the new list. Remove one: it logs again.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="11">
+  <h2>Mount, update, unmount</h2>
+  <table class="dbt small">
+    <tr><th>Moment</th><th>What happens</th><th>Effect</th></tr>
+    <tr><td><b>Mount</b></td><td>the component appears</td><td>effects run (all of them)</td></tr>
+    <tr><td><b>Update</b></td><td>state or props changed, it renders again</td><td>effects whose dependencies changed run again (cleanup first)</td></tr>
+    <tr><td><b>Unmount</b></td><td>the component leaves the page</td><td>every cleanup runs</td></tr>
+  </table>
+  <p class="bottomline">Think "keep in sync with these values", not "on mount".</p>
+  <aside class="notes"><p>Unmount shows up in a future lecture, when pages (the router) come and go.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: side effect" data-at="13">
+  <h2>A visible side effect <span class="say">home.cy.js · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-useeffect" data-start="f2s1" data-steps="f3s1 f3s2" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 2. Click "Click me!" in the live app: the colours cycle.</p>
+<!-- steps:hooks-useeffect:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('changes the background when you click', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: one click → light green. Red for now.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Every click changes count; the effect picks the next colour. % wraps around after the last colour.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="17">
+  <h2>Decide the new behaviour, then change the tests</h2>
+  <table class="dbt small">
+    <tr><th>Test</th><th>Before</th><th>After Pikachu loads on start</th></tr>
+    <tr><td>starts with an empty poke container</td><td>0 cards</td><td class="pk">renamed: should render the Pikachu card on load (1 card)</td></tr>
+    <tr><td>does nothing on an empty search</td><td>0 cards</td><td class="pk">1 card (only Pikachu)</td></tr>
+    <tr><td>every other test</td><td>green</td><td>untouched, still green</td></tr>
+  </table>
+  <p class="bottomline">A planned change updates its tests first. An unplanned red test is a bug.</p>
+  <aside class="notes"><p>This is the rewrite we promised in unit 3.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Pikachu" data-at="18">
+  <h2>Load Pikachu when the app opens <span class="say">fixtures · specs · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-useeffect" data-start="f3s2" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5 f4s6 f4s7" data-files="src/App.jsx cypress/e2e/home.cy.js cypress/e2e/pokemon.cy.js cypress/fixtures/pikachu.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Tests change first (N 1–5: red), then the effect (N 6–7: green).</p>
+<!-- steps:hooks-useeffect:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A fixture for Pikachu: the page will ask for it on every visit.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Stub the start-up request in this spec too.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('should render the Pikachu card on load',…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The planned rewrite from unit 3: the page now starts with Pikachu. Red until we build it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cy.intercept('GET', '**/api/v2/pokemon/pikac…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">And here.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cy.get('button[type=submit]').click()</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An empty search still adds nothing: only Pikachu.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 7</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let ignore = false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="24">
+  <h2>Why the ignore flag?</h2>
+  <table class="dbt small">
+    <tr><th>Time</th><th>Without ignore</th><th>With ignore</th></tr>
+    <tr><td>effect run 1 starts a request</td><td>request A</td><td>request A (ignore₁ = false)</td></tr>
+    <tr><td>cleanup (StrictMode, or the page leaves)</td><td>—</td><td class="pk">ignore₁ = true</td></tr>
+    <tr><td>effect run 2 starts a request</td><td>request B</td><td>request B (ignore₂ = false)</td></tr>
+    <tr><td>A's answer arrives</td><td>used (maybe after B: stale data)</td><td class="pk">thrown away</td></tr>
+  </table>
+  <p class="bottomline">An answer for an effect that was cleaned up must not change state.</p>
+  <aside class="notes">
+    <p>This is react.dev's pattern for requests in effects. Without it, a slow first answer can overwrite newer data (a race).</p>
+    <p><b>Different from the curriculum</b> (until merged): it fetched with no cleanup.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="26">
+  <h2>When NOT to use an effect</h2>
+  <table class="dbt small">
+    <tr><th>Situation</th><th>Use</th></tr>
+    <tr><td>Something happens because the user clicked</td><td>the click handler</td></tr>
+    <tr><td>A value you can compute from state</td><td>compute it while rendering (no state, no effect)</td></tr>
+    <tr><td>Keep something <b>outside</b> React in sync (body colour, title, a timer), or load data</td><td class="pk">useEffect</td></tr>
+  </table>
+  <p class="bottomline">Effects are for the outside world.</p>
+  <aside class="notes"><p>The background colour could also be set in the click handler; we use an effect because it follows count wherever it changes.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="28">
+  <h2>Activity: Fix it (useEffect)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 4 · Lecture 2</b></li>
+    <li>Watch the <b>Console</b>: effects talk there</li>
+    <li>Fix, press <b>Fix</b>: all 12 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=hooks-useeffect" target="_blank" rel="noopener">fixit.html?lesson=hooks-useeffect</a></p>
+  <aside class="notes"><p>6 minutes. Problem 6 is the StrictMode double request.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="35">
+  <h2>Mental model</h2>
+  <ul>
+    <li>Render = pure: state in, JSX out</li>
+    <li>Effect = after render: sync with the outside world</li>
+    <li>Dependencies = the values the effect reads</li>
+    <li>Cleanup = undo, and ignore late answers</li>
+  </ul>
+  <p class="bottomline">Next unit: split App into components.</p>
+  <aside class="notes"><p>App.jsx is getting long: that is the motivation for components.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>Reading: Beginning React.js</b> (Chapter 10)</li>
+    <li><b>Refactor Previous Assignments</b>: "Refactor yesterday's assignments to utilize useState and useEffect"</li>
+  </ol>
+  <p class="bottomline">Links are on the class site.</p>
+  <aside class="notes"><p>Good refactor targets: the Theme Team's cards and the To-Do list become state.</p></aside>
+</section>
+
+</div>
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=2"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/livepad.js?v=2"></script>
+<script src="../shared/cyrunner.js?v=1"></script>
+</body>
+</html>

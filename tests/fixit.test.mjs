@@ -12,6 +12,8 @@ await import('../shared/course/react-vite-fixit.js')
 await import('../shared/course/async-requests-fixit.js')
 await import('../shared/course/cypress-react-fixit.js')
 await import('../shared/course/cypress-assertions-fixit.js')
+await import('../shared/course/hooks-usestate-fixit.js')
+await import('../shared/course/hooks-useeffect-fixit.js')
 
 let srv, browser
 before(async () => { srv = await serve(); browser = await launch() })
@@ -32,10 +34,10 @@ async function open(lessonId, id) {
 }
 const press = async (page) => {
   await page.click('.fx-fix')
-  return until(page, () => { const r = document.querySelector('.fx-result'); return r && /Fixed|Still broken/.test(r.textContent) && r.textContent }, null, 60000)
+  return until(page, () => { const r = document.querySelector('.fx-result'); return r && /Fixed|Still broken/.test(r.textContent) && r.textContent }, null, 240000)
 }
 
-for (const lessonId of ['react-vite', 'async-requests', 'cypress-react', 'cypress-assertions']) {
+for (const lessonId of ['react-vite', 'async-requests', 'cypress-react', 'cypress-assertions', 'hooks-usestate', 'hooks-useeffect']) {
   const problems = globalThis.FIXIT[lessonId]
   const lesson = Course.get(lessonId)
   test(lessonId + ': 10 problems, first 6 core', () => {

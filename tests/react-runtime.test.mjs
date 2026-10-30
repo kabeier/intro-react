@@ -129,3 +129,9 @@ test('console formats %s placeholders like DevTools (React warnings read cleanly
   assert.doesNotMatch(t, /%s/)
   await page.close()
 })
+
+test('an uncaught promise rejection shows in the console like DevTools', async () => {
+  const page = await mount(app("export default function App() {\n  Promise.reject(Object.assign(new Error('Request failed with status code 404'), { name: 'AxiosError' }))\n  return <p>hi</p>\n}"))
+  await waitConsole(page, /Uncaught \(in promise\) AxiosError: Request failed with status code 404/)
+  await page.close()
+})

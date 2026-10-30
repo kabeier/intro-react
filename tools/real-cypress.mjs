@@ -100,6 +100,8 @@ for (const c of checkpoints) {
           '--spec', `cypress/e2e/${spec}`, '--config', 'video=false', '--reporter', 'junit', '--reporter-options', `mochaFile=${report}`],
           { stdio: 'pipe', timeout: 300000 })
       } catch {}
+      // The container runs as root: give its files (reports, screenshots) back to us so the next run can delete them.
+      try { execFileSync('docker', ['run', '--rm', '-v', `${dir}:${dir}`, '--entrypoint', 'chown', 'cypress/included:16.2.0', '-R', `${process.getuid()}:${process.getgid()}`, dir], { stdio: 'pipe' }) } catch {}
       const xml = existsSync(report) ? readFileSync(report, 'utf8') : ''
       real.push(...parseJunit(xml).map((t) => ({ ...t, spec })))
     }

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 4 · Lecture 1 · useState</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=2">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 4: React Hooks · Lecture 1 of 2</div>
+  <h1>State: React redraws the page for you.</h1>
+  <p class="sub">The Pokemon page moves from DOM code to useState, and the tests prove nothing broke.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: app in Docker; Cypress works on your laptop. <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
+    <p>From today: every new behaviour starts with a failing test (▶ Run tests on the code slides).</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="1">
+  <h2>By hand (unit 2) vs with state</h2>
+  <table class="dbt small">
+    <tr><th></th><th>generateCard (unit 2)</th><th>State (today)</th></tr>
+    <tr><td><b>Add a card</b></td><td>createElement, appendChild</td><td class="pk">add to a list; React draws it</td></tr>
+    <tr><td><b>Remove a card</b></td><td>find it, remove it, hope nothing else points at it</td><td class="pk">filter the list</td></tr>
+    <tr><td><b>Does React know?</b></td><td>no</td><td>yes: the list <b>is</b> the page</td></tr>
+  </table>
+  <p class="bottomline">Change the data; React updates the page.</p>
+  <aside class="notes"><p>Say: "Last unit we promised this: the cards become data."</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>How state changes the page</h2>
+  <div class="loop"><div class="b">event</div><span>→</span><div class="b">setState(new)</div><span>→</span><div class="b">App() runs again</div><span>→</span><div class="g">React updates only what changed</div></div>
+  <ul class="small" style="margin-top:28px">
+    <li>State = a value React <b>remembers</b> between renders</li>
+    <li>Changing it with its <b>setter</b> = "render again, please"</li>
+    <li>React compares the new render with the last one (the virtual DOM) and changes only the differences</li>
+  </ul>
+  <p class="bottomline">Never change state directly; always through its setter.</p>
+  <aside class="notes"><p>Fix It 1 and 3 are exactly "changed it directly".</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="4">
+  <h2>From today: red, green, then tidy</h2>
+  <div class="loop"><div class="r">1. write the test: red</div><span>→</span><div class="g">2. build until green</div><span>→</span><div class="b">3. tidy, still green</div></div>
+  <p class="bottomline">The test describes the feature before the code exists.</p>
+  <aside class="notes"><p>Same loop as fundamentals week TDD, with Cypress instead of Jest.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: title" data-at="5">
+  <h2>First state: the title <span class="say">home.cy.js · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-usestate" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> After N 1: ▶ Run tests: red. After N 4: green.</p>
+<!-- steps:hooks-usestate:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('changes the title when you click Change …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: describe the feature, run it, watch it fail (there is no button yet).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useState comes from React: a named import, in { }.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [heading, setHeading] = useState('Poke…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useState gives back two things: the value now, and a function to change it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;h1&gt;{heading}&lt;/h1&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Show the state with {}, change it with the setter on click. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="9">
+  <h2>Reading useState</h2>
+  <pre style="font-size:30px">const [heading, setHeading] = useState('Pokemon Project')</pre>
+  <table class="dbt small" style="margin-top:16px">
+    <tr><th>Part</th><th>Means</th></tr>
+    <tr><td><code>useState('Pokemon Project')</code></td><td>make state; the first value is <b>'Pokemon Project'</b></td></tr>
+    <tr><td><code>heading</code></td><td>the value <b>now</b> (this render)</td></tr>
+    <tr><td><code>setHeading</code></td><td>the function that changes it and re-renders</td></tr>
+    <tr><td><code>[ , ]</code></td><td>array destructuring: name the two things it gives back</td></tr>
+  </table>
+  <p class="bottomline">Pick the first value = what the page shows first: '' · 0 · [].</p>
+  <aside class="notes"><p><b>Rules of hooks</b>: call them at the top of the component, never inside if/loops/handlers.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: counter" data-at="10">
+  <h2>A counter, with a functional update <span class="say">home.cy.js · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-usestate" data-start="f1s4" data-steps="f2s1 f2s2 f2s3" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 3.</p>
+<!-- steps:hooks-usestate:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('counts clicks', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Failing test first: two clicks → "Total Clicks: 2".</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [count, setCount] = useState(0)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A number state, starting at 0.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;h3&gt;Total Clicks: {count}&lt;/h3&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">setCount((count) =&gt; count + 1): "take the latest count, add one". Safe even when clicks come fast.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="13">
+  <h2>Why setCount((count) =&gt; count + 1)?</h2>
+  <table class="dbt small">
+    <tr><th>Code</th><th>Two updates before React renders</th><th>Result</th></tr>
+    <tr><td><code>setCount(count + 1)</code> ×2</td><td>both read the same old count (0)</td><td>1</td></tr>
+    <tr><td class="pk"><code>setCount((c) =&gt; c + 1)</code> ×2</td><td>each gets the latest value</td><td class="pk">2</td></tr>
+  </table>
+  <p class="bottomline">New value based on the old one? Pass a function.</p>
+  <aside class="notes"><p>Same reason the list uses setPokemonList((list) =&gt; …): requests can finish close together.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: input" data-at="14">
+  <h2>A controlled input <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-usestate" data-start="f2s3" data-steps="f3s1 f3s2 f3s3 f3s4" data-files="src/App.jsx cypress/e2e/pokemon.cy.js"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests before N 1 and after N 4: green both times. A refactor = same behaviour, new code.</p>
+<!-- steps:hooks-usestate:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [pokemonName, setPokemonName] = useSta…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">State for the text box, starting empty. The tests are green before and after this change: run them.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;input</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">value shows the state; onChange updates it on every key.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const name = pokemonName.trim().toLowerCase()</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Read the name from state instead of FormData.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>setPokemonName('')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Clear the box by clearing the state. Run the tests: still green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: list" data-at="18">
+  <h2>The cards become a list in state <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-usestate" data-start="f3s4" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5" data-files="src/App.jsx cypress/e2e/pokemon.cy.js"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> The big moment: generateCard is deleted. ▶ Run tests at the end: <b>all green</b>.</p>
+<!-- steps:hooks-usestate:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [pokemonList, setPokemonList] = useSta…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An array state: every Pokemon we found.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const addPokemonData = (data) =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">generateCard is gone. Adding = a new array with the old items plus the new one (never push into state). Already there? Keep the list as it is.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>addPokemonData(response.data)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The request now adds data to state instead of building DOM.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div id="poke-container"&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">.map turns every Pokemon into a card. key tells React which card is which.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;img src={pokemon.sprites.front_default} alt…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same card as before, now JSX. Run every test: all green. We rewrote the page and the tests prove nothing broke.</td></tr>
+</table>
+<!-- /steps -->
+    <p>Say: "We rewrote how the page works. Ten tests say a user can't tell. That's what tests buy you."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="24">
+  <h2>Never change state in place</h2>
+  <table class="dbt small">
+    <tr><th>Want to…</th><th>Not this (same array)</th><th>This (a new array)</th></tr>
+    <tr><td>add</td><td><code>list.push(x)</code></td><td class="pk"><code>[...list, x]</code></td></tr>
+    <tr><td>remove</td><td><code>list.splice(i, 1)</code></td><td class="pk"><code>list.filter((p) =&gt; p.id !== id)</code></td></tr>
+    <tr><td>change one</td><td><code>list[0].name = 'x'</code></td><td class="pk"><code>list.map((p) =&gt; p.id === id ? { ...p, name: 'x' } : p)</code></td></tr>
+  </table>
+  <p class="bottomline">React notices a new array, not a changed old one.</p>
+  <aside class="notes">
+    <p><b>Different from the curriculum</b> (until merged): it called the spread "deconstruction"; it's the <b>spread</b> syntax (destructuring is the [ , ] on the left).</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: remove" data-at="25">
+  <h2>Remove a card <span class="say">pokemon.cy.js · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-usestate" data-start="f4s5" data-steps="f5s1 f5s2 f5s3" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 3.</p>
+<!-- steps:hooks-usestate:f5 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('can remove a card', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Failing test first: there is no Remove button yet.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>}</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">filter keeps every Pokemon except this one. A new array again.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;button type="button" onClick={() =&gt; rmData(…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Each card gets its own button with its own id. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="28">
+  <h2>Mental model</h2>
+  <ul>
+    <li>State is the <b>truth</b>; the page is drawn from it</li>
+    <li>Events call setters; setters schedule a render</li>
+    <li>Lists: <code>.map</code> with a <code>key</code>, new arrays to change them</li>
+    <li>Tests describe what users see, so they survive rewrites</li>
+  </ul>
+  <p class="bottomline">Change data, not the DOM.</p>
+  <aside class="notes"><p>Next lecture: useEffect, for code that runs after the render.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="29">
+  <h2>Activity: Fix it (useState)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 4 · Lecture 1</b></li>
+    <li>Read the symptom, the Console, and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: all the tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=hooks-usestate" target="_blank" rel="noopener">fixit.html?lesson=hooks-usestate</a></p>
+  <aside class="notes"><p>6 minutes. The check is the whole test suite, plus no key warning for problem 5.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Mute Button</b></li>
+    <li><b>React Vowels</b></li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
+  <aside class="notes"><p>Top to bottom, as the curriculum says.</p></aside>
+</section>
+
+</div>
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=2"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/livepad.js?v=2"></script>
+<script src="../shared/cyrunner.js?v=1"></script>
+</body>
+</html>
