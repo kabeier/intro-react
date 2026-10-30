@@ -274,10 +274,14 @@
   }
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
-  async function run({ pad, spec, fixtures = {}, title = 'Tests' }) {
+  async function run({ pad, spec, fixtures = {}, title = 'Tests', append = false }) {
     const out = panel(pad)
     out.hidden = false
-    out.innerHTML = `<div class="lp-tests-head">${esc(title)}: running…</div>`
+    const block = document.createElement('div')
+    block.className = 'lp-tests-block'
+    block.innerHTML = `<div class="lp-tests-head">${esc(title)}: running…</div>`
+    if (append) out.append(block)
+    else { out.textContent = ''; out.append(block) }
     const runner = makeRunner(pad, fixtures)
     // A failing expect inside cy.on('window:alert') fails the test.
     const env = { cy: new Proxy(runner.cy, { get: (t, k) => t[k] }), Cypress: runner.Cypress }
@@ -286,7 +290,7 @@
     runner.cy.on = (ev, fn) => origOn(ev, wrap(fn))
     let tests
     try { tests = collect(spec, env) } catch (e) {
-      out.innerHTML = `<div class="lp-tests-head bad">Error in the spec file</div><div class="lp-test fail">${esc(e.message)}</div>`
+      block.innerHTML = `<div class="lp-tests-head bad">${esc(title)}: error in the spec file</div><div class="lp-test fail">${esc(e.message)}</div>`
       return { tests: [], passed: 0, failed: 1, error: e.message }
     }
     const results = []
@@ -303,11 +307,11 @@
       } }, t.hooks)
       results.push(r)
       const line = r.state === 'passed' ? `<div class="lp-test pass">✓ ${esc(r.title)} <span>(${r.ms}ms)</span></div>` : `<div class="lp-test fail">✗ ${esc(r.title)}<pre>${esc(r.error)}</pre></div>`
-      out.insertAdjacentHTML('beforeend', line)
+      block.insertAdjacentHTML('beforeend', line)
     }
     const passed = results.filter((r) => r.state === 'passed').length
     const failed = results.length - passed
-    out.querySelector('.lp-tests-head').outerHTML = `<div class="lp-tests-head ${failed ? 'bad' : 'good'}">${esc(title)} · Passing: ${passed} · Failing: ${failed}</div>`
+    block.querySelector('.lp-tests-head').outerHTML = `<div class="lp-tests-head ${failed ? 'bad' : 'good'}">${esc(title)} · Passing: ${passed} · Failing: ${failed}</div>`
     return { tests: results, passed, failed }
   }
 

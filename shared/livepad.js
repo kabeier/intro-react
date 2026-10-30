@@ -120,6 +120,7 @@
     el.classList.add('livepad')
     el.innerHTML = `<div class="lp-bar"><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
       `<span class="lp-status"></span><button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
+      `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
       `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><iframe title="Live app"></iframe></div></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
     const statusEl = el.querySelector('.lp-status')
@@ -168,7 +169,22 @@
       else pad.setStatus('app ✓ up to date')
     })
     // A file that a step deleted hides its tab (Shift+N brings it back).
+    const specsOf = () => Object.keys(pad.files).filter((f) => /^cypress\/e2e\/.+\.cy\.jsx?$/.test(f)).sort()
+    pad.runTests = async () => {
+      if (!window.CyRunner || pad.busy) return
+      const fixtures = {}
+      for (const f of Object.keys(pad.files)) if (f.startsWith('cypress/fixtures/')) fixtures[f.slice('cypress/fixtures/'.length)] = pad.files[f]
+      const box = el.querySelector('.lp-tests')
+      if (box) box.textContent = ''
+      const results = []
+      for (const spec of specsOf()) results.push(await CyRunner.run({ pad, spec: pad.files[spec], fixtures, title: spec.replace('cypress/e2e/', ''), append: true }))
+      pad.routes = null
+      pad.refresh()
+      return results
+    }
     pad.syncTabs = () => {
+      const run = el.querySelector('.lp-run')
+      if (run) run.hidden = !(window.CyRunner && specsOf().length)
       el.querySelectorAll('.lp-tab').forEach((b) => (b.hidden = !(b.dataset.file in pad.files)))
       if (!(pad.tab in pad.files)) { const first = pad.tabs.find((f) => f in pad.files); if (first) pad.showTab(first) }
     }
@@ -247,8 +263,10 @@
     el.querySelectorAll('.lp-tab').forEach((b) => (b.onclick = () => { b.blur(); pad.showTab(b.dataset.file) }))
     el.querySelector('.lp-app').onclick = (e) => { e.currentTarget.blur(); toggleSplit() }
     el.querySelector('.lp-pop').onclick = (e) => { e.currentTarget.blur(); popOut() }
+    el.querySelector('.lp-run').onclick = (e) => { e.currentTarget.blur(); pad.runTests() }
     paint(pad)
     pad.showTab(pad.tab)
+    pad.syncTabs()
     pad.refresh()
     loadMonaco().then((m) => {
       pad.editor = m ? monacoEditor(m, host, pad) : pad.typeable ? textEditor(host, pad) : preEditor(host, pad)

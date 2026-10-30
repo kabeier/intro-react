@@ -100,3 +100,21 @@ it('XHR (axios) gets the fixture', () => {
 })`, { fixtures })
   assert.deepEqual(r.tests.map((t) => [t.state, t.error || '']), [['passed', ''], ['passed', '']])
 })
+
+test('a pad with cypress specs gets a Run tests button that runs every spec with its fixtures', async () => {
+  const p = await browser.newPage({ viewport: { width: 1400, height: 900 } })
+  p.on('dialog', (d) => d.dismiss())
+  await p.goto(srv.url + '/tests/fixtures/cy.html')
+  await p.waitForFunction(() => window.CyRunner)
+  await p.evaluate(() => window.pad.setFiles({ 'index.html': window.APP,
+    'cypress/e2e/home.cy.js': "it('has a heading', () => { cy.visit('/'); cy.get('header').should('be.visible') })",
+    'cypress/e2e/fetch.cy.js': "beforeEach(() => { cy.intercept('GET', '**/pokemon/pikachu', { fixture: 'pikachu.json' }).as('p'); cy.visit('/') })\nit('stubs', () => { cy.get('#f').click(); cy.get('#out').should('have.text', '200 fixture') })",
+    'cypress/fixtures/pikachu.json': '{ "name": "fixture" }' }))
+  await p.click('.lp-run')
+  await p.waitForFunction(() => /Passing: 1/.test(document.querySelector('.lp-tests')?.textContent || '') && document.querySelectorAll('.lp-tests .lp-tests-head').length === 2, null, { timeout: 30000 })
+  const t = await p.textContent('.lp-tests')
+  assert.match(t, /home\.cy\.js/)
+  assert.match(t, /fetch\.cy\.js/)
+  assert.doesNotMatch(t, /Failing: [1-9]/)
+  await p.close()
+})
