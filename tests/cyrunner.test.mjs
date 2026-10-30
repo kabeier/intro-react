@@ -77,3 +77,26 @@ test('the results panel shows ✓ and ✗ lines and a summary', async () => {
   assert.match(t, /Passing: 1/)
   assert.match(t, /Failing: 1/)
 })
+
+test('cy.intercept stubs fetch and XHR with fixtures; cy.wait and @alias.all work', async () => {
+  const fixtures = { 'pikachu.json': '{"name":"stubbed-pikachu"}', 'bulbasaur.json': '{"name":"stubbed-bulbasaur"}' }
+  const r = await run(`beforeEach(() => {
+  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' }).as('pikachu')
+  cy.intercept('GET', '**/api/v2/pokemon/bulbasaur', { fixture: 'bulbasaur' }).as('bulbasaur')
+  cy.intercept('GET', '**/api/v2/pokemon/pikachoo', { statusCode: 404, body: {} }).as('missing')
+  cy.visit('/')
+})
+it('fetch gets the fixture', () => {
+  cy.get('#f').click()
+  cy.wait('@pikachu')
+  cy.get('#out').should('have.text', '200 stubbed-pikachu')
+  cy.get('@pikachu.all').should('have.length', 1)
+})
+it('XHR (axios) gets the fixture', () => {
+  cy.get('#x').click()
+  cy.get('#out').should('have.text', '200 stubbed-bulbasaur')
+  cy.get('@bulbasaur.all').should('have.length', 1)
+  cy.get('@pikachu.all').should('have.length', 0)
+})`, { fixtures })
+  assert.deepEqual(r.tests.map((t) => [t.state, t.error || '']), [['passed', ''], ['passed', '']])
+})

@@ -225,6 +225,44 @@
         return orig.apply(console, arguments)
       }
     })
+    // cy.intercept: answer matching requests (fetch and XHR, which axios uses) with the stub.
+    var routes = window.__CY_ROUTES || []
+    var globRe = function (p) { return new RegExp('^' + p.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*\*/g, '\u0000').replace(/\*/g, '[^/]*').replace(/\u0000/g, '.*') + '$') }
+    var match = function (method, url) {
+      for (var i = 0; i < routes.length; i++) {
+        var r = routes[i]
+        if (r.method && String(r.method).toUpperCase() !== String(method || 'GET').toUpperCase()) continue
+        if (r.url === url || (r.url.indexOf('*') >= 0 && globRe(r.url).test(url))) return r
+      }
+      return null
+    }
+    var tell = function (r, url) { post({ type: 'cy-intercepted', alias: r.alias, url: url }) }
+    if (routes.length) {
+      var realFetch = window.fetch
+      window.fetch = function (input, init) {
+        var url = typeof input === 'string' ? input : input.url
+        var r = match((init && init.method) || (input && input.method) || 'GET', new URL(url, location.href).href)
+        if (!r) return realFetch.apply(this, arguments)
+        tell(r, url)
+        return Promise.resolve(new Response(JSON.stringify(r.body), { status: r.status, headers: { 'Content-Type': 'application/json' } }))
+      }
+      var open = XMLHttpRequest.prototype.open, send = XMLHttpRequest.prototype.send
+      XMLHttpRequest.prototype.open = function (method, url) { this.__lp = { method: method, url: new URL(url, location.href).href }; return open.apply(this, arguments) }
+      XMLHttpRequest.prototype.send = function () {
+        var r = this.__lp && match(this.__lp.method, this.__lp.url)
+        if (!r) return send.apply(this, arguments)
+        var x = this, text = JSON.stringify(r.body), url = this.__lp.url
+        tell(r, url)
+        setTimeout(function () {
+          var json = x.responseType === 'json'
+          var props = { readyState: 4, status: r.status, statusText: r.status === 200 ? 'OK' : '', responseURL: url, responseText: json ? '' : text, response: json ? r.body : text }
+          Object.keys(props).forEach(function (k) { Object.defineProperty(x, k, { configurable: true, value: props[k] }) })
+          x.getAllResponseHeaders = function () { return 'content-type: application/json\r\n' }
+          x.getResponseHeader = function (h) { return /content-type/i.test(h) ? 'application/json' : null }
+          ;['readystatechange', 'load', 'loadend'].forEach(function (t) { x.dispatchEvent(new ProgressEvent(t)) })
+        }, 10)
+      }
+    }
     window.onerror = function (m, s, l) {
       post({ type: 'livepad-error', message: String(m), line: l })
       post({ type: 'livepad-console', level: 'error', text: String(m) })
@@ -349,22 +387,24 @@
   const viteEntry = (html) => { const m = html.match(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?(src\/[^"']+\.jsx?)["'][^>]*>\s*<\/script>/i); return m && m[1] }
   const safeJson = (v) => JSON.stringify(v).replace(/</g, '\\u003c')
 
-  function buildReactDoc(files, assets, entry) {
+  const routesScript = (routes) => (routes && routes.length ? '<script>window.__CY_ROUTES=' + safeJson(routes) + '</script>' : '')
+
+  function buildReactDoc(files, assets, entry, routes) {
     const abs = {}
     for (const [k, v] of Object.entries(assets || {})) abs[k] = ROOT ? new URL(v, ROOT).href : v
     let doc = files['index.html'].replace(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?src\/[^"']+["'][^>]*>\s*<\/script>/i, '')
     doc = doc.replace(/<link\b[^>]*rel\s*=\s*["']icon["'][^>]*>/i, '')
-    const head = REPORTER + '<script type="importmap">' + JSON.stringify({ imports: IMPORTS }) + '</script><script src="' + BABEL + '"></script>'
+    const head = routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: IMPORTS }) + '</script><script src="' + BABEL + '"></script>'
     const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ')</script>'
     doc = /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + head) : head + doc
     return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, run + '</body>') : doc + run
   }
 
   // One HTML document for an iframe srcdoc: linked CSS/JS files are inlined.
-  function buildDoc(files, assets) {
+  function buildDoc(files, assets, opts = {}) {
     const html = files['index.html'] || ''
     const entry = viteEntry(html)
-    if (entry && files[entry] != null) return buildReactDoc(files, assets, entry)
+    if (entry && files[entry] != null) return buildReactDoc(files, assets, entry, opts.routes)
     const local = (ref) => files[ref.replace(/^\.\//, '')]
     let doc = html.replace(/<link\b[^>]*>/gi, (tag) => {
       if (!/\brel\s*=\s*["']?stylesheet/i.test(tag)) return tag
@@ -384,7 +424,8 @@
       return `<script>${js}</script>`
     })
     if (later.length) doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, later.join('') + '</body>') : doc + later.join('')
-    return /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + REPORTER) : REPORTER + doc
+    const agent = routesScript(opts.routes) + REPORTER
+    return /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + agent) : agent + doc
   }
 
   return { register, get, all, assetsOf, tabOrder, applyStep, filesAt, checkpoint, origins, noteFor, buildDoc, StepMismatch }

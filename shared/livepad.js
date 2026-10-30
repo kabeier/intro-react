@@ -160,7 +160,7 @@
       pad.err = null
       pad.clearLog()
       pad.setStatus('loading…')
-      pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets)
+      pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets, { routes: pad.routes })
       if (pad === active()) broadcast()
     }
     pad.iframe.addEventListener('load', () => {

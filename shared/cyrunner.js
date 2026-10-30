@@ -209,6 +209,7 @@
               else s = check(s, o.args, ctx)
             }
             const needsEl = queries.length && (!asserts.length || action)
+            if (needsEl && s.els && !s.els.length && lastQ.name === 'wait') throw new AssertionError(`cy.wait() timed out waiting ${TIMEOUT}ms for the 1st request to the route: \`${lastQ.selector.slice(1)}\`. No request ever occurred.`)
             if (needsEl && s.els && !s.els.length) {
               if (lastQ.name === 'contains') throw new AssertionError(`Expected to find content: ${q(lastQ.text)}${lastQ.selector ? ` within the selector: \`${lastQ.selector}\`` : ''} but never did.`)
               throw new AssertionError(`Expected to find element: \`${ctx.selector}\`, but never found it.`)
