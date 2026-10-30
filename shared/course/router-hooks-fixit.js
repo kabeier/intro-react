@@ -74,7 +74,8 @@
       why: 'Check before navigating: if (!username.trim()) return.',
     },
     {
-      id: 'backcall', title: 'Bonus: every link bounces back to Home', base: 'f6', tabs: [BACK],
+      // The endless navigation hangs real Cypress, so there is no report to compare with.
+      id: 'backcall', racy: true, title: 'Bonus: every link bounces back to Home', base: 'f6', tabs: [BACK],
       symptom: 'Click About (or any link): you bounce straight back to Home. The console: You should call navigate() in a React.useEffect(), not when your component is first rendered. And: Expected `onClick` listener to be a function.',
       breaks: [{ file: BACK, mode: 'replace', find: 'onClick={goBack}', code: 'onClick={goBack()}' }],
       checks: [allPass],
@@ -83,9 +84,25 @@
     },
     {
       id: 'reload', title: 'Bonus: Log In reloads the page', base: 'f6', tabs: [LOGIN],
-      symptom: 'Click Log In: the whole page reloads and you are still on /login.',
+      symptom: 'Click Log In: the page reloads (everything flashes, state is lost). The tests still pass: they only check the path.',
       breaks: [{ file: LOGIN, mode: 'replace', find: '    event.preventDefault()\n', code: '' }],
-      checks: [allPass],
+      checks: [allPass, { name: 'logging in does not reload the page', run: async (doc, win, ctx) => {
+        await ctx.wait(500)
+        const w = ctx.doc().defaultView
+        if (!w.__ROUTER) return false
+        w.__ROUTER.navigate('/login')
+        await ctx.wait(300)
+        w.__noReload = true
+        const input = ctx.doc().getElementById('username')
+        const button = [...ctx.doc().querySelectorAll('button')].find((b) => b.textContent === 'Log In')
+        if (!input || !button) return false
+        Object.getOwnPropertyDescriptor(w.HTMLInputElement.prototype, 'value').set.call(input, 'ash')
+        input.dispatchEvent(new w.Event('input', { bubbles: true }))
+        button.click()
+        await ctx.wait(800)
+        return ctx.doc().defaultView.__noReload === true
+      } }],
+      testsPass: true,
       hint: 'What does a form do by default when submitted?',
       why: 'A form submit reloads the page unless the handler calls event.preventDefault() first.',
     },

@@ -239,6 +239,8 @@
       }
       return null
     }
+    // How long a stubbed request takes to answer (real Cypress stubs take tens to hundreds of ms).
+    var STUB_MS = 200
     var tell = function (r, url) { post({ type: 'cy-intercepted', alias: r.alias, url: url }) }
     // After the page has handled the stubbed response (what cy.wait waits for).
     var done = function (r, url) { setTimeout(function () { post({ type: 'cy-responded', alias: r.alias, url: url }) }, 0) }
@@ -249,8 +251,8 @@
         var r = match((init && init.method) || (input && input.method) || 'GET', new URL(url, location.href).href)
         if (!r) return realFetch.apply(this, arguments)
         tell(r, url)
-        done(r, url)
-        return Promise.resolve(new Response(JSON.stringify(r.body), { status: r.status, headers: { 'Content-Type': 'application/json' } }))
+        // Answer after a short delay, like a stub through Cypress's proxy (not instantly).
+        return new Promise(function (resolve) { setTimeout(function () { done(r, url); resolve(new Response(JSON.stringify(r.body), { status: r.status, headers: { 'Content-Type': 'application/json' } })) }, STUB_MS) })
       }
       var open = XMLHttpRequest.prototype.open, send = XMLHttpRequest.prototype.send
       XMLHttpRequest.prototype.open = function (method, url) { this.__lp = { method: method, url: new URL(url, location.href).href }; return open.apply(this, arguments) }
@@ -267,7 +269,7 @@
           x.getResponseHeader = function (h) { return /content-type/i.test(h) ? 'application/json' : null }
           ;['readystatechange', 'load', 'loadend'].forEach(function (t) { x.dispatchEvent(new ProgressEvent(t)) })
           done(r, url)
-        }, 10)
+        }, STUB_MS)
       }
     }
     window.onerror = function (m, s, l, c, err) {
