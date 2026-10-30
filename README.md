@@ -23,3 +23,5 @@ Lecture site for Code Platoon Phase II, Front-End units 2–9: one Pokemon app b
 
 - The live preview loads React 19.3.1 and axios 1.20.0 from esm.sh and Babel 7.28.4 from jsDelivr (internet needed). Each save reloads the app (state resets).
 - Requests in the previews and Fix It checks go to the real PokeAPI.
+
+`shared/vendor/react-bootstrap-2.10.10.mjs`: react-bootstrap 2.10.10 (MIT) bundled with esbuild, React left external, so the slide preview uses one copy of React. Rebuild: `echo "export * from 'react-bootstrap'" > e.mjs && npx esbuild@0.25.11 e.mjs --bundle --format=esm --minify --define:process.env.NODE_ENV='"development"' --external:react --external:react-dom --external:react/jsx-runtime --external:react-dom/client --legal-comments=eof --outfile=shared/vendor/react-bootstrap-2.10.10.mjs` (in a folder with react-bootstrap installed).

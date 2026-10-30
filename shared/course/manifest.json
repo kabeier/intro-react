@@ -7,5 +7,7 @@
   "hooks-usestate.js",
   "hooks-useeffect.js",
   "components-props.js",
-  "component-state.js"
+  "component-state.js",
+  "utilities-tailwind.js",
+  "utilities-bootstrap.js"
 ]

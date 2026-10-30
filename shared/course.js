@@ -317,13 +317,30 @@
     'react-dom/client': 'https://esm.sh/react-dom@19.3.1/client?dev&' + DEPS,
     axios: 'https://esm.sh/axios@1.20.0',
   }
+  // CSS from packages (import 'bootstrap/dist/css/bootstrap.min.css'), served by jsDelivr.
+  const CSS_PINS = { bootstrap: '5.3.8' }
+  const TAILWIND = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3/dist/index.global.js'
+  // import Card from 'react-bootstrap/Card': esm.sh can't always build the subpath, so re-export it from the main bundle.
+  const importsFor = (files) => {
+    const map = { ...IMPORTS }
+    // react-bootstrap is served from the site (shared/vendor, built with React external) so the
+    // library uses the page's one copy of React; esm.sh fails to build it too often.
+    map['react-bootstrap'] = ROOT ? new URL('shared/vendor/react-bootstrap-2.10.10.mjs', ROOT).href : 'https://esm.sh/react-bootstrap@2.10.10?dev&external=react,react-dom'
+    for (const code of Object.values(files)) {
+      if (typeof code !== 'string') continue
+      for (const m of code.matchAll(/from\s+['"]react-bootstrap\/(\w+)['"]/g)) {
+        map['react-bootstrap/' + m[1]] = 'data:text/javascript,' + encodeURIComponent(`export { ${m[1]} as default } from 'react-bootstrap'`)
+      }
+    }
+    return map
+  }
   const BABEL = 'https://cdn.jsdelivr.net/npm/@babel/standalone@7.28.4/babel.min.js'
   // Site root (for lesson assets): the folder above shared/.
   const ROOT = typeof document !== 'undefined' && document.currentScript ? new URL('..', document.currentScript.src).href : ''
 
   // Runs inside the preview (as source text, so it must be self-contained): turn the
   // project's files into ES modules the browser can load, like Vite does on your laptop.
-  function reactRunner(FILES, ASSETS, ENTRY) {
+  function reactRunner(FILES, ASSETS, ENTRY, PKG) {
     if (typeof Babel === 'undefined') {
       console.error("Can't load React tools from the internet (offline, or the CDN is blocked). The live preview needs a connection.")
       document.body.insertAdjacentHTML('afterbegin', '<p style="font:16px system-ui;padding:12px;background:#fde2e1;margin:0">Offline? The live preview needs the internet to load React.</p>')
@@ -371,6 +388,12 @@
         if (!t) throw new Error('[plugin:vite:import-analysis] Failed to resolve import "' + spec + '" from "' + path + '". Does the file exist?')
         return t
       }
+      // import 'bootstrap/dist/css/bootstrap.min.css': a package's CSS, as a <link> in import order.
+      code = code.replace(/\bimport\s+(['"])((?:@[\w.-]+\/)?[a-zA-Z][\w.-]*)\/([^'"]+\.css)\1;?/g, function (m, q, pkg, rest) {
+        var href = 'https://cdn.jsdelivr.net/npm/' + pkg + (PKG.css[pkg] ? '@' + PKG.css[pkg] : '') + '/' + rest
+        if (!cssDone[href]) { cssDone[href] = 1; var ln = document.createElement('link'); ln.rel = 'stylesheet'; ln.href = href; ln.setAttribute('data-file', pkg + '/' + rest); document.head.append(ln) }
+        return ''
+      })
       // import … from './x'  |  import './x'  (CSS, assets, modules)
       code = code.replace(/\bimport\s+((?:[\w$]+\s*,?\s*)?(?:\{[^}]*\}|\*\s+as\s+[\w$]+)?)\s*(?:from\s+)?(['"])(\.{1,2}\/[^'"]+)\2;?/g, function (m, clause, q, spec) {
         var t = target(spec)
@@ -386,7 +409,18 @@
               return sel.replace(/\.(-?[_a-zA-Z][\w-]*)/g, function (x, n) { names[n] = '_' + n + '_' + tag; return '.' + names[n] }) + '{'
             })
           }
-          if (!cssDone[t]) { cssDone[t] = 1; var st = document.createElement('style'); st.setAttribute('data-file', t); st.textContent = css; document.head.append(st) }
+          if (!cssDone[t]) {
+            cssDone[t] = 1
+            var st = document.createElement('style')
+            st.setAttribute('data-file', t)
+            // @import "tailwindcss": Tailwind's browser build compiles it in the page, like @tailwindcss/vite does.
+            if (/@import\s+["']tailwindcss["']/.test(css)) {
+              st.type = 'text/tailwindcss'
+              if (!document.querySelector('script[data-tailwind]')) { var tw = document.createElement('script'); tw.src = PKG.tailwind; tw.setAttribute('data-tailwind', ''); document.head.append(tw) }
+            }
+            st.textContent = css
+            document.head.append(st)
+          }
           var name = names && (clause.match(/^\s*([\w$]+)/) || [])[1]
           return name ? 'const ' + name + ' = ' + JSON.stringify(names) + ';' : ''
         }
@@ -424,8 +458,8 @@
     for (const [k, v] of Object.entries(assets || {})) abs[k] = ROOT ? new URL(v, ROOT).href : v
     let doc = files['index.html'].replace(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?src\/[^"']+["'][^>]*>\s*<\/script>/i, '')
     doc = doc.replace(/<link\b[^>]*rel\s*=\s*["']icon["'][^>]*>/i, '')
-    const head = routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: IMPORTS }) + '</script><script src="' + BABEL + '"></script>'
-    const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ')</script>'
+    const head = routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: importsFor(files) }) + '</script><script src="' + BABEL + '"></script>'
+    const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ',' + JSON.stringify({ css: CSS_PINS, tailwind: TAILWIND }) + ')</script>'
     doc = /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + head) : head + doc
     return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, run + '</body>') : doc + run
   }
