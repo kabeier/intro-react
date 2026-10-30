@@ -121,7 +121,7 @@
     el.innerHTML = `<div class="lp-bar"><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
       `<span class="lp-status"></span><button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
-      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><iframe title="Live app"></iframe></div></div>` +
+      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
     const statusEl = el.querySelector('.lp-status')
     const host = el.querySelector('.lp-editor')
@@ -157,11 +157,18 @@
       if (!drawing) { drawing = true; requestAnimationFrame(draw) }
     }
     pad.clearLog = () => { linesEl.textContent = ''; queue = []; total = 0; consoleEl.hidden = true }
+    // The page the preview shows ('/', '/about'…): kept across edits, like Vite's hot reload.
+    pad.path = '/'
+    pad.setPath = (p) => {
+      pad.path = p || '/'
+      const bar = el.querySelector('.lp-addr')
+      if (bar) { bar.textContent = 'localhost:5173' + pad.path; bar.hidden = pad.path === '/' && !pad.routed }
+    }
     pad.refresh = () => {
       pad.err = null
       pad.clearLog()
       pad.setStatus('loading…')
-      pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets, { routes: pad.routes })
+      pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets, { routes: pad.routes, path: pad.path })
       if (pad === active()) broadcast()
     }
     pad.iframe.addEventListener('load', () => {
@@ -181,6 +188,7 @@
       const hasSupport = Object.keys(pad.files).some((f) => /^cypress\/support\/e2e\.(js|jsx|ts|tsx)$/.test(f))
       for (const spec of specsOf()) results.push(await CyRunner.run({ pad, spec: pad.files[spec], fixtures, config, hasSupport, title: spec.replace('cypress/e2e/', ''), append: true }))
       pad.routes = null
+      pad.setPath('/')
       pad.refresh()
       return results
     }
@@ -288,6 +296,8 @@
     if (t === 'livepad-error') { pad.err = e.data.message; pad.setStatus('✕ ' + e.data.message, true) }
     else if (t === 'livepad-console') pad.log(e.data.level, e.data.text)
     else if (t === 'livepad-reload') pad.refresh() // a form was submitted: the page reloads, like a real browser
+    else if (t === 'livepad-path') { pad.routed = true; pad.setPath(e.data.path) } // the app's router moved
+    else if (t === 'livepad-navigate') { pad.setPath(e.data.path); pad.refresh() } // a plain link: a full page load
   })
 
   const active = () => pads.find((p) => p.el.closest('.slide.active')) || pads.find((p) => !p.el.closest('.slide'))

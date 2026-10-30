@@ -287,10 +287,19 @@
       var a = e.target.closest && e.target.closest('a[href]')
       if (!a) return
       var h = a.getAttribute('href')
-      e.preventDefault()
-      if (h.charAt(0) === '#') { var t = document.getElementById(h.slice(1)); if (t) t.scrollIntoView() }
-      else if (/^https?:/.test(h)) window.open(h, '_blank', 'noopener')
+      if (h.charAt(0) === '#' && !window.__ROUTER) { e.preventDefault(); var t = document.getElementById(h.slice(1)); if (t) t.scrollIntoView() }
+      else if (/^https?:/.test(h)) { e.preventDefault(); window.open(h, '_blank', 'noopener') }
     }, true)
+    // A plain <a href="/about"> that nothing handled (a router <Link> calls preventDefault):
+    // the browser would load that page from scratch. Ask the pad to reload at that path.
+    window.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]')
+      if (!a || e.defaultPrevented) return
+      var h = a.getAttribute('href')
+      if (/^(https?:|#|mailto:|tel:)/.test(h)) return
+      e.preventDefault()
+      post({ type: 'livepad-navigate', path: h.charAt(0) === '/' ? h : '/' + h })
+    })
     // Always stop the real navigation (it would load the site into the preview), and
     // after every listener has run, reload only if the page itself never called preventDefault().
     var realPrevent = Event.prototype.preventDefault
@@ -326,6 +335,24 @@
     // react-bootstrap is served from the site (shared/vendor, built with React external) so the
     // library uses the page's one copy of React; esm.sh fails to build it too often.
     map['react-bootstrap'] = ROOT ? new URL('shared/vendor/react-bootstrap-2.10.10.mjs', ROOT).href : 'https://esm.sh/react-bootstrap@2.10.10?dev&external=react,react-dom'
+    // react-router (self-hosted). The page runs in an iframe srcdoc where the history API cannot
+    // change the path, so createBrowserRouter/createHashRouter become a memory router that starts
+    // at the preview's path and reports every navigation (the slide code itself is unchanged).
+    if (ROOT && Object.values(files).some((c) => typeof c === 'string' && /from\s+['"]react-router(\/dom)?['"]/.test(c))) {
+      const RR = new URL('shared/vendor/react-router-8.5.1/', ROOT).href
+      map['react-router/dom'] = RR + 'rr-dom.js'
+      map['react-router'] = 'data:text/javascript,' + encodeURIComponent(
+        `import { createMemoryRouter } from '${RR}rr.js'\n` +
+        `export * from '${RR}rr.js'\n` +
+        `const preview = (routes, opts = {}) => {\n` +
+        `  const router = createMemoryRouter(routes, { ...opts, initialEntries: [window.__PREVIEW_PATH || '/'] })\n` +
+        `  window.__ROUTER = router\n` +
+        `  router.subscribe((s) => parent.postMessage({ type: 'livepad-path', path: s.location.pathname + s.location.search + s.location.hash }, '*'))\n` +
+        `  return router\n` +
+        `}\n` +
+        `export const createBrowserRouter = preview\n` +
+        `export const createHashRouter = preview\n`)
+    }
     for (const code of Object.values(files)) {
       if (typeof code !== 'string') continue
       for (const m of code.matchAll(/from\s+['"]react-bootstrap\/(\w+)['"]/g)) {
@@ -456,12 +483,12 @@
 
   const routesScript = (routes) => (routes && routes.length ? '<script>window.__CY_ROUTES=' + safeJson(routes) + '</script>' : '')
 
-  function buildReactDoc(files, assets, entry, routes) {
+  function buildReactDoc(files, assets, entry, routes, path) {
     const abs = {}
     for (const [k, v] of Object.entries(assets || {})) abs[k] = ROOT ? new URL(v, ROOT).href : v
     let doc = files['index.html'].replace(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?src\/[^"']+["'][^>]*>\s*<\/script>/i, '')
     doc = doc.replace(/<link\b[^>]*rel\s*=\s*["']icon["'][^>]*>/i, '')
-    const head = routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: importsFor(files) }) + '</script><script src="' + BABEL + '"></script>'
+    const head = '<script>window.__PREVIEW_PATH=' + safeJson(path || '/') + '</script>' + routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: importsFor(files) }) + '</script><script src="' + BABEL + '"></script>'
     const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ',' + JSON.stringify({ css: CSS_PINS, tailwind: TAILWIND }) + ')</script>'
     doc = /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + head) : head + doc
     return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, run + '</body>') : doc + run
@@ -471,7 +498,7 @@
   function buildDoc(files, assets, opts = {}) {
     const html = files['index.html'] || ''
     const entry = viteEntry(html)
-    if (entry && files[entry] != null) return buildReactDoc(files, assets, entry, opts.routes)
+    if (entry && files[entry] != null) return buildReactDoc(files, assets, entry, opts.routes, opts.path)
     const local = (ref) => files[ref.replace(/^\.\//, '')]
     let doc = html.replace(/<link\b[^>]*>/gi, (tag) => {
       if (!/\brel\s*=\s*["']?stylesheet/i.test(tag)) return tag

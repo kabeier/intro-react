@@ -9,5 +9,9 @@
   "components-props.js",
   "component-state.js",
   "utilities-tailwind.js",
-  "utilities-bootstrap.js"
+  "utilities-bootstrap.js",
+  "router-intro.js",
+  "router-pages.js",
+  "router-hooks.js",
+  "outlet-context.js"
 ]

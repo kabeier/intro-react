@@ -127,7 +127,7 @@ for (const c of checkpoints) {
   const lines = mine.map((t) => {
     const rs = realMap.get(t.title)
     // A racy test can pass or fail in either, depending on timing.
-    const same = rs === t.state || (stoppedEarly && !rs) || (c.racy || []).includes(t.title)
+    const same = rs === t.state || (stoppedEarly && !rs) || c.racy === true || (Array.isArray(c.racy) && c.racy.includes(t.title))
     if (!same) differ = true
     return `  ${same ? '=' : '≠'} ${t.title}: runner ${t.state}, real Cypress ${rs || 'missing'}${t.error && t.state !== 'passed' ? '\n      ' + t.error.split('\n')[0] : ''}`
   })

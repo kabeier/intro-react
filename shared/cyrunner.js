@@ -113,7 +113,24 @@
     const win = () => pad.iframe.contentWindow
     const doc = () => pad.iframe.contentDocument
 
-    async function visit() {
+    // The path a test is on: the router's location (apps with React Router) or the last visit.
+    const here = () => {
+      const r = win() && win().__ROUTER
+      if (r) { const l = r.state.location; return { pathname: l.pathname, search: l.search, hash: l.hash } }
+      const m = (pad.path || '/').match(/^([^?#]*)(\?[^#]*)?(#.*)?$/)
+      return { pathname: m[1] || '/', search: m[2] || '', hash: m[3] || '' }
+    }
+    const ORIGIN = 'http://localhost:5173'
+    const location = () => { const l = here(); return { ...l, origin: ORIGIN, host: 'localhost:5173', hostname: 'localhost', port: '5173', protocol: 'http:', href: ORIGIN + l.pathname + l.search + l.hash } }
+    // A full page load (a plain <a href> click) replaces the window: hook alerts into the new one.
+    const hookWindow = () => { const w = win(); if (w && current) w.alert = (m) => { current.alerts.push(String(m)); for (const fn of current.alertHandlers) fn(String(m)) } }
+    pad.iframe.addEventListener('load', () => { if (current && current.visited) hookWindow() })
+
+    async function visit(url) {
+      let path = String(url || '/')
+      if (path.startsWith(ORIGIN)) path = path.slice(ORIGIN.length) || '/'
+      if (!path.startsWith('/')) path = '/' + path
+      pad.setPath ? pad.setPath(path) : (pad.path = path)
       if (cfg.baseUrl && cfg.baseUrl.replace(/\/?$/, '/') !== 'http://localhost:5173/') {
         throw new Error(`cy.visit() failed trying to load:\n\n${cfg.baseUrl}\n\nWe attempted to make an http request to this URL but the request failed without a response.`)
       }
@@ -123,10 +140,12 @@
         pad.iframe.addEventListener('load', done)
         pad.refresh()
       })
-      const w = win()
-      w.alert = (m) => { current.alerts.push(String(m)); for (const fn of current.alertHandlers) fn(String(m)) }
+      current.visited = true
+      hookWindow()
       const root = doc().getElementById('root')
       for (let t = 0; root && !root.childElementCount && !current.appErrors.length && t < 8000; t += 50) await sleep(50)
+      // Like cy.visit waiting for the page to settle: errors the first effects throw land in this test.
+      await sleep(100)
     }
 
     // A chain = the ops from one cy.* call and the methods chained on it.
@@ -145,6 +164,13 @@
       api.type = (text) => add({ kind: 'action', name: 'type', run: async (s) => { await typeInto(s.els[0], text); return s } })
       api.clear = () => add({ kind: 'action', name: 'clear', run: async (s) => { setNative(s.els[0], ''); return s } })
       api.click = () => add({ kind: 'action', name: 'click', run: async (s) => { s.els[0].click(); await sleep(0); return s } })
+      api.its = (prop) => add({ kind: 'query', name: 'its', run: (s) => {
+        const v = s.value == null ? undefined : s.value[prop]
+        if (v === undefined) throw new AssertionError(`cy.its() errored because the property: \`${prop}\` does not exist on your subject.`)
+        return { value: v }
+      } })
+      // .then(fn): run fn with the subject (a window, a value, or the elements).
+      api.then = (fn) => add({ kind: 'action', name: 'then', run: async (s) => { const r = await fn(s.value !== undefined ? s.value : s.els); return r === undefined ? s : { value: r } } })
       api.as = (alias) => { const r = routes[routes.length - 1]; if (first.name === 'intercept' && r) r.alias = alias; return proxy }
       // Anything else is not a Cypress command: fail like Cypress does.
       const proxy = new Proxy(api, { get: (t, k) => (k in t ? t[k] : typeof k === 'string' && k !== 'then' ? undefined : undefined) })
@@ -179,17 +205,29 @@
     }
 
     const cy = {
-      visit: () => chain({ kind: 'action', name: 'visit', start: true, run: async () => { await visit(); return { els: [] } } }),
+      visit: (url) => chain({ kind: 'action', name: 'visit', start: true, run: async () => { await visit(url); return { els: [] } } }),
+      location: (key) => chain({ kind: 'query', name: 'location', start: true, run: () => { const l = location(); return { value: key ? l[key] : l } } }),
+      window: () => chain({ kind: 'query', name: 'window', start: true, run: () => ({ value: win() }) }),
+      // cy.go('back') / cy.go(-1): the router's history (or the page's own).
+      go: (n) => chain({ kind: 'action', name: 'go', start: true, run: async () => {
+        const d = n === 'back' ? -1 : n === 'forward' ? 1 : n
+        const r = win().__ROUTER
+        if (r) r.navigate(d); else win().history.go(d)
+        await sleep(30)
+        return { els: [] }
+      } }),
       get: (sel) => {
         if (typeof sel === 'string' && sel.startsWith('@')) {
           const [alias, all] = sel.slice(1).split('.')
           return chain({ kind: 'query', name: 'get', selector: sel, start: true, run: () => ({ els: all === 'all' ? [...(intercepted[alias] || [])] : (intercepted[alias] || []).slice(-1) }) })
         }
+        // Like jQuery (which Cypress uses), a plain '#id' finds only the first element with that id.
+        if (/^#[\w-]+$/.test(sel)) return chain({ kind: 'query', name: 'get', selector: sel, start: true, run: () => { const e = doc().getElementById(sel.slice(1)); return { els: e ? [e] : [] } } })
         return chain({ kind: 'query', name: 'get', selector: sel, start: true, run: () => ({ els: [...doc().querySelectorAll(sel)] }) })
       },
       contains: (a, b) => chain({ ...containsOp(a, b, false), start: true }),
       wrap: (value) => chain({ kind: 'query', name: 'wrap', start: true, run: () => ({ value }) }),
-      url: () => chain({ kind: 'query', name: 'url', start: true, run: () => ({ value: pad.url || (pad.baseUrl || 'http://localhost:5173/') }) }),
+      url: () => chain({ kind: 'query', name: 'url', start: true, run: () => ({ value: location().href }) }),
       // A failing expect inside the handler fails the test, like Cypress.
       on: (event, fn) => chain({ kind: 'action', name: 'on', start: true, run: async () => {
         if (event === 'window:alert') current.alertHandlers.push((m) => { try { fn(m) } catch (e) { current.errors.push(e) } })

@@ -99,7 +99,8 @@
       why: 'No array = after every render. Removing Pikachu renders again, so the effect loads Pikachu again. Start-up work needs []: }, []).',
     },
     {
-      id: 'url', title: 'Bonus: "Request failed with status code 404" on load', base: 'f4', tabs,
+      // Which tests the real 404 lands in depends on network timing.
+      id: 'url', racy: true, title: 'Bonus: "Request failed with status code 404" on load', base: 'f4', tabs,
       symptom: 'No Pikachu. The console: Uncaught (in promise) AxiosError: Request failed with status code 404.',
       breaks: [{ file: APP, mode: 'replace', find: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')", code: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachuu')" }],
       checks: [allPass],

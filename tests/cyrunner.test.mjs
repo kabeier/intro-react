@@ -217,3 +217,8 @@ test('cy.contains ignores text inside <script> tags, like Cypress', async () => 
   assert.equal(r.tests[0].state, 'failed')
   assert.match(r.tests[0].error, /Expected to find content: 'querySelector' but never did\./)
 })
+
+test("cy.get('#id') finds only the first element with that id, like jQuery in Cypress", async () => {
+  const r = await run("it('t', () => {\n  cy.visit('/')\n  cy.get('#pokemon-name').type('a{enter}')\n  cy.get('#pokemon-name').type('a{enter}')\n  cy.get('#a-card').should('have.length', 1)\n  cy.get('[id=\"a-card\"]').should('have.length', 2)\n})")
+  assert.equal(r.tests[0].state, 'passed', r.tests[0].error)
+})

@@ -20,7 +20,11 @@
 .lp-editor { min-width: 0; min-height: 0; position: relative; }
 /* The preview always exists (it runs the page); closed = parked off-screen at a real size. */
 .lp-preview { position: absolute; left: -10000px; top: 0; width: 760px; height: 560px; background: #fff; }
-.lp-preview iframe { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
+.lp-preview { display: flex; flex-direction: column; }
+.lp-preview iframe { width: 100%; height: 100%; flex: 1; min-height: 0; border: 0; background: #fff; display: block; }
+/* The app's address (only for apps with a router): shows the path change on every navigation. */
+.lp-addr { flex: none; padding: 4px 10px; font: 13px var(--mono, monospace); color: #333; background: #eef0f3; border-bottom: 1px solid #d0d4da; }
+.lp-addr::before { content: '🔒 '; opacity: .5; }
 .lp-fallback {
   margin: 0; height: 100%; overflow: auto; padding: 8px 14px; color: #d4d4d4; background: #1f1f1f;
   font: 18px/1.45 'JetBrains Mono', ui-monospace, monospace;
