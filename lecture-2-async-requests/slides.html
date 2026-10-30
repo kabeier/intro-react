@@ -3,129 +3,257 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lecture N · TITLE</title>
-<link rel="stylesheet" href="../shared/deck.css">
-<!-- Slide-specific tweaks go in a small <style> here (e.g. pre b.ours { color: #ffe76a; }) -->
+<title>Unit 2 · Lecture 2 · Async Requests</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=1">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .two pre { font-size: 19px; line-height: 1.45; padding: 18px 22px; }
+</style>
 </head>
 <body data-minutes="40">
 <div class="stage">
 
-<!--
-  One <section class="slide"> per slide. Attributes:
-    data-seg  = the segment name shown top-left (e.g. "Open", "Activity: Name", "Live: …", "Wrap up")
-    data-at   = the minute this slide should start at (drives the presenter clock)
-  Every slide gets <aside class="notes">: what to SAY and DO, as short bullets.
-  Slide types below: title · statement · diagram · table · two cards · activity · code/prompt · homework.
-  Delete the ones you don't need; keep ~12–16 slides for a 40-minute lecture.
--->
-
-<!-- ============ OPEN (0–3) ============ -->
 <section class="slide title" data-seg="Open" data-at="0">
-  <div class="kicker">Building Applications · TOPIC · Part 1 of 2</div>
-  <h1>Lecture title in sentence case</h1>
-  <p class="sub">One sentence: the question this lecture answers, in the running app's terms.</p>
+  <div class="kicker">Front-End · Unit 2: React and Requests · Lecture 2 of 2</div>
+  <h1>Ask a server for data, and wait without freezing.</h1>
+  <p class="sub">Search the PokeAPI with axios and draw a card for every Pokemon.</p>
   <aside class="notes">
-    <p><b>Before class</b> (demo-kit/RUNBOOK.md): the state everything must be in.</p>
-    <p>Tabs to have open: … Press <b>T</b> to start the clock.</p>
+    <p><b>Before class</b>: open https://pokeapi.co/api/v2/pokemon/pikachu in a tab (to show the raw JSON). <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
+    <p>The live preview calls the real PokeAPI: you need internet.</p>
   </aside>
 </section>
 
-<section class="slide statement" data-seg="Open" data-at="1">
-  <h2>The hook: what's wrong / missing right now</h2>
-  <ul>
-    <li>Concrete fact about the running app</li>
-    <li>Why that's a problem</li>
-    <li>…</li>
-  </ul>
-  <p class="bottomline">Today: what we'll learn. Next lecture: what we'll build.</p>
-  <aside class="notes">
-    <p><b>** LIVE, 1 minute. **</b> The exact demo step that shows the problem.</p>
-  </aside>
-</section>
-
-<!-- ============ CONCEPT (3–8) ============ -->
-<section class="slide diagram" data-seg="Concept" data-at="3">
-  <img src="../diagrams/XX1-01-name.png" alt="Full description of the diagram for screen readers and for the zoom view.">
-  <div class="src">diagrams/XX1-01-name.tldr</div>
-  <aside class="notes">
-    <p>"The one sentence to say about this picture."</p>
-    <ul><li>Point 1</li><li>Point 2</li></ul>
-  </aside>
-</section>
-
-<section class="slide" data-seg="Concept" data-at="5">
-  <h2>Comparison table</h2>
-  <table class="dbt">
-    <tr><th></th><th>Option A</th><th>Option B</th></tr>
-    <tr><td><b>Row</b></td><td>…</td><td class="pk">highlighted cell</td></tr>
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>A request, and its response</h2>
+  <table class="dbt small">
+    <tr><th>We send</th><th>The server answers</th></tr>
+    <tr><td><code>GET https://pokeapi.co/api/v2/pokemon/pikachu</code></td><td class="pk"><b>200</b> + JSON: <code>{ name: "pikachu", id: 25, sprites: { front_default: "https://…/25.png" }, … }</code></td></tr>
+    <tr><td><code>GET …/pokemon/pikachoo</code></td><td><b>404</b> Not Found</td></tr>
   </table>
-  <p class="bottomline">The one line to remember.</p>
-  <aside class="notes"><p>…</p></aside>
+  <ul class="small" style="margin-top:20px">
+    <li>The data lives on a <b>server</b>; our page asks for it</li>
+    <li>The answer takes time: milliseconds, or seconds on a slow network</li>
+  </ul>
+  <p class="bottomline">Front ends are mostly: ask for data, then show it.</p>
+  <aside class="notes">
+    <p>Show the raw JSON tab. Point at <b>sprites.front_default</b>: that is our card image.</p>
+  </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="6">
-  <h2>Two cards side by side</h2>
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>Asynchronous: start it, keep going, handle the answer later</h2>
   <div class="cols">
-    <div class="card blue"><h3>Left idea</h3><p>Short text.</p></div>
-    <div class="card red"><h3>Right idea</h3><p>Short text.</p></div>
+    <table class="dbt small">
+      <tr><th>Synchronous</th><th>Asynchronous</th></tr>
+      <tr><td>a phone call: you wait on the line</td><td>a text message: you do other things until the reply</td></tr>
+      <tr><td>the page freezes until the answer</td><td>the page stays usable</td></tr>
+    </table>
+    <table class="dbt small">
+      <tr><th>A promise is…</th><th>means</th></tr>
+      <tr><td><code>pending</code></td><td>no answer yet</td></tr>
+      <tr><td><code>fulfilled</code></td><td>the answer arrived</td></tr>
+      <tr><td><code>rejected</code></td><td>it failed (404, network down…)</td></tr>
+    </table>
   </div>
-  <p class="bottomline">The contrast in one line.</p>
-  <aside class="notes"><p>…</p></aside>
+  <p class="bottomline">axios.get returns a promise at once. The data comes later.</p>
+  <aside class="notes">
+    <p>Say: "JavaScript has one thread. If it waited for the network, every click would freeze. So it hands back a promise: 'I'll tell you when it's done.'"</p>
+  </aside>
 </section>
 
-<!-- ============ ACTIVITY (8–14) ============ -->
-<section class="slide activity" data-seg="Activity: Name" data-at="8">
-  <h2>Activity: Name</h2>
+<section class="slide code" data-seg="Code along: axios" data-at="5">
+  <h2>Install axios <span class="say">package.json</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="null" data-steps="f1s1" data-files="package.json src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b> Students run <code>npm install axios</code> (in Docker: rebuild the image, or <code>docker exec react-container npm install</code>).</p>
+<!-- steps:async-requests:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"axios": "^1.20.0",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install axios adds this line. In Docker: rebuild the image (or docker exec react-container npm install).</td></tr>
+</table>
+<!-- /steps -->
+    <p>Why axios and not fetch? Same idea; axios parses JSON for us and treats 404 as an error. fetch comes back in a future lecture.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: page" data-at="7">
+  <h2>The search page <span class="say">src/App.jsx · src/App.css</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f1s1" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> The ids are on purpose: our tests (unit 3) and React (unit 4) use the same ones.</p>
+<!-- steps:async-requests:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Clear lecture 1's demo variables.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;header&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The heading lives in a &lt;header&gt; (lecture 1's semantic tags).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;form&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">In JSX, label for is htmlFor, and every tag closes: &lt;input /&gt;. The empty div will hold the cards.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>#poke-container {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cards side by side, wrapping onto new rows.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.card {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One look for every card.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: form" data-at="11">
+  <h2>Read the form <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f2s5" data-steps="f3s1 f3s2 f3s3" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Press <b>A</b>, type Pikachu, Search: the Console shows "pikachu".</p>
+<!-- steps:async-requests:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const handleSubmit = (event) =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">preventDefault, then FormData: exactly the DOM lecture. Only the wiring is new.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;form onSubmit={(event) =&gt; handleSubmit(even…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">onSubmit = addEventListener("submit") in JSX. Type pikachu, press Search, look at the console.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const name = data.name.trim().toLowerCase()</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The API wants lowercase, and an empty search must do nothing (the empty URL returns a list, not a Pokemon).</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: .then" data-at="14">
+  <h2>Send the request: .then, .catch, .finally <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f3s3" data-steps="f4s1 f4s2 f4s3 f4s4" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> After N 3, search: the Console shows <b>Promise</b> (pending). After N 4: the data, then try <b>pikachoo</b> → catch.</p>
+<!-- steps:async-requests:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import axios from 'axios'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Import axios from node_modules (no ./ means a package).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const getPokemonData = (name) =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Log what axios.get returns: Promise { &lt;pending&gt; }. The data is not there yet.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>getPokemonData(name)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Search calls it, and clears the box for the next search.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>axios.get(`https://pokeapi.co/api/v2/pokemon…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">.then when the answer arrives, .catch when it fails (try "pikachoo": 404), .finally always.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: card" data-at="19">
+  <h2>Draw a card with the DOM <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f4s4" data-steps="f5s1 f5s2 f5s3 f5s4" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Unit 1's createElement + appendChild, inside React.</p>
+<!-- steps:async-requests:f5 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const generateCard = (data) =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An empty card div with an id like pikachu-card, added to the container.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const img = document.createElement("img")</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The picture is at data.sprites.front_default. Always an alt.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const h3 = document.createElement("h3")</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The name under the picture.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.then((response) =&gt; generateCard(response.da…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Instead of logging the data, draw it. Search pikachu, then bulbasaur.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="23">
+  <h2>Requests fail. Plan for it.</h2>
+  <table class="dbt small">
+    <tr><th>What happens</th><th>You get</th><th>Lands in</th></tr>
+    <tr><td>Name doesn't exist</td><td>404 Not Found</td><td class="pk">catch</td></tr>
+    <tr><td>Server broken</td><td>500</td><td class="pk">catch</td></tr>
+    <tr><td>No internet</td><td>Network Error</td><td class="pk">catch</td></tr>
+    <tr><td>Our own bug inside then/try (e.g. a typo in data.sprites)</td><td>TypeError</td><td class="pk">catch, too</td></tr>
+  </table>
+  <p class="bottomline">catch catches everything in the chain, not only failed requests.</p>
+  <aside class="notes">
+    <p>Say: "If your card never shows and the console says Request failed, read the error message: it may be your own typo."</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: await" data-at="24">
+  <h2>Same request with async / await <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f5s4" data-steps="f6s1 f6s2 f6s3" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b></p>
+<!-- steps:async-requests:f6 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const getPokemonData = async (name) =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">async in front: this function may await.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>try {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">await = wait for the promise, then give me the response. Reads like normal code.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>} catch (error) {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same three parts as before: try = then, catch = catch, finally = finally.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide two" data-seg="Concept" data-at="27">
+  <h2>.then or await: the same promise</h2>
+  <div class="cols">
+    <pre>axios.get(url)
+  .then((response) =&gt; …)
+  .catch((error) =&gt; …)
+  .finally(() =&gt; …)</pre>
+    <pre>try {
+  const response = await axios.get(url)
+  …
+} catch (error) { …
+} finally { … }</pre>
+  </div>
+  <p class="bottomline">await only works inside an async function, and it pauses that function, not the page.</p>
+  <aside class="notes">
+    <p>Most code you'll read uses async/await. Both are fine; don't mix them in one function.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: errors" data-at="28">
+  <h2>Tell the user, and no duplicates <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="async-requests" data-start="f6s3" data-steps="f7s1 f7s2" data-files="src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Search pikachoo (alert), then pikachu twice (one card).</p>
+<!-- steps:async-requests:f7 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>alert("Pokemon Does not Exist")</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The console is for us; the alert is for the user. Try pikachoo.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>if (document.getElementById(`${data.name}-ca…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Already a pikachu-card? Stop. Search pikachu twice: one card.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="31">
+  <h2>Activity: Fix it (requests)</h2>
   <div class="countdown" data-sec="360"></div>
   <ol class="steps">
-    <li>A situation appears</li>
-    <li>In chat on "go": <b>OPTION A</b>, <b>OPTION B</b> or <b>OPTION C</b></li>
-    <li>Bonus: …</li>
+    <li>Open <b>Fix it</b> → <b>Unit 2 · Lecture 2</b></li>
+    <li>Read the symptom and the <b>Console</b> panel (or DevTools → Network)</li>
+    <li>Fix it, press <b>Fix</b>: <b>✅ Fixed!</b> or <b>❌ Still broken</b></li>
+    <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
-  <p class="muted small" style="margin-top:24px">Page: activity-name/</p>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=async-requests" target="_blank" rel="noopener">fixit.html?lesson=async-requests</a> · the checks call the real PokeAPI</p>
   <aside class="notes">
-    <p>About 30 seconds a card; the first 6 are the core set. Space reveals.</p>
-    <p>Answers are also in your Notes (teacher guide).</p>
+    <p>6 minutes. Problems 2 and 3 show "catch catches our own bugs too".</p>
   </aside>
-</section>
-
-<!-- ============ LIVE (14–30) ============ -->
-<section class="slide" data-seg="Live: the step" data-at="14">
-  <h2>The prompt</h2>
-  <p class="muted" style="font-size:19px; margin:-14px 0 8px">The curriculum's prompt, our paths in bold, <b style="color:#b8860b">our block in yellow</b>.</p>
-  <pre style="font-size:15px; line-height:1.4; padding:18px 26px; white-space:pre-wrap">Curriculum prompt text, word for word, with <b>our/paths</b> in bold.
-
-<b class="ours">Also for this project:
-- Answers to the questions Claude will ask (from the dry run).</b>
-
-Do you have any questions before …?</pre>
-  <aside class="notes">
-    <p><b>** LIVE. **</b> Where Claude runs, what to paste (also in demo-kit/prompts.md).</p>
-    <p><b>Its questions:</b> next slide.</p>
-  </aside>
-</section>
-
-<!-- ============ WRAP (35–40) ============ -->
-<section class="slide" data-seg="Wrap up" data-at="35">
-  <h2>What you now know</h2>
-  <ul class="small">
-    <li>Takeaway 1</li>
-    <li>Takeaway 2</li>
-  </ul>
-  <p class="bottomline">Next lecture: … (or "in future lectures")</p>
-  <aside class="notes"><p>…</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
-  <h2>Homework, Part I</h2>
-  <ol style="list-style:none;padding-left:0" class="small">
-    <li><b>Priority 1, …:</b> …</li>
-    <li><b>Priority 2, …:</b> …</li>
+  <h2>React doesn't know about these cards (yet)</h2>
+  <ul>
+    <li>generateCard uses <b>document.createElement</b>, like unit 1</li>
+    <li>React never sees those cards: it can't update or remove them</li>
+    <li>In unit 4 the list moves into <b>state</b> and React draws the cards</li>
+    <li>Our tests (unit 3) will keep passing through that rewrite</li>
+  </ul>
+  <p class="bottomline">Today: requests and async. Next: test the app from the outside (unit 3).</p>
+  <aside class="notes">
+    <p>Say: "This works, but it is the unit-1 way inside React. Remember the pain; state fixes it."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>Pokémon Theme Team</b></li>
+    <li><b>To-Do List (React)</b></li>
+    <li><b>Reading: Beginning with React.js</b> (Chapter 4; Chapter 11 up to page 272)</li>
   </ol>
-  <aside class="notes"><p>Full steps are on the class site.</p></aside>
+  <p class="bottomline">Top to bottom. Links (and the setup notes) are on the class site.</p>
+  <aside class="notes">
+    <p>The class site's homework section has the Node 24 / port 5173 setup notes for these repos.</p>
+  </aside>
 </section>
 
 </div>
 <script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=1"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/livepad.js?v=1"></script>
 </body>
 </html>

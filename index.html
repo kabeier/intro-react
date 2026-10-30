@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Authentication</title>
+<title>React: the Pokemon Project</title>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
   :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; }
@@ -60,180 +60,65 @@
 </head>
 <body>
 <main>
-  <h1>Authentication</h1>
-  <p class="lede">Who are you, and what are you allowed to do? Learn how logins work, then let Claude Code give your app real accounts, with the database deciding who sees what. Everything opens in a new tab, so keep this page open as your home base.</p>
+  <h1>React: the Pokemon Project</h1>
+  <p class="lede">One app, built unit by unit: a Pokemon search that grows from a create-vite template into a tested, routed, deployed React app. Every lecture types the code in short steps with the live app beside it. Everything opens in a new tab, so keep this page open as your home base.</p>
 
+  <h3 style="margin-top:0">Unit 2: React and Requests</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
-      <h2>How Authentication Works</h2>
-      <p>Authentication vs authorization, 401 vs 403, four ways to log in, and a real Supabase token in Postman.</p>
-      <a class="slides" href="lecture-1-how-auth-works/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen</a>
+      <h2>React + Vite</h2>
+      <p>Create the project, run it in Docker, and the JSX rules: {} values, functions, className, inline styles.</p>
+      <a class="slides" href="lecture-1-react-vite/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen, N to type the next step, A to show the live app</a>
       <ol>
-        <li><a href="lecture-1-how-auth-works/activity-bouncer-or-vip/" target="_blank" rel="noopener"><b>Activity: Bouncer or VIP List?</b><span>Situations in Ticked. Authentication, authorization, or allowed?</span></a></li>
-        <li><a href="lecture-1-how-auth-works/jwt-xray/" target="_blank" rel="noopener"><b>JWT X-ray</b><span>Paste an access token and see its three parts. Nothing leaves the page.</span></a></li>
-        <li><a href="postman/" target="_blank" rel="noopener"><b>Ticked Auth in Postman</b><span>Step-by-step: sign up, get a token, then send requests as a stranger and as a user. Build it yourself, or import the ready-made collection.</span></a></li>
+        <li><a href="fixit.html?lesson=react-vite" target="_blank" rel="noopener"><b>Activity: Fix It (JSX)</b><span>Ten broken components: a blank page, a missing import, a string style… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=react-vite&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The project after every step. Click any line for its story. Fell behind? Download the code at any feature.</span></a></li>
       </ol>
     </section>
     <section>
       <div class="num">2</div>
-      <h2>Supabase Authentication</h2>
-      <p>Back up, rebuild the tables with a trigger and RLS, then two phased prompts: Register, Log in, Log out.</p>
-      <a class="slides" href="lecture-2-supabase-auth/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen</a>
+      <h2>Async Requests</h2>
+      <p>axios and the PokeAPI: promises, .then/.catch/.finally, async/await, drawing cards, errors and duplicates.</p>
+      <a class="slides" href="lecture-2-async-requests/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen, N to type the next step, A to show the live app</a>
       <ol>
-        <li><a href="lecture-2-supabase-auth/activity-what-comes-back/" target="_blank" rel="noopener"><b>Activity: What Comes Back?</b><span>Maria, Sam and the new RLS rules. Rows, [ ], 201, 204, 401 or 403?</span></a></li>
-        <li><a href="https://github.com/kabeier/Claude-and-auth/blob/main/demo-kit/backup-ticked-auth" target="_blank" rel="noopener"><b>Ticked, with logins</b><span>The finished app: db.js, AuthContext, Login and Register pages, schema.sql.</span></a></li>
+        <li><a href="fixit.html?lesson=async-requests" target="_blank" rel="noopener"><b>Activity: Fix It (requests)</b><span>Ten broken searches against the real PokeAPI. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=async-requests&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The search app after every step; lines from lecture 1 link back to it.</span></a></li>
       </ol>
     </section>
   </div>
 
-  <h3 id="homework">Homework Part I: how authentication works</h3>
+  <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
-    <p><b>In this order:</b> (1) the <b>How Authentication Works peer quiz</b> on the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-III/09-Building-Applications/4-authentication/assignments/" target="_blank" rel="noopener">Assignments page</a>, (2) 50 steps of the <b>FreeCodeCamp Python certification</b>. Want more practice? Do steps 1–3 below with your own project.</p>
-
-    <h4>1 · Turn off email confirmation (development only)</h4>
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
+    <h4>Part I</h4>
     <ol class="steps">
-      <li>Your Supabase project → <b>Authentication → Sign In / Providers → Email</b> → turn <b>Confirm email</b> off → <b>Save</b>.</li>
-      <li>Why: with it on, sign-up sends an email and gives you no token, and Supabase's built-in sender only allows a few emails an hour. Real apps keep it on.</li>
+      <li>"It is important to practice making these React projects to the point where it's a reflex. Grab the previous Vanilla(HTML/CSS/JS) assignments you've completed and turn them into Dockerized React + Vite Projects."</li>
     </ol>
-
-    <h4>2 · Get a token in Postman</h4>
+    <h4>Part II</h4>
     <ol class="steps">
-      <li>Follow <a href="postman/" target="_blank" rel="noopener">Ticked Auth in Postman</a>: build the requests yourself, or download the collection there and <b>Import</b> it. In the collection's <b>Variables</b>, set <code>base_url</code> (no <code>/rest/v1</code>) and <code>publishable_key</code>, the same values as Part I of the full-stack homework. <b>Save.</b></li>
-      <li>Send <b>1 Sign up</b>. You get <code>access_token</code>, <code>refresh_token</code> and <code>expires_in: 3600</code>. A script saves the access token for the next requests.</li>
-      <li>Supabase → <b>Authentication → Users</b>: your new account is there.</li>
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-pokemon" target="_blank" rel="noopener">Assignment - Pokémon Theme Team</a></li>
+      <li><a href="https://github.com/Code-Platoon-Assignments/to-do-react" target="_blank" rel="noopener">Assignment - To-Do List (React)</a></li>
+      <li><a href="https://drive.google.com/file/d/1groEhrGvFKe7Jf_u3NfnoDQUJspU2alu/view?usp=drive_link" target="_blank" rel="noopener">Reading Assignment - Beginning with React.js (Chapter 4; Chapter 11 up to page 272)</a></li>
     </ol>
-
-    <h4>3 · Read it, use it, clean up</h4>
-    <ol class="steps">
-      <li>Paste the access token into the <a href="lecture-1-how-auth-works/jwt-xray/" target="_blank" rel="noopener">JWT X-ray</a>. Find <code>sub</code> (your user id), <code>role</code> and <code>exp</code>.</li>
-      <li>Change a table name in requests 3–5 to one of yours and send them. As the anon key and as the user: what's different, and why? (Hint: who are your RLS rules <code>to</code>?)</li>
-      <li>Delete the test account in Authentication → Users before Part II.</li>
-    </ol>
+    <h4>Starting any of these projects</h4>
+    <div class="cmdwrap"><pre class="cmd"><code>npm create vite@latest my-project -- --template react
+cd my-project
+npm install
+npm run dev</code></pre><button type="button" class="copy">Copy</button></div>
+    <p class="fail"><b>"Vite requires Node.js version 20.19+"?</b> Use Node 24 (or the Docker setup from lecture 1: <code>FROM node:24</code>). <b>Page won't load from Docker?</b> Check <code>"dev": "vite --host"</code> and <code>-p 5173:5173</code>.</p>
   </section>
 
-  <h3>Homework Part II: add authentication</h3>
-  <section class="install">
-    <p><b>In this order:</b> (1) your <b>own app</b>: steps 4–8 below, (2) <b>Netflix Clone IV</b>: the same steps, (3) 100 steps of the <b>FreeCodeCamp JavaScript certification</b>.</p>
-
-    <h4>4 · Back up, then drop</h4>
-    <ol class="steps">
-      <li>Commit first: <code>git add -A && git commit -m "Before auth"</code>.<br>
-        <b>Or ask Claude</b> (in your project root):
-        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>Commit everything with the message "Before auth". Run git status first and show me the list of files. Make sure no .env or .mcp.json file is included, and wait for my approval before you commit.</code></pre><button type="button" class="copy">Copy</button></div>
-        Claude asks before running each git command. Read the file list it shows you before you say yes.</li>
-      <li>Supabase → <b>Table Editor</b> → each table → <b>Export → Export to CSV</b>. Save them in <code>supabase/backups/</code> (for example <code>users_backup_2026-10-19.csv</code>).</li>
-      <li>Confirm email is off (step 1), and Authentication → Users is empty.</li>
-      <li>In Claude, in your project root (where <code>.mcp.json</code> is), <code>/model</code> → <b>Opus</b>, then:
-        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>I backed up all my tables to CSV in supabase/backups/. Using the Supabase MCP, drop my app's tables (LIST YOUR TABLES) and any functions I made for them, so the project is empty. Show me the SQL first and wait for my approval.</code></pre><button type="button" class="copy">Copy</button></div></li>
-    </ol>
-
-    <h4>5 · The Supabase prompt</h4>
-    <ol class="steps">
-      <li>Same Claude session. Change the three paths if yours are different. The "Also for my project" part is ours: it answers what Claude usually asks.
-        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>I have confirmed my application works well with this type of database schema and am now ready to implement authentication methods to my project.
-
-I would like you to take a look at the following resources:
-
-1. User Journey can be found: front-end/app_outline/user_journey.md
-2. The current supabase schema is as follows: supabase/schema.sql
-3. The current testing data I've populated while ensuring this works is here: supabase/backups/
-
-You should know that I've currently deleted all tables existing in my project and it is now an empty project.
-
-Using these resources as context I would like you to conduct the following:
-
-1. alter the user table function as an authentication table
-2. ensure proper RLS policies are set where a user can only view the tasks they own.
-3. recreate my database tables on supabase
-
-After conducting each action, pause and ask for confirmation that your actions worked correctly before proceeding to the next step.
-
-Also for my project:
-- Order: users, then the tables, then the RLS policies, then any functions.
-- users.id is the auth.users id. A trigger on auth.users creates the profile at sign-up (that trigger is fine to add).
-- Every user_id column: not null, default auth.uid(), on delete cascade. My app will never send a user id.
-- RLS: own rows only, for every action. Rows can only point at my own rows (for example a task in my own project). No anon access.
-- Start with empty tables. Don't re-import the backups: their rows belong to a user who has no login.
-- Check my front-end code for database functions it calls (supabase.rpc). Recreate each one so the owner comes from auth.uid(): security invoker, executable by authenticated only.
-- Don't drop or change functions I didn't make, like rls_auto_enable(). Database only: don't change the front end yet.
-- Before applying each step, show me the complete SQL. When you're done, rewrite supabase/schema.sql to match.
-
-Do you have any questions before executing this task?</code></pre><button type="button" class="copy">Copy</button></div></li>
-      <li>Good answers to its questions: the users table's id <b>is</b> the <code>auth.users</code> id, and a trigger fills it in. Every <code>user_id</code> defaults to <code>auth.uid()</code>. Every policy is <code>to authenticated</code> and allows only your own rows. Don't re-import the backups if their rows belong to a user who has no login. Update <code>supabase/schema.sql</code> when done.</li>
-      <li><b>At each pause, check before you confirm:</b> Database → Triggers (<code>on_auth_user_created</code>). Authentication → Policies (<code>auth.uid() = user_id</code>, no "dev:" rules). Table Editor (your tables, RLS on).</li>
-    </ol>
-
-    <h4>6 · The Vite + React prompt</h4>
-    <ol class="steps">
-      <li>Fill in your URL (no <code>/rest/v1</code>) and publishable key, both from <code>front-end/.env</code>:
-        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>Utilizing the following resources:
-
-- Supabase db schema: supabase/schema.sql
-- user journey: front-end/app_outline/user_journey.md
-- Project API url: https://your-project-id.supabase.co
-- Project API Key: your-publishable-key
-
-I would like you to update the functionality for the User Authentication process. Consider the following actions a user can take:
-
-- Register: A brand new user can sign up for our application and interact with our site.
-- Log In: A returning user can interact with our site and ONLY their corresponding data
-- Log out: A logged in user can end their session and exit our website while removing their credentials from the front-end code.
-- User Confirmation: While logged in we need to have a way of confirming who the user is
-    - while logged in if the user refreshes the browser, we should be able of leveraging the current credentials to recover the logged in `user` and their corresponding`data`
-
-Each of these actions should be an independent phase. Utilize playwright to ensure completion of each phase prior to moving on to the next one.
-
-Do you have any questions before completing these actions?</code></pre><button type="button" class="copy">Copy</button></div></li>
-      <li>Good answers: a Log in page and a Register page; every other page needs a logged-in user. Show the user's name and a Log out button in the header. Keep all Supabase calls in your one service file. Remove any demo or default user id. Never use the secret key.</li>
-    </ol>
-
-    <h4>7 · Prove it with two accounts</h4>
-    <ol class="steps">
-      <li><code>cd front-end && npm run dev</code>. Register account A in a normal window and add something.</li>
-      <li>Register account B in a <b>private window</b>. B must not see A's data.</li>
-      <li>Refresh A: still logged in. Log out: back to Log in.</li>
-      <li>Table Editor → users: one row per account (the trigger made them). Your data's <code>user_id</code> matches the right account.</li>
-    </ol>
-
-    <h4>8 · Commit</h4>
-    <ol class="steps">
-      <li>Read Claude's summary, especially its <b>assumptions</b>.</li>
-      <li><code>git status</code>: no <code>.env</code>. Commit and push:
-        <div class="cmdwrap"><pre class="cmd"><code>git add -A
-git commit -m "Add authentication and user RLS"
-git push</code></pre><button type="button" class="copy">Copy</button></div>
-        <b>Or ask Claude:</b>
-        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>Run git status and show me what changed. Check that no .env or .mcp.json file is included. Then suggest a commit message that describes the authentication work, and wait for my approval. After I approve, commit and push.</code></pre><button type="button" class="copy">Copy</button></div>
-        Check its file list yourself: if you see <code>.env</code> or <code>.mcp.json</code>, say no and ask Claude to add them to <code>.gitignore</code> first.</li>
-    </ol>
-  </section>
-
+  <h3>Kit</h3>
   <ol class="kit">
-    <li><a href="https://github.com/kabeier/Claude-and-auth/blob/main/demo-kit/prompts.md" target="_blank" rel="noopener"><b>All the prompts</b><span>Drop, Supabase, Vite + React, and good answers to Claude's questions.</span></a></li>
-    <li><a href="https://github.com/kabeier/Claude-and-auth/blob/main/demo-kit/backup-ticked-auth/supabase/schema.sql" target="_blank" rel="noopener"><b>schema.sql</b><span>Ticked's tables with the trigger and every RLS policy.</span></a></li>
-    <li><a href="https://github.com/kabeier/Claude-and-auth/blob/main/demo-kit/backup-ticked-auth/front-end/src/data/db.js" target="_blank" rel="noopener"><b>db.js</b><span>Register, log in, log out, and the data calls, in one file.</span></a></li>
-    <li><a href="https://github.com/kabeier/Claude-and-auth/blob/main/demo-kit/backup-ticked-auth/front-end/src/context/AuthContext.jsx" target="_blank" rel="noopener"><b>AuthContext.jsx</b><span>Who is logged in, and how a refresh keeps you logged in.</span></a></li>
+    <li><a href="https://github.com/kabeier/intro-react/blob/main/demo-kit/RUNBOOK.md" target="_blank" rel="noopener"><b>Runbook</b><span>For the instructor: keys, slide by slide.</span></a></li>
   </ol>
 
-  <h3>Diagrams</h3>
-  <div class="gallery" id="gallery"></div>
-
-  <footer>Want to edit a diagram? Download its .tldr file and drag it onto <a href="https://www.tldraw.com" target="_blank" rel="noopener">tldraw.com</a>. Earlier lectures: <a href="https://kabeier.github.io/SPAs-and-Claude/" target="_blank" rel="noopener">SPAs and Claude</a> · <a href="https://kabeier.github.io/Databases-and-Supabase/" target="_blank" rel="noopener">Databases and Supabase</a> · <a href="https://kabeier.github.io/Claude-and-full-stack-apps/" target="_blank" rel="noopener">Full-Stack Apps</a>.</footer>
+  <footer>Earlier: <a href="https://kabeier.github.io/intro-html-css-dom/" target="_blank" rel="noopener">HTML, CSS &amp; the DOM</a> · <a href="https://kabeier.github.io/fundamentals-week/" target="_blank" rel="noopener">Fundamentals week</a>.</footer>
 </main>
 <script>
   document.querySelectorAll('.copy').forEach((b) => b.onclick = async () => {
     await navigator.clipboard.writeText(b.previousElementSibling.innerText.trim()); b.textContent = 'Copied'; setTimeout(() => (b.textContent = 'Copy'), 1500)
   })
-  const DIAGRAMS = [
-    ['AU1-01-bouncer', 'Bouncer, then VIP list'], ['AU1-02-four-types', 'Four ways to log in'],
-    ['AU1-03-jwt', 'A JWT, three parts'], ['AU1-04-refresh', 'Access + refresh tokens'],
-    ['AU1-05-who-is-asking', 'How the database knows who\'s asking'], ['AU2-01-auth-model', 'Ticked with logins'],
-    ['AU2-02-workflows', 'Four front-end workflows'],
-  ]
-  document.getElementById('gallery').innerHTML = DIAGRAMS.map(([f, t]) => `
-    <figure><a href="diagrams/${f}.png" target="_blank" rel="noopener"><img src="diagrams/${f}.png" alt="${t}" loading="lazy"></a>
-    <figcaption>${t}<a href="diagrams/${f}.tldr" download>.tldr</a></figcaption></figure>`).join('')
 </script>
 </body>
 </html>

@@ -3,129 +3,289 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lecture N · TITLE</title>
-<link rel="stylesheet" href="../shared/deck.css">
-<!-- Slide-specific tweaks go in a small <style> here (e.g. pre b.ours { color: #ffe76a; }) -->
+<title>Unit 2 · Lecture 1 · React + Vite</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=1">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .flow { display: flex; align-items: center; gap: 14px; font: 600 24px var(--mono); flex-wrap: wrap; }
+  .flow div { border: 3px solid var(--ink); border-radius: 8px; padding: 14px 18px; background: #fff; }
+  .flow .hl { background: #ffe76a; }
+  .flow span { font-size: 32px; color: var(--muted); }
+</style>
 </head>
 <body data-minutes="40">
 <div class="stage">
 
-<!--
-  One <section class="slide"> per slide. Attributes:
-    data-seg  = the segment name shown top-left (e.g. "Open", "Activity: Name", "Live: …", "Wrap up")
-    data-at   = the minute this slide should start at (drives the presenter clock)
-  Every slide gets <aside class="notes">: what to SAY and DO, as short bullets.
-  Slide types below: title · statement · diagram · table · two cards · activity · code/prompt · homework.
-  Delete the ones you don't need; keep ~12–16 slides for a 40-minute lecture.
--->
-
-<!-- ============ OPEN (0–3) ============ -->
 <section class="slide title" data-seg="Open" data-at="0">
-  <div class="kicker">Building Applications · TOPIC · Part 1 of 2</div>
-  <h1>Lecture title in sentence case</h1>
-  <p class="sub">One sentence: the question this lecture answers, in the running app's terms.</p>
+  <div class="kicker">Front-End · Unit 2: React and Requests · Lecture 1 of 2</div>
+  <h1>React draws the page. Vite runs it while we code.</h1>
+  <p class="sub">We start the Pokemon project: create it, run it in Docker, learn JSX.</p>
   <aside class="notes">
-    <p><b>Before class</b> (demo-kit/RUNBOOK.md): the state everything must be in.</p>
-    <p>Tabs to have open: … Press <b>T</b> to start the clock.</p>
+    <p><b>Before class</b>: Docker Desktop running; Node 24 on your laptop. Open this deck, <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
+    <p>The live preview here runs React in the browser (no server needed). Students run the real thing in Docker.</p>
+    <p>Press <b>T</b> to start the clock.</p>
   </aside>
 </section>
 
-<section class="slide statement" data-seg="Open" data-at="1">
-  <h2>The hook: what's wrong / missing right now</h2>
-  <ul>
-    <li>Concrete fact about the running app</li>
-    <li>Why that's a problem</li>
-    <li>…</li>
-  </ul>
-  <p class="bottomline">Today: what we'll learn. Next lecture: what we'll build.</p>
-  <aside class="notes">
-    <p><b>** LIVE, 1 minute. **</b> The exact demo step that shows the problem.</p>
-  </aside>
-</section>
-
-<!-- ============ CONCEPT (3–8) ============ -->
-<section class="slide diagram" data-seg="Concept" data-at="3">
-  <img src="../diagrams/XX1-01-name.png" alt="Full description of the diagram for screen readers and for the zoom view.">
-  <div class="src">diagrams/XX1-01-name.tldr</div>
-  <aside class="notes">
-    <p>"The one sentence to say about this picture."</p>
-    <ul><li>Point 1</li><li>Point 2</li></ul>
-  </aside>
-</section>
-
-<section class="slide" data-seg="Concept" data-at="5">
-  <h2>Comparison table</h2>
-  <table class="dbt">
-    <tr><th></th><th>Option A</th><th>Option B</th></tr>
-    <tr><td><b>Row</b></td><td>…</td><td class="pk">highlighted cell</td></tr>
-  </table>
-  <p class="bottomline">The one line to remember.</p>
-  <aside class="notes"><p>…</p></aside>
-</section>
-
-<section class="slide" data-seg="Concept" data-at="6">
-  <h2>Two cards side by side</h2>
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>Two tools, two jobs</h2>
   <div class="cols">
-    <div class="card blue"><h3>Left idea</h3><p>Short text.</p></div>
-    <div class="card red"><h3>Right idea</h3><p>Short text.</p></div>
+    <div class="card blue"><h3>React</h3><p>A JavaScript library for building the page from <b>components</b>: functions that return what to show.</p></div>
+    <div class="card green"><h3>Vite</h3><p>The dev tool: creates the project, runs a <b>dev server</b> with hot reload, and builds the final files.</p></div>
   </div>
-  <p class="bottomline">The contrast in one line.</p>
-  <aside class="notes"><p>…</p></aside>
+  <p class="bottomline">React decides what is on the page. Vite serves it to the browser while you work.</p>
+  <aside class="notes">
+    <p>Say: "Unit 1 we changed the page by hand with querySelector. React lets us describe the page; it does the DOM work."</p>
+    <p>Vite = French for "fast". Its dev server reloads the page the moment you save.</p>
+  </aside>
 </section>
 
-<!-- ============ ACTIVITY (8–14) ============ -->
-<section class="slide activity" data-seg="Activity: Name" data-at="8">
-  <h2>Activity: Name</h2>
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>How React updates the page (the virtual DOM)</h2>
+  <table class="dbt small">
+    <tr><th></th><th>Unit 1, by hand</th><th>React</th></tr>
+    <tr><td><b>You write</b></td><td>"find this element, change its text"</td><td>"the page should look like this" (JSX)</td></tr>
+    <tr><td><b>When data changes</b></td><td>you find and fix every element yourself</td><td>React runs your component again</td></tr>
+    <tr><td><b>Then</b></td><td>—</td><td class="pk">compares the <b>new</b> result with the <b>previous</b> result, and changes only what differs in the real DOM</td></tr>
+  </table>
+  <p class="bottomline">The virtual DOM is React's copy of the last render, not a copy it checks the real page against.</p>
+  <aside class="notes">
+    <p>Say: "React keeps the last thing your component returned. Next time, it compares the new one with that, and touches the real page only where they differ."</p>
+    <p><b>Different from the curriculum</b> (until merged): it said the virtual DOM is "compared against the DOM". React compares render output with the previous render output.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live: create" data-at="5">
+  <h2>Create the project</h2>
+  <pre style="font-size:24px">npm create vite@latest pokemon-app -- --template react
+cd pokemon-app
+npm install
+npm run dev        <span class="c"># http://localhost:5173</span></pre>
+  <ul class="small" style="margin-top:20px">
+    <li><b>@latest</b>: today's Vite (9.3); <b>--template react</b>: React with JavaScript, no questions asked</li>
+    <li><b>npm install</b> reads package.json and fills <code>node_modules</code></li>
+  </ul>
+  <p class="bottomline">This template is our starting point. Next: run it in Docker.</p>
+  <aside class="notes">
+    <p><b>** LIVE, about 2 minutes. **</b> Students type along in a terminal (Node 24).</p>
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">Part</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Means</th></tr>
+      <tr><td style="padding:4px 10px"><code>npm create vite@latest</code></td><td style="padding:4px 10px">run the create-vite tool, newest version</td></tr>
+      <tr><td style="padding:4px 10px"><code>pokemon-app</code></td><td style="padding:4px 10px">folder to create</td></tr>
+      <tr><td style="padding:4px 10px"><code>-- --template react</code></td><td style="padding:4px 10px">pass the template to the tool (the first -- separates npm's options)</td></tr>
+    </table>
+    <p><b>Different from the curriculum</b> (until merged): it showed <code>npm create vite &lt;name&gt;</code> without @latest or a template.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Docker prep" data-at="7">
+  <h2>Ready for Docker <span class="say">package.json</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="null" data-steps="f1s1 f1s2" data-files="package.json src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b> The preview shows the template running.</p>
+<!-- steps:react-vite:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"dev": "vite --host",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm run dev starts Vite. --host: listen on all interfaces, so Docker's published port can reach it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"engines": {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">engines documents which Node versions work: Vite 8 and (later) Cypress 16 both need one of these.</td></tr>
+</table>
+<!-- /steps -->
+    <p><b>Different from the curriculum</b> (until merged): it said --host is needed "at every parent level" of a Docker network. Real reason: inside a container Vite listens only on the container's own localhost.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Docker" data-at="9">
+  <h2>Dockerfile and run_container.sh <span class="say">Dockerfile · .dockerignore · run_container.sh</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f1s2" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="Dockerfile .dockerignore run_container.sh package.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Then students run <code>bash run_container.sh</code> and open http://localhost:5173.</p>
+<!-- steps:react-vite:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>Dockerfile</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>FROM node:24</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Start from the official Node 24 image. WORKDIR = the folder inside the container where everything happens.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>Dockerfile</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>COPY . .</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Copy the project in, then install the packages inside the image.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>Dockerfile</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>EXPOSE 5173</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">EXPOSE documents the port. CMD = what runs when the container starts: our dev script.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.dockerignore</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>node_modules</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Keep node_modules out of the image: the image installs its own Linux versions.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>run_container.sh</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>docker build -t react-img .</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Build the image from the Dockerfile in this folder (the dot) and name it react-img.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>run_container.sh</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>docker run --rm \</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One flag per line. Read the table in the notes out loud: each flag has one job.</td></tr>
+</table>
+<!-- /steps -->
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">Flag</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Job</th></tr>
+      <tr><td style="padding:4px 10px"><code>--rm</code></td><td style="padding:4px 10px">delete the container when it stops</td></tr>
+      <tr><td style="padding:4px 10px"><code>-p 5173:5173</code></td><td style="padding:4px 10px">laptop port → container port</td></tr>
+      <tr><td style="padding:4px 10px"><code>-v "$(pwd)":/app</code></td><td style="padding:4px 10px">your folder inside the container: edits show up, hot reload works</td></tr>
+      <tr><td style="padding:4px 10px"><code>-v /app/node_modules</code></td><td style="padding:4px 10px">keep the <b>container's</b> node_modules (don't let your laptop's hide it)</td></tr>
+      <tr><td style="padding:4px 10px"><code>--name react-container</code></td><td style="padding:4px 10px">a name, to stop it later</td></tr>
+    </table>
+    <p><b>Different from the curriculum</b> (until merged): FROM node:18 (Vite 8 needs 20.19+); and the -v /app/node_modules explanation was reversed.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Tour" data-at="14">
+  <h2>What create-vite made</h2>
+  <table class="dbt small">
+    <tr><th>File</th><th>Job</th></tr>
+    <tr><td><code>package.json</code></td><td>name, scripts (dev, build, lint), dependencies</td></tr>
+    <tr><td><code>node_modules/</code></td><td>the installed packages (never edit, never commit)</td></tr>
+    <tr><td><code>.gitignore</code></td><td>keeps node_modules and build output out of git</td></tr>
+    <tr><td><code>index.html</code></td><td>the one real page, with <code>&lt;div id="root"&gt;</code></td></tr>
+    <tr><td class="pk"><code>src/main.jsx</code></td><td>starts React: draws <code>&lt;App /&gt;</code> into #root</td></tr>
+    <tr><td class="pk"><code>src/App.jsx</code></td><td>our first component: where we work</td></tr>
+    <tr><td><code>public/</code> · <code>.oxlintrc.json</code></td><td>files served as-is · the linter's settings (<code>npm run lint</code>)</td></tr>
+  </table>
+  <p class="bottomline">We work in src/. index.html and main.jsx just wire React up.</p>
+  <aside class="notes">
+    <p>Commit <code>package-lock.json</code>: it pins exact versions; <code>npm ci</code> (CI, a future lecture) installs from it.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="15">
+  <h2>From index.html to your component</h2>
+  <div class="flow">
+    <div>index.html<br><small>&lt;div id="root"&gt;</small></div><span>→</span>
+    <div>src/main.jsx<br><small>createRoot(#root)</small></div><span>→</span>
+    <div class="hl">&lt;App /&gt;<br><small>src/App.jsx</small></div><span>→</span>
+    <div>JSX → real DOM<br><small>inside #root</small></div>
+  </div>
+  <ul class="small" style="margin-top:28px">
+    <li>The browser loads <b>index.html</b>; its script loads <b>main.jsx</b></li>
+    <li><b>createRoot</b> takes #root; <b>render(&lt;App /&gt;)</b> calls your component</li>
+    <li><b>StrictMode</b> runs extra checks while developing (nothing in production)</li>
+  </ul>
+  <p class="bottomline">App() returns JSX; React turns it into elements inside #root.</p>
+  <aside class="notes">
+    <p>Show it: DevTools → Elements: everything React draws sits inside &lt;div id="root"&gt;.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: clean up" data-at="17">
+  <h2>Make the page ours <span class="say">src/App.jsx · index.css · App.css</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f2s6" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5 f3s6" data-files="src/App.jsx src/index.css src/App.css src/assets/react.svg src/assets/vite.svg index.html"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Press <b>A</b>: the template disappears, our heading appears.</p>
+<!-- steps:react-vite:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty index.css: its styles centre everything and add dark mode we don't want.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty App.css too. We write our own styles.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function App() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A component is a function that returns what to show. Watch the page: just our heading.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/assets/react.svg</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete the demo logos (and hero.png on your laptop).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/assets/vite.svg</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Nothing imports them any more.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>index.html</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;title&gt;Pokemon Project&lt;/title&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">index.html is the one real HTML page. React draws into its &lt;div id="root"&gt;.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="20">
+  <h2>JSX: HTML-like, with JavaScript rules</h2>
+  <table class="dbt small">
+    <tr><th>Rule</th><th>Example</th></tr>
+    <tr><td>Return <b>one</b> root</td><td><code>&lt;&gt; … &lt;/&gt;</code> (a fragment) around siblings</td></tr>
+    <tr><td><b>Close</b> every tag</td><td><code>&lt;img /&gt;</code>, <code>&lt;input /&gt;</code></td></tr>
+    <tr><td><b>{ }</b> = JavaScript here</td><td><code>&lt;p&gt;{message}&lt;/p&gt;</code></td></tr>
+    <tr><td><b>className</b>, <b>htmlFor</b></td><td>class and for are JavaScript words</td></tr>
+    <tr><td>Props are <b>camelCase</b></td><td><code>onClick</code>, <code>style={{ fontSize: 20 }}</code></td></tr>
+    <tr><td>Components start with a <b>Capital</b></td><td><code>&lt;App /&gt;</code> vs <code>&lt;div&gt;</code></td></tr>
+  </table>
+  <p class="bottomline">Every Fix It problem today breaks one of these rules.</p>
+  <aside class="notes">
+    <p>Say: "JSX looks like HTML but it is JavaScript underneath, so it follows JavaScript's rules."</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: variables" data-at="21">
+  <h2>{ } puts JavaScript values on the page <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f3s6" data-steps="f4s1 f4s2" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b></p>
+<!-- steps:react-vite:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let message = "Hello Pokemon trainers"</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A normal JavaScript variable inside the component.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>return (</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two elements now, so wrap them in a fragment &lt;&gt;. {message} = put the value here.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: functions" data-at="23">
+  <h2>Call a function inside { } <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f4s2" data-steps="f5s1 f5s2" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b> Ask: "what if we write {sayHello} without ()?" (Fix It problem 5.)</p>
+<!-- steps:react-vite:f5 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const sayHello = () =&gt; "Hello from a function"</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An arrow function that returns a string.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;p&gt;{sayHello()}&lt;/p&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Call it inside {}: the brackets () run it and its result is shown.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: className" data-at="25">
+  <h2>className and a CSS import <span class="say">src/App.css · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f5s2" data-steps="f6s1 f6s2 f6s3" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> After N 1 nothing changes: point out that App.jsx does not import App.css yet.</p>
+<!-- steps:react-vite:f6 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.myText {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A class rule in App.css. Nothing changes yet: App.jsx does not use it, and does not import the file.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import './App.css'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Import the CSS file. Vite adds its styles to the page.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;p className="myText"&gt;{message}&lt;/p&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">className, not class. Now the message is big.</td></tr>
+</table>
+<!-- /steps -->
+    <p><b>Different from the curriculum</b> (until merged): its App.jsx examples left out <code>import './App.css'</code>.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: style" data-at="28">
+  <h2>Inline styles are objects <span class="say">src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="react-vite" data-start="f6s3" data-steps="f7s1" data-files="src/App.jsx src/App.css"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b></p>
+<!-- steps:react-vite:f7 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;p className="myText" style={{ color: "red" …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Double braces: JavaScript, then an object. Property names are camelCase, values are strings.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="30">
+  <h2>Activity: Fix it (JSX)</h2>
   <div class="countdown" data-sec="360"></div>
   <ol class="steps">
-    <li>A situation appears</li>
-    <li>In chat on "go": <b>OPTION A</b>, <b>OPTION B</b> or <b>OPTION C</b></li>
-    <li>Bonus: …</li>
+    <li>Open <b>Fix it</b> → <b>Unit 2 · Lecture 1</b> from the class site</li>
+    <li>Read the symptom and the <b>Console</b> panel</li>
+    <li>Fix it, press <b>Fix</b>: <b>✅ Fixed!</b> or <b>❌ Still broken</b></li>
+    <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
-  <p class="muted small" style="margin-top:24px">Page: activity-name/</p>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=react-vite" target="_blank" rel="noopener">fixit.html?lesson=react-vite</a> · stuck 2 minutes? <b>Hint</b>, then <b>Show solution</b></p>
   <aside class="notes">
-    <p>About 30 seconds a card; the first 6 are the core set. Space reveals.</p>
-    <p>Answers are also in your Notes (teacher guide).</p>
+    <p>Click the timer (6 minutes). Every problem breaks one rule from the JSX rules slide.</p>
+    <p>Answers: teacher guide, and behind <b>Show solution</b>.</p>
   </aside>
-</section>
-
-<!-- ============ LIVE (14–30) ============ -->
-<section class="slide" data-seg="Live: the step" data-at="14">
-  <h2>The prompt</h2>
-  <p class="muted" style="font-size:19px; margin:-14px 0 8px">The curriculum's prompt, our paths in bold, <b style="color:#b8860b">our block in yellow</b>.</p>
-  <pre style="font-size:15px; line-height:1.4; padding:18px 26px; white-space:pre-wrap">Curriculum prompt text, word for word, with <b>our/paths</b> in bold.
-
-<b class="ours">Also for this project:
-- Answers to the questions Claude will ask (from the dry run).</b>
-
-Do you have any questions before …?</pre>
-  <aside class="notes">
-    <p><b>** LIVE. **</b> Where Claude runs, what to paste (also in demo-kit/prompts.md).</p>
-    <p><b>Its questions:</b> next slide.</p>
-  </aside>
-</section>
-
-<!-- ============ WRAP (35–40) ============ -->
-<section class="slide" data-seg="Wrap up" data-at="35">
-  <h2>What you now know</h2>
-  <ul class="small">
-    <li>Takeaway 1</li>
-    <li>Takeaway 2</li>
-  </ul>
-  <p class="bottomline">Next lecture: … (or "in future lectures")</p>
-  <aside class="notes"><p>…</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
-  <h2>Homework, Part I</h2>
-  <ol style="list-style:none;padding-left:0" class="small">
-    <li><b>Priority 1, …:</b> …</li>
-    <li><b>Priority 2, …:</b> …</li>
+  <h2>Homework</h2>
+  <ol class="steps small">
+    <li><b>Part I</b>: "Grab the previous Vanilla (HTML/CSS/JS) assignments you've completed and turn them into Dockerized React + Vite Projects."</li>
+    <li><b>Part II</b> (after lecture 2): Pokémon Theme Team · To-Do List (React) · Reading: Beginning with React.js (Ch. 4; Ch. 11 to p. 272)</li>
   </ol>
-  <aside class="notes"><p>Full steps are on the class site.</p></aside>
+  <p class="bottomline">Top to bottom: they get harder as you go. Links are on the class site.</p>
+  <aside class="notes">
+    <p>Curriculum: "It is important to practice making these React projects to the point where it's a reflex."</p>
+  </aside>
 </section>
 
 </div>
 <script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=1"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/livepad.js?v=1"></script>
 </body>
 </html>
