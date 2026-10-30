@@ -69,3 +69,17 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 
 /* Lines explained by the glossary that come from a template or config file. */
 .ex-boiler { display: inline-block; margin: 0 0 6px; padding: 2px 10px; border-radius: 999px; background: #eef0f3; color: #4a5568; font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+
+/* The open lecture's features: a row of numbered buttons above the main content. */
+.ex-featbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
+.ex-featbar-label { font: 800 18px 'Bricolage Grotesque', sans-serif; margin-right: 4px; }
+.ex-featbar .ex-feature { font-size: 15px; padding: 7px 11px; }
+/* Long file paths (src/components/PokeSearch/PokeCard.jsx) wrap instead of widening the page on phones. */
+.ex-tabs .ex-tab { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.ex-step code { overflow-wrap: anywhere; }
+/* Lecture picker: the list on wide screens, a dropdown on phones. */
+.ex-lesson-select { display: none; width: 100%; font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 8px 10px; border: 2px solid var(--ink); border-radius: 4px; background: #fff; color: var(--ink); }
+@media (max-width: 1100px) {
+  .ex-lessons { display: none; }
+  .ex-lesson-select { display: block; }
+}

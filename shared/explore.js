@@ -49,13 +49,18 @@
   const mainEl = document.querySelector('.ex-main')
   const storyEl = document.querySelector('.ex-story')
 
+  // Left column: the lectures. The features of the open lecture sit in a row above the main content.
   function renderFeatures() {
-    featuresEl.innerHTML = `<div class="ex-lessons">${Course.all().map((l) =>
-      `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}">${esc(lessonName(l))}: ${esc(l.title)}</a>`).join('')}</div>` +
-      '<h2>Features</h2>' + feats.map((f, k) =>
-      `<button type="button" class="ex-feature${f.id === at ? ' on' : ''}" data-feature="${f.id}"><b>${k + 1}</b> ${esc(f.title)}</button>`).join('')
-    featuresEl.querySelectorAll('.ex-feature').forEach((b) => (b.onclick = () => go(b.dataset.feature)))
+    featuresEl.innerHTML = '<h2>Lectures</h2><div class="ex-lessons">' + Course.all().map((l) =>
+      `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}"${l === lesson ? ' aria-current="page"' : ''}>${esc(lessonName(l))}: ${esc(l.title)}</a>`).join('') + '</div>' +
+      // Phones: one dropdown instead of the long list.
+      '<select class="ex-lesson-select" aria-label="Lecture">' + Course.all().map((l) =>
+      `<option value="${l.id}"${l === lesson ? ' selected' : ''}>${esc(lessonName(l))}: ${esc(l.title)}</option>`).join('') + '</select>'
+    const sel = featuresEl.querySelector('.ex-lesson-select')
+    sel.onchange = () => { const l = Course.get(sel.value); location.href = `?lesson=${l.id}&at=${l.features[0].id}` }
   }
+  const featureBar = () => `<nav class="ex-featbar" aria-label="Features of this lecture"><span class="ex-featbar-label">Features</span>` + feats.map((f, k) =>
+    `<button type="button" class="ex-feature${f.id === at ? ' on' : ''}" data-feature="${f.id}"${f.id === at ? ' aria-current="step"' : ''}><b>${k + 1}</b> ${esc(f.title)}</button>`).join('') + '</nav>'
 
   function renderMain() {
     const f = featOf(at)
@@ -64,7 +69,7 @@
     if (!(tab in files)) tab = Course.tabOrder(Object.keys(files))[0]
     const origins = Course.origins(lesson, lastStep(f))
     const mine = new Set(f.steps.map((s) => s.id))
-    mainEl.innerHTML = `
+    mainEl.innerHTML = featureBar() + `
       <section class="ex-card">
         <p class="ex-kicker">Feature ${k + 1} of ${feats.length}</p>
         <h2>${esc(f.title)}</h2>
@@ -107,6 +112,7 @@
     mainEl.querySelector('.ex-copy').onclick = (e) => {
       try { navigator.clipboard.writeText(files[tab]); e.target.textContent = 'Copied ✓' } catch { e.target.textContent = 'Select and copy' }
     }
+    mainEl.querySelectorAll('.ex-feature').forEach((b) => (b.onclick = () => go(b.dataset.feature)))
     mainEl.querySelectorAll('.ex-tab').forEach((b) => (b.onclick = () => { tab = b.dataset.file; picked = null; renderMain(); storyHint() }))
     mainEl.querySelectorAll('.ex-line').forEach((d) => (d.onclick = () => pick(Number(d.dataset.line))))
   }
