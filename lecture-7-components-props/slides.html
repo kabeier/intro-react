@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 5 · Lecture 1 · Components and props</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -92,6 +92,7 @@
   <div class="livepad" data-lesson="components-props" data-start="f1s5" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="src/components/Heading/Heading.jsx src/components/Heading/index.js src/App.jsx"></div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> One folder per component; index.js makes the import short.</p>
+    <p>Optional for curious students: <a href="../optional-css-modules/" target="_blank" rel="noopener">Components in folders, and CSS Modules</a> (folders + index.js, then a CSS Module per component).</p>
 <!-- steps:components-props:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The heading state lives with the heading now.</td></tr>
@@ -148,7 +149,7 @@
     <p><b>** CODE ALONG, about 4 minutes. **</b> Cut and paste: the state, the effects, the functions, the JSX. Nothing new.</p>
 <!-- steps:components-props:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState, useEffect } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cut and paste: the two states, both effects, the functions, the form and the cards. Nothing new, just a new home.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState, useEffect } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cut and paste: the two states, both effects, the functions, the form and the cards. Nothing new, just a new home.<br><b>⚠ For now (not the final way):</b> The list and the Pikachu start-up effect live in PokeSearch. Fine for one page; once there are pages, they reset every time Home opens. Fixed in: Unit 8 · Lecture 2 (moved up to App).</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/index.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>export { default } from './PokeSearch'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Its index.js.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App is now only the page layout. Run the tests: all 12 green.</td></tr>
 </table>
@@ -260,7 +261,7 @@
 <script src="../shared/course/hooks-usestate.js?v=1"></script>
 <script src="../shared/course/hooks-useeffect.js?v=1"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 <script src="../shared/cyrunner.js?v=4"></script>
 </body>
 </html>

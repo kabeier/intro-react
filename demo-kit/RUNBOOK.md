@@ -23,9 +23,11 @@ Keys: **N** next step · **Shift+N** reset · **A** live app · **↗ Pop out** 
 | 8 | 15 | DevTools → Elements on the pop-out | index.html → main.jsx → App |
 | 9 | 17 | **N ×6**, A | make the page ours |
 | 10 | 20 | — | JSX rules |
-| 11–14 | 21–28 | **N** through each | {}, functions, className + import, style object |
-| 15 | 30 | timer | Fix It (JSX) 1–6 |
-| 16 | 37 | — | homework |
+| 11–13 | 21–25 | **N** through each | {}, functions, className + import |
+| 14 | 27 | — | all CSS is one stylesheet (two .title rules clash); optional page for the curious |
+| 15 | 28 | **N** through | style object |
+| 16 | 30 | timer | Fix It (JSX) 1–6 |
+| 17 | 37 | — | homework |
 
 ## Lecture 2 · Async Requests (~40 min)
 | # | Min | Do | Say |

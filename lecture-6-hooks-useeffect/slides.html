@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 4 · Lecture 2 · useEffect</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -129,8 +129,8 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Stub the start-up request in this spec too.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('should render the Pikachu card on load',…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The planned rewrite from unit 3: the page now starts with Pikachu. Red until we build it.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cy.intercept('GET', '**/api/v2/pokemon/pikac…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">And here.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let ignore = false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.<br><b>⚠ For now (not the final way):</b> No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state. Fixed in: the next step (the ignore flag).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let ignore = false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.<br><b>✓ The right way:</b> replaces No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -209,7 +209,7 @@
 <script src="../shared/course/cypress-assertions.js?v=1"></script>
 <script src="../shared/course/hooks-usestate.js?v=1"></script>
 <script src="../shared/course/hooks-useeffect.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 <script src="../shared/cyrunner.js?v=4"></script>
 </body>
 </html>

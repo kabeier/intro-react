@@ -64,7 +64,7 @@
     ed.addCommand(m.KeyCode.Escape, () => document.activeElement && document.activeElement.blur())
     let deco = null
     return {
-      get value() { return models[pad.tab].getValue() },
+      get value() { return models[pad.tab] ? models[pad.tab].getValue() : '' },
       set(file, text) { if (models[file].getValue() !== text) models[file].setValue(text) },
       show(file) { ed.setModel(models[file]) },
       flash(lines) {
@@ -121,7 +121,7 @@
     el.innerHTML = `<div class="lp-bar"><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
       `<span class="lp-status"></span><button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
-      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div>` +
+      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
     const statusEl = el.querySelector('.lp-status')
     const host = el.querySelector('.lp-editor')
@@ -230,6 +230,7 @@
         pad.syncTabs()
         pad.idx++
         pad.refresh()
+        pad.showLater()
         return
       }
       const old = pad.files[step.file] || ''
@@ -262,12 +263,41 @@
       pad.idx++
       pad.refresh()
       pad.busy = false
+      pad.showLater()
+    }
+    // "For now" code typed on this slide (a step with later:) gets a notice until a step fixes it;
+    // a step that fixes earlier code (fixes:) says so.
+    const stepRef = (ref) => {
+      const [lid, sid] = ref.includes(':') ? ref.split(':') : [pad.lesson && pad.lesson.id, ref]
+      const l = Course.get(lid)
+      return l && l.features.flatMap((f) => f.steps).find((x) => x.id === sid)
+    }
+    pad.showLater = () => {
+      const box = el.querySelector('.lp-later')
+      if (!box) return
+      const typed = pad.steps.slice(0, pad.idx).filter(Boolean)
+      const fixed = new Set(typed.flatMap((x) => x.fixes || []))
+      const open = typed.filter((x) => x.later && !fixed.has(x.id))
+      const last = typed[typed.length - 1]
+      box.className = 'lp-later'
+      if (open.length) {
+        const w = open[open.length - 1].later
+        box.classList.add('warn')
+        box.textContent = `⚠ For now, not the final way: ${w.how} Fixed in: ${w.where}.`
+        box.hidden = false
+      } else if (last && last.fixes) {
+        const was = last.fixes.map(stepRef).filter((x) => x && x.later)
+        box.classList.add('fixed')
+        box.textContent = `✓ The right way now${was.length ? ': this replaces the earlier code. ' + was[0].later.how : '.'}`
+        box.hidden = false
+      } else box.hidden = true
     }
     pad.reset = () => {
       if (pad.busy || !pad.lesson) return
       pad.idx = 0
       pad.setFiles(Course.filesAt(pad.lesson, pad.start))
       if (pad.editor) pad.editor.flash([])
+      pad.showLater()
     }
 
     el.querySelectorAll('.lp-tab').forEach((b) => (b.onclick = () => { b.blur(); pad.showTab(b.dataset.file) }))

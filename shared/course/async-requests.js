@@ -70,7 +70,7 @@ Course.register({
       why: 'Same as lecture 2 of unit 1: stop the reload, read the fields with FormData. In JSX the listener is the onSubmit prop.',
       steps: [
         {
-          id: 'f3s1', file: 'src/App.jsx', mode: 'insertAfter', find: 'function App() {',
+          id: 'f3s1', later: { how: "Reading the form with FormData is the unit 1 way. React keeps the box's text in state (a controlled input).", where: "Unit 4 \u00b7 Lecture 1" }, file: 'src/App.jsx', mode: 'insertAfter', find: 'function App() {',
           code: '  const handleSubmit = (event) => {\n    event.preventDefault()\n    const data = Object.fromEntries(new FormData(event.target))\n    console.log(data)\n  }\n',
           say: 'preventDefault, then FormData: exactly the DOM lecture. Only the wiring is new.',
           notes: [
@@ -141,7 +141,7 @@ Course.register({
       why: 'generateCard builds a card with the DOM methods from unit 1 and puts it in #poke-container. (In unit 4 React will draw cards from state instead.)',
       steps: [
         {
-          id: 'f5s1', file: 'src/App.jsx', mode: 'insertAfter', find: 'function App() {',
+          id: 'f5s1', later: { how: "Building cards with createElement is the unit 1 way. In React the cards become data (a list in state) and React draws them with .map.", where: "Unit 4 \u00b7 Lecture 1" }, file: 'src/App.jsx', mode: 'insertAfter', find: 'function App() {',
           code: '  const generateCard = (data) => {\n    const card = document.createElement("div")\n    card.className = "card"\n    card.id = `${data.name}-card`\n    document.querySelector("#poke-container").appendChild(card)\n  }\n',
           say: 'An empty card div with an id like pikachu-card, added to the container.',
           notes: [
@@ -212,7 +212,7 @@ Course.register({
           notes: [{ match: 'alert(', what: 'A pop-up message for the user.', why: 'Errors must be visible to users, not only in the console. Cypress can check alerts (unit 3).' }],
         },
         {
-          id: 'f7s2', file: 'src/App.jsx', mode: 'insertAfter', find: '  const generateCard = (data) => {',
+          id: 'f7s2', later: { how: "This checks the page for a card. React checks the data instead: list.some(\u2026).", where: "Unit 4 \u00b7 Lecture 1" }, file: 'src/App.jsx', mode: 'insertAfter', find: '  const generateCard = (data) => {',
           code: '    if (document.getElementById(`${data.name}-card`)) return',
           say: 'Already a pikachu-card? Stop. Search pikachu twice: one card.',
           notes: [{ match: 'getElementById(`${data.name}-card`)', what: 'Looks for an existing card with this id.', why: 'Ids must be unique; a second card would also break our tests.' }],

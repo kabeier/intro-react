@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 2 · Lecture 1 · React + Vite</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -240,6 +240,22 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </aside>
 </section>
 
+<section class="slide" data-seg="Concept" data-at="27">
+  <h2>All your CSS is one stylesheet</h2>
+  <table class="dbt small">
+    <tr><th>You write</th><th>What the browser gets</th></tr>
+    <tr><td><code>import './App.css'</code> in App.jsx<br><code>import './Card.css'</code> in Card.jsx</td><td class="pk">one big stylesheet for the whole page</td></tr>
+    <tr><td><code>.title { color: red }</code> in Card.css</td><td>every element with class <code>title</code> turns red, in <b>any</b> component</td></tr>
+    <tr><td>two files both define <code>.title</code></td><td>they clash: the one loaded last wins</td></tr>
+  </table>
+  <p class="bottomline">A CSS file is not private to the component that imports it.</p>
+  <aside class="notes">
+    <p>Say: "Importing a CSS file in a component does NOT scope it to that component. Vite adds every imported file to the same page."</p>
+    <p>Fixes students meet later: unique class names, <b>CSS Modules</b> (unit 5, lecture 2), Tailwind (unit 6).</p>
+    <p>Optional, for curious students: <a href="../optional-css-modules/index.html" target="_blank" rel="noopener">Components in folders, and CSS Modules</a> (not part of the lecture).</p>
+  </aside>
+</section>
+
 <section class="slide code" data-seg="Code along: style" data-at="28">
   <h2>Inline styles are objects <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f6s3" data-steps="f7s1" data-files="src/App.jsx src/App.css"></div>
@@ -286,6 +302,6 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
 <script src="../shared/course.js?v=6"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>
 <script src="../shared/course/react-vite.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 </body>
 </html>

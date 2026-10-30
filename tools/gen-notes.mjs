@@ -30,7 +30,11 @@ function table(lessonId, featureId) {
   const rows = f.steps.map((s, k) => {
     const first = s.code ? s.code.split('\n').find((l) => l.trim()) .trim() : '(deletes code)'
     const short = first.length > 46 ? first.slice(0, 44) + '…' : first
-    return `<tr><td ${td}><b>N ${k + 1}</b></td><td ${td}><code>${esc(s.file)}</code></td><td ${td}><code>${esc(short)}</code></td><td ${td}>${esc(s.say || '')}</td></tr>`
+    // Code we replace later, and the steps that replace it, are marked so the instructor says so.
+    const ref = (r) => { const [lid, sid] = r.includes(':') ? r.split(':') : [lessonId, r]; return Course.get(lid).features.flatMap((x) => x.steps).find((x) => x.id === sid) }
+    const flag = s.later ? `<br><b>⚠ For now (not the final way):</b> ${esc(s.later.how)} Fixed in: ${esc(s.later.where)}.`
+      : s.fixes ? `<br><b>✓ The right way:</b> replaces ${s.fixes.map((r) => { const x = ref(r); return x && x.later ? esc(x.later.how) : esc(r) }).join(' / ')}` : ''
+    return `<tr><td ${td}><b>N ${k + 1}</b></td><td ${td}><code>${esc(s.file)}</code></td><td ${td}><code>${esc(short)}</code></td><td ${td}>${esc(s.say || '')}${flag}</td></tr>`
   })
   return `<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th ${td}>Press</th><th ${td}>File</th><th ${td}>Types</th><th ${td}>Say</th></tr>\n${rows.join('\n')}\n</table>`
 }

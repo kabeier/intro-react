@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 8 · Lecture 2 · useOutletContext</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -98,7 +98,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does not bring Pikachu back after it was…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first. Searching Charizard gives the old request time to arrive, so the count is honest. Red: two cards.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cut the Pikachu effect from PokeSearch…</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>return () =&gt; console.log('page unmounted')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and paste it into App. App never unmounts, so it runs once per visit.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>return () =&gt; console.log('page unmounted')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and paste it into App. App never unmounts, so it runs once per visit.<br><b>✓ The right way:</b> replaces The list and the Pikachu start-up effect live in PokeSearch. Fine for one page; once there are pages, they reset every time Home opens.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App needs axios now. Run the tests: green.</td></tr>
 </table>
 <!-- /steps -->
@@ -212,7 +212,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
 <script src="../shared/course/router-pages.js?v=1"></script>
 <script src="../shared/course/router-hooks.js?v=1"></script>
 <script src="../shared/course/outlet-context.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 <script src="../shared/cyrunner.js?v=4"></script>
 </body>
 </html>

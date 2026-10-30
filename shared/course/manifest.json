@@ -15,5 +15,6 @@
   "router-hooks.js",
   "outlet-context.js",
   "deploy-pages.js",
-  "ci-actions.js"
+  "ci-actions.js",
+  "extra-css-modules.js"
 ]

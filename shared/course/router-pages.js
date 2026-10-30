@@ -99,7 +99,7 @@ Course.register({
           ],
         },
         {
-          id: 'f4s2', file: 'src/components/NavBar/NavBar.jsx', mode: 'set',
+          id: 'f4s2', later: { how: "Plain <a> links reload the whole page, and state is lost.", where: "step 6 on this slide (Link)" }, file: 'src/components/NavBar/NavBar.jsx', mode: 'set',
           code: "function NavBar() {\n  return (\n    <nav className=\"mx-auto flex max-w-5xl gap-4 px-6 pt-4\">\n      <a href=\"/\">Home</a>\n      <a href=\"/about\">About</a>\n    </nav>\n  )\n}\n\nexport default NavBar",
           say: 'First with plain <a> tags.',
         },
@@ -116,7 +116,7 @@ Course.register({
           say: '…above main, outside the header (the header test wants one button there). Run the test: still red. The page reloaded: the marker is gone.',
         },
         {
-          id: 'f4s6', file: 'src/components/NavBar/NavBar.jsx', mode: 'set',
+          id: 'f4s6', fixes: ["f4s2"], file: 'src/components/NavBar/NavBar.jsx', mode: 'set',
           code: "import { Link } from 'react-router'\n\nfunction NavBar() {\n  return (\n    <nav className=\"mx-auto flex max-w-5xl gap-4 px-6 pt-4\">\n      <Link to=\"/\">Home</Link>\n      <Link to=\"/about\">About</Link>\n    </nav>\n  )\n}\n\nexport default NavBar",
           say: 'Link instead of a, to instead of href. Run the test: green, no reload.',
           notes: [{ match: '<Link to="/about">About</Link>', what: 'Renders an <a>, but a click changes the page without a reload.', why: 'State (the cards, the count) survives; nothing is downloaded again.',

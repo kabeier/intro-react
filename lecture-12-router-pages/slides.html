@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 7 · Lecture 2 · Pages, links and errors</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -116,11 +116,11 @@
 <!-- steps:router-pages:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('navigates with the navbar without reload…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Mark the window, click About, check the mark is still there: a reload would wipe it. Red: no nav yet.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function NavBar() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">First with plain &lt;a&gt; tags.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function NavBar() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">First with plain &lt;a&gt; tags.<br><b>⚠ For now (not the final way):</b> Plain &lt;a&gt; links reload the whole page, and state is lost. Fixed in: step 6 on this slide (Link).</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/index.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>export { default } from './NavBar'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Its index.js.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Heading from './components/Heading'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App shows it on every page…</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…above main, outside the header (the header test wants one button there). Run the test: still red. The page reloaded: the marker is gone.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Link instead of a, to instead of href. Run the test: green, no reload.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Link instead of a, to instead of href. Run the test: green, no reload.<br><b>✓ The right way:</b> replaces Plain &lt;a&gt; links reload the whole page, and state is lost.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -218,7 +218,7 @@
 <script src="../shared/course/utilities-bootstrap.js?v=1"></script>
 <script src="../shared/course/router-intro.js?v=1"></script>
 <script src="../shared/course/router-pages.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 <script src="../shared/cyrunner.js?v=4"></script>
 </body>
 </html>

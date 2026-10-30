@@ -57,3 +57,8 @@ textarea.lp-fallback { width: 100%; border: 0; resize: none; outline: none; disp
 .lp-test.fail { color: #ff7b72; }
 .lp-test pre { margin: 2px 0 6px 18px; white-space: pre-wrap; color: #ffa198; font: inherit; }
 .lp-test.pend { color: #e3b341; }
+
+/* "For now" notice: code we will replace later (amber), or the step that replaces it (green). */
+.lp-later { padding: 6px 12px; font: 600 15px 'Atkinson Hyperlegible', system-ui, sans-serif; border-bottom: 1px solid #3c3c3c; }
+.lp-later.warn { background: #fff4d6; color: #5c3d00; }
+.lp-later.fixed { background: #dcf5e4; color: #14532d; }

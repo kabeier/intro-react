@@ -21,7 +21,7 @@ Course.register({
           say: 'A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.',
         },
         {
-          id: 'f1s2', file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
+          id: 'f1s2', later: { how: "A stub that only shows the id from the URL.", where: "Feature 2, next (the real Pokemon)" }, file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
           code: "import { useParams } from 'react-router'\n\nfunction PokemonDetailsPage() {\n  const { id } = useParams()\n\n  return <h2>Pokemon #{id}</h2>\n}\n\nexport default PokemonDetailsPage",
           say: 'useParams reads the URL. The id is always a string.',
           notes: [{ match: 'const { id } = useParams()', what: 'The URL parameters, by name.', why: 'The route says :id, so the object has an id.',
@@ -50,7 +50,7 @@ Course.register({
           say: 'Test first: name, picture, type. Red.',
         },
         {
-          id: 'f2s3', file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
+          id: 'f2s3', fixes: ["f1s2"], file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
           code: "import { useEffect, useState } from 'react'\nimport { useParams } from 'react-router'\nimport axios from 'axios'\nimport Card from 'react-bootstrap/Card'\nimport Spinner from 'react-bootstrap/Spinner'\n\nfunction PokemonDetailsPage() {\n  const { id } = useParams()\n  const [pokemon, setPokemon] = useState(null)\n\n  useEffect(() => {\n    let ignore = false\n    axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)\n      .then((response) => { if (!ignore) setPokemon(response.data) })\n    return () => { ignore = true }\n  }, [id])\n\n  if (!pokemon) return <Spinner animation=\"border\" role=\"status\" />\n\n  return (\n    <Card style={{ width: '20rem' }}>\n      <Card.Img variant=\"top\" src={pokemon.sprites.front_default} alt={pokemon.name} />\n      <Card.Body>\n        <h2 className=\"text-capitalize\">{pokemon.name} #{pokemon.id}</h2>\n        <ul>\n          <li>Height: {pokemon.height}</li>\n          <li>Weight: {pokemon.weight}</li>\n          {pokemon.types.map((t) => <li key={t.type.name}>Type: {t.type.name}</li>)}\n        </ul>\n      </Card.Body>\n    </Card>\n  )\n}\n\nexport default PokemonDetailsPage",
           say: 'An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.',
           notes: [

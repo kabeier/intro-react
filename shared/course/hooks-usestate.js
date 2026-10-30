@@ -83,7 +83,7 @@ Course.register({
           ],
         },
         {
-          id: 'f3s3', file: 'src/App.jsx', mode: 'replace', find: '    const data = Object.fromEntries(new FormData(event.target))\n    const name = data.name.trim().toLowerCase()',
+          id: 'f3s3', fixes: ["async-requests:f3s1"], file: 'src/App.jsx', mode: 'replace', find: '    const data = Object.fromEntries(new FormData(event.target))\n    const name = data.name.trim().toLowerCase()',
           code: '    const name = pokemonName.trim().toLowerCase()',
           say: 'Read the name from state instead of FormData.',
         },
@@ -103,7 +103,7 @@ Course.register({
           say: 'An array state: every Pokemon we found.',
         },
         {
-          id: 'f4s2', file: 'src/App.jsx', mode: 'replace',
+          id: 'f4s2', fixes: ["async-requests:f5s1", "async-requests:f7s2"], file: 'src/App.jsx', mode: 'replace',
           find: '  const generateCard = (data) => {\n    if (document.getElementById(`${data.name}-card`)) return\n    const card = document.createElement("div")\n    card.className = "card"\n    card.id = `${data.name}-card`\n    const img = document.createElement("img")\n    img.src = data.sprites.front_default\n    img.alt = data.name\n    card.appendChild(img)\n    const h3 = document.createElement("h3")\n    h3.textContent = data.name\n    card.appendChild(h3)\n    document.querySelector("#poke-container").appendChild(card)\n  }',
           code: '  const addPokemonData = (data) => {\n    setPokemonList((list) => (list.some((pokemon) => pokemon.id === data.id) ? list : [...list, data]))\n  }',
           say: 'generateCard is gone. Adding = a new array with the old items plus the new one (never push into state). Already there? Keep the list as it is.',

@@ -172,7 +172,7 @@ Course.register({
         {
           id: 'f6s2', file: 'src/App.jsx', mode: 'replace', find: 'function App() {', code: "import './App.css'\n\nfunction App() {",
           say: 'Import the CSS file. Vite adds its styles to the page.',
-          notes: [{ match: "import './App.css'", what: 'Imports a CSS file into the component file.', why: 'Vite puts the CSS on the page. Without this line the rules in App.css do nothing.',
+          notes: [{ match: "import './App.css'", what: 'Imports a CSS file into the component file.', why: 'Vite puts the CSS on the page: the whole page, not just this component (every imported CSS file joins one stylesheet). Without this line the rules in App.css do nothing.',
             api: { name: "import './file.css'", does: 'Loads a stylesheet (Vite feature).', params: [['path', 'relative to this file', "'./App.css' = next to App.jsx"]], mistakes: ['Leaving the import out: className is right but nothing changes.'] } }],
         },
         {

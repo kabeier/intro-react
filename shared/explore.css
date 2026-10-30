@@ -83,3 +83,6 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
   .ex-lessons { display: none; }
   .ex-lesson-select { display: block; }
 }
+
+/* Code we replace later (the step has later:). */
+.ex-later { margin: 6px 0 10px; padding: 8px 12px; background: #fff4d6; border-left: 4px solid #d97706; color: #5c3d00; border-radius: 4px; }

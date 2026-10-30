@@ -82,7 +82,7 @@ Course.register({
           say: 'And here.',
         },
         {
-          id: 'f4s6', file: 'src/App.jsx', mode: 'replace', find: '  const rmData = (id) => {',
+          id: 'f4s6', later: { how: "No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state.", where: "the next step (the ignore flag)" }, file: 'src/App.jsx', mode: 'replace', find: '  const rmData = (id) => {',
           code: "  useEffect(() => {\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])\n\n  const rmData = (id) => {",
           say: 'Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.',
           notes: [
@@ -91,7 +91,7 @@ Course.register({
           ],
         },
         {
-          id: 'f4s7', file: 'src/App.jsx', mode: 'replace', find: "    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])",
+          id: 'f4s7', fixes: ["f4s6"], file: 'src/App.jsx', mode: 'replace', find: "    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])",
           code: "    let ignore = false\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => { if (!ignore) addPokemonData(response.data) })\n    return () => { ignore = true }\n  }, [])",
           say: 'The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.',
           notes: [{ match: 'let ignore = false', what: 'A flag the cleanup can flip.', why: 'If the effect is cleaned up (StrictMode, or the component leaves) before the answer arrives, we ignore that answer.',

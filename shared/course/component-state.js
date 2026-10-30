@@ -29,7 +29,7 @@ Course.register({
           say: 'One shiny value for the whole list.',
         },
         {
-          id: 'f1s4', file: 'src/components/PokeSearch/PokeSearch.jsx', mode: 'replace',
+          id: 'f1s4', later: { how: "One shiny value for every card. The next feature gives each card its own.", where: "Feature 2, next" }, file: 'src/components/PokeSearch/PokeSearch.jsx', mode: 'replace',
           find: '      <PokeContainer pokemonList={pokemonList} rmData={rmData} />',
           code: "      <Button onClick={() => setShiny((shiny) => !shiny)}>{shiny ? 'All Normal' : 'All Shiny'}</Button>\n      <PokeContainer pokemonList={pokemonList} rmData={rmData} shiny={shiny} />",
           say: 'The button flips it; the container gets it as a prop.',
@@ -70,7 +70,7 @@ Course.register({
           notes: [{ match: "cy.get('#pikachu-card img').should('have.attr', 'src').and('not.include', 'shiny')", what: 'The other card must stay normal.', why: 'This line is what proves each card has its own state.' }],
         },
         {
-          id: 'f2s2', file: 'src/components/PokeSearch/PokeSearch.jsx', mode: 'replace',
+          id: 'f2s2', fixes: ["f1s4"], file: 'src/components/PokeSearch/PokeSearch.jsx', mode: 'replace',
           find: "      <Button onClick={() => setShiny((shiny) => !shiny)}>{shiny ? 'All Normal' : 'All Shiny'}</Button>\n      <PokeContainer pokemonList={pokemonList} rmData={rmData} shiny={shiny} />",
           code: '      <PokeContainer pokemonList={pokemonList} rmData={rmData} />',
           say: 'Remove the parent button and the prop…',
@@ -103,14 +103,14 @@ Course.register({
           say: 'A test for something that already works. Run it: green.',
         },
         {
-          id: 'f3s2', file: 'src/components/PokeSearch/PokeContainer.jsx', mode: 'replace',
+          id: 'f3s2', later: { how: "key={index} on purpose, to watch it break.", where: "the next step" }, file: 'src/components/PokeSearch/PokeContainer.jsx', mode: 'replace',
           find: "      {pokemonList.map((pokemon) => (\n        <PokeCard key={pokemon.id} pokemon={pokemon} rmData={rmData} />",
           code: "      {pokemonList.map((pokemon, index) => (\n        <PokeCard key={index} pokemon={pokemon} rmData={rmData} />",
           say: 'Break it on purpose: key = index. Run the test: red. Bulbasaur moved to position 0 and got Pikachu\'s state.',
           notes: [{ match: 'key={index}', what: 'The position in the array as key.', why: 'Wrong when items can be removed or reordered: the state stays at the position, not with the item.' }],
         },
         {
-          id: 'f3s3', file: 'src/components/PokeSearch/PokeContainer.jsx', mode: 'replace',
+          id: 'f3s3', fixes: ["f3s2"], file: 'src/components/PokeSearch/PokeContainer.jsx', mode: 'replace',
           find: "      {pokemonList.map((pokemon, index) => (\n        <PokeCard key={index} pokemon={pokemon} rmData={rmData} />",
           code: "      {pokemonList.map((pokemon) => (\n        <PokeCard key={pokemon.id} pokemon={pokemon} rmData={rmData} />",
           say: 'Back to the id. Run the tests: green. A test now guards the key.',

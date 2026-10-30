@@ -74,6 +74,7 @@
         <p class="ex-kicker">Feature ${k + 1} of ${feats.length}</p>
         <h2>${esc(f.title)}</h2>
         <p class="ex-why">${esc(f.why)}</p>
+        ${f.steps.filter((x) => x.later).map((x) => `<p class="ex-later">⚠ <b>For now:</b> ${esc(x.later.how)} Fixed in: ${esc(x.later.where)}.</p>`).join('')}
         <div class="ex-tools">
           <button type="button" class="ex-before${showBefore ? ' on' : ''}">Before</button>
           <button type="button" class="ex-after${showBefore ? '' : ' on'}">After</button>
@@ -140,7 +141,10 @@
     }
     const n2 = r.note
     const api = n2.api
+    const src = r.stepId && from.features.flatMap((f) => f.steps).find((x) => x.id === r.stepId)
+    const laterHtml = src && src.later ? `<p class="ex-later">⚠ <b>For now, not the final way.</b> ${esc(src.later.how)} Fixed in: ${esc(src.later.where)}.</p>` : ''
     storyEl.innerHTML = head + `
+      ${laterHtml}
       ${n2.boilerplate ? '<p class="ex-boiler" title="Setup code that comes with the template or a tool. You rarely change it, but here is what it does.">Boilerplate · setup code from the template or a tool</p>' : ''}
       <h3>What</h3><p>${esc(n2.what)}</p>
       <h3>Why</h3><p>${esc(n2.why)}</p>

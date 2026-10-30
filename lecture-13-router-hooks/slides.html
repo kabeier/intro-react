@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 8 · Lecture 1 · useParams and useNavigate</title>
 <link rel="stylesheet" href="../shared/deck.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -46,7 +46,7 @@
 <!-- steps:router-hooks:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useParams reads the URL. The id is always a string.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useParams reads the URL. The id is always a string.<br><b>⚠ For now (not the final way):</b> A stub that only shows the id from the URL. Fixed in: Feature 2, next (the real Pokemon).</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The colon makes :id a parameter. Green.</td></tr>
 </table>
 <!-- /steps -->
@@ -62,7 +62,7 @@
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The details page shows more, so the fixture gets height, weight and types (copied from the real API).</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the Pokemon from the API', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: name, picture, type. Red.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.<br><b>✓ The right way:</b> replaces A stub that only shows the id from the URL.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -220,7 +220,7 @@
 <script src="../shared/course/router-intro.js?v=1"></script>
 <script src="../shared/course/router-pages.js?v=1"></script>
 <script src="../shared/course/router-hooks.js?v=1"></script>
-<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/livepad.js?v=4"></script>
 <script src="../shared/cyrunner.js?v=4"></script>
 </body>
 </html>

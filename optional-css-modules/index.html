@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optional: Components in folders, and CSS Modules</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/livepad.css?v=4">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; --warn:#fff4d6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.55;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 40px 28px 80px; }
+  .back { color: var(--blue); font-weight: 700; }
+  .tag { display: inline-block; margin: 18px 0 8px; padding: 3px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 15px; }
+  h1 { font: 800 clamp(36px, 6vw, 64px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 0 0 14px; }
+  .lede { max-width: 64ch; color: var(--muted); font-size: 20px; margin: 0 0 24px; }
+  section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 26px 28px; margin: 0 0 28px; }
+  h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 0 0 10px; }
+  h2 .n { color: var(--blue); margin-right: 8px; }
+  h3 { font: 800 21px 'Bricolage Grotesque', sans-serif; margin: 22px 0 6px; }
+  ul.points { margin: 0 0 14px; padding-left: 1.2em; } ul.points li { margin-bottom: 6px; }
+  code { font-size: 0.92em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+  pre { background: var(--ink); color: #f3f4f6; padding: 14px 16px; border-radius: 4px; overflow-x: auto; font-size: 15px; line-height: 1.45; margin: 8px 0 14px; }
+  pre code { background: none; padding: 0; color: inherit; }
+  pre.tree { background: #fff; color: var(--ink); border: 2px solid var(--grid); }
+  .bottom { border-left: 6px solid var(--blue); padding: 6px 12px; font-weight: 700; margin: 12px 0; }
+  .warn { background: var(--warn); border-left: 4px solid #d97706; padding: 8px 12px; border-radius: 4px; margin: 10px 0; }
+  .op-pad .livepad { height: 460px; margin: 10px 0 6px; }
+  .op-pad .lp-body { grid-template-columns: 1.15fr 1fr; }
+  .op-pad .lp-preview { position: static; width: auto; height: auto; border-left: 1px solid #3c3c3c; }
+  .op-pad .lp-app { display: none; }
+  .explore { font-size: 16px; } .explore a { color: var(--blue); font-weight: 700; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 16px; }
+  th, td { border: 1px solid var(--ink); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #eef2f8; }
+  button.check { font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 9px 16px; border-radius: 4px; border: 2px solid var(--ink); background: var(--sticky); cursor: pointer; }
+  .result { font-weight: 700; margin-left: 10px; }
+  .result.ok { color: var(--green); } .result.bad { color: #b42318; }
+  details summary { cursor: pointer; font-weight: 700; color: var(--blue); margin-top: 10px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (max-width: 760px) {
+    main { padding: 24px 16px 60px; } section { padding: 18px 16px; }
+    .op-pad .livepad { height: 640px; }
+    .op-pad .lp-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr 1fr; }
+    .op-pad .lp-preview { border-left: 0; border-top: 1px solid #3c3c3c; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../">← Lectures</a>
+  <p class="tag">Optional · not part of the lecture</p>
+  <h1>Components in folders, and CSS Modules</h1>
+  <p class="lede">Why a CSS file in React is never private to its component, how to give every component its own folder, and how a CSS Module keeps a component's class names to itself. Every editor below is live: change the code and watch the app.</p>
+
+  <section id="global">
+    <h2><span class="n">1</span>All your CSS is one stylesheet</h2>
+    <ul class="points">
+      <li><code>Card.jsx</code> imports <code>Card.css</code>; <code>Banner.jsx</code> imports <code>Banner.css</code>.</li>
+      <li>Both files have a rule called <code>.title</code>.</li>
+      <li>Vite puts <b>every</b> imported CSS file into <b>one</b> stylesheet for the whole page.</li>
+      <li>So both rules apply to both titles, and the rule loaded last wins: the card's title is blue and big, not red.</li>
+    </ul>
+    <div class="op-pad" data-feature="f1" data-tabs="src/Card.css src/Banner.css src/Card.jsx src/App.jsx"></div>
+    <p class="bottom">Importing a CSS file in a component does not make it private to that component.</p>
+    <p class="explore">Every line explained: <a href="../explore.html?lesson=extra-css-modules&amp;at=f1" target="_blank" rel="noopener">open this step in the Code Explorer</a>.</p>
+  </section>
+
+  <section id="folders">
+    <h2><span class="n">2</span>One folder per component</h2>
+    <p>Give each component a folder with everything it needs:</p>
+<pre class="tree"><code>src/
+  App.jsx
+  components/
+    Card/
+      Card.jsx       the component
+      Card.css       its styles
+      index.js       export { default } from './Card'
+    Banner/
+      Banner.jsx
+      Banner.css
+      index.js</code></pre>
+    <ul class="points">
+      <li><code>index.js</code> is the folder's front door: it passes on the component.</li>
+      <li>Importing a folder loads its <code>index.js</code>, so the import stays short: <code>import Card from './components/Card'</code>.</li>
+      <li>The folder can grow (styles, tests, small helpers) without changing any import.</li>
+    </ul>
+    <div class="warn">⚠ Folders organise files, but they do <b>not</b> scope CSS: the card's title is still blue. Step 3 fixes that.</div>
+    <div class="op-pad" data-feature="f2" data-tabs="src/components/Card/index.js src/components/Card/Card.jsx src/App.jsx src/components/Banner/Banner.css"></div>
+    <p class="explore"><a href="../explore.html?lesson=extra-css-modules&amp;at=f2" target="_blank" rel="noopener">Open this step in the Code Explorer</a>.</p>
+  </section>
+
+  <section id="module">
+    <h2><span class="n">3</span>A CSS Module keeps Card's classes to itself</h2>
+    <ol>
+      <li>Rename <code>Card.css</code> to <code>Card.module.css</code>. The rules don't change; the <b>.module.css</b> name is what matters.</li>
+      <li>Import it with a name: <code>import styles from './Card.module.css'</code>.</li>
+      <li>Use the names from the object: <code>className={styles.title}</code> instead of <code>className="title"</code>.</li>
+    </ol>
+<pre><code>import styles from './Card.module.css'
+
+function Card() {
+  return (
+    &lt;div className={styles.box}&gt;
+      &lt;h2 className={styles.title}&gt;Card title&lt;/h2&gt;
+      ...</code></pre>
+    <ul class="points">
+      <li><code>styles</code> is an object: <code>{ box: '_box_1x2y3', title: '_title_4z5w6' }</code>. Vite makes the unique names.</li>
+      <li>Only elements with that unique class get the rule. Banner's global <code>.title</code> can't reach Card any more.</li>
+      <li>Right-click the red title → Inspect: the class looks like <code>_title_13ves_7</code>.</li>
+    </ul>
+    <div class="op-pad" data-feature="f3" data-tabs="src/components/Card/Card.jsx src/components/Card/Card.module.css src/components/Banner/Banner.jsx src/components/Banner/Banner.css"></div>
+    <p class="explore"><a href="../explore.html?lesson=extra-css-modules&amp;at=f3" target="_blank" rel="noopener">Open this step in the Code Explorer</a>.</p>
+  </section>
+
+  <section id="try">
+    <h2><span class="n">4</span>Your turn: give Banner a module</h2>
+    <p>Banner still uses the global <code>Banner.css</code>. Make it a CSS Module, with the size as a second class <code>.big</code>:</p>
+    <ol>
+      <li>Fill in <code>src/components/Banner/Banner.module.css</code> (already open, empty) with <code>.title { color: royalblue; }</code> and <code>.big { font-size: 40px; }</code>.</li>
+      <li>In <code>Banner.jsx</code>, import it as <code>styles</code> and use both classes on the <code>h2</code>.</li>
+      <li>Delete <code>Banner.css</code> (or just stop importing it).</li>
+    </ol>
+    <p>Two classes on one element: join them in a template string, <code>className={`${styles.title} ${styles.big}`}</code>.</p>
+    <div class="op-pad" id="try-pad" data-feature="f3" data-tabs="src/components/Banner/Banner.module.css src/components/Banner/Banner.jsx src/components/Banner/Banner.css"></div>
+    <p class="explore">The empty <code>Banner.module.css</code> tab is ready for you. The check looks at the result on the page.</p>
+    <button type="button" class="check" id="check">Check my Banner</button><span class="result" id="result" aria-live="polite"></span>
+    <details>
+      <summary>Show the answer</summary>
+<pre><code>// Banner.module.css
+.title {
+  color: royalblue;
+}
+
+.big {
+  font-size: 40px;
+}
+
+// Banner.jsx
+import styles from './Banner.module.css'
+
+function Banner() {
+  return &lt;h2 className={`${styles.title} ${styles.big}`}&gt;Banner title&lt;/h2&gt;
+}
+
+export default Banner</code></pre>
+      <p class="explore"><a href="../explore.html?lesson=extra-css-modules&amp;at=f4" target="_blank" rel="noopener">The finished code in the Code Explorer</a>.</p>
+    </details>
+  </section>
+
+  <section id="when">
+    <h2>Global CSS or a module?</h2>
+    <table>
+      <tr><th>Use</th><th>For</th><th>Example</th></tr>
+      <tr><td><b>Global</b> CSS (<code>index.css</code>)</td><td>things every page shares</td><td>the font, page margins, colours of links</td></tr>
+      <tr><td><b>CSS Module</b> (<code>X.module.css</code>)</td><td>one component's look</td><td>Card's border, Banner's title</td></tr>
+      <tr><td>Tailwind classes (unit 6)</td><td>styling right in the JSX</td><td><code>className="text-xl font-bold"</code></td></tr>
+    </table>
+    <p>In the lectures, the Pokemon app's Heading gets a CSS Module in unit 5, lecture 2 (<code>heading.module.css</code>). Unit 6 then restyles the app with Tailwind.</p>
+  </section>
+
+  <section id="breaks">
+    <h2>When something breaks</h2>
+    <table>
+      <tr><th>You see</th><th>It means</th><th>Fix</th></tr>
+      <tr><td>No style at all, no error</td><td><code>styles.Title</code> (wrong case) is <code>undefined</code></td><td>Use the exact class name from the file: <code>styles.title</code></td></tr>
+      <tr><td><code>styles is not defined</code></td><td>The module was imported without a name: <code>import './Card.module.css'</code></td><td><code>import styles from './Card.module.css'</code></td></tr>
+      <tr><td>The style still leaks to other components</td><td>The file is named <code>Card.css</code>, not <code>Card.module.css</code></td><td>Rename it: only <code>.module.css</code> files are modules</td></tr>
+      <tr><td>Only one of two classes works</td><td><code>className={styles.title, styles.big}</code> keeps only the last one</td><td>Join them: <code>{`${styles.title} ${styles.big}`}</code></td></tr>
+      <tr><td><code>Failed to resolve import "./components/card"</code></td><td>The folder name's case doesn't match</td><td>Paths are case-sensitive: <code>./components/Card</code></td></tr>
+    </table>
+  </section>
+</main>
+<script src="../shared/course.js?v=6"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/extra-css-modules.js?v=1"></script>
+<script src="../shared/livepad.js?v=4"></script>
+<script>
+  const lesson = Course.get('extra-css-modules')
+  const pads = {}
+  document.querySelectorAll('.op-pad').forEach((el) => {
+    const files = { ...Course.checkpoint(lesson, el.dataset.feature) }
+    // The exercise needs a new file; the editor can't create one, so it starts empty here.
+    if (el.id === 'try-pad') files['src/components/Banner/Banner.module.css'] = ''
+    // Only the files this section is about get a tab; the rest of the project still runs.
+    const tabs = el.dataset.tabs.split(' ').filter((f) => f in files)
+    pads[el.id || el.dataset.feature] = Livepad.mount(el, { files, assets: Course.assetsOf(lesson), editable: true, tabs })
+  })
+  // The check looks at the running app: Banner's title must use generated (module) classes, and look right.
+  document.getElementById('check').onclick = () => {
+    const doc = pads['try-pad'].preview.contentDocument
+    const res = document.getElementById('result')
+    const h = [...doc.querySelectorAll('h2')].find((x) => /Banner/.test(x.textContent))
+    const card = [...doc.querySelectorAll('h2')].find((x) => /Card/.test(x.textContent))
+    const say = (ok, text) => { res.className = 'result ' + (ok ? 'ok' : 'bad'); res.textContent = (ok ? '✓ ' : '✗ ') + text }
+    if (!h || !card) return say(false, 'The app is not showing both titles. Check the console for an error.')
+    const cs = doc.defaultView.getComputedStyle(h)
+    const classes = h.className.split(/\s+/).filter(Boolean)
+    if (!classes.length || classes.some((c) => c === 'title' || c === 'big')) return say(false, 'Banner still uses a plain class name. Use styles.title and styles.big from the module.')
+    if (classes.length < 2) return say(false, 'Only one class is set. Join both with a template string.')
+    if (cs.color !== 'rgb(65, 105, 225)' || cs.fontSize !== '40px') return say(false, 'The classes are module classes, but the title is not blue and 40px. Check the rules in the module file.')
+    if (doc.defaultView.getComputedStyle(card).color !== 'rgb(220, 20, 60)') return say(false, "Card's title is not red any more. Something global still styles it.")
+    say(true, 'Banner uses its own module classes, and nothing leaks.')
+  }
+</script>
+</body>
+</html>
