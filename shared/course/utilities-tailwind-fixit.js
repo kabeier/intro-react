@@ -50,7 +50,7 @@
     },
     {
       id: 'id', title: 'Most card tests fail after the restyle', base: 'f4', tabs: [CARD],
-      symptom: 'The cards look great, but 9 tests fail: Expected to find element: `#pikachu-card`, but never found it.',
+      symptom: 'The cards look great, but most card tests fail: Expected to find element: `#pikachu-card`, but never found it.',
       breaks: [{ file: CARD, mode: 'replace', find: '<div id={`${pokemon.name}-card`} className=', code: '<div className=' }],
       checks: [allPass],
       hint: 'Restyling replaced the whole div. What did the old one have that the tests need?',
