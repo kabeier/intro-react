@@ -44,7 +44,7 @@
   .os { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
   .os h5 { font: 700 17px 'Bricolage Grotesque', sans-serif; margin: 6px 0 4px; }
   @media (max-width: 760px) { .os { grid-template-columns: 1fr; } }
-  .install code { font-size: 0.9em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; }
+  .install code { font-size: 0.9em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
   .cmdwrap { position: relative; margin: 8px 0 6px; }
   pre.cmd { background: var(--ink); color: #fff; padding: 16px 18px; padding-right: 90px; border-radius: 4px; overflow-x: auto; margin: 0; font-size: 15px; }
   pre.cmd code { background: none; padding: 0; }
@@ -53,6 +53,8 @@
   .install .steps a, details a { display: inline; padding: 0; border: 0; color: var(--blue); text-decoration: underline; }
   details { margin: 6px 0 14px; }
   summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+  .jump { margin: 0 0 28px; line-height: 1.9; }
+  .jump a { font-weight: 600; }
   footer { margin-top: 56px; color: var(--muted); font-size: 16px; }
   a:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { a.slides { transition: none; } }
@@ -63,7 +65,8 @@
   <h1>React: the Pokemon Project</h1>
   <p class="lede">One app, built unit by unit: a Pokemon search that grows from a create-vite template into a tested, routed, deployed React app. Every lecture types the code in short steps with the live app beside it. Everything opens in a new tab, so keep this page open as your home base.</p>
 
-  <h3 style="margin-top:0">Unit 2: React and Requests</h3>
+  <p class="jump"><b>Jump to:</b> <a href="#unit-2">Unit 2</a> · <a href="#unit-3">Unit 3</a> · <a href="#unit-4">Unit 4</a> · <a href="#unit-5">Unit 5</a> · <a href="#unit-6">Unit 6</a> · <a href="#unit-7">Unit 7</a> · <a href="#unit-8">Unit 8</a> · <a href="#unit-9">Unit 9</a><br><b>Homework:</b> <a href="#homework">2</a> · <a href="#homework-3">3</a> · <a href="#homework-4">4</a> · <a href="#homework-5">5</a> · <a href="#homework-6">6</a> · <a href="#homework-7">7</a> · <a href="#homework-8">8</a> · <a href="#homework-9">9</a></p>
+  <h3 id="unit-2" style="margin-top:0">Unit 2: React and Requests</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -87,7 +90,7 @@
     </section>
   </div>
 
-  <h3>Unit 3: End-to-End Testing</h3>
+  <h3 id="unit-3">Unit 3: End-to-End Testing</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -111,7 +114,7 @@
     </section>
   </div>
 
-  <h3>Unit 4: React Hooks</h3>
+  <h3 id="unit-4">Unit 4: React Hooks</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -135,7 +138,7 @@
     </section>
   </div>
 
-  <h3>Unit 5: React Components</h3>
+  <h3 id="unit-5">Unit 5: React Components</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -159,7 +162,7 @@
     </section>
   </div>
 
-  <h3>Unit 6: Utility vs Component Libraries</h3>
+  <h3 id="unit-6">Unit 6: Utility vs Component Libraries</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -183,7 +186,7 @@
     </section>
   </div>
 
-  <h3>Unit 7: React Router</h3>
+  <h3 id="unit-7">Unit 7: React Router</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -207,7 +210,7 @@
     </section>
   </div>
 
-  <h3>Unit 8: React Router Hooks</h3>
+  <h3 id="unit-8">Unit 8: React Router Hooks</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
@@ -231,7 +234,7 @@
     </section>
   </div>
 
-  <h3>Unit 9: CI/CD</h3>
+  <h3 id="unit-9">Unit 9: CI/CD</h3>
   <div class="lectures">
     <section>
       <div class="num">1</div>
