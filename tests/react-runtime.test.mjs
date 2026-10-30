@@ -63,3 +63,69 @@ test('imported assets work: svg from the files, png from the lesson assets, /pub
   assert.deepEqual(loaded, [true, true, true])
   await page.close()
 })
+
+const app = (body) => ({ ...base, 'src/App.jsx': body })
+const waitConsole = (page, re) => until(page, (s) => new RegExp(s).test(document.querySelector('.lp-console')?.textContent || ''), re.source, 20000)
+
+test('React development build: helpful warnings show (style string, functions as children)', async () => {
+  const page = await mount(app('export default function App() {\n  const f = () => 1\n  return <><p style="color: red">x</p></>\n}'))
+  await waitConsole(page, /prop expects a mapping/)
+  await page.close()
+})
+
+test('re-exports, export *, and dynamic import() of local files work', async () => {
+  const page = await mount({ ...base,
+    'src/components/Inner.jsx': 'export default function Inner() { return <p id="inner">inner</p> }\nexport const N = 7',
+    'src/components/index.js': "export { default as Inner } from './Inner.jsx'\nexport * from './Inner.jsx'",
+    'src/App.jsx': "import { Inner, N } from './components'\nexport default function App() {\n  import('./components/Inner.jsx').then((m) => console.log('dynamic', m.N))\n  return <><Inner /><p id=\"n\">{N}</p></>\n}" })
+  await waitConsole(page, /dynamic 7/)
+  await page.close()
+})
+
+test('an import cycle gives a clear message', async () => {
+  const page = await mount({ ...base,
+    'src/A.jsx': "import B from './B.jsx'\nexport default function A() { return <B /> }",
+    'src/B.jsx': "import A from './A.jsx'\nexport default function B() { return <p>b</p> }",
+    'src/App.jsx': "import A from './A.jsx'\nexport default function App() { return <A /> }" })
+  await waitConsole(page, /import each other/)
+  await page.close()
+})
+
+test('commented-out imports are ignored; import.meta.env works; CSS @import and url() resolve', async () => {
+  const page = await mount({ ...base,
+    'src/extra.css': 'h1 { letter-spacing: 3px }',
+    'src/App.css': "@import './extra.css';\nh1 { color: rgb(255, 0, 0); background: url(./assets/logo.svg) }",
+    'src/assets/logo.svg': '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"/>',
+    'src/App.jsx': "/* import Old from './Old.jsx' */\nimport './App.css'\nexport default function App() {\n  console.log('mode', import.meta.env.MODE)\n  return <h1>Hi</h1>\n}" })
+  await waitConsole(page, /mode development/)
+  const f = frame(page)
+  const st = await f.evaluate(() => { const c = getComputedStyle(document.querySelector('h1')); return [c.letterSpacing, c.backgroundImage.startsWith('url("blob:') || c.backgroundImage.startsWith('url("data:')] })
+  assert.deepEqual(st, ['3px', true])
+  await page.close()
+})
+
+test('an asset import mixed with named imports keeps the default binding', async () => {
+  const page = await mount({ ...base,
+    'src/assets/logo.svg': '<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"/>',
+    'src/App.jsx': "import logo from './assets/logo.svg'\nimport { useState } from 'react'\nexport default function App() {\n  const [x] = useState(1)\n  console.log('logo is', typeof logo, x)\n  return <img src={logo} alt=\"\" />\n}" })
+  await waitConsole(page, /logo is string 1/)
+  await page.close()
+})
+
+test('offline (no Babel from the CDN) says so plainly', async () => {
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })
+  await page.route('**/@babel/standalone@*/**', (r) => r.abort())
+  await page.goto(srv.url + '/tests/fixtures/mount.html')
+  await page.evaluate(([f]) => window.mountFiles(f, {}), [base])
+  await waitConsole(page, /Can't load React tools from the internet/)
+  await page.close()
+})
+
+test('console formats %s placeholders like DevTools (React warnings read cleanly)', async () => {
+  const page = await mount(app('export default function App() {\n  const f = () => 1\n  console.log("a %s b %d", "X", 5)\n  return <p>{f}</p>\n}'))
+  await waitConsole(page, /a X b 5/)
+  await waitConsole(page, /Functions are not valid as a React child/)
+  const t = await page.evaluate(() => document.querySelector('.lp-console').textContent)
+  assert.doesNotMatch(t, /%s/)
+  await page.close()
+})

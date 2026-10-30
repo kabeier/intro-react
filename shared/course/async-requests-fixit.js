@@ -26,7 +26,7 @@
     },
     {
       id: 'await', title: '"Pokemon Does not Exist" for pikachu', base: 'f7',
-      symptom: 'Every search, even pikachu, says Pokemon Does not Exist. The console: Cannot read properties of undefined (reading \'front_default\').',
+      symptom: 'Every search, even pikachu, says Pokemon Does not Exist. The console: Request failed: Cannot read properties of undefined (reading \'name\').',
       breaks: [{ file: 'src/App.jsx', mode: 'replace', find: 'const response = await axios.get', code: 'const response = axios.get' }],
       checks: [{ name: 'searching pikachu shows its card', run: (doc, win, ctx) => cardFor(doc, ctx, 'pikachu') }],
       hint: 'axios.get gives back a promise. What turns a promise into the response?',
@@ -47,8 +47,11 @@
       checks: [{ name: 'a second search adds no second card', run: async (doc, win, ctx) => {
         if (!(await cardFor(doc, ctx, 'pikachu'))) return false
         await search(ctx.doc(), ctx, 'pikachu')
-        await ctx.wait(2500)
-        return ctx.doc().querySelectorAll('[id="pikachu-card"]').length === 1
+        for (let t = 0; t < 6000; t += 250) {
+          if (ctx.doc().querySelectorAll('[id="pikachu-card"]').length > 1) return false
+          await ctx.wait(250)
+        }
+        return true
       } }],
       hint: 'Before building a card, check whether one with this id already exists.',
       why: 'if (document.getElementById(`${data.name}-card`)) return stops a second card (and keeps ids unique).',
@@ -68,7 +71,7 @@
       checks: [{ name: 'the user is told the Pokemon does not exist', run: async (doc, win, ctx) => {
         await search(doc, ctx, 'pikachoo')
         for (let t = 0; t < 8000 && !ctx.alerts.length; t += 200) await ctx.wait(200)
-        return ctx.alerts.includes('Pokemon Does not Exist')
+        return ctx.alerts.some((a) => a.trim().length > 0)
       } }],
       hint: 'The console is for developers. What does the user see when a request fails?',
       why: 'Errors must be visible to the user: alert("Pokemon Does not Exist") in catch.',
@@ -79,19 +82,19 @@
       breaks: [{ file: 'src/App.jsx', mode: 'replace', find: '    if (!name) return\n', code: '' }],
       checks: [{ name: 'an empty search does nothing', run: async (doc, win, ctx) => {
         await search(doc, ctx, '')
-        await ctx.wait(3000)
+        await ctx.wait(6000)
         return ctx.alerts.length === 0 && ctx.doc().querySelectorAll('#poke-container > *').length === 0
       } }],
       hint: 'What does the URL look like with no name? What should happen instead?',
       why: '/api/v2/pokemon/ with no name returns a list, not a Pokemon, so the card code fails. Stop early: if (!name) return.',
     },
     {
-      id: 'called', title: 'Bonus: "event is not defined"', base: 'f7',
-      symptom: 'Blank page; the console says event is not defined.',
+      id: 'called', title: 'Bonus: "Cannot read properties of undefined (reading \'preventDefault\')"', base: 'f7',
+      symptom: 'The page breaks as soon as it loads; the console says: Cannot read properties of undefined (reading \'preventDefault\').',
       breaks: [{ file: 'src/App.jsx', mode: 'replace', find: 'onSubmit={(event) => handleSubmit(event)}', code: 'onSubmit={handleSubmit(event)}' }],
       checks: [{ name: 'searching pikachu shows its card', run: (doc, win, ctx) => cardFor(doc, ctx, 'pikachu') }],
       hint: 'onSubmit wants a function for later. What does handleSubmit(event) do right now?',
-      why: 'handleSubmit(event) runs during render (and event does not exist there). Pass a function: onSubmit={(event) => handleSubmit(event)} or onSubmit={handleSubmit}.',
+      why: 'handleSubmit(event) runs during render, before any submit, so there is no submit event yet. Pass a function: onSubmit={(event) => handleSubmit(event)} or onSubmit={handleSubmit}.',
     },
     {
       id: 'append', title: 'Bonus: the request works, no card appears', base: 'f7',

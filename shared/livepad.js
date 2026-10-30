@@ -180,7 +180,9 @@
     pad.edited = (f, text) => {
       pad.files[f] = text
       clearTimeout(pad.timer)
-      pad.timer = setTimeout(() => { pad.refresh(); if (pad.onChange) pad.onChange({ ...pad.files }) }, 300)
+      // A React project reloads the whole preview (Babel + React), so wait a bit longer after typing.
+      const wait = pad.files['src/main.jsx'] != null ? 700 : 300
+      pad.timer = setTimeout(() => { pad.refresh(); if (pad.onChange) pad.onChange({ ...pad.files }) }, wait)
     }
     pad.setFile = (f, text) => {
       pad.files[f] = text

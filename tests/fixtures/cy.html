@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>cy</title>
+<link rel="stylesheet" href="../../shared/livepad.css"></head>
+<body><div id="pad"></div>
+<script src="../../shared/course.js"></script>
+<script src="../../shared/livepad.js"></script>
+<script src="../../shared/cyrunner.js"></script>
+<script>
+  window.APP = '<!doctype html><html><head><title>t</title></head><body><header><h1>Pokemon Project</h1></header>' +
+    '<form><input id="pokemon-name" name="name"><button type="submit">Search</button></form><div id="poke-container"></div>' +
+    '<button id="warn" type="button">warn</button><img id="pic" src="https://example.com/front_default.png" alt="x">' +
+    '<script>document.querySelector("form").addEventListener("submit", (e) => { e.preventDefault(); const n = document.querySelector("#pokemon-name").value;' +
+    ' const d = document.createElement("div"); d.id = n + "-card"; d.textContent = n; document.querySelector("#poke-container").append(d); e.target.reset() });' +
+    'document.querySelector("#warn").addEventListener("click", () => alert("Pokemon Does not Exist"))<\/script></body></html>'
+  window.pad = Livepad.mount(document.getElementById('pad'), { files: { 'index.html': APP }, editable: true })
+  window.runSpec = (spec, opts) => CyRunner.run({ pad: window.pad.pad, spec, ...(opts || {}) })
+</script>
+</body></html>

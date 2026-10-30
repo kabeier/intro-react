@@ -201,10 +201,27 @@
       return keys.length ? pre + '{ ' + keys.map(function (k) { return k + ': ' + fmt(v[k], d + 1) }).join(', ') + ' }' : pre + '{}'
     }
     var safe = function (a) { try { return fmt(a) } catch (e) { return '[unprintable]' } }
+    // console.log("a %s b %d", x, y): fill the placeholders like DevTools does.
+    var printf = function (args) {
+      if (typeof args[0] === 'string' && /%[sdifoOc%]/.test(args[0])) {
+        var rest = args.slice(1)
+        var head = args[0].replace(/%([sdifoOc%])/g, function (m, t) {
+          if (t === '%') return '%'
+          if (!rest.length) return ''
+          var v = rest.shift()
+          if (t === 'c') return ''
+          if (t === 'd' || t === 'i') return String(parseInt(v, 10))
+          if (t === 'f') return String(Number(v))
+          return typeof v === 'string' ? v : safe(v)
+        })
+        return [head].concat(rest.map(safe)).join(' ').replace(/\s+$/, '')
+      }
+      return args.map(safe).join(' ')
+    }
     ;['log', 'info', 'warn', 'error'].forEach(function (k) {
       var orig = console[k]
       console[k] = function () {
-        try { post({ type: 'livepad-console', level: k, text: [].map.call(arguments, safe).join(' ') }) } catch (e) {}
+        try { post({ type: 'livepad-console', level: k, text: printf([].slice.call(arguments)) }) } catch (e) {}
         return orig.apply(console, arguments)
       }
     })
@@ -236,12 +253,14 @@
 
   // ---------- React / Vite projects ----------
   // Pinned packages the preview may import (an import map; esm.sh keeps a single React).
+  // Development builds (?dev), so React's warnings read like they do with Vite on a laptop.
+  const DEPS = 'deps=react@19.3.1,scheduler@0.28.0'
   const IMPORTS = {
-    react: 'https://esm.sh/react@19.3.1',
-    'react/jsx-runtime': 'https://esm.sh/react@19.3.1/jsx-runtime',
-    'react/jsx-dev-runtime': 'https://esm.sh/react@19.3.1/jsx-dev-runtime',
-    'react-dom': 'https://esm.sh/react-dom@19.3.1?deps=react@19.3.1',
-    'react-dom/client': 'https://esm.sh/react-dom@19.3.1/client?deps=react@19.3.1',
+    react: 'https://esm.sh/react@19.3.1?dev',
+    'react/jsx-runtime': 'https://esm.sh/react@19.3.1/jsx-runtime?dev',
+    'react/jsx-dev-runtime': 'https://esm.sh/react@19.3.1/jsx-dev-runtime?dev',
+    'react-dom': 'https://esm.sh/react-dom@19.3.1?dev&' + DEPS,
+    'react-dom/client': 'https://esm.sh/react-dom@19.3.1/client?dev&' + DEPS,
     axios: 'https://esm.sh/axios@1.20.0',
   }
   const BABEL = 'https://cdn.jsdelivr.net/npm/@babel/standalone@7.28.4/babel.min.js'
@@ -251,6 +270,11 @@
   // Runs inside the preview (as source text, so it must be self-contained): turn the
   // project's files into ES modules the browser can load, like Vite does on your laptop.
   function reactRunner(FILES, ASSETS, ENTRY) {
+    if (typeof Babel === 'undefined') {
+      console.error("Can't load React tools from the internet (offline, or the CDN is blocked). The live preview needs a connection.")
+      document.body.insertAdjacentHTML('afterbegin', '<p style="font:16px system-ui;padding:12px;background:#fde2e1;margin:0">Offline? The live preview needs the internet to load React.</p>')
+      return
+    }
     var norm = function (p) { var out = []; p.split('/').forEach(function (s) { if (!s || s === '.') return; if (s === '..') out.pop(); else out.push(s) }); return out.join('/') }
     var dirOf = function (p) { return p.split('/').slice(0, -1).join('/') }
     var blobUrl = function (text, type) { return URL.createObjectURL(new Blob([text], { type: type })) }
@@ -268,32 +292,57 @@
       for (var i = 0; i < tries.length; i++) if (FILES[tries[i]] != null || ASSETS[tries[i]] != null) return tries[i]
       return null
     }
-    var cssDone = {}, mods = {}
     var assetUrl = function (path) {
       if (ASSETS[path] != null) return ASSETS[path]
       return blobUrl(FILES[path], /\.svg$/i.test(path) ? 'image/svg+xml' : 'application/octet-stream')
     }
-    var load = function (path) {
+    // CSS: inline @import of local files, and point url(./x) at the asset.
+    var cssOf = function (path, seen) {
+      seen = seen || {}
+      if (seen[path]) return ''
+      seen[path] = 1
+      return String(FILES[path] || '')
+        .replace(/@import\s+(?:url\()?\s*['"]?(\.{1,2}\/[^'")]+)['"]?\s*\)?\s*;/g, function (m, spec) { var t = find(path, spec); return t ? cssOf(t, seen) : m })
+        .replace(/url\(\s*['"]?(\.{1,2}\/[^'")]+)['"]?\s*\)/g, function (m, spec) { var t = find(path, spec); return t && ASSET.test(t) ? 'url("' + assetUrl(t) + '")' : m })
+    }
+    var cssDone = {}, mods = {}, loading = {}
+    var ENV = 'if (!import.meta.env) import.meta.env = { MODE: "development", DEV: true, PROD: false, SSR: false, BASE_URL: "/" };\n'
+    var load = function (path, from) {
       if (mods[path]) return mods[path]
-      var code
-      try {
-        code = Babel.transform(FILES[path], { presets: [['react', { runtime: 'automatic' }]], filename: '/' + path, sourceType: 'module' }).code
-      } catch (e) { throw new Error(e.message) }
-      code = code.replace(/(^|\n)(\s*)import\s+(?:([\w$]+)\s+from\s+)?(?:[^'"]*?\s+from\s+)?(['"])(\.{1,2}\/[^'"]+)\4;?/g, function (m, nl, sp, name, q, spec) {
-        var target = find(path, spec)
-        if (!target) throw new Error('/' + path + ': cannot find "' + spec + '"')
-        if (/\.css$/i.test(target)) {
-          if (!cssDone[target]) { cssDone[target] = 1; var st = document.createElement('style'); st.setAttribute('data-file', target); st.textContent = FILES[target]; document.head.append(st) }
-          return nl
+      if (loading[path]) throw new Error('/' + from + ' and /' + path + ' import each other. The preview cannot run import cycles: move the shared code into its own file.')
+      loading[path] = 1
+      var code = Babel.transform(FILES[path], { presets: [['react', { runtime: 'automatic', development: true }]], filename: '/' + path, sourceType: 'module', comments: false, retainLines: true }).code
+      var target = function (spec) {
+        var t = find(path, spec)
+        if (!t) throw new Error('/' + path + ': cannot find "' + spec + '"')
+        return t
+      }
+      // import … from './x'  |  import './x'  (CSS, assets, modules)
+      code = code.replace(/\bimport\s+((?:[\w$]+\s*,?\s*)?(?:\{[^}]*\}|\*\s+as\s+[\w$]+)?)\s*(?:from\s+)?(['"])(\.{1,2}\/[^'"]+)\2;?/g, function (m, clause, q, spec) {
+        var t = target(spec)
+        if (/\.css$/i.test(t)) {
+          if (!cssDone[t]) { cssDone[t] = 1; var st = document.createElement('style'); st.setAttribute('data-file', t); st.textContent = cssOf(t); document.head.append(st) }
+          return ''
         }
-        if (ASSET.test(target)) return nl + sp + (name ? 'const ' + name + ' = ' + JSON.stringify(assetUrl(target)) + ';' : '')
-        return m.replace(q + spec + q, q + load(target) + q)
+        if (ASSET.test(t)) {
+          var def = (clause.match(/^\s*([\w$]+)/) || [])[1]
+          return def ? 'const ' + def + ' = ' + JSON.stringify(assetUrl(t)) + ';' : ''
+        }
+        return m.replace(q + spec + q, q + load(t, path) + q)
       })
+      // export … from './x'
+      code = code.replace(/\bexport\s+(\*(?:\s+as\s+[\w$]+)?|\{[^}]*\})\s*from\s*(['"])(\.{1,2}\/[^'"]+)\2/g, function (m, what, q, spec) {
+        return m.replace(q + spec + q, q + load(target(spec), path) + q)
+      })
+      // import('./x')
+      code = code.replace(/\bimport\(\s*(['"])(\.{1,2}\/[^'"]+)\1\s*\)/g, function (m, q, spec) { return 'import(' + q + load(target(spec), path) + q + ')' })
+      if (/import\.meta\.env/.test(code)) code = ENV + code
+      delete loading[path]
       mods[path] = blobUrl(withPublic(code), 'text/javascript')
       return mods[path]
     }
     try {
-      import(load(ENTRY)).catch(function (e) { console.error(String(e && e.message || e)) })
+      import(load(ENTRY, ENTRY)).catch(function (e) { console.error(String(e && e.message || e)) })
     } catch (e) { console.error(e.message) }
   }
 

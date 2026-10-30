@@ -179,7 +179,7 @@ Course.register({
           id: 'f6s3', file: 'src/App.jsx', mode: 'replace', find: '<p>{message}</p>', code: '<p className="myText">{message}</p>',
           say: 'className, not class. Now the message is big.',
           notes: [{ match: 'className="myText"', what: 'The CSS class of an element, written className in JSX.', why: 'class is a JavaScript keyword, so React uses the DOM property name className.',
-            api: { name: 'className', does: 'Sets the element\'s class attribute.', params: [['"names"', 'one or more class names, space-separated', 'the same names as your CSS selectors, without the dot']], mistakes: ['class="…": works with a console warning; use className.'] } }],
+            api: { name: 'className', does: 'Sets the element\'s class attribute.', params: [['"names"', 'one or more class names, space-separated', 'the same names as your CSS selectors, without the dot']], mistakes: ['class="…": React warns "Invalid DOM property `class`. Did you mean `className`?"; use className.'] } }],
         },
       ],
     },
