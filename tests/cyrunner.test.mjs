@@ -170,3 +170,27 @@ test('cypress.config.js is honoured: wrong baseUrl and missing supportFile: fals
   const sup = await run("it('t', () => { cy.visit('/') })", { config: base.replace('    supportFile: false,\n', '') })
   assert.match(sup.error, /Your `supportFile` is missing or invalid: `cypress\/support\/e2e\.\{js,jsx,ts,tsx\}`/)
 })
+
+test('a query before the last one must find something, like Cypress', async () => {
+  const r = await run("it('t', () => { cy.visit('/'); cy.get('#nope').children().should('have.length', 0) })")
+  assert.equal(r.tests[0].state, 'failed')
+  assert.match(r.tests[0].error, /Expected to find element: `#nope`, but never found it/)
+})
+
+test('an error outside a test is reported as Cypress names it', async () => {
+  const r = await run("cy.visit('/')\nit('t', () => { cy.get('header') })")
+  assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['An uncaught error was detected outside of a test', 'failed']])
+})
+
+test('a failing beforeEach fails that test as a hook and skips the rest', async () => {
+  const r = await run("beforeEach(() => { cy.intercept('GET', '**/x', { fixture: 'nope.json' }); cy.visit('/') })\nit('first', () => {})\nit('second', () => {})")
+  assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['"before each" hook for "first"', 'failed']])
+  assert.match(r.tests[0].error, /An error was thrown while processing a network event: A fixture file could not be found/)
+})
+
+test("have.css checks a computed style", async () => {
+  const ok = await run("it('t', () => { cy.visit('/'); cy.get('body').should('have.css', 'display', 'block') })")
+  assert.equal(ok.tests[0].state, 'passed', ok.tests[0].error)
+  const bad = await run("it('t', () => { cy.visit('/'); cy.get('body').should('have.css', 'display', 'flex') })")
+  assert.match(bad.tests[0].error, /expected <body> to have CSS property 'display' with the value 'flex', but the value was 'block'/)
+})

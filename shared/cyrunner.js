@@ -35,7 +35,8 @@
     const r = el.getBoundingClientRect()
     return r.width > 0 && r.height > 0
   }
-  const describeEls = (els) => (els.length ? '[ ' + els.slice(0, 3).map((e) => '<' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '>').join(', ') + (els.length > 3 ? `, ${els.length - 3} more…` : '') + ' ]' : '[]')
+  const one = (e) => '<' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '>'
+  const describeEls = (els) => (els.length === 1 ? one(els[0]) : els.length ? '[ ' + els.slice(0, 3).map((e) => '<' + e.tagName.toLowerCase() + (e.id ? '#' + e.id : '') + '>').join(', ') + (els.length > 3 ? `, ${els.length - 3} more…` : '') + ' ]' : '[]')
   const textOf = (el) => (el.textContent || '').replace(/\s+/g, ' ')
   const setNative = (el, value) => {
     const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype
@@ -65,6 +66,12 @@
     }
     if (name === 'have.value') { ok(els[0] && els[0].value === rest[0], `expected ${describeEls(els)} to have value ${q(rest[0])}, but the value was ${q(els[0] && els[0].value)}`, `expected ${describeEls(els)} not to have value ${q(rest[0])}`); return subject }
     if (name === 'have.text') { ok(els[0] && els[0].textContent === rest[0], `expected ${describeEls(els)} to have text ${q(rest[0])}, but the text was ${q(els[0] && els[0].textContent)}`, `expected ${describeEls(els)} not to have text ${q(rest[0])}`); return subject }
+    if (name === 'have.css') {
+      if (!els.length) throw new AssertionError(`Expected to find element: \`${ctx.selector}\`, but never found it.`)
+      const v = els[0].ownerDocument.defaultView.getComputedStyle(els[0]).getPropertyValue(rest[0])
+      ok(v === rest[1], `expected ${describeEls(els)} to have CSS property ${q(rest[0])} with the value ${q(rest[1])}, but the value was ${q(v)}`, `expected ${describeEls(els)} not to have CSS property ${q(rest[0])} with the value ${q(rest[1])}`)
+      return subject
+    }
     if (name === 'have.class') { ok(els[0] && els[0].classList.contains(rest[0]), `expected ${describeEls(els)} to have class ${q(rest[0])}`, `expected ${describeEls(els)} not to have class ${q(rest[0])}`); return subject }
     if (name === 'have.attr') {
       if (!els.length) throw new AssertionError(`Expected to find element: \`${ctx.selector}\`, but never found it.`)
@@ -186,7 +193,7 @@
         if (response && response.fixture) {
           const name = /\.\w+$/.test(response.fixture) ? response.fixture : response.fixture + '.json'
           if (fixtures[name] == null) {
-            current.errors.push(new Error(`A fixture file could not be found at any of the following paths:\n\n > cypress/fixtures/${name}\n > cypress/fixtures/${name}{.json,.js,.coffee,.html,.txt,.csv,.png,.jpg,.jpeg,.gif,.tif,.tiff,.zip}`))
+            current.errors.push(new Error(`An error was thrown while processing a network event: A fixture file could not be found at any of the following paths:\n\n > cypress/fixtures/${name}\n > cypress/fixtures/${name}{.json,.js,.coffee,.html,.txt,.csv,.png,.jpg,.jpeg,.gif,.tif,.tiff,.zip}`))
           } else body = JSON.parse(fixtures[name])
         }
         routes.push({ method, url, status: (response && response.statusCode) || 200, body, alias: null })
@@ -239,8 +246,12 @@
           try {
             let s = queries.length && seg[0].kind === 'query' && seg[0].start ? null : start
             for (const o of seg) {
-              if (o.kind === 'query') s = o.run(s)
-              else s = check(s, o.args, ctx)
+              if (o.kind === 'query') {
+                // Every query before the last one must find something (Cypress's implicit check).
+                if (o !== lastQ && s && s.els && !s.els.length && o !== seg[0]) throw new AssertionError(`Expected to find element: \`${ctx.selector}\`, but never found it.`)
+                s = o.run(s)
+                if (o !== lastQ && s.els && !s.els.length) throw new AssertionError(o.name === 'contains' ? `Expected to find content: ${q(o.text)} but never did.` : `Expected to find element: \`${o.selector || o.sel || ctx.selector}\`, but never found it.`)
+              } else s = check(s, o.args, ctx)
             }
             const needsEl = queries.length && (!asserts.length || action)
             if (needsEl && s.els && !s.els.length && lastQ.name === 'wait') throw new AssertionError(`cy.wait() timed out waiting ${TIMEOUT}ms for the 1st request to the route: \`${lastQ.selector.slice(1)}\`. No request ever occurred.`)
@@ -276,10 +287,15 @@
       })
       const t0 = Date.now()
       try {
-        for (const h of hooks) {
-          h()
-          if (current.errors.length) throw current.errors[0]
-          for (const ops of queue.splice(0)) await runChain(ops)
+        try {
+          for (const h of hooks) {
+            h()
+            if (current.errors.length) throw current.errors[0]
+            for (const ops of queue.splice(0)) await runChain(ops)
+          }
+        } catch (e) {
+          // Like Cypress: the hook fails, under its own name, and the rest of the file is skipped.
+          return { title: `"before each" hook for "${t.title}"`, state: 'failed', error: (e && e.message) || String(e), ms: Date.now() - t0, hookFailed: true }
         }
         t.fn()
         for (const ops of queue.splice(0)) await runChain(ops)
@@ -349,8 +365,8 @@
     runner.setCollecting(true)
     try { tests = collect(spec, env) } catch (e) {
       runner.setCollecting(false)
-      block.innerHTML = `<div class="lp-tests-head bad">${esc(title)}: error in the spec file</div><div class="lp-test fail">${esc(e.message)}</div>`
-      return { tests: [], passed: 0, failed: 1, error: e.message }
+      block.innerHTML = `<div class="lp-tests-head bad">${esc(title)}: error in the spec file</div><div class="lp-test fail">✗ An uncaught error was detected outside of a test<pre>${esc(e.message)}</pre></div>`
+      return { tests: [{ title: 'An uncaught error was detected outside of a test', state: 'failed', error: e.message }], passed: 0, failed: 1, error: e.message }
     }
     runner.setCollecting(false)
     const results = []
@@ -371,8 +387,10 @@
         }
       } }, t.hooks)
       results.push(r)
+      const stop = r.hookFailed
       const line = r.state === 'passed' ? `<div class="lp-test pass">✓ ${esc(r.title)} <span>(${r.ms}ms)</span></div>` : `<div class="lp-test fail">✗ ${esc(r.title)}<pre>${esc(r.error)}</pre></div>`
       block.insertAdjacentHTML('beforeend', line)
+      if (stop) break
     }
     const passed = results.filter((r) => r.state === 'passed').length
     const failed = results.filter((r) => r.state === 'failed').length

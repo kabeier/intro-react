@@ -78,12 +78,12 @@
       why: 'it(\'…\', () => { … }) closes with }). A missing ) is a syntax error, so no test can run.',
     },
     {
-      id: 'children', title: 'Bonus: "Too many elements found"', base: 'f3', tabs,
-      symptom: 'starts with an empty poke container fails: Too many elements found. Found \'1\', expected \'0\'.',
-      breaks: [{ file: HOME, mode: 'replace', find: "cy.get('#poke-container').children()", code: "cy.get('#poke-container')" }],
+      id: 'case', title: 'Bonus: "Expected to find content: \'pokemon project\'"', base: 'f3', tabs,
+      symptom: 'should have a heading fails: Expected to find content: \'pokemon project\' but never did. The heading is right there.',
+      breaks: [{ file: HOME, mode: 'replace', find: "cy.get('header').should('be.visible')", code: "cy.contains('pokemon project')" }],
       checks: [allPass(2)],
-      hint: 'What does have.length count here: the container, or the cards inside it?',
-      why: 'cy.get(\'#poke-container\') finds the one container. .children() moves to the cards inside it, which is what we want to count.',
+      hint: 'Compare the text in the test with the heading, letter by letter. Does case matter?',
+      why: 'cy.contains is case-sensitive: \'Pokemon Project\'. (Or keep the original check: cy.get(\'header\').should(\'be.visible\').)',
     },
   ]
   root.FIXIT = root.FIXIT || {}

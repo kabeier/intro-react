@@ -35,10 +35,15 @@ if (!fixitMode) {
     for (const p of globalThis.FIXIT[id]) {
       const apply = (steps) => { const f = { ...Course.checkpoint(lesson, p.base) }; for (const s of steps || []) f[s.file] = Course.applyStep(f[s.file], s); return f }
       const solution = apply(p.solve)
-      checkpoints.push({ name: `${id}/${p.id} broken`, files: apply(p.breaks), expect: 'some-fail' })
+      const broken = apply(p.breaks)
+      const bugs = p.checks.filter((c) => c.bug)
+      // A weak test passes on the real app (that's the problem); the others must lose a test.
+      checkpoints.push({ name: `${id}/${p.id} broken`, files: broken, expect: bugs.length ? 'all-pass' : 'fewer-pass' })
       checkpoints.push({ name: `${id}/${p.id} solution`, files: solution, expect: 'all-pass' })
-      for (const c of p.checks.filter((c) => c.bug)) {
-        checkpoints.push({ name: `${id}/${p.id} solution vs app bug (${c.bug.label})`, files: { ...solution, 'src/App.jsx': solution['src/App.jsx'].replace(c.bug.find, '') }, expect: 'fails:' + c.bug.test })
+      for (const c of bugs) {
+        const withBug = (f) => ({ ...f, 'src/App.jsx': f['src/App.jsx'].replace(c.bug.find, '') })
+        checkpoints.push({ name: `${id}/${p.id} broken vs app bug (${c.bug.label})`, files: withBug(broken), expect: 'all-pass' })
+        checkpoints.push({ name: `${id}/${p.id} solution vs app bug (${c.bug.label})`, files: withBug(solution), expect: 'fails:' + c.bug.test })
       }
     }
   }
@@ -71,22 +76,28 @@ const work = path.join(os.tmpdir(), 'real-cypress')
 let bad = 0
 const site = await serve(ROOT)
 const browser = await launch()
+// How many tests the solution has (for "fewer-pass").
+for (const c of checkpoints) {
+  const sol = checkpoints.find((x) => x.name === c.name.replace(/ broken$/, ' solution'))
+  c.solutionCount = sol ? Object.entries(sol.files).filter(([f]) => /^cypress\/e2e\//.test(f)).reduce((n, [, t]) => n + (t.match(/^\s*it(\.only|\.skip)?\(/gm) || []).length, 0) : 0
+}
 for (const c of checkpoints) {
   const dir = path.join(work, c.name.replace(/[^\w-]+/g, '-'))
   rmSync(dir, { recursive: true, force: true })
   for (const [n, t] of Object.entries(c.files)) { mkdirSync(path.dirname(path.join(dir, n)), { recursive: true }); writeFileSync(path.join(dir, n), t + '\n') }
   symlinkSync(path.join(cache, 'node_modules'), path.join(dir, 'node_modules'))
-  const port = await freePort()
-  const vite = spawn(path.join(cache, 'node_modules/.bin/vite'), ['--port', String(port), '--strictPort', '--host', '127.0.0.1'], { cwd: dir, stdio: 'ignore' })
+  // The real config's baseUrl is http://localhost:5173/, so the dev server must be there.
+  const port = 5173
+  const vite = spawn(path.join(cache, 'node_modules/.bin/vite'), ['--port', String(port), '--strictPort', '--host', 'localhost'], { cwd: dir, stdio: 'ignore' })
   const real = []
   try {
-    await waitHttp(`http://127.0.0.1:${port}/`)
+    await waitHttp(`http://localhost:${port}/`)
     const specs = readdirSync(path.join(dir, 'cypress/e2e')).sort()
     for (const spec of specs) {
       const report = path.join(dir, `results-${spec}.xml`)
       try {
         execFileSync('docker', ['run', '--rm', '--network', 'host', '-v', `${dir}:${dir}`, '-v', `${cache}:${cache}`, '-w', dir, 'cypress/included:16.2.0',
-          '--spec', `cypress/e2e/${spec}`, '--config', `baseUrl=http://127.0.0.1:${port}/,video=false`, '--reporter', 'junit', '--reporter-options', `mochaFile=${report}`],
+          '--spec', `cypress/e2e/${spec}`, '--config', 'video=false', '--reporter', 'junit', '--reporter-options', `mochaFile=${report}`],
           { stdio: 'pipe', timeout: 300000 })
       } catch {}
       const xml = existsSync(report) ? readFileSync(report, 'utf8') : ''
@@ -101,7 +112,8 @@ for (const c of checkpoints) {
   await page.addScriptTag({ url: site.url + '/shared/cyrunner.js' })
   await page.evaluate(([f]) => window.mountFiles(f, {}), [c.files])
   await page.waitForFunction(() => window.pad && window.pad.pad, null, { timeout: 20000 })
-  const mine = (await page.evaluate(() => window.pad.pad.runTests())).flatMap((r) => r.tests)
+  // Skipped tests are not in Cypress's junit report.
+  const mine = (await page.evaluate(() => window.pad.pad.runTests())).flatMap((r) => r.tests).filter((t) => t.state !== 'pending')
   await page.close()
 
   const realMap = new Map(real.map((t) => [t.title, t.state]))
@@ -115,8 +127,9 @@ for (const c of checkpoints) {
   if (real.length !== mine.length) lines.push(`  ≠ test count: runner ${mine.length}, real Cypress ${real.length}`)
   // What this variant is supposed to do (judged on real Cypress).
   const allPass = real.length > 0 && real.every((t) => t.state === 'passed')
+  const solutionCount = c.solutionCount
   const met = c.expect === 'all-pass' ? allPass
-    : c.expect === 'some-fail' ? !allPass
+    : c.expect === 'fewer-pass' ? real.filter((t) => t.state === 'passed').length < c.solutionCount
     : real.some((t) => t.title === c.expect.slice(6) && t.state === 'failed')
   if (differ || !met) bad++
   console.log(`${c.name}  [expect ${c.expect}: ${met ? 'yes' : 'NO'}${differ ? ', runner differs' : ''}]\n` + lines.join('\n'))

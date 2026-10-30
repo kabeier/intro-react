@@ -68,6 +68,11 @@
   document.body.append(checker)
   // A form submit nobody prevented reloads the checked page too, like a real browser.
   let reloading = null
+  // Console output of the checked page and the test runs (React warnings show up here).
+  let consoleLines = []
+  addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'livepad-console' && (e.source === checker.contentWindow || (testPad && e.source === testPad.preview.contentWindow))) consoleLines.push(e.data.text)
+  })
   addEventListener('message', (e) => {
     if (e.source === checker.contentWindow && e.data && e.data.type === 'livepad-reload') {
       reloading = new Promise((r) => { checker.onload = () => { reloading = null; r() } })
@@ -112,12 +117,13 @@
     const out = mainEl.querySelector('.fx-result')
     out.className = 'fx-result'
     out.textContent = 'Checking…'
+    consoleLines = []
     const html = Course.buildDoc(editor.getFiles(), Course.assetsOf(lesson))
     await new Promise((resolve) => { checker.onload = resolve; checker.srcdoc = html })
     const doc = checker.contentDocument, win = checker.contentWindow
     await settle(doc)
     alerts = []
-    const ctx = { wait: (ms) => new Promise((r) => setTimeout(r, ms)), doc: () => checker.contentDocument, get alerts() { return alerts },
+    const ctx = { console: () => consoleLines.slice(), wait: (ms) => new Promise((r) => setTimeout(r, ms)), doc: () => checker.contentDocument, get alerts() { return alerts },
       settled: async () => { if (reloading) { await reloading; await settle(checker.contentDocument) } },
       files: () => editor.getFiles(), runTests: (files) => runTests(files || editor.getFiles()) }
     lastTestHtml = ''
