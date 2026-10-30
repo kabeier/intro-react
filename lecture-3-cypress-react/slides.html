@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 3 · Lecture 1 · Cypress and React</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=2">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 3: End-to-End Testing · Lecture 1 of 2</div>
+  <h1>A robot that uses your app the way a user does.</h1>
+  <p class="sub">Install Cypress and write the first tests for the Pokemon search.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: the unit 2 app running in Docker (http://localhost:5173). Node 24 on your laptop (Cypress 16 needs Node 22, 24 or 26).</p>
+    <p>In the slides, <b>▶ Run tests</b> runs the specs beside the live app (results match real Cypress: checked).</p>
+    <p>Press <b>T</b> to start the clock.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="1">
+  <h2>Why write tests at all?</h2>
+  <ul>
+    <li>Finding a bug by clicking around takes <b>minutes</b>; a test re-checks it in <b>seconds</b>, every time</li>
+    <li>A bug in production costs users, money and trust</li>
+    <li>Tests let you change code (unit 4 rewrites the whole page!) and <b>know</b> nothing broke</li>
+  </ul>
+  <p class="bottomline">A test is a check you never have to do by hand again.</p>
+  <aside class="notes">
+    <p>Say: "In unit 4 we rewrite this page in React state. These tests will tell us if we broke anything."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="3">
+  <h2>Three kinds of tests</h2>
+  <table class="dbt small">
+    <tr><th>Kind</th><th>Asks</th><th>Example</th><th>Tool</th></tr>
+    <tr><td><b>Unit</b></td><td>"Does this function work?"</td><td><code>calculateTax(100)</code> returns 8</td><td>Jest (fundamentals week)</td></tr>
+    <tr><td><b>Integration</b></td><td>"Do these parts work together?"</td><td>the form sends what the API expects</td><td>Jest, Testing Library</td></tr>
+    <tr><td class="pk"><b>End-to-end</b></td><td>"Can the user actually use the feature?"</td><td>search Bulbasaur → its card appears</td><td><b>Cypress</b></td></tr>
+  </table>
+  <p class="bottomline">Many small unit tests, fewer end-to-end tests: e2e tests are slower but closest to the user.</p>
+  <aside class="notes">
+    <p>The testing pyramid: unit at the bottom (many, fast), e2e at the top (few, slow, most realistic).</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="5">
+  <h2>Why Cypress</h2>
+  <div class="cols">
+    <ul>
+      <li>Runs your app in a <b>real browser</b></li>
+      <li><b>Waits</b> by itself: retries a check up to 4 s</li>
+      <li>Shows each step: you can <b>see</b> the test click and type</li>
+      <li>Can <b>stub</b> the network (lecture 2)</li>
+    </ul>
+    <ul>
+      <li>Tests read like the feature: visit, type, click, should…</li>
+      <li>Same <code>describe</code> / <code>it</code> words as Jest, but assertions are <code>.should(…)</code> chains</li>
+    </ul>
+  </div>
+  <p class="bottomline">Cypress drives a browser like a user, and checks what the user would see.</p>
+  <aside class="notes"><p>Say: "Cypress commands are queued and run one after another; you don't use their return values like in Jest."</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: install" data-at="6">
+  <h2>Install Cypress <span class="say">package.json</span></h2>
+  <div class="livepad" data-lesson="cypress-react" data-start="null" data-steps="f1s1 f1s2" data-files="package.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students run <code>npm install cypress --save-dev</code> <b>on their laptop</b> (not in Docker).</p>
+<!-- steps:cypress-react:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"cypress": "^16.2.0",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install cypress --save-dev adds this line under devDependencies. It downloads the Cypress app too (a few hundred MB, once).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"preview": "vite preview",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">cy:open opens the Cypress app (watch tests run). cy:run runs them all in the terminal, headless.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Setup" data-at="9">
+  <h2>Two places, one test run</h2>
+  <table class="dbt small">
+    <tr><th></th><th>The app</th><th>Cypress</th></tr>
+    <tr><td><b>Runs</b></td><td>in Docker (<code>bash run_container.sh</code>)</td><td>on your laptop (<code>npm run cy:open</code>)</td></tr>
+    <tr><td><b>Needs</b></td><td>the dev server on port 5173</td><td>Node 22, 24 or 26 + <code>npm install</code> on the laptop</td></tr>
+    <tr><td><b>Talks to</b></td><td>—</td><td class="pk">http://localhost:5173 (baseUrl)</td></tr>
+  </table>
+  <p class="bottomline">Start the app first. Then run Cypress.</p>
+  <aside class="notes">
+    <p>Windows/WSL: Cypress needs extra Linux libraries (the Cypress docs list them). Ask for help early.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: config" data-at="11">
+  <h2>Configure Cypress <span class="say">cypress.config.js · .gitignore · .oxlintrc.json</span></h2>
+  <div class="livepad" data-lesson="cypress-react" data-start="f1s2" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress.config.js .gitignore .oxlintrc.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b></p>
+<!-- steps:cypress-react:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { defineConfig } from 'cypress'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">e2e = settings for end-to-end tests. baseUrl = where our dev server is. supportFile: false = we have no shared helpers yet.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>},</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The browser size for every test.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.gitignore</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code># Cypress</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Videos and screenshots are made on every run: don't commit them.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.oxlintrc.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"overrides": [</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Tell the linter that test files use describe, it, cy and Cypress without importing them.</td></tr>
+</table>
+<!-- /steps -->
+    <p><b>Different from the curriculum</b> (until merged): it said e2e "is not a built-in configuration property"; it is (the other testing type is component).</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="15">
+  <h2>Where things go</h2>
+  <pre style="font-size:24px">pokemon-app/
+├─ cypress/
+│  ├─ e2e/          <span class="c"># the tests: *.cy.js</span>
+│  └─ fixtures/     <span class="c"># fake data for lecture 2</span>
+├─ cypress.config.js
+└─ package.json</pre>
+  <p class="bottomline">One spec file per area of the app: home.cy.js today, pokemon.cy.js next.</p>
+  <aside class="notes"><p>The first <code>cy:open</code> may create <code>cypress/support</code> and <code>fixtures/example.json</code>: delete them (we set supportFile: false).</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="17">
+  <h2>Anatomy of a test</h2>
+  <table class="dbt small">
+    <tr><th>Piece</th><th>Means</th></tr>
+    <tr><td><code>beforeEach(() =&gt; { … })</code></td><td>runs before <b>every</b> test</td></tr>
+    <tr><td><code>it('should have a heading', () =&gt; { … })</code></td><td>one test: a sentence about the app</td></tr>
+    <tr><td><code>cy.visit('/')</code></td><td>open baseUrl + "/"</td></tr>
+    <tr><td><code>cy.get('header')</code></td><td>find elements (CSS selector), waiting up to 4 s</td></tr>
+    <tr><td class="pk"><code>.should('be.visible')</code></td><td>what must be true (retried until it is)</td></tr>
+  </table>
+  <p class="bottomline">Visit, find, check. Every test starts on a blank page.</p>
+  <aside class="notes"><p>Fix It problem 1 is exactly "forgot cy.visit".</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: first tests" data-at="19">
+  <h2>The first tests <span class="say">cypress/e2e/home.cy.js</span></h2>
+  <div class="livepad" data-lesson="cypress-react" data-start="f2s4" data-steps="f3s1 f3s2 f3s3" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> After N 2 and N 3 press <b>▶ Run tests</b>. Then break one on purpose (change 0 to 1) and run again: read the red message together.</p>
+<!-- steps:cypress-react:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Before every test: open the home page. Each test starts fresh.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('should have a heading', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One test: there is a visible header. Press Run tests.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('starts with an empty poke container', ()…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">No cards before any search. (In unit 4 Pikachu loads on start, and this test changes.)</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Run" data-at="24">
+  <h2>Run the tests on your laptop</h2>
+  <table class="dbt small">
+    <tr><th>Command</th><th>Does</th><th>Use it</th></tr>
+    <tr><td><code>npm run cy:open</code></td><td>opens the Cypress app: pick E2E, a browser, a spec</td><td>while writing tests: watch them run</td></tr>
+    <tr><td><code>npm run cy:run</code></td><td>runs every spec headless, results in the terminal</td><td>before you push; in CI (unit 9)</td></tr>
+    <tr><td><code>npm run cy:run -- --spec cypress/e2e/home.cy.js</code></td><td>just one file</td><td>fast checks</td></tr>
+  </table>
+  <p class="bottomline">Green in cy:open, green in cy:run: same tests, two ways to watch.</p>
+  <aside class="notes">
+    <p><b>** LIVE, about 2 minutes. **</b> Run <code>npm run cy:open</code> on your laptop with the Docker app running.</p>
+    <p><b>Different from the curriculum</b> (until merged): <code>"cy:run": "npx cypress run --spec"</code> fails without a file name; we use <code>"cypress run"</code> and pass <code>-- --spec</code> when needed.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="26">
+  <h2>Reading a red test</h2>
+  <table class="dbt small">
+    <tr><th>Cypress says</th><th>Usually means</th></tr>
+    <tr><td>Expected to find element: `#x`, but never found it</td><td>wrong selector, or forgot <code>cy.visit</code></td></tr>
+    <tr><td>Not enough / Too many elements found</td><td>the count in <code>have.length</code> is off</td></tr>
+    <tr><td>The chainer `…` was not found</td><td>a typo in the assertion name</td></tr>
+    <tr><td>cy.visit() failed trying to load</td><td>app not running, or baseUrl wrong</td></tr>
+    <tr><td>Timed out retrying after 4000ms</td><td>it never became true within 4 s</td></tr>
+  </table>
+  <p class="bottomline">The first line of the error tells you which of these it is.</p>
+  <aside class="notes"><p>These are the Fix It problems, in the same words.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="28">
+  <h2>Activity: Fix it (Cypress setup)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 3 · Lecture 1</b></li>
+    <li>The app is fine: the <b>tests</b> or the <b>config</b> are broken</li>
+    <li>Fix, press <b>Fix</b>: the tests run, then <b>✅ Fixed!</b> or <b>❌ Still broken</b></li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=cypress-react" target="_blank" rel="noopener">fixit.html?lesson=cypress-react</a></p>
+  <aside class="notes"><p>6 minutes. "What the tests said" under the result shows the runner's output.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="35">
+  <h2>Tests change when the app changes</h2>
+  <ul>
+    <li><b>starts with an empty poke container</b> is true today</li>
+    <li>In unit 4, Pikachu loads when the page opens: that test will fail, on purpose</li>
+    <li>We will rewrite it to say what the app does then, and every other test stays</li>
+  </ul>
+  <p class="bottomline">A failing test after a planned change = update the test. An unplanned one = a bug.</p>
+  <aside class="notes"><p>Say: "From unit 4 on, every feature starts with a failing test."</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team project and add a Cypress test suite that will be capable of rendering the Home page and ensure it exists."</li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
+  <aside class="notes"><p>Same setup as today: app in Docker, Cypress on the laptop, baseUrl 5173, supportFile: false.</p></aside>
+</section>
+
+</div>
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=2"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/livepad.js?v=2"></script>
+<script src="../shared/cyrunner.js?v=1"></script>
+</body>
+</html>

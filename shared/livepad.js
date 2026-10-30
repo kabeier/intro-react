@@ -177,7 +177,9 @@
       const box = el.querySelector('.lp-tests')
       if (box) box.textContent = ''
       const results = []
-      for (const spec of specsOf()) results.push(await CyRunner.run({ pad, spec: pad.files[spec], fixtures, title: spec.replace('cypress/e2e/', ''), append: true }))
+      const config = pad.files['cypress.config.js'] || null
+      const hasSupport = Object.keys(pad.files).some((f) => /^cypress\/support\/e2e\.(js|jsx|ts|tsx)$/.test(f))
+      for (const spec of specsOf()) results.push(await CyRunner.run({ pad, spec: pad.files[spec], fixtures, config, hasSupport, title: spec.replace('cypress/e2e/', ''), append: true }))
       pad.routes = null
       pad.refresh()
       return results

@@ -54,7 +54,7 @@
         <p class="fx-hint-text" hidden></p>
         <div class="fx-answer" hidden></div>
       </section>`
-    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), assets: Course.assetsOf(lesson), editable: true })
+    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), assets: Course.assetsOf(lesson), editable: true, tabs: p.tabs ? [...p.tabs, ...Course.tabOrder(Object.keys(brokenFiles(p))).filter((f) => !p.tabs.includes(f))] : undefined })
     mainEl.querySelector('.fx-fix').onclick = check
     mainEl.querySelector('.fx-hint').onclick = () => { const h = mainEl.querySelector('.fx-hint-text'); h.hidden = false; h.textContent = '💡 ' + p.hint }
     mainEl.querySelector('.fx-solution').onclick = showSolution
@@ -87,6 +87,20 @@
       new Promise((r) => setTimeout(r, 5000)),
     ])
   }
+  // Spec problems: run the Cypress specs in a hidden editor (CyRunner) and read the results.
+  let testPad = null, lastTestHtml = ''
+  async function runTests(files) {
+    if (!testPad) {
+      const host = document.createElement('div')
+      host.className = 'fx-testpad'
+      host.setAttribute('aria-hidden', 'true')
+      document.body.append(host)
+      testPad = Livepad.mount(host, { files, assets: Course.assetsOf(lesson), editable: false })
+    } else testPad.setFiles(files)
+    const results = (await testPad.pad.runTests()) || []
+    lastTestHtml = (testPad.pad.el.querySelector('.lp-tests') || {}).innerHTML || ''
+    return results.flatMap((r) => (r.error && !r.tests.length ? [{ title: '(the spec could not run)', state: 'failed', error: r.error }] : r.tests))
+  }
   let checking = false
   async function check() {
     if (checking) return
@@ -104,7 +118,9 @@
     await settle(doc)
     alerts = []
     const ctx = { wait: (ms) => new Promise((r) => setTimeout(r, ms)), doc: () => checker.contentDocument, get alerts() { return alerts },
-      settled: async () => { if (reloading) { await reloading; await settle(checker.contentDocument) } } }
+      settled: async () => { if (reloading) { await reloading; await settle(checker.contentDocument) } },
+      files: () => editor.getFiles(), runTests: (files) => runTests(files || editor.getFiles()) }
+    lastTestHtml = ''
     const results = []
     for (const c of p.checks) {
       let ok = false
@@ -115,7 +131,8 @@
     if (p !== current) return
     out.className = 'fx-result ' + (all ? 'ok' : 'bad')
     out.innerHTML = (all ? `<b>✅ Fixed!</b> ${esc(p.why)}` : '<b>❌ Still broken.</b> Try again, or press Hint.') +
-      `<ul>${results.map((r) => `<li>${r.ok ? '✓' : '✗'} ${esc(r.name)}</li>`).join('')}</ul>`
+      `<ul>${results.map((r) => `<li>${r.ok ? '✓' : '✗'} ${esc(r.name)}</li>`).join('')}</ul>` +
+      (lastTestHtml ? `<details class="fx-run" open><summary>What the tests said</summary><div class="lp-tests">${lastTestHtml}</div></details>` : '')
     if (all) { solved.add(p.id); saveSolved(); renderList() }
   }
 

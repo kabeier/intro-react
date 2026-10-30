@@ -20,9 +20,29 @@ const Course = require(path.join(ROOT, 'shared/course.js'))
 globalThis.Course = Course
 for (const f of JSON.parse(readFileSync(path.join(ROOT, 'shared/course/manifest.json'), 'utf8'))) await import(path.join(ROOT, 'shared/course', f))
 
-const ids = process.argv.slice(2)
-const checkpoints = ids.flatMap((id) => Course.get(id).features.map((f) => ({ name: `${id} ${f.id}`, files: Course.checkpoint(Course.get(id), f.id) })))
-  .filter((c) => Object.keys(c.files).some((f) => /^cypress\/e2e\/.+\.cy\.js$/.test(f)))
+const args = process.argv.slice(2)
+const fixitMode = args[0] === '--fixit'
+const ids = fixitMode ? args.slice(1) : args
+const hasSpecs = (files) => Object.keys(files).some((f) => /^cypress\/e2e\/.+\.cy\.js$/.test(f))
+let checkpoints = []
+if (!fixitMode) {
+  checkpoints = ids.flatMap((id) => Course.get(id).features.map((f) => ({ name: `${id} ${f.id}`, files: Course.checkpoint(Course.get(id), f.id), expect: 'all-pass' })))
+    .filter((c) => hasSpecs(c.files))
+} else {
+  for (const id of ids) {
+    await import(path.join(ROOT, 'shared/course', id + '-fixit.js'))
+    const lesson = Course.get(id)
+    for (const p of globalThis.FIXIT[id]) {
+      const apply = (steps) => { const f = { ...Course.checkpoint(lesson, p.base) }; for (const s of steps || []) f[s.file] = Course.applyStep(f[s.file], s); return f }
+      const solution = apply(p.solve)
+      checkpoints.push({ name: `${id}/${p.id} broken`, files: apply(p.breaks), expect: 'some-fail' })
+      checkpoints.push({ name: `${id}/${p.id} solution`, files: solution, expect: 'all-pass' })
+      for (const c of p.checks.filter((c) => c.bug)) {
+        checkpoints.push({ name: `${id}/${p.id} solution vs app bug (${c.bug.label})`, files: { ...solution, 'src/App.jsx': solution['src/App.jsx'].replace(c.bug.find, '') }, expect: 'fails:' + c.bug.test })
+      }
+    }
+  }
+}
 
 // node_modules shared with verify-project.mjs (same dependency union)
 const deps = {}, devDeps = {}
@@ -52,7 +72,7 @@ let bad = 0
 const site = await serve(ROOT)
 const browser = await launch()
 for (const c of checkpoints) {
-  const dir = path.join(work, c.name.replace(' ', '-'))
+  const dir = path.join(work, c.name.replace(/[^\w-]+/g, '-'))
   rmSync(dir, { recursive: true, force: true })
   for (const [n, t] of Object.entries(c.files)) { mkdirSync(path.dirname(path.join(dir, n)), { recursive: true }); writeFileSync(path.join(dir, n), t + '\n') }
   symlinkSync(path.join(cache, 'node_modules'), path.join(dir, 'node_modules'))
@@ -85,15 +105,22 @@ for (const c of checkpoints) {
   await page.close()
 
   const realMap = new Map(real.map((t) => [t.title, t.state]))
+  let differ = real.length !== mine.length
   const lines = mine.map((t) => {
     const rs = realMap.get(t.title)
     const same = rs === t.state
-    if (!same || t.state !== 'passed') bad++
+    if (!same) differ = true
     return `  ${same ? '=' : '≠'} ${t.title}: runner ${t.state}, real Cypress ${rs || 'missing'}${t.error && t.state !== 'passed' ? '\n      ' + t.error.split('\n')[0] : ''}`
   })
-  if (real.length !== mine.length) { bad++; lines.push(`  ≠ test count: runner ${mine.length}, real Cypress ${real.length}`) }
-  console.log(c.name + '\n' + lines.join('\n'))
+  if (real.length !== mine.length) lines.push(`  ≠ test count: runner ${mine.length}, real Cypress ${real.length}`)
+  // What this variant is supposed to do (judged on real Cypress).
+  const allPass = real.length > 0 && real.every((t) => t.state === 'passed')
+  const met = c.expect === 'all-pass' ? allPass
+    : c.expect === 'some-fail' ? !allPass
+    : real.some((t) => t.title === c.expect.slice(6) && t.state === 'failed')
+  if (differ || !met) bad++
+  console.log(`${c.name}  [expect ${c.expect}: ${met ? 'yes' : 'NO'}${differ ? ', runner differs' : ''}]\n` + lines.join('\n'))
 }
 await browser.close(); site.close()
-console.log(bad ? `${bad} difference(s) or failure(s)` : 'runner and real Cypress agree; every test passes')
+console.log(bad ? `${bad} difference(s) or unmet expectation(s)` : 'runner and real Cypress agree; every expectation met')
 process.exit(bad ? 1 : 0)

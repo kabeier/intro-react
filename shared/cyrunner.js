@@ -85,20 +85,24 @@
       const v = els ? els : subject.value
       ok(v === rest[0], `expected ${q(v)} to equal ${q(rest[0])}`, `expected ${q(v)} not to equal ${q(rest[0])}`); return subject
     }
-    throw new Error(`CyRunner: the assertion '${chainer}' is not supported here`)
+    throw new Error(`The chainer \`${name.split('.').pop()}\` was not found. Could not build assertion.`)
   }
 
   // ---------- the runner ----------
-  function makeRunner(pad, fixtures, log) {
+  function makeRunner(pad, fixtures, cfg) {
     const queue = []
     let current = null // the test being run: { alertHandlers }
     const routes = []
     const intercepted = {}
+    const responded = {}, waited = {}
 
     const win = () => pad.iframe.contentWindow
     const doc = () => pad.iframe.contentDocument
 
     async function visit() {
+      if (cfg.baseUrl && cfg.baseUrl.replace(/\/?$/, '/') !== 'http://localhost:5173/') {
+        throw new Error(`cy.visit() failed trying to load:\n\n${cfg.baseUrl}\n\nWe attempted to make an http request to this URL but the request failed without a response.`)
+      }
       pad.routes = routes.map((r) => ({ method: r.method, url: r.url, status: r.status, body: r.body, alias: r.alias }))
       await new Promise((resolve) => {
         const done = () => { pad.iframe.removeEventListener('load', done); resolve() }
@@ -172,13 +176,34 @@
       contains: (a, b) => chain({ ...containsOp(a, b, false), start: true }),
       wrap: (value) => chain({ kind: 'query', name: 'wrap', start: true, run: () => ({ value }) }),
       url: () => chain({ kind: 'query', name: 'url', start: true, run: () => ({ value: pad.url || (pad.baseUrl || 'http://localhost:5173/') }) }),
-      on: (event, fn) => chain({ kind: 'action', name: 'on', start: true, run: async () => { if (event === 'window:alert') current.alertHandlers.push(fn); return { els: [] } } }),
+      // A failing expect inside the handler fails the test, like Cypress.
+      on: (event, fn) => chain({ kind: 'action', name: 'on', start: true, run: async () => {
+        if (event === 'window:alert') current.alertHandlers.push((m) => { try { fn(m) } catch (e) { current.errors.push(e) } })
+        return { els: [] }
+      } }),
       intercept: (method, url, response) => {
-        const body = response && response.fixture ? JSON.parse(fixtures[response.fixture.replace(/^(?!.*\.json$)(.*)$/, '$1.json')] || 'null') : response && response.body
+        let body = response && response.body
+        if (response && response.fixture) {
+          const name = /\.\w+$/.test(response.fixture) ? response.fixture : response.fixture + '.json'
+          if (fixtures[name] == null) {
+            current.errors.push(new Error(`A fixture file could not be found at any of the following paths:\n\n > cypress/fixtures/${name}\n > cypress/fixtures/${name}{.json,.js,.coffee,.html,.txt,.csv,.png,.jpg,.jpeg,.gif,.tif,.tiff,.zip}`))
+          } else body = JSON.parse(fixtures[name])
+        }
         routes.push({ method, url, status: (response && response.statusCode) || 200, body, alias: null })
         return chain({ kind: 'action', name: 'intercept', start: true, run: async () => ({ els: [] }) })
       },
-      wait: (alias) => chain({ kind: 'query', name: 'wait', selector: alias, start: true, run: () => ({ els: (intercepted[alias.slice(1)] || []) }) }),
+      // Each cy.wait('@a') waits for the next response on that route, like Cypress.
+      wait: (alias) => {
+        const name = alias.slice(1)
+        let mine = null
+        return chain({ kind: 'query', name: 'wait', selector: alias, start: true, run: () => {
+          if (!routes.some((r) => r.alias === name)) throw new Error(`\`cy.wait()\` could not find a registered alias for: \`${alias}\`.\nAvailable aliases are: \`${routes.filter((r) => r.alias).map((r) => r.alias).join(', ') || '(none)'}\`.`)
+          if (mine === null) mine = (waited[name] || 0) + 1
+          if ((responded[name] || []).length < mine) return { els: [] }
+          waited[name] = mine
+          return { els: [responded[name][mine - 1]] }
+        } })
+      },
     }
     const Cypress = { config: (k) => ({ baseUrl: 'http://localhost:5173/' })[k] }
 
@@ -186,6 +211,10 @@
     addEventListener('message', (e) => {
       if (!e.data || e.data.type !== 'cy-intercepted' || e.source !== win()) return
       ;(intercepted[e.data.alias] = intercepted[e.data.alias] || []).push({ url: e.data.url, tagName: 'REQUEST' })
+    })
+    addEventListener('message', (e) => {
+      if (!e.data || e.data.type !== 'cy-responded' || e.source !== win()) return
+      ;(responded[e.data.alias] = responded[e.data.alias] || []).push({ url: e.data.url, tagName: 'RESPONSE' })
     })
 
     async function runChain(ops) {
@@ -224,7 +253,8 @@
             break
           } catch (e) {
             lastErr = e
-            if (!(e instanceof AssertionError) || Date.now() > end) throw new AssertionError(`Timed out retrying after ${TIMEOUT}ms: ${e.message}`)
+            if (!(e instanceof AssertionError)) throw e
+            if (Date.now() > end) throw new AssertionError(`Timed out retrying after ${TIMEOUT}ms: ${e.message}`)
             await sleep(50)
           }
         }
@@ -236,12 +266,19 @@
     async function runTest(t, hooks) {
       queue.length = 0
       routes.length = 0
-      for (const k of Object.keys(intercepted)) delete intercepted[k]
+      for (const m of [intercepted, responded, waited]) for (const k of Object.keys(m)) delete m[k]
       current = { alerts: [], alertHandlers: [], errors: [] }
+      // Like Cypress, every test starts on a blank page (cy.visit loads the app).
+      await new Promise((resolve) => {
+        const done = () => { pad.iframe.removeEventListener('load', done); resolve() }
+        pad.iframe.addEventListener('load', done)
+        pad.iframe.srcdoc = '<!doctype html><title>about:blank</title><body></body>'
+      })
       const t0 = Date.now()
       try {
         for (const h of hooks) {
           h()
+          if (current.errors.length) throw current.errors[0]
           for (const ops of queue.splice(0)) await runChain(ops)
         }
         t.fn()
@@ -253,7 +290,13 @@
       }
     }
 
-    return { cy, Cypress, runTest, setAlertError: (e) => current && current.errors.push(e) }
+    // Commands called while the spec file is read (outside any test) fail like Cypress.
+    let collecting = false
+    const guarded = new Proxy(cy, { get: (t, k) => (typeof t[k] === 'function' ? (...a) => {
+      if (collecting) throw new Error(`Cannot call \`cy.${String(k)}()\` outside a running test.\n\nThis usually happens when you accidentally write commands outside an \`it(...)\` test.`)
+      return t[k](...a)
+    } : t[k]) })
+    return { cy: guarded, Cypress, runTest, setCollecting: (v) => { collecting = v }, setAlertError: (e) => current && current.errors.push(e) }
   }
 
   // Collect describe/it/beforeEach from the spec text.
@@ -261,15 +304,18 @@
     const tests = []
     const stack = [{ title: '', hooks: [] }]
     const describe = (title, fn) => { stack.push({ title, hooks: [] }); fn(); stack.pop() }
-    const it = (title, fn) => {
+    const add = (flag) => (title, fn) => {
       const titles = stack.map((s) => s.title).filter(Boolean).concat(title)
-      tests.push({ title: titles.join(' '), fn, hooks: stack.flatMap((s) => s.hooks) })
+      tests.push({ title: titles.join(' '), fn, hooks: stack.flatMap((s) => s.hooks), flag })
     }
+    const it = add(null)
+    it.only = add('only')
+    it.skip = add('skip')
     const beforeEach = (fn) => { stack[stack.length - 1].hooks.push(fn) }
-    describe.only = describe; it.only = it; it.skip = () => {}
+    describe.only = describe; describe.skip = () => {}
     // eslint-disable-next-line no-new-func
     new Function('describe', 'context', 'it', 'specify', 'beforeEach', 'cy', 'Cypress', 'expect', spec)(describe, describe, it, it, beforeEach, env.cy, env.Cypress, expect)
-    return tests
+    return tests.some((t) => t.flag === 'only') ? tests.filter((t) => t.flag === 'only') : tests
   }
 
   function panel(pad) {
@@ -279,7 +325,10 @@
   }
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
-  async function run({ pad, spec, fixtures = {}, title = 'Tests', append = false }) {
+  // The settings a spec run depends on, read from cypress.config.js.
+  const readConfig = (text) => (text ? { baseUrl: (text.match(/baseUrl\s*:\s*['"]([^'"]+)['"]/) || [])[1], noSupport: /supportFile\s*:\s*false/.test(text) } : {})
+
+  async function run({ pad, spec, fixtures = {}, title = 'Tests', append = false, config = null, hasSupport = false }) {
     const out = panel(pad)
     out.hidden = false
     const block = document.createElement('div')
@@ -287,19 +336,30 @@
     block.innerHTML = `<div class="lp-tests-head">${esc(title)}: running…</div>`
     if (append) out.append(block)
     else { out.textContent = ''; out.append(block) }
-    const runner = makeRunner(pad, fixtures)
+    const cfg = readConfig(config)
+    if (config && !cfg.noSupport && !hasSupport) {
+      const msg = 'Your `supportFile` is missing or invalid: `cypress/support/e2e.{js,jsx,ts,tsx}`\n\nThe supportFile must be a .js, .ts, .coffee file or be supported by your preprocessor plugin (if configured).\n\nFix your support file, or set supportFile to false if a support file is not necessary for your project.'
+      block.innerHTML = `<div class="lp-tests-head bad">${esc(title)}: Cypress could not start</div><div class="lp-test fail"><pre>${esc(msg)}</pre></div>`
+      return { tests: [], passed: 0, failed: 1, error: msg }
+    }
+    const runner = makeRunner(pad, fixtures, cfg)
     // A failing expect inside cy.on('window:alert') fails the test.
-    const env = { cy: new Proxy(runner.cy, { get: (t, k) => t[k] }), Cypress: runner.Cypress }
-    const wrap = (fn) => (...a) => { try { return fn(...a) } catch (e) { runner.setAlertError(e) } }
-    const origOn = env.cy.on
-    runner.cy.on = (ev, fn) => origOn(ev, wrap(fn))
+    const env = { cy: runner.cy, Cypress: runner.Cypress }
     let tests
+    runner.setCollecting(true)
     try { tests = collect(spec, env) } catch (e) {
+      runner.setCollecting(false)
       block.innerHTML = `<div class="lp-tests-head bad">${esc(title)}: error in the spec file</div><div class="lp-test fail">${esc(e.message)}</div>`
       return { tests: [], passed: 0, failed: 1, error: e.message }
     }
+    runner.setCollecting(false)
     const results = []
     for (const t of tests) {
+      if (t.flag === 'skip') {
+        results.push({ title: t.title, state: 'pending' })
+        block.insertAdjacentHTML('beforeend', `<div class="lp-test pend">- ${esc(t.title)} <span>(skipped)</span></div>`)
+        continue
+      }
       // Chained calls on a missing command throw while the test function runs: report like Cypress.
       const r = await runner.runTest({ title: t.title, fn: () => {
         try { t.fn() } catch (e) {
@@ -315,9 +375,10 @@
       block.insertAdjacentHTML('beforeend', line)
     }
     const passed = results.filter((r) => r.state === 'passed').length
-    const failed = results.length - passed
-    block.querySelector('.lp-tests-head').outerHTML = `<div class="lp-tests-head ${failed ? 'bad' : 'good'}">${esc(title)} · Passing: ${passed} · Failing: ${failed}</div>`
-    return { tests: results, passed, failed }
+    const failed = results.filter((r) => r.state === 'failed').length
+    const pending = results.length - passed - failed
+    block.querySelector('.lp-tests-head').outerHTML = `<div class="lp-tests-head ${failed ? 'bad' : 'good'}">${esc(title)} · Passing: ${passed} · Failing: ${failed}${pending ? ' · Pending: ' + pending : ''}</div>`
+    return { tests: results, passed, failed, pending }
   }
 
   window.CyRunner = { run, expect }

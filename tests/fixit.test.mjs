@@ -10,6 +10,8 @@ globalThis.Course = Course
 for (const f of JSON.parse(readFileSync(new URL('../shared/course/manifest.json', import.meta.url)))) await import('../shared/course/' + f)
 await import('../shared/course/react-vite-fixit.js')
 await import('../shared/course/async-requests-fixit.js')
+await import('../shared/course/cypress-react-fixit.js')
+await import('../shared/course/cypress-assertions-fixit.js')
 
 let srv, browser
 before(async () => { srv = await serve(); browser = await launch() })
@@ -33,7 +35,7 @@ const press = async (page) => {
   return until(page, () => { const r = document.querySelector('.fx-result'); return r && /Fixed|Still broken/.test(r.textContent) && r.textContent }, null, 60000)
 }
 
-for (const lessonId of ['react-vite', 'async-requests']) {
+for (const lessonId of ['react-vite', 'async-requests', 'cypress-react', 'cypress-assertions']) {
   const problems = globalThis.FIXIT[lessonId]
   const lesson = Course.get(lessonId)
   test(lessonId + ': 10 problems, first 6 core', () => {

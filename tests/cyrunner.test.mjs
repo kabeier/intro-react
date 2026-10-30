@@ -126,3 +126,47 @@ test('cy.wrap(array).should("include") retries until the alert arrives, and fail
   assert.equal(bad.tests[0].state, 'failed')
   assert.match(bad.tests[0].error, /expected \[\] to include 'Pokemon Does not Exist'/)
 })
+
+test('each test starts on a blank page, like Cypress: forgetting cy.visit fails', async () => {
+  const r = await run("it('no visit', () => {\n  cy.get('header').should('be.visible')\n})")
+  assert.equal(r.tests[0].state, 'failed')
+  assert.match(r.tests[0].error, /Expected to find element: `header`, but never found it/)
+})
+
+test('a missing fixture fails like Cypress', async () => {
+  const r = await run("beforeEach(() => { cy.intercept('GET', '**/pokemon/x', { fixture: 'bulbasuar.json' }); cy.visit('/') })\nit('t', () => { cy.get('header') })", { fixtures: { 'bulbasaur.json': '{}' } })
+  assert.equal(r.tests[0].state, 'failed')
+  assert.match(r.tests[0].error, /A fixture file could not be found at any of the following paths:[\s\S]*cypress\/fixtures\/bulbasuar\.json/)
+})
+
+test('it.only runs only that test; it.skip is reported as pending', async () => {
+  const only = await run("it('a', () => { cy.visit('/') })\nit.only('b', () => { cy.visit('/') })")
+  assert.deepEqual(only.tests.map((t) => t.title), ['b'])
+  const skip = await run("it('a', () => { cy.visit('/') })\nit.skip('b', () => { cy.visit('/') })")
+  assert.deepEqual(skip.tests.map((t) => [t.title, t.state]), [['a', 'passed'], ['b', 'pending']])
+})
+
+test('a misspelled assertion fails like Cypress', async () => {
+  const r = await run("it('t', () => { cy.visit('/'); cy.get('header').should('be.visable') })")
+  assert.match(r.tests[0].error, /The chainer `visable` was not found\. Could not build assertion\./)
+})
+
+test('cy commands outside a test fail like Cypress', async () => {
+  const r = await run("cy.visit('/')\nit('t', () => { cy.get('header') })")
+  assert.match(r.error || r.tests[0]?.error || '', /Cannot call `cy\.visit\(\)` outside a running test/)
+})
+
+test('an unknown alias in cy.wait fails like Cypress', async () => {
+  const r = await run("beforeEach(() => { cy.intercept('GET', '**/pokemon/x', { body: {} }).as('poke'); cy.visit('/') })\nit('t', () => { cy.wait('@pokee') })")
+  assert.match(r.tests[0].error, /`cy\.wait\(\)` could not find a registered alias for: `@pokee`/)
+})
+
+test('cypress.config.js is honoured: wrong baseUrl and missing supportFile: false fail like Cypress', async () => {
+  const base = "import { defineConfig } from 'cypress'\n\nexport default defineConfig({\n  e2e: {\n    baseUrl: 'http://localhost:5173/',\n    supportFile: false,\n  },\n})"
+  const ok = await run("it('t', () => { cy.visit('/'); cy.get('header') })", { config: base })
+  assert.equal(ok.tests[0].state, 'passed', ok.tests[0].error)
+  const port = await run("it('t', () => { cy.visit('/'); cy.get('header') })", { config: base.replace('5173', '3000') })
+  assert.match(port.tests[0].error, /cy\.visit\(\) failed trying to load:[\s\S]*http:\/\/localhost:3000\//)
+  const sup = await run("it('t', () => { cy.visit('/') })", { config: base.replace('    supportFile: false,\n', '') })
+  assert.match(sup.error, /Your `supportFile` is missing or invalid: `cypress\/support\/e2e\.\{js,jsx,ts,tsx\}`/)
+})

@@ -50,3 +50,6 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .fx-lesson { font-weight: 700; color: var(--blue); text-decoration: none; border-left: 4px solid transparent; padding-left: 8px; }
 .fx-lesson.on { border-left-color: var(--ink); color: var(--ink); }
 @media (max-width: 1000px) { .fx-lessons { flex-direction: row; flex-wrap: wrap; } }
+.fx-testpad { position: absolute; left: -10000px; top: 0; width: 1200px; height: 800px; }
+.fx-run { margin-top: 8px; }
+.fx-run .lp-tests { max-height: 260px; }

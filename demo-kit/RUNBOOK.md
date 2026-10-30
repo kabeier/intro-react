@@ -52,3 +52,37 @@ Keys: **N** next step · **Shift+N** reset · **A** live app · **↗ Pop out** 
 - **Each save reloads the app** in the preview: cards disappear. Real Vite keeps state for small edits (Fast Refresh).
 - **Docker: "vite: not found"**: the `-v /app/node_modules` line is missing. **Port 5173 doesn't answer**: `--host` missing in package.json.
 - **After `npm install axios` on the laptop** the container still lacks it: rebuild the image (or `docker exec react-container npm install`).
+
+
+# Runbook · Unit 3 (End-to-End Testing)
+
+Before class: the unit 2 app running in Docker; Node 24 on your laptop; `npm install` done there (Cypress downloads its app once). In the slides, **▶ Run tests** runs the specs beside the live app; the results were checked against real Cypress 16.2.0 (tools/real-cypress.mjs).
+
+## Lecture 1 · Cypress and React
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–4 | 0–5 | — | why test; unit / integration / e2e; why Cypress |
+| 5 | 6 | **N ×2**; students `npm install cypress --save-dev` on the laptop | dev dependency; two scripts |
+| 6 | 9 | — | app in Docker, Cypress on the laptop |
+| 7 | 11 | **N ×4** | config, gitignore, lint globals |
+| 8–9 | 15–17 | — | folders; anatomy of a test |
+| 10 | 19 | **N ×3**, ▶ Run tests; break one, run again | visit, find, check |
+| 11 | 24 | `npm run cy:open` live | cy:open vs cy:run |
+| 12 | 26 | — | reading a red test |
+| 13 | 28 | timer | Fix It (setup) 1–6 |
+| 14–15 | 35–37 | — | tests change in unit 4; homework I |
+
+## Lecture 2 · Cypress Assertions
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | — | test what users see; features → tests |
+| 4 | 5 | **N ×3**, ▶ Run tests | type, click, ids |
+| 5 | 9 | — | commands and assertions |
+| 6–7 | 11–14 | **N** through, ▶ Run tests | {enter}, have.value, edge cases |
+| 8 | 18 | break a test on purpose | reading a red test |
+| 9–10 | 19–21 | **N ×4**, ▶ Run tests | stubs: fast, same every run |
+| 11 | 25 | — | a test that can't fail tests nothing |
+| 12 | 28 | timer | Fix It (assertions) 1–6 |
+| 13–14 | 35–37 | — | unit 4 preview; homework II |
+
+Things to expect: students running Cypress inside Docker (it must run on the laptop); Node 25 on the laptop (Cypress 16 refuses it: use 24); `cy:run` without the app running ("cy.visit() failed trying to load").

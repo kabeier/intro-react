@@ -237,6 +237,8 @@
       return null
     }
     var tell = function (r, url) { post({ type: 'cy-intercepted', alias: r.alias, url: url }) }
+    // After the page has handled the stubbed response (what cy.wait waits for).
+    var done = function (r, url) { setTimeout(function () { post({ type: 'cy-responded', alias: r.alias, url: url }) }, 0) }
     if (routes.length) {
       var realFetch = window.fetch
       window.fetch = function (input, init) {
@@ -244,6 +246,7 @@
         var r = match((init && init.method) || (input && input.method) || 'GET', new URL(url, location.href).href)
         if (!r) return realFetch.apply(this, arguments)
         tell(r, url)
+        done(r, url)
         return Promise.resolve(new Response(JSON.stringify(r.body), { status: r.status, headers: { 'Content-Type': 'application/json' } }))
       }
       var open = XMLHttpRequest.prototype.open, send = XMLHttpRequest.prototype.send
@@ -260,6 +263,7 @@
           x.getAllResponseHeaders = function () { return 'content-type: application/json\r\n' }
           x.getResponseHeader = function (h) { return /content-type/i.test(h) ? 'application/json' : null }
           ;['readystatechange', 'load', 'loadend'].forEach(function (t) { x.dispatchEvent(new ProgressEvent(t)) })
+          done(r, url)
         }, 10)
       }
     }

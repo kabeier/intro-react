@@ -87,6 +87,30 @@
     </section>
   </div>
 
+  <h3>Unit 3: End-to-End Testing</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>Cypress and React</h2>
+      <p>Why test, install and configure Cypress, the first tests. Tests run beside the live app (▶ Run tests).</p>
+      <a class="slides" href="lecture-3-cypress-react/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=cypress-react" target="_blank" rel="noopener"><b>Activity: Fix It (Cypress setup)</b><span>The app works; the tests or the config don't. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=cypress-react&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every config line and test, explained.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>Cypress Assertions</h2>
+      <p>Test every feature, edge cases, and stub the PokeAPI with cy.intercept and fixtures.</p>
+      <a class="slides" href="lecture-4-cypress-assertions/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=cypress-assertions" target="_blank" rel="noopener"><b>Activity: Fix It (assertions)</b><span>Broken tests, and tests too weak to ever fail. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=cypress-assertions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>pokemon.cy.js after every step.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
   <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
     <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
@@ -106,6 +130,19 @@ cd my-project
 npm install
 npm run dev</code></pre><button type="button" class="copy">Copy</button></div>
     <p class="fail"><b>"Vite requires Node.js version 20.19+"?</b> Use Node 24 (or the Docker setup from lecture 1: <code>FROM node:24</code>). <b>Page won't load from Docker?</b> Check <code>"dev": "vite --host"</code> and <code>-p 5173:5173</code>.</p>
+  </section>
+
+  <h3 id="homework-3">Homework, unit 3</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-e2e-testing/assignments/" target="_blank" rel="noopener">Assignments page</a>, top to bottom:</p>
+    <h4>Part I</h4>
+    <ol class="steps"><li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team project and add a Cypress test suite that will be capable of rendering the Home page and ensure it exists."</li></ol>
+    <h4>Part II</h4>
+    <ol class="steps"><li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team (or To-Do List React) project and add different spec files, each one dedicated to testing an independent feature of your project."</li></ol>
+    <h4>Setting up Cypress in your project</h4>
+    <div class="cmdwrap"><pre class="cmd"><code>npm install cypress --save-dev
+npm run cy:open</code></pre><button type="button" class="copy">Copy</button></div>
+    <p class="fail"><b>Cypress won't start?</b> It runs on your laptop (not in Docker) and needs Node 22, 24 or 26. Start the app first (port 5173), and set <code>supportFile: false</code> in cypress.config.js.</p>
   </section>
 
   <h3>Kit</h3>

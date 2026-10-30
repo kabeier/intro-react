@@ -52,3 +52,4 @@ textarea.lp-fallback { width: 100%; border: 0; resize: none; outline: none; disp
 .lp-test.pass span { color: #6e7681; }
 .lp-test.fail { color: #ff7b72; }
 .lp-test pre { margin: 2px 0 6px 18px; white-space: pre-wrap; color: #ffa198; font: inherit; }
+.lp-test.pend { color: #e3b341; }
