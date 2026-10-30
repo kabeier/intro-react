@@ -66,3 +66,6 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .ex-console-lines { padding: 4px 12px; }
 .ex-log { white-space: pre-wrap; border-bottom: 1px solid #2b2b2b; }
 .ex-log.err { color: #ff7b72; }
+
+/* Lines explained by the glossary that come from a template or config file. */
+.ex-boiler { display: inline-block; margin: 0 0 6px; padding: 2px 10px; border-radius: 999px; background: #eef0f3; color: #4a5568; font-size: 13px; font-weight: 600; letter-spacing: .02em; }

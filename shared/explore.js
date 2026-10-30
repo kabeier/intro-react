@@ -125,16 +125,17 @@
     const whenHtml = when ? `<p class="ex-when">Added in <a href="?lesson=${when.lesson.id}&at=${when.feature.id}">${esc(when.text)}</a></p>` : ''
     const head = `<p class="ex-line-shown"><code>${esc(text.trim()) || '(blank line)'}</code></p>`
     if (text.trim() === '') {
-      storyEl.innerHTML = head + '<p><b>Nothing to explain on this line.</b> Blank lines only make the code easier to read.</p>'
+      storyEl.innerHTML = head + '<p class="ex-boiler">Blank line</p><h3>What</h3><p>An empty line. The computer ignores it.</p><h3>Why</h3><p>Blank lines split the code into groups (imports, state, functions, the JSX), like paragraphs in a text, so it is easier to read.</p>'
       return
     }
     if (!r.note) {
-      storyEl.innerHTML = head + whenHtml + '<p><b>Nothing to explain on this line</b> beyond the lines around it. Try the line that opens this block.</p>'
+      storyEl.innerHTML = head + whenHtml + '<p>This line is part of the block around it: click the line that opens the block (the one ending in { or ( ) to see what it does.</p>'
       return
     }
     const n2 = r.note
     const api = n2.api
     storyEl.innerHTML = head + `
+      ${n2.boilerplate ? '<p class="ex-boiler" title="Setup code that comes with the template or a tool. You rarely change it, but here is what it does.">Boilerplate · setup code from the template or a tool</p>' : ''}
       <h3>What</h3><p>${esc(n2.what)}</p>
       <h3>Why</h3><p>${esc(n2.why)}</p>
       ${whenHtml}

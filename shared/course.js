@@ -18,7 +18,7 @@
   }
 
   const lessons = {}
-  const register = (lesson) => { lessons[lesson.id] = lesson; return lesson }
+  const register = (lesson) => { lessons[lesson.id] = lesson; linesCache.clear(); return lesson }
   const get = (id) => lessons[id]
   const all = () => Object.values(lessons)
   // Binary files (images) of a lesson and the lessons it is built on.
@@ -83,7 +83,14 @@
 
   const allSteps = (lesson) => lesson.features.flatMap((f) => f.steps.map((s) => ({ ...s, featureId: f.id })))
 
+  // Lessons never change after register(), so each (lesson, step) is worked out once.
+  const linesCache = new Map()
   function linesAt(lesson, stepId) {
+    const key = lesson.id + '|' + stepId
+    if (!linesCache.has(key)) linesCache.set(key, linesAtUncached(lesson, stepId))
+    return linesCache.get(key)
+  }
+  function linesAtUncached(lesson, stepId) {
     const files = {}
     for (const [name, text] of Object.entries(lesson.files)) files[name] = tagged(text, null)
     // Built on another lesson: remember where each starting line sits in that lesson.
@@ -128,9 +135,8 @@
     if (!own) {
       // A line this lesson started with: ask the lesson it was built on.
       const from = lesson.base && get(lesson.base.lesson)
-      if (!from) return { note: null, ...base }
+      if (!from || !line.baseLine) return { note: explainLine(file, line.text, own), ...base }
       const f = from.features.find((x) => x.id === lesson.base.feature)
-      if (!line.baseLine) return { note: null, ...base }
       return { ...noteFor(from, f.steps[f.steps.length - 1].id, file, line.baseLine), lessonId: from.id }
     }
     const hit = (own.notes || []).find((n) => line.text.includes(n.match))
@@ -152,7 +158,30 @@
       const n = (s.notes || []).find((x) => line.text.includes(x.match))
       if (n) return { note: n, stepId: s.id, featureId: s.featureId, lessonId: lesson.id }
     }
-    return { note: null, ...base }
+    return { note: explainLine(file, line.text, own), ...base }
+  }
+
+  // Lines without a note of their own: the same code explained in any lesson (code that moved to
+  // a new file keeps its story), else the glossary (boilerplate and common patterns).
+  const glossary = []
+  function registerGlossary(rules) { glossary.push(...rules) }
+  function explainLine(file, text, own) {
+    const t = text.trim()
+    let best = null
+    for (const l of Object.values(lessons)) {
+      for (const f of l.features) for (const s of f.steps) for (const n of s.notes || []) {
+        if (n.match.length >= 6 && t.includes(n.match.trim()) && (!best || n.match.length > best.match.length)) best = n
+      }
+    }
+    if (best) return best
+    for (const r of glossary) {
+      if (r.file && !r.file.test(file)) continue
+      const m = t.match(r.line)
+      if (!m) continue
+      const note = r.note(m, t, file)
+      if (note) return { ...note, boilerplate: note.boilerplate ?? (typeof r.boilerplate === 'function' ? r.boilerplate(file, own) : !!r.boilerplate) }
+    }
+    return null
   }
 
   // Injected into every preview (as source text, so it must be self-contained):
@@ -539,5 +568,5 @@
     return /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + agent) : agent + doc
   }
 
-  return { register, get, all, assetsOf, tabOrder, applyStep, filesAt, checkpoint, origins, noteFor, buildDoc, StepMismatch }
+  return { register, get, all, assetsOf, tabOrder, applyStep, filesAt, checkpoint, origins, noteFor, registerGlossary, buildDoc, StepMismatch }
 })
