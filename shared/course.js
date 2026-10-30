@@ -414,7 +414,10 @@
             var st = document.createElement('style')
             st.setAttribute('data-file', t)
             // @import "tailwindcss": Tailwind's browser build compiles it in the page, like @tailwindcss/vite does.
-            if (/@import\s+["']tailwindcss["']/.test(css)) {
+            // Without tailwindcss() in vite.config.js, Vite leaves the @import alone and nothing is styled.
+            var twPlugin = FILES['vite.config.js'] == null || /tailwindcss\(\s*\)/.test(FILES['vite.config.js'])
+            if (!twPlugin) css = css.replace(/@import\s+["']tailwindcss["'][^;]*;/g, '')
+            else if (/@import\s+["']tailwindcss["']/.test(css)) {
               st.type = 'text/tailwindcss'
               if (!document.querySelector('script[data-tailwind]')) { var tw = document.createElement('script'); tw.src = PKG.tailwind; tw.setAttribute('data-tailwind', ''); document.head.append(tw) }
             }

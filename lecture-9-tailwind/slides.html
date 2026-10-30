@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 6 · Lecture 1 · Tailwind CSS</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=2">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 6: Utility vs Component Libraries · Lecture 1 of 2</div>
+  <h1>Tailwind: style in the JSX, one small class at a time.</h1>
+  <p class="sub">The Pokemon app gets a real design. The tests keep it working.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. The live preview needs internet (Tailwind compiles in the page).</p>
+    <p>Students: after <code>npm install</code>, rebuild the Docker image (<code>bash run_container.sh</code>) so the new packages are inside it.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="1">
+  <h2>The motivation behind Tailwind</h2>
+  <table class="dbt small">
+    <tr><th>Plain CSS (App.css)</th><th>Tailwind</th></tr>
+    <tr><td>invent a class name: .card, .card-title…</td><td class="pk">use ready names: rounded-xl, p-4</td></tr>
+    <tr><td>switch files to see the style</td><td class="pk">the style is on the element</td></tr>
+    <tr><td>old rules pile up; nobody dares delete them</td><td class="pk">delete the element, its style goes too</td></tr>
+  </table>
+  <p class="bottomline">A utility class does one thing, and its name says what.</p>
+  <aside class="notes"><p>Say: "It looks messy at first. Read the classes left to right like a sentence."</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>Reading utility classes</h2>
+  <table class="dbt small">
+    <tr><th>Class</th><th>CSS</th></tr>
+    <tr><td><code>p-4</code> · <code>px-3</code> · <code>mt-2</code></td><td>padding 1rem · left/right 0.75rem · margin-top 0.5rem</td></tr>
+    <tr><td><code>flex</code> · <code>flex-wrap</code> · <code>gap-5</code></td><td>display:flex · flex-wrap:wrap · gap 1.25rem</td></tr>
+    <tr><td><code>bg-slate-800</code> · <code>text-white</code></td><td>background · text colour (from the theme)</td></tr>
+    <tr><td><code>rounded-md</code> · <code>shadow</code> · <code>font-bold</code></td><td>border-radius 6px · box-shadow · font-weight 700</td></tr>
+  </table>
+  <p class="bottomline">Number × 0.25rem = the size: p-4 = 1rem.</p>
+  <aside class="notes"><p>The Tailwind CSS IntelliSense extension shows the CSS on hover.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: install" data-at="5">
+  <h2>Install Tailwind <span class="say">package.json · vite.config.js · index.css</span></h2>
+  <div class="livepad" data-lesson="utilities-tailwind" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="vite.config.js src/index.css package.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>npm install tailwindcss @tailwindcss/vite</code>, then rebuild the image.</p>
+<!-- steps:utilities-tailwind:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"@tailwindcss/vite": "^4.3.3",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install tailwindcss @tailwindcss/vite: two packages land in dependencies.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"react-dom": "^19.3.1",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The second one.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Add the plugin next to react(). Keep react(): without it JSX stops working.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss";</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One line. It also adds Preflight, a reset: headings lose their size, lists their bullets. Rebuild the Docker image so the new packages are inside it.</td></tr>
+</table>
+<!-- /steps -->
+    <p><b>Different from the curriculum</b> (until merged): its vite.config.js drops <code>react()</code>. Keep both plugins.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="9">
+  <h2>Preflight: Tailwind's reset</h2>
+  <ul>
+    <li>Headings lose their size and weight; lists their bullets; buttons their look</li>
+    <li>Everything you see is what <b>you</b> asked for</li>
+    <li>Our tests still pass: they check ids, text and behaviour, not looks</li>
+  </ul>
+  <p class="bottomline">The page looks plainer before it looks better.</p>
+  <aside class="notes"><p>Press A after slide 4: the h1 is now normal-size text. That's Preflight.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: layout" data-at="10">
+  <h2>Layout with utilities <span class="say">pokemon.cy.js · App.jsx · PokeContainer.jsx</span></h2>
+  <div class="livepad" data-lesson="utilities-tailwind" data-start="f1s4" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress/e2e/pokemon.cy.js src/components/PokeSearch/PokeContainer.jsx src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> N 1 ▶ green (App.css). N 2–3 ▶ red. N 4 ▶ green.</p>
+<!-- steps:utilities-tailwind:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('lays the cards out in a wrapping row', (…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A test for the layout we have now (App.css). Run it: green. It checks what the page computes, not class names.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Stop importing App.css. Run the test: red, the cards no longer wrap.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">And delete the file.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div id="poke-container" className="flex fle…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Three utilities. Run the test: green again. Keep the id: the tests use it.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="14">
+  <h2>What do we test when we style?</h2>
+  <table class="dbt small">
+    <tr><th>Test</th><th>Good?</th><th>Why</th></tr>
+    <tr><td><code>should('have.class', 'flex')</code></td><td>no</td><td>breaks on any rename; passes even if the CSS never loads</td></tr>
+    <tr><td><code>should('have.css', 'display', 'flex')</code></td><td class="pk">yes, for layout</td><td>checks what the browser really did</td></tr>
+    <tr><td>colours, shadows, rounding</td><td>usually not</td><td>look at the page; tests guard behaviour</td></tr>
+  </table>
+  <p class="bottomline">Test the result, not the class name.</p>
+  <aside class="notes"><p>Next lecture uses one such test to catch Bootstrap overriding Tailwind.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: card" data-at="16">
+  <h2>A Tailwind card, with the Pokedex number <span class="say">home.cy.js · PokeCard.jsx</span></h2>
+  <div class="livepad" data-lesson="utilities-tailwind" data-start="f2s4" data-steps="f3s1 f3s2" data-files="cypress/e2e/home.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> New feature, test first: red, then green.</p>
+<!-- steps:utilities-tailwind:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the Pokedex number on each card', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">New feature, test first: Pikachu is number 25. Run it: red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div id={`${pokemon.name}-card`} className="…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same card, styled with utilities, and the number. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="20">
+  <h2>Variants: hover, focus, screen size, dark</h2>
+  <table class="dbt small">
+    <tr><th>Variant</th><th>Applies when</th><th>Example</th></tr>
+    <tr><td><code>hover:</code></td><td>the mouse is over it</td><td><code>hover:bg-blue-700</code></td></tr>
+    <tr><td><code>focus:</code></td><td>it has keyboard focus</td><td><code>focus:outline-blue-600</code></td></tr>
+    <tr><td><code>md:</code></td><td>the screen is at least 48rem wide</td><td><code>w-full md:w-60</code></td></tr>
+    <tr><td><code>dark:</code></td><td>dark mode is on</td><td><code>dark:bg-slate-900</code></td></tr>
+  </table>
+  <p class="bottomline">variant:class = "this class, only when…".</p>
+  <aside class="notes">
+    <p>Mobile first: no prefix = all sizes; md: = from 48rem up.</p>
+    <p><b>Different from the curriculum</b> (until merged): a <code>.dark</code> class toggle needs <code>@custom-variant dark (&amp;:where(.dark, .dark *));</code> in index.css. Without it, dark: follows the OS setting.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: the rest" data-at="22">
+  <h2>Style the rest <span class="say">Button · Heading · Counter · PokeForm · App · PokeSearch</span></h2>
+  <div class="livepad" data-lesson="utilities-tailwind" data-start="f3s2" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5 f4s6 f4s7 f4s8" data-files="src/components/Button/Button.jsx src/components/Heading/Heading.jsx src/components/PokeSearch/PokeForm.jsx src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 16 green. Click "Click me!": the page colour still changes behind main.</p>
+<!-- steps:utilities-tailwind:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Button/Button.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function Button({ children, className = '', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Every Button gets the same look. hover: is a state variant: it applies only while the mouse is over it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A dark header bar. The CSS Module import goes.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/heading.module.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete the module file.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;section className="flex items-center gap-4 …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A white box. The page behind it still changes colour.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeForm.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function PokeForm({ handleSubmit, pokemonNam…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">focus: is another state variant: the outline shows while you type.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;main className="mx-auto max-w-5xl space-y-6…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A centred column with space between the parts. No background on main, so the counter's colour still shows. Run the tests: all green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 7</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div className="space-y-6"&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeSearch keeps its two parts apart too…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 8</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;PokeContainer pokemonList={pokemonList} rmD…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…closing the div. Run the tests: 16 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="28">
+  <h2>Tailwind and React</h2>
+  <ul>
+    <li><b>Components are the reuse</b>: style Button once, use it everywhere</li>
+    <li><b>Conditional classes</b>: <code>className={shiny ? 'ring-4 ring-yellow-400' : ''}</code></li>
+    <li>Write class names <b>whole</b>: Tailwind finds them by reading your files, so <code>{`bg-${color}-500`}</code> is never generated</li>
+  </ul>
+  <p class="bottomline">Long class lists are fine; repeated ones become components.</p>
+  <aside class="notes"><p>The whole-names rule surprises everyone once.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="30">
+  <h2>Activity: Fix it (Tailwind)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 6 · Lecture 1</b></li>
+    <li>Look at the page, the Console, and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: the 16 tests and the style checks must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=utilities-tailwind" target="_blank" rel="noopener">fixit.html?lesson=utilities-tailwind</a></p>
+  <aside class="notes"><p>6 minutes. Many Tailwind bugs give no error: a misspelt class is just ignored.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Mental model</h2>
+  <ul>
+    <li>One class = one CSS property; read them like a sentence</li>
+    <li>v4 setup: the Vite plugin + <code>@import "tailwindcss";</code></li>
+    <li>Variants add a condition: hover:, focus:, md:, dark:</li>
+    <li>Test layout by computed style, never by class name</li>
+  </ul>
+  <p class="bottomline">Next: a component library, and what happens when two libraries meet.</p>
+  <aside class="notes"><p>Lecture 2: React Bootstrap inside the same app.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Tailwind and Bootstrap Project</b></li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
+  <aside class="notes"><p>Start the Tailwind half tonight; the Bootstrap half needs lecture 2.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=4"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/livepad.js?v=2"></script>
+<script src="../shared/cyrunner.js?v=3"></script>
+</body>
+</html>

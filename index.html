@@ -159,6 +159,30 @@
     </section>
   </div>
 
+  <h3>Unit 6: Utility vs Component Libraries</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>Tailwind CSS</h2>
+      <p>Tailwind v4 in the Pokemon app: install, layout, a styled card with the Pokedex number, then the rest. A layout test checks the computed style.</p>
+      <a class="slides" href="lecture-9-tailwind/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=utilities-tailwind" target="_blank" rel="noopener"><b>Activity: Fix It (Tailwind)</b><span>A missing plugin, a misspelt class, class instead of className… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=utilities-tailwind&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every class explained, step by step.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>React Bootstrap</h2>
+      <p>A component library next to Tailwind: the clash (cascade layers), the fix (important), and PokeCard as a Bootstrap Card.</p>
+      <a class="slides" href="lecture-10-bootstrap/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=utilities-bootstrap" target="_blank" rel="noopener"><b>Activity: Fix It (React Bootstrap)</b><span>Missing CSS, a named import that isn't there, onClick={rmData}… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=utilities-bootstrap&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The Card, part by part.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
   <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
     <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
@@ -222,6 +246,23 @@ npm run cy:open</code></pre><button type="button" class="copy">Copy</button></di
       <li><a href="https://github.com/Code-Platoon-Assignments/react-news-site-i" target="_blank" rel="noopener">Assignment - News Site I</a></li>
     </ol>
     <p class="fail"><b>"ReactDOM.render is not a function"?</b> React 19 removed it: use <code>createRoot(document.getElementById('root')).render(&lt;App /&gt;)</code> from <code>react-dom/client</code>. <b>A component shows nothing?</b> Check the capital letter, the <code>export default</code>, and the prop names on both sides.</p>
+  </section>
+
+  <h3 id="homework-6">Homework, unit 6</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-components-utilities/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
+    <h4>Part I</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/Tailwind-and-BootStrap-Project.git" target="_blank" rel="noopener">Assignment - Tailwind and Bootstrap Project</a></li>
+    </ol>
+    <h4>Part II</h4>
+    <ol class="steps">
+      <li><a href="https://drive.google.com/file/d/1groEhrGvFKe7Jf_u3NfnoDQUJspU2alu/view?usp=drive_link" target="_blank" rel="noopener">Reading Assignment - Beginning React (Chapter 20: Testing Section)</a></li>
+    </ol>
+    <h4>Adding the libraries to a Vite project</h4>
+    <div class="cmdwrap"><pre class="cmd"><code>npm install tailwindcss @tailwindcss/vite
+npm install react-bootstrap bootstrap</code></pre><button type="button" class="copy">Copy</button></div>
+    <p class="fail"><b>No Tailwind styles?</b> <code>plugins: [react(), tailwindcss()]</code> in vite.config.js and <code>@import "tailwindcss";</code> in index.css; rebuild the Docker image after installing. <b>Bootstrap undoes your Tailwind?</b> Use <code>@import "tailwindcss" important;</code>.</p>
   </section>
 
   <h3>Kit</h3>

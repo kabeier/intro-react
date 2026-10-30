@@ -16,6 +16,8 @@ await import('../shared/course/hooks-usestate-fixit.js')
 await import('../shared/course/hooks-useeffect-fixit.js')
 await import('../shared/course/components-props-fixit.js')
 await import('../shared/course/component-state-fixit.js')
+await import('../shared/course/utilities-tailwind-fixit.js')
+await import('../shared/course/utilities-bootstrap-fixit.js')
 
 let srv, browser
 before(async () => { srv = await serve(); browser = await launch() })
@@ -39,7 +41,7 @@ const press = async (page) => {
   return until(page, () => { const r = document.querySelector('.fx-result'); return r && /Fixed|Still broken/.test(r.textContent) && r.textContent }, null, 240000)
 }
 
-for (const lessonId of ['react-vite', 'async-requests', 'cypress-react', 'cypress-assertions', 'hooks-usestate', 'hooks-useeffect', 'components-props', 'component-state']) {
+for (const lessonId of ['react-vite', 'async-requests', 'cypress-react', 'cypress-assertions', 'hooks-usestate', 'hooks-useeffect', 'components-props', 'component-state', 'utilities-tailwind', 'utilities-bootstrap']) {
   const problems = globalThis.FIXIT[lessonId]
   const lesson = Course.get(lessonId)
   test(lessonId + ': 10 problems, first 6 core', () => {

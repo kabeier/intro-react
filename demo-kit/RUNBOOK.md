@@ -155,3 +155,36 @@ Before class: as unit 4. Lecture 1 is a refactor: the 12 tests are green before 
 | 13–14 | 37–38 | — | mental model; homework II |
 
 Things to expect: `<counter />` in lowercase (React: "The tag <counter> is unrecognized"); a prop renamed on one side only (undefined); `onClick={rmData(id)}` (cards vanish); a path in the wrong case works on a Mac but fails in Docker and on Linux.
+
+# Runbook · Unit 6 (Utility vs Component Libraries)
+
+Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap from the internet. Students rebuild their Docker image after each `npm install`.
+
+## Lecture 1 · Tailwind CSS
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | — | why utilities; reading classes (number × 0.25rem) |
+| 4 | 5 | **N ×4**; **A** | install: plugin + one CSS line; keep react() |
+| 5 | 9 | — | Preflight reset |
+| 6 | 10 | **N** 1 ▶ green; **N** 2–3 ▶ red; **N** 4 ▶ green | layout test by computed style |
+| 7 | 14 | — | test results, not class names |
+| 8 | 16 | **N** 1 ▶ red; **N** 2 ▶ green | Tailwind card + Pokedex number |
+| 9 | 20 | — | variants: hover, focus, md, dark (`@custom-variant` note) |
+| 10 | 22 | **N ×8**, ▶ 16 green; click "Click me!" | the rest; no background on main |
+| 11 | 28 | — | components are the reuse; whole class names |
+| 12 | 30 | timer | Fix It (Tailwind) 1–6 |
+| 13–14 | 37–38 | — | mental model; homework I |
+
+## Lecture 2 · React Bootstrap
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | — | component vs utility libraries; two packages |
+| 4 | 5 | **N** 1 ▶ green; **N** 2–4 ▶ red, **A**; **N** 5 ▶ green | the clash and `important` |
+| 5–6 | 11–13 | — | cascade layers; the two-library rules |
+| 7 | 15 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
+| 8–10 | 21–25 | — | props not classes; BsButton; when to use which |
+| 11 | 27 | — | the 17 tests |
+| 12 | 29 | timer | Fix It (React Bootstrap) 1–6 |
+| 13–14 | 36–37 | — | mental model; homework II |
+
+Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); Bootstrap making h1 thin and buttons square.

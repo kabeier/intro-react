@@ -54,3 +54,16 @@ test('React Bootstrap components render (react-bootstrap/Card etc.) with one Rea
   assert.doesNotMatch(errors, /Invalid hook call|more than one copy of React/)
   await page.close()
 })
+
+test('without tailwindcss() in vite.config.js nothing is styled, like Vite', async () => {
+  const lesson = Course.get('utilities-tailwind')
+  const files = { ...Course.checkpoint(lesson, 'f4'), 'vite.config.js': "import react from '@vitejs/plugin-react'\nimport { defineConfig } from 'vite'\n\nexport default defineConfig({\n  plugins: [react()],\n})" }
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })
+  await page.goto(srv.url + '/tests/fixtures/mount.html')
+  await page.evaluate(([f]) => window.mountFiles(f, {}), [files])
+  await until(page, () => { const f = [...document.querySelectorAll('iframe')].pop(); return f && f.contentDocument.querySelector('header h1') }, null, 30000)
+  const frame = page.frames().find((f) => f !== page.mainFrame() && f.url() === 'about:srcdoc')
+  await new Promise((r) => setTimeout(r, 3000))
+  assert.equal(await style(frame, '#poke-container', 'display'), 'block')
+  await page.close()
+})
