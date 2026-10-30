@@ -13,7 +13,7 @@ globalThis.Course = Course
 import { readFileSync as rf } from 'node:fs'
 for (const f of JSON.parse(rf(path.join(ROOT, 'shared/course/manifest.json'), 'utf8'))) await import('../shared/course/' + f)
 
-for (const [DECK, lessonId] of [['lecture-1-react-vite/slides.html', 'react-vite'], ['lecture-2-async-requests/slides.html', 'async-requests'], ['lecture-3-cypress-react/slides.html', 'cypress-react'], ['lecture-4-cypress-assertions/slides.html', 'cypress-assertions'], ['lecture-5-hooks-usestate/slides.html', 'hooks-usestate'], ['lecture-6-hooks-useeffect/slides.html', 'hooks-useeffect'], ['lecture-7-components-props/slides.html', 'components-props'], ['lecture-8-component-state/slides.html', 'component-state'], ['lecture-9-tailwind/slides.html', 'utilities-tailwind'], ['lecture-10-bootstrap/slides.html', 'utilities-bootstrap']]) {
+for (const [DECK, lessonId] of [['lecture-1-react-vite/slides.html', 'react-vite'], ['lecture-2-async-requests/slides.html', 'async-requests'], ['lecture-3-cypress-react/slides.html', 'cypress-react'], ['lecture-4-cypress-assertions/slides.html', 'cypress-assertions'], ['lecture-5-hooks-usestate/slides.html', 'hooks-usestate'], ['lecture-6-hooks-useeffect/slides.html', 'hooks-useeffect'], ['lecture-7-components-props/slides.html', 'components-props'], ['lecture-8-component-state/slides.html', 'component-state'], ['lecture-9-tailwind/slides.html', 'utilities-tailwind'], ['lecture-10-bootstrap/slides.html', 'utilities-bootstrap'], ['lecture-11-router-intro/slides.html', 'router-intro'], ['lecture-12-router-pages/slides.html', 'router-pages'], ['lecture-13-router-hooks/slides.html', 'router-hooks'], ['lecture-14-outlet-context/slides.html', 'outlet-context'], ['lecture-15-deploy-pages/slides.html', 'deploy-pages'], ['lecture-16-ci-actions/slides.html', 'ci-actions']]) {
 const lesson = Course.get(lessonId)
 const html = readFileSync(path.join(ROOT, DECK), 'utf8')
 const slides = html.split('<section class="slide').slice(1)
@@ -45,7 +45,8 @@ test2('every feature is coded along once, starting where the previous one ended'
 test2('there is exactly one activity, and it opens the Fix it page', () => {
   const acts = slides.filter((s) => s.startsWith(' activity'))
   assert.equal(acts.length, 1)
-  assert.ok(acts[0].includes('href="../fixit.html?lesson=' + lessonId + '"'))
+  // Unit 9's activities happen on GitHub (deploy, read real runs), not in Fix it.
+  if (!['deploy-pages', 'ci-actions'].includes(lessonId)) assert.ok(acts[0].includes('href="../fixit.html?lesson=' + lessonId + '"'))
 })
 
 test2('the step tables in the notes are generated from the lesson and up to date', () => {

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 9 · Lecture 2 · GitHub Actions for CI/CD</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 9: CI/CD · Lecture 2 of 2</div>
+  <h1>GitHub Actions: test every change, deploy only green.</h1>
+  <p class="sub">Lint, build and Cypress on every push and pull request; deploy after the tests pass.</p>
+  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open the demo repos' Actions tabs in a browser tab. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>CI and CD</h2>
+  <table class="dbt small">
+    <tr><th></th><th>Means</th><th>Ours</th></tr>
+    <tr><td><b>CI</b> (continuous integration)</td><td>every change is checked on a clean machine</td><td>lint + build + 33 Cypress tests</td></tr>
+    <tr><td><b>CD</b> (continuous deployment)</td><td>a change that passes goes live by itself</td><td>gh-pages after green</td></tr>
+  </table>
+  <p class="bottomline">Nobody deploys a red build.</p>
+  <aside class="notes"><p>Same YAML as fundamentals week, bigger job.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: CI" data-at="3">
+  <h2>Run the tests on every push <span class="say">.github/workflows/e2e-tests.yml</span></h2>
+  <div class="livepad" data-lesson="ci-actions" data-start="null" data-steps="f1s1" data-files=".github/workflows/e2e-tests.yml"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Walk the file top to bottom. Checked with actionlint: no findings.</p>
+<!-- steps:ci-actions:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/e2e-tests.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: E2E Tests</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One job: get the code, Node 24, install exactly the lockfile (npm ci), lint, build, then Cypress against the dev server.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="9">
+  <h2>Each step, in one line</h2>
+  <table class="dbt small">
+    <tr><th>Step</th><th>Why</th></tr>
+    <tr><td><code>checkout@v7</code></td><td>the runner starts empty: get the code</td></tr>
+    <tr><td><code>setup-node@v7</code>, node 24, cache npm</td><td>same Node as Docker; reuse downloads</td></tr>
+    <tr><td><code>npm ci</code></td><td>exactly the lockfile</td></tr>
+    <tr><td><code>npm run lint</code> · <code>npm run build</code></td><td>catch mistakes before the slow part</td></tr>
+    <tr><td><code>cypress-io/github-action@v7</code></td><td>start the server, wait, run Cypress</td></tr>
+  </table>
+  <p class="bottomline">Cheap checks first, Cypress last.</p>
+  <aside class="notes"><p><b>Different from the curriculum</b> (until merged): it uses older action versions and never lints or builds.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: built site" data-at="11">
+  <h2>Also test the built site <span class="say">e2e-tests.yml</span></h2>
+  <div class="livepad" data-lesson="ci-actions" data-start="f1s1" data-steps="f2s1" data-files=".github/workflows/e2e-tests.yml"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> The smoke test from lecture 1, against npm run preview.</p>
+<!-- steps:ci-actions:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/e2e-tests.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Cypress (built site)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same action, different server: preview serves dist/ on port 4173, at the base path.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="14">
+  <h2>Block the merge</h2>
+  <ul>
+    <li>A red check only <b>warns</b> on a pull request</li>
+    <li>Settings → Rules → Rulesets → on main: <b>Require status checks to pass</b> → <code>cypress-run</code></li>
+    <li>Now a red pull request says "Merging is blocked"</li>
+  </ul>
+  <p class="bottomline">The workflow tests; the rule enforces.</p>
+  <aside class="notes"><p>Same as fundamentals week lecture 2, slide 10.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: deploy" data-at="16">
+  <h2>Deploy only after green <span class="say">.github/workflows/deploy.yml</span></h2>
+  <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Same gh-pages command as npm run deploy, with the run's token.</p>
+<!-- steps:ci-actions:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Waits for E2E Tests; deploys the exact commit that was tested, with the same gh-pages command as npm run deploy.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="22">
+  <h2>The chain, on a real repo</h2>
+  <table class="dbt small">
+    <tr><th>Push</th><th>E2E Tests</th><th>Deploy</th><th>Pages</th></tr>
+    <tr><td>conditional base in viteconfig (1st try)</td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965329986" target="_blank" rel="noopener">✗ failure</a></td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965371926" target="_blank" rel="noopener">skipped</a></td><td>—</td></tr>
+    <tr><td>conditional base in viteconfig (fixed)</td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965548794" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965609807" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965632597" target="_blank" rel="noopener">✓ deployed</a></td></tr>
+  </table>
+  <p class="bottomline">Red tests = no deploy. That's the point.</p>
+  <aside class="notes"><p>Click through live. The skipped deploy is the if: condition doing its job.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="24">
+  <h2>Secrets and permissions</h2>
+  <table class="dbt small">
+    <tr><th>Do</th><th>Never</th></tr>
+    <tr><td><code>${{ secrets.GITHUB_TOKEN }}</code> (made fresh for each run)</td><td>a password or personal token in the YAML</td></tr>
+    <tr><td><code>permissions: contents: read</code> for tests</td><td>write access for a job that only reads</td></tr>
+    <tr><td><code>contents: write</code> only on the deploy job</td><td>deploys from pull requests</td></tr>
+  </table>
+  <p class="bottomline">Least access, no secrets in files.</p>
+  <aside class="notes"><p>Repo secrets (Settings → Secrets) for API keys later; never commit .env.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="25">
+  <h2>Reading a failed run</h2>
+  <ol class="steps small">
+    <li>Actions tab → the red ✗ run → the job</li>
+    <li>Open the first red step; scroll to the first red line</li>
+    <li>Cypress: the test name and its error, same as on your laptop</li>
+    <li>Reproduce locally (<code>npm run cy:run</code>), fix, push again</li>
+  </ol>
+  <p class="bottomline">The first red line is usually the real one.</p>
+  <aside class="notes"><p>The cypress-io action also uploads screenshots on failure if you add an upload-artifact step (optional).</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: read the red X" data-at="26">
+  <h2>Activity: read the red ✗</h2>
+  <div class="countdown" data-sec="420"></div>
+  <ol class="steps">
+    <li>Open each failed run below; find the failing step</li>
+    <li>Read the first red line of its log</li>
+    <li>Say the fix in one sentence</li>
+  </ol>
+  <p class="small"><a href="https://github.com/kabeier/demo-test/actions/runs/29963914247" target="_blank" rel="noopener">..fixing ports</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29964339398" target="_blank" rel="noopener">cypress base_url to hashrouter format</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29964877544" target="_blank" rel="noopener">edit e2e tests</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29965398188" target="_blank" rel="noopener">conditional base in viteconfig</a></p>
+  <aside class="notes"><p>7 minutes. Then the stretch: push a branch that renames "Make Shiny", open a PR to your own repo, watch it go red and get blocked.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="34">
+  <h2>The whole pipeline</h2>
+  <div class="loop"><div class="b">push / PR</div><span>→</span><div class="b">lint · build · Cypress (dev + built)</div><span>→</span><div class="g">green: deploy</div></div>
+  <p class="bottomline" style="margin-top:40px">From a laptop to a live, tested site with one git push.</p>
+  <aside class="notes"><p>This is the story to tell an employer about your project.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="36">
+  <h2>Mental model</h2>
+  <ul>
+    <li>A workflow = triggers + jobs + steps, on a clean machine</li>
+    <li>Tests run on every push and pull request</li>
+    <li>A ruleset turns red into "can't merge"</li>
+    <li>Deploy runs after green, only for main</li>
+  </ul>
+  <p class="bottomline">The tests you wrote since unit 3 now guard every change.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>CI/CD in Practice</b>: "Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li>
+  </ol>
+  <p class="bottomline">The workflow files are on the class site to copy.</p>
+  <aside class="notes"><p>A green CI badge in the README is a nice extra.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/course/router-hooks.js?v=1"></script>
+<script src="../shared/course/outlet-context.js?v=1"></script>
+<script src="../shared/course/deploy-pages.js?v=1"></script>
+<script src="../shared/course/ci-actions.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>

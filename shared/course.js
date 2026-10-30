@@ -415,6 +415,16 @@
         if (!t) throw new Error('[plugin:vite:import-analysis] Failed to resolve import "' + spec + '" from "' + path + '". Does the file exist?')
         return t
       }
+      // A package the project doesn't have: say it the way Vite does. One it has but the preview
+      // can't load: say that plainly.
+      var deps = {}
+      try { var pj = JSON.parse(FILES['package.json'] || '{}'); deps = Object.assign({}, pj.dependencies, pj.devDependencies) } catch (e) {}
+      code.replace(/\b(?:import|export)\s+(?:[^'";]*?\s+from\s+)?(['"])([^'".\/][^'"]*)\1/g, function (m, q, spec) {
+        if (/\.css$/.test(spec) || /^(https?|data|blob):/.test(spec) || PKG.known.indexOf(spec) >= 0) return m
+        var name = spec.charAt(0) === '@' ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]
+        if (deps[name]) throw new Error('The live preview cannot load "' + spec + '" (it only knows react, react-dom, axios, react-router, react-bootstrap and CSS packages). Run the project with npm run dev to use it.')
+        throw new Error('[plugin:vite:import-analysis] Failed to resolve import "' + spec + '" from "' + path + '". Does the file exist?')
+      })
       // import 'bootstrap/dist/css/bootstrap.min.css': a package's CSS, as a <link> in import order.
       code = code.replace(/\bimport\s+(['"])((?:@[\w.-]+\/)?[a-zA-Z][\w.-]*)\/([^'"]+\.css)\1;?/g, function (m, q, pkg, rest) {
         var href = 'https://cdn.jsdelivr.net/npm/' + pkg + (PKG.css[pkg] ? '@' + PKG.css[pkg] : '') + '/' + rest
@@ -489,7 +499,7 @@
     let doc = files['index.html'].replace(/<script\b[^>]*type\s*=\s*["']module["'][^>]*\bsrc\s*=\s*["']\/?src\/[^"']+["'][^>]*>\s*<\/script>/i, '')
     doc = doc.replace(/<link\b[^>]*rel\s*=\s*["']icon["'][^>]*>/i, '')
     const head = '<script>window.__PREVIEW_PATH=' + safeJson(path || '/') + '</script>' + routesScript(routes) + REPORTER + '<script type="importmap">' + JSON.stringify({ imports: importsFor(files) }) + '</script><script src="' + BABEL + '"></script>'
-    const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ',' + JSON.stringify({ css: CSS_PINS, tailwind: TAILWIND }) + ')</script>'
+    const run = '<script>(' + reactRunner.toString() + ')(' + safeJson(files) + ',' + safeJson(abs) + ',' + JSON.stringify(entry) + ',' + JSON.stringify({ css: CSS_PINS, tailwind: TAILWIND, known: Object.keys(importsFor(files)) }) + ')</script>'
     doc = /<head[^>]*>/i.test(doc) ? doc.replace(/<head[^>]*>/i, (h) => h + head) : head + doc
     return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, run + '</body>') : doc + run
   }

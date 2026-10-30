@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 7 · Lecture 2 · Pages, links and errors</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 7: React Router · Lecture 2 of 2</div>
+  <h1>Pages, links, a 404 and an error page.</h1>
+  <p class="sub">Every page starts with a test that visits its URL.</p>
+  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Show the address bar above the live app.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: About" data-at="1">
+  <h2>An About page <span class="say">navigation.cy.js · AboutPage.jsx · router.jsx</span></h2>
+  <div class="livepad" data-lesson="router-pages" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="cypress/e2e/navigation.cy.js src/pages/AboutPage.jsx src/router.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Red after N 1, green after N 3.</p>
+<!-- steps:router-pages:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A new spec for pages. Visit /about: the About heading, and the layout (header) still there. Run it: red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/AboutPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function AboutPage() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The page component.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A child route: path 'about' (no slash) = /about. Run the test: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: 404" data-at="5">
+  <h2>A 404 page <span class="say">navigation.cy.js · NotFoundPage.jsx · router.jsx</span></h2>
+  <div class="livepad" data-lesson="router-pages" data-start="f1s3" data-steps="f2s1 f2s2 f2s3" data-files="cypress/e2e/navigation.cy.js src/pages/NotFoundPage.jsx src/router.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red, then green.</p>
+<!-- steps:router-pages:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows a 404 page for an unknown route', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: an address that doesn't exist. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/NotFoundPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A page with a way back. Link is the router's &lt;a&gt;: no page reload.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">path '*' catches everything else. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="8">
+  <h2>404 page vs error page</h2>
+  <table class="dbt small">
+    <tr><th></th><th><code>path: '*'</code></th><th><code>errorElement</code></th></tr>
+    <tr><td>Shows when</td><td>no route matches the URL</td><td>a page <b>crashes</b> (throws while rendering or loading)</td></tr>
+    <tr><td>Example</td><td>/this-page-does-not-exist</td><td>a bug, a failed loader</td></tr>
+    <tr><td>Read the problem with</td><td>—</td><td><code>useRouteError()</code></td></tr>
+  </table>
+  <p class="bottomline">Missing page ≠ broken page.</p>
+  <aside class="notes"><p>The homework (Rick and Morty II) calls the 404 an "Error Route"; it is the * route.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: errors" data-at="10">
+  <h2>An error page inside the layout <span class="say">navigation.cy.js · AboutPage · ErrorPage · router.jsx</span></h2>
+  <div class="livepad" data-lesson="router-pages" data-start="f2s3" data-steps="f3s1 f3s2 f3s3 f3s4" data-files="cypress/e2e/navigation.cy.js src/pages/ErrorPage.jsx src/router.jsx src/pages/AboutPage.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Show it: put errorElement on the root route first: the header disappears (red). Move it to the pathless child: green.</p>
+<!-- steps:router-pages:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the error page inside the layout w…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: a page crashes; we want our error page, with the header still there. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/AboutPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A button that makes the page throw while rendering, so we can see what happens.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/ErrorPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link, isRouteErrorResponse, useRout…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useRouteError gives the error the router caught.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A route with no path, only an errorElement, wrapping the pages. A crash replaces just the page. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="15">
+  <h2>The route tree now</h2>
+  <pre style="font-size:22px">/                 App (navbar, heading, Outlet)
+└─ (no path)      errorElement: ErrorPage
+   ├─ index       HomePage
+   ├─ about       AboutPage
+   └─ *           NotFoundPage</pre>
+  <p class="bottomline">The pathless route only adds the error boundary.</p>
+  <aside class="notes"><p>Children paths are relative: about, not /about.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="16">
+  <h2>&lt;a href&gt; vs &lt;Link to&gt;</h2>
+  <table class="dbt small">
+    <tr><th></th><th><code>&lt;a href="/about"&gt;</code></th><th><code>&lt;Link to="/about"&gt;</code></th></tr>
+    <tr><td>The browser…</td><td>downloads the page again</td><td class="pk">stays; React swaps the page</td></tr>
+    <tr><td>State (cards, count)</td><td>lost</td><td class="pk">kept (if it lives in the layout)</td></tr>
+    <tr><td>Use for</td><td>other websites</td><td class="pk">pages of this app</td></tr>
+  </table>
+  <p class="bottomline">Inside the app: Link. Outside: a.</p>
+  <aside class="notes"><p>Activity option: watch the Network tab while clicking each kind.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: NavBar" data-at="17">
+  <h2>A NavBar: &lt;a&gt;, then Link <span class="say">navigation.cy.js · NavBar · App.jsx</span></h2>
+  <div class="livepad" data-lesson="router-pages" data-start="f3s4" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5 f4s6" data-files="cypress/e2e/navigation.cy.js src/components/NavBar/NavBar.jsx src/App.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> After N 5 ▶: still red (the page reloaded, the marker is gone). After N 6 ▶: green.</p>
+<!-- steps:router-pages:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('navigates with the navbar without reload…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Mark the window, click About, check the mark is still there: a reload would wipe it. Red: no nav yet.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function NavBar() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">First with plain &lt;a&gt; tags.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/index.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>export { default } from './NavBar'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Its index.js.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Heading from './components/Heading'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App shows it on every page…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…above main, outside the header (the header test wants one button there). Run the test: still red. The page reloaded: the marker is gone.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Link instead of a, to instead of href. Run the test: green, no reload.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Navbar" data-at="23">
+  <h2>A React Bootstrap Navbar <span class="say">navigation.cy.js · NavBar.jsx</span></h2>
+  <div class="livepad" data-lesson="router-pages" data-start="f4s6" data-steps="f5s1 f5s2" data-files="cypress/e2e/navigation.cy.js src/components/NavBar/NavBar.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 22 green.</p>
+<!-- steps:router-pages:f5 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the nav links', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A guard: the links must be visible (a collapsed menu would hide them). Green now; it must stay green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's Navbar. as={Link}: look like a Nav.Link, work like a router Link. Run the tests: 22 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="27">
+  <h2>as={Link}: Bootstrap's look, the router's behaviour</h2>
+  <table class="dbt small">
+    <tr><th>Code</th><th>Renders</th><th>Click</th></tr>
+    <tr><td><code>&lt;Nav.Link href="/about"&gt;</code></td><td>&lt;a class="nav-link"&gt;</td><td>full reload</td></tr>
+    <tr><td class="pk"><code>&lt;Nav.Link as={Link} to="/about"&gt;</code></td><td>a router Link with class nav-link</td><td class="pk">no reload</td></tr>
+  </table>
+  <p class="bottomline">as= swaps the element a library component renders.</p>
+  <aside class="notes"><p>We skip Navbar.Toggle/Collapse: three links fit, and a collapsed menu hides them at narrow widths.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="28">
+  <h2>The suite now: 22 tests</h2>
+  <table class="dbt small">
+    <tr><th>New in navigation.cy.js</th><th>Guards</th></tr>
+    <tr><td>/about renders the About page</td><td>the route and the layout</td></tr>
+    <tr><td>shows a 404 page for an unknown route</td><td>the * route</td></tr>
+    <tr><td>shows the error page inside the layout…</td><td>errorElement placement</td></tr>
+    <tr><td>navigates with the navbar without reloading</td><td class="pk">Link, not a</td></tr>
+    <tr><td>shows the nav links</td><td>the navbar stays visible</td></tr>
+  </table>
+  <p class="bottomline">Every page is visited by its URL.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="29">
+  <h2>Activity: Fix it (pages and links)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 7 · Lecture 2</b></li>
+    <li>Use the address bar, the Console and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: all 22 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=router-pages" target="_blank" rel="noopener">fixit.html?lesson=router-pages</a></p>
+  <aside class="notes"><p>6 minutes.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="36">
+  <h2>Mental model</h2>
+  <ul>
+    <li>A page = a component in src/pages + a route</li>
+    <li><code>*</code> catches unknown URLs; <code>errorElement</code> catches crashes</li>
+    <li>Put errorElement where the layout should survive</li>
+    <li>Link inside the app, a for other sites</li>
+  </ul>
+  <p class="bottomline">Next unit: pages that read the URL (useParams) and move from code (useNavigate).</p>
+  <aside class="notes"><p>Show the known gap: search Bulbasaur, go About, come back: the list resets. Unit 8 fixes it.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>Rick and Morty II</b></li>
+    <li><b>Reading: Beginning React.js</b> (Chapter 12, starting at page 317)</li>
+  </ol>
+  <p class="small">Stretch: <b>News Site II</b></p>
+  <p class="bottomline">Links are on the class site.</p>
+  <aside class="notes"><p>The book's router chapter may use older APIs; the slides are the reference for version 8.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>

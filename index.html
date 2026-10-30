@@ -183,6 +183,78 @@
     </section>
   </div>
 
+  <h3>Unit 7: React Router</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>Intro to React Router</h2>
+      <p>React Router 8: routes, RouterProvider, App as the layout with an Outlet. The 17 tests stay green.</p>
+      <a class="slides" href="lecture-11-router-intro/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=router-intro" target="_blank" rel="noopener"><b>Activity: Fix It (router setup)</b><span>Heading only? The router is half wired somewhere. Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=router-intro&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>router.jsx and main.jsx, step by step.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>Pages, Links and Errors</h2>
+      <p>About, a 404 page, an error page that keeps the layout, and a navbar of Links (no reloads).</p>
+      <a class="slides" href="lecture-12-router-pages/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=router-pages" target="_blank" rel="noopener"><b>Activity: Fix It (pages and links)</b><span>Reloading links, a crash that hides the header, a typo in a path… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=router-pages&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Every page and route explained.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
+  <h3>Unit 8: React Router Hooks</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>useParams and useNavigate</h2>
+      <p>A details page per Pokemon (/pokemon/25), a Back button, and a login form that moves on after its check.</p>
+      <a class="slides" href="lecture-13-router-hooks/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=router-hooks" target="_blank" rel="noopener"><b>Activity: Fix It (router hooks)</b><span>A wrong param name, a missing colon, a spinner that never stops… Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=router-hooks&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The details page, step by step.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>useOutletContext</h2>
+      <p>State that survives a change of page: the cards and the count move up to App; Pikachu loads once.</p>
+      <a class="slides" href="lecture-14-outlet-context/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="fixit.html?lesson=outlet-context" target="_blank" rel="noopener"><b>Activity: Fix It (outlet context)</b><span>Leave and come back: does the state survive? Problems 1–6 first.</span></a></li>
+        <li><a href="explore.html?lesson=outlet-context&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Where each piece of state lives now.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
+  <h3>Unit 9: CI/CD</h3>
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>GitHub Pages</h2>
+      <p>Build the app, base only in production, the hash router in the build, and publish with gh-pages.</p>
+      <a class="slides" href="lecture-15-deploy-pages/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="lecture-15-deploy-pages/slides.html" target="_blank" rel="noopener"><b>Activity: deploy your own copy</b><span>On your laptop: set base, npm run deploy, open your URL and refresh. (Slide 12.)</span></a></li>
+        <li><a href="explore.html?lesson=deploy-pages&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>vite.config.js, router.jsx and the smoke test.</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>GitHub Actions for CI/CD</h2>
+      <p>Lint, build and Cypress on every push and pull request; deploy only after green. Real red and green runs.</p>
+      <a class="slides" href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
+      <ol>
+        <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: read the red ✗</b><span>Real failed runs from the instructor's demo repo. (Slide 11.)</span></a></li>
+        <li><a href="explore.html?lesson=ci-actions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Both workflow files, every line explained.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
   <h3 id="homework">Homework, unit 2</h3>
   <section class="install">
     <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
@@ -263,6 +335,49 @@ npm run cy:open</code></pre><button type="button" class="copy">Copy</button></di
     <div class="cmdwrap"><pre class="cmd"><code>npm install tailwindcss @tailwindcss/vite
 npm install react-bootstrap bootstrap</code></pre><button type="button" class="copy">Copy</button></div>
     <p class="fail"><b>No Tailwind styles?</b> <code>plugins: [react(), tailwindcss()]</code> in vite.config.js and <code>@import "tailwindcss";</code> in index.css; rebuild the Docker image after installing. <b>Bootstrap undoes your Tailwind?</b> Use <code>@import "tailwindcss" important;</code>.</p>
+  </section>
+
+  <h3 id="homework-7">Homework, unit 7</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-intro-to-react-router/assignments/" target="_blank" rel="noopener">Assignments page</a>: "Assignments should be completed from top to bottom as they will raise in difficulty the lower in the stack."</p>
+    <h4>Part I</h4>
+    <ol class="steps"><li><a href="https://github.com/Code-Platoon-Assignments/Rick-and-Morty-React.git" target="_blank" rel="noopener">Assignment - Rick and Morty</a></li></ol>
+    <h4>Part II</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/Rick-and-Morty-React-II.git" target="_blank" rel="noopener">Assignment - Rick and Morty II</a></li>
+      <li><a href="https://drive.google.com/file/d/1groEhrGvFKe7Jf_u3NfnoDQUJspU2alu/view?usp=drive_link" target="_blank" rel="noopener">Reading Assignment - Beginning React.js (Chapter 12, starting at page 317)</a></li>
+    </ol>
+    <h4>Stretch</h4>
+    <ol class="steps"><li><a href="https://github.com/Code-Platoon-Assignments/react-news-site-ii" target="_blank" rel="noopener">Assignment - News Site II</a></li></ol>
+    <div class="cmdwrap"><pre class="cmd"><code>npm install react-router</code></pre><button type="button" class="copy">Copy</button></div>
+    <p class="fail"><b>A tutorial says react-router-dom?</b> That package stopped at version 7; in version 8 everything comes from <code>react-router</code> (and RouterProvider from <code>react-router/dom</code>).</p>
+  </section>
+
+  <h3 id="homework-8">Homework, unit 8</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-react-router-hooks/assignments/" target="_blank" rel="noopener">Assignments page</a>, top to bottom:</p>
+    <h4>Part I</h4>
+    <ol class="steps"><li><a href="https://github.com/Code-Platoon-Assignments/Rick-and-Morty-React-III.git" target="_blank" rel="noopener">Assignment - Rick and Morty III</a></li></ol>
+    <h4>Part II</h4>
+    <ol class="steps"><li><a href="https://github.com/Code-Platoon-Assignments/Rick-and-Morty-React-IV.git" target="_blank" rel="noopener">Assignment - Rick and Morty IV</a></li></ol>
+    <h4>Stretch</h4>
+    <ol class="steps">
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-news-site-iii" target="_blank" rel="noopener">Assignment - News Site III</a></li>
+      <li><a href="https://github.com/Code-Platoon-Assignments/react-news-site-iv" target="_blank" rel="noopener">Assignment - News Site IV</a></li>
+    </ol>
+  </section>
+
+  <h3 id="homework-9">Homework, unit 9</h3>
+  <section class="install">
+    <p>From the curriculum's <a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/assignments/" target="_blank" rel="noopener">Assignments page</a>:</p>
+    <h4>Part I</h4>
+    <ol class="steps"><li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li></ol>
+    <h4>Part II</h4>
+    <ol class="steps"><li><b>CI/CD in Practice</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li></ol>
+    <h4>Deploying</h4>
+    <div class="cmdwrap"><pre class="cmd"><code>npm install --save-dev gh-pages
+npm run deploy</code></pre><button type="button" class="copy">Copy</button></div>
+    <p class="fail"><b>Blank page on GitHub Pages?</b> base in vite.config.js must be <code>'/&lt;your repo name&gt;/'</code>, only in production: <code>defineConfig(({ mode }) =&gt; ({ base: mode === 'production' ? '/repo/' : '/', … }))</code>. <b>Refresh gives 404?</b> Use the hash router in production. The two workflow files are in the <a href="explore.html?lesson=ci-actions&amp;at=f3" target="_blank" rel="noopener">Code Explorer</a> to copy.</p>
   </section>
 
   <h3>Kit</h3>

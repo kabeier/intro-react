@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 7 · Lecture 1 · Intro to React Router</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 7: React Router · Lecture 1 of 2</div>
+  <h1>One app, many pages: the URL picks what you see.</h1>
+  <p class="sub">React Router 8 in the Pokemon app. Nothing changes for the user yet, and the tests prove it.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. The live app shows an address bar once the router is in.</p>
+    <p>Students: <code>npm install react-router</code>, then rebuild the Docker image.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="1">
+  <h2>A single-page app with pages</h2>
+  <table class="dbt small">
+    <tr><th>Old websites</th><th>A React app with a router</th></tr>
+    <tr><td>every link asks the server for a new HTML page</td><td class="pk">one HTML page; JavaScript swaps the content</td></tr>
+    <tr><td>everything reloads: state is lost</td><td class="pk">no reload: state survives</td></tr>
+    <tr><td>each page has a URL</td><td class="pk">each page still has a URL you can share</td></tr>
+  </table>
+  <p class="bottomline">The router keeps the URL and the screen in sync.</p>
+  <aside class="notes"><p>Activity idea (if time): draw the URL → page map of a site the class uses.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>The plan for our app</h2>
+  <table class="dbt small">
+    <tr><th>URL</th><th>Page</th><th>When</th></tr>
+    <tr><td><code>/</code></td><td>Home: counter + search</td><td>today</td></tr>
+    <tr><td><code>/about</code> · anything else</td><td>About · 404</td><td>lecture 2</td></tr>
+    <tr><td><code>/pokemon/25</code></td><td>Pikachu's details</td><td>unit 8</td></tr>
+    <tr><td><code>/login</code></td><td>Log in</td><td>unit 8</td></tr>
+  </table>
+  <p class="bottomline">Every page shares the layout: navbar and heading.</p>
+  <aside class="notes"><p>Say: "Today is plumbing. Lecture 2 adds the pages."</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="5">
+  <h2>react-router, version 8</h2>
+  <table class="dbt small">
+    <tr><th>Import</th><th>From</th></tr>
+    <tr><td><code>RouterProvider</code></td><td class="pk"><code>'react-router/dom'</code></td></tr>
+    <tr><td>everything else: <code>createBrowserRouter</code>, <code>Outlet</code>, <code>Link</code>, hooks</td><td class="pk"><code>'react-router'</code></td></tr>
+  </table>
+  <p class="bottomline">One package: <code>npm install react-router</code>.</p>
+  <aside class="notes">
+    <p><b>Different from the curriculum</b> (until merged): it installs <code>react-router-dom</code>. That package stopped at version 7; version 8 merged it into <code>react-router</code>. Old tutorials still say react-router-dom.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: install" data-at="7">
+  <h2>Install the router <span class="say">package.json · router.jsx · main.jsx</span></h2>
+  <div class="livepad" data-lesson="router-intro" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="src/router.jsx src/main.jsx package.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 17 green, nothing looks different.</p>
+<!-- steps:router-intro:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"react-dom": "^19.3.1",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install react-router. One package: react-router-dom was merged into it in version 8.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One route for now: the path / shows App.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/main.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { StrictMode } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">main renders the router instead of App. Run the tests: 17 green, nothing looks different.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="13">
+  <h2>Reading a route</h2>
+  <pre style="font-size:26px">{ path: '/', element: &lt;App /&gt;, children: [ … ] }</pre>
+  <table class="dbt small" style="margin-top:16px">
+    <tr><th>Key</th><th>Means</th></tr>
+    <tr><td><code>path</code></td><td>the URL this route matches</td></tr>
+    <tr><td><code>element</code></td><td>the JSX to show (with &lt; /&gt;)</td></tr>
+    <tr><td><code>children</code></td><td>routes shown <b>inside</b> this one's &lt;Outlet /&gt;</td></tr>
+    <tr><td><code>index: true</code></td><td>the child for the parent's own path</td></tr>
+  </table>
+  <p class="bottomline">A route is an object: URL → element.</p>
+  <aside class="notes"><p>Unknown keys (a typo like chidren) are silently ignored: Fix It problem 6.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="15">
+  <h2>Layout and Outlet</h2>
+  <div class="loop"><div class="b">App (layout)<br><small>heading, later navbar</small></div><span>→ &lt;Outlet /&gt; →</span><div class="g">the current page<br><small>HomePage, AboutPage…</small></div></div>
+  <ul class="small" style="margin-top:28px">
+    <li>App stays on screen for every page</li>
+    <li>The Outlet is the hole the page fills</li>
+    <li>Pages live in <code>src/pages</code>; parts of pages stay in <code>src/components</code></li>
+  </ul>
+  <p class="bottomline">Layout once, pages inside it.</p>
+  <aside class="notes"><p>Next slide makes it real.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: layout" data-at="17">
+  <h2>App becomes the layout <span class="say">HomePage.jsx · App.jsx · router.jsx</span></h2>
+  <div class="livepad" data-lesson="router-intro" data-start="f1s3" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="src/pages/HomePage.jsx src/App.jsx src/router.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> <b>Show the red:</b> after N 3, delete &lt;Outlet /&gt;, ▶: 15 red. Put it back, N 4, ▶: 17 green.</p>
+<!-- steps:router-intro:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/HomePage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Counter from '../components/Counter'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A page is a component too. It lives in src/pages.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Outlet } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App no longer imports the page parts.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Outlet /&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The Outlet is the hole the current page fills.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">HomePage is a child of App: index: true means "at / exactly". Forget the Outlet and 15 tests go red. Run the tests: 17 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="23">
+  <h2>Pages mount and unmount</h2>
+  <table class="dbt small">
+    <tr><th>You go from / to /about</th><th>What happens</th></tr>
+    <tr><td>App</td><td>stays mounted (it's the layout)</td></tr>
+    <tr><td>HomePage, Counter, PokeSearch</td><td class="pk">unmount: their state is thrown away</td></tr>
+    <tr><td>AboutPage</td><td>mounts fresh</td></tr>
+  </table>
+  <p class="bottomline">State in a page lives only while you're on that page.</p>
+  <aside class="notes"><p>This is the problem unit 8 lecture 2 solves (state moves up to App).</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="25">
+  <h2>How we test pages</h2>
+  <table class="dbt small">
+    <tr><th>Command</th><th>Does</th></tr>
+    <tr><td><code>cy.visit('/about')</code></td><td>opens the app at that address</td></tr>
+    <tr><td><code>cy.location('pathname')</code></td><td>the path now: <code>'/about'</code></td></tr>
+    <tr><td><code>cy.go('back')</code></td><td>the browser's Back button</td></tr>
+  </table>
+  <p class="bottomline">Every page gets a test that visits it by its URL.</p>
+  <aside class="notes"><p>In the slides, the live app's address bar shows the same path.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="27">
+  <h2>When only the heading shows</h2>
+  <table class="dbt small">
+    <tr><th>Check</th><th>Fix</th></tr>
+    <tr><td>main.jsx renders &lt;App /&gt;</td><td>render &lt;RouterProvider router={router} /&gt;</td></tr>
+    <tr><td>App has no &lt;Outlet /&gt;</td><td>add it where pages go</td></tr>
+    <tr><td>no route matches /</td><td><code>{ index: true, element: &lt;HomePage /&gt; }</code></td></tr>
+    <tr><td>a typo in a key (chidren)</td><td>the router ignores unknown keys: spell them</td></tr>
+  </table>
+  <p class="bottomline">Heading only = the router is half wired.</p>
+  <aside class="notes"><p>These are Fix It problems 1, 2, 3 and 6.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="28">
+  <h2>Activity: Fix it (router setup)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 7 · Lecture 1</b></li>
+    <li>Read the symptom, the Console, and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: all 17 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=router-intro" target="_blank" rel="noopener">fixit.html?lesson=router-intro</a></p>
+  <aside class="notes"><p>6 minutes. Most problems show "heading only": the router is half wired.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="35">
+  <h2>Mental model</h2>
+  <ul>
+    <li>The router reads the URL and picks a route</li>
+    <li>RouterProvider runs it; routes are objects (path, element, children)</li>
+    <li>App is the layout; the page goes in &lt;Outlet /&gt;</li>
+    <li>Leaving a page unmounts it</li>
+  </ul>
+  <p class="bottomline">Next: About, 404, errors, and a navbar.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Rick and Morty</b></li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
+  <aside class="notes"><p>The repo is README-only; use npm install react-router (not react-router-dom).</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>

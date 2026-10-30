@@ -167,3 +167,9 @@ test('a big object inside a log is cut short; a small one is shown whole', async
   await waitConsole(page, /list \[ \{ a: 1, b: 2, c: 3, d: 4, … 3 more \} \] \{ x: 1, y: \[ 1, 2 \] \}/)
   await page.close()
 })
+
+test('a package the project does not have reads like Vite', async () => {
+  const page = await mount(app("import { Link } from 'react-router-dom'\nexport default function App() {\n  return <p>{typeof Link}</p>\n}"))
+  await waitConsole(page, /\[plugin:vite:import-analysis\] Failed to resolve import "react-router-dom" from "src\/App\.jsx"\. Does the file exist\?/)
+  await page.close()
+})

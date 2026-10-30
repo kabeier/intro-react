@@ -188,3 +188,92 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | 13–14 | 36–37 | — | mental model; homework II |
 
 Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); Bootstrap making h1 thin and buttons square.
+
+# Runbook · Unit 7 (React Router)
+
+Before class: as unit 6. Students `npm install react-router`, then rebuild the image. The live app gets an address bar once the router is in (the preview runs the router in memory; the code on the slide is the real createBrowserRouter).
+
+## Lecture 1 · Intro to React Router
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–4 | 0–5 | — | SPA with pages; the URL plan; react-router 8 (not react-router-dom) |
+| 5 | 7 | **N ×3**, ▶ 17 green | install, router.jsx, RouterProvider |
+| 6–7 | 13–15 | — | reading a route; layout + Outlet |
+| 8 | 17 | **N ×3**; delete Outlet ▶ red; back; **N**, ▶ green | App becomes the layout |
+| 9–10 | 23–25 | — | pages unmount; visit / location / go |
+| 11 | 27 | — | "heading only" checklist |
+| 12 | 28 | timer | Fix It (router setup) 1–6 |
+| 13–14 | 35–37 | — | mental model; homework I |
+
+## Lecture 2 · Pages, links and errors
+| # | Min | Do | Say |
+|---|---|---|---|
+| 2 | 1 | **N** 1 ▶ red; **N** 2–3 ▶ green | About page |
+| 3 | 5 | same | 404 page (`*`) |
+| 4 | 8 | — | 404 vs error page |
+| 5 | 10 | **N ×4**; show errorElement on the root first (header gone) | error page inside the layout |
+| 6–7 | 15–16 | — | route tree; a vs Link |
+| 8 | 17 | **N** 1–5 ▶ red (reload); **N** 6 ▶ green | NavBar: a, then Link |
+| 9 | 23 | **N ×2**, ▶ 22 green | React Bootstrap Navbar (as={Link}) |
+| 10–11 | 27–28 | — | as=; the 22 tests |
+| 12 | 29 | timer | Fix It (pages and links) 1–6 |
+| 13–14 | 36–38 | — | mental model (show the list reset); homework II |
+
+# Runbook · Unit 8 (React Router Hooks)
+
+## Lecture 1 · useParams and useNavigate
+| # | Min | Do | Say |
+|---|---|---|---|
+| 2 | 1 | — | :id and useParams (strings) |
+| 3 | 3 | **N ×3**, red → green | route with a parameter |
+| 4 | 7 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
+| 5 | 13 | **N ×5**, red → green | unknown Pokemon: catch + message |
+| 6 | 16 | **N ×3**, red → green | Details link (BsButton as={Link}) |
+| 7 | 19 | — | Link or navigate |
+| 8 | 21 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
+| 9 | 26 | **N ×4**, ▶ 30 green | Login: navigate after the check |
+| 10–11 | 30 | — | stubbing by id; loaders preview (later, with protected routes) |
+| 12 | 31 | timer | Fix It (router hooks) 1–6 |
+| 13–14 | 37–38 | — | mental model; homework I |
+
+## Lecture 2 · useOutletContext
+| # | Min | Do | Say |
+|---|---|---|---|
+| 1–3 | 0–3 | show the bug (search, About, Home) | pages unmount; lift to App |
+| 4 | 5 | **N ×4**, red → green | the list in App, Outlet context |
+| 5–6 | 11–13 | — | reading the hook; Pikachu comes back |
+| 7 | 15 | **N ×4**, red → green | Pikachu loads once (in App) |
+| 8 | 21 | **N ×5**, ▶ 33 green | the count too |
+| 9–11 | 25–28 | — | shiny (optional lift); where state lives; 33 tests |
+| 12 | 29 | timer | Fix It (outlet context) 1–6 |
+| 13–14 | 36–38 | — | mental model; homework II |
+
+# Runbook · Unit 9 (CI/CD)
+
+The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokemon-app/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); both workflows pass actionlint. The red/green runs on the slides are real runs in kabeier/demo-test and kabeier/demo_test2.
+
+## Lecture 1 · GitHub Pages
+| # | Min | Do | Say |
+|---|---|---|---|
+| 2–4 | 1–4 | `npm run build`, `npm run preview` live | dev vs build; the folder problem |
+| 5 | 6 | **N** | base only in production (own repo name) |
+| 6 | 9 | open the run links | 8 red runs from an always-on base |
+| 7–8 | 11–13 | **N ×3** | refresh problem; hash router in the build; smoke test |
+| 9–10 | 18–21 | **N ×2**; `npm run deploy` live; Settings → Pages | gh-pages |
+| 11 | 25 | — | blank page checklist |
+| 12 | 28 | timer (8 min) | students deploy their own copy |
+| 13–14 | 37–38 | — | mental model; homework I |
+
+## Lecture 2 · GitHub Actions
+| # | Min | Do | Say |
+|---|---|---|---|
+| 2 | 1 | — | CI and CD |
+| 3–4 | 3–9 | **N**; walk the file | e2e-tests.yml, each step |
+| 5 | 11 | **N** | also test the built site |
+| 6 | 14 | show Settings → Rules | block the merge |
+| 7 | 16 | **N** | deploy.yml: workflow_run, if:, head_sha |
+| 8–10 | 22–25 | click the runs | the real chain; secrets; reading a failed run |
+| 11 | 26 | timer (7 min) | read the red ✗ |
+| 12–14 | 34–38 | — | pipeline; mental model; homework II |
+
+Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected.

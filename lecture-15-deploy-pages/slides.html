@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 9 · Lecture 1 · GitHub Pages</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 9: CI/CD · Lecture 1 of 2</div>
+  <h1>GitHub Pages: put the app on the internet.</h1>
+  <p class="sub">Build it, make it work under /&lt;repo&gt;/, and publish with gh-pages.</p>
+  <aside class="notes">
+    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Have a repo with the Pokemon app pushed (a fork of your class repo works).</p>
+    <p>The build and the deploy run on laptops, not in the slides: the slides show the files.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>Development vs production</h2>
+  <table class="dbt small">
+    <tr><th></th><th><code>npm run dev</code></th><th><code>npm run build</code></th></tr>
+    <tr><td>What</td><td>a dev server, rebuilds on save</td><td class="pk">plain files in dist/</td></tr>
+    <tr><td>Where</td><td>localhost:5173/</td><td>any static host: GitHub Pages</td></tr>
+    <tr><td>Mode</td><td>development (StrictMode doubles, warnings)</td><td>production (small, fast)</td></tr>
+  </table>
+  <p class="bottomline">GitHub Pages serves files. It runs no server code.</p>
+  <aside class="notes"><p>Show <code>npm run build</code> and <code>npm run preview</code> (localhost:4173): dist/index.html + assets/index-&lt;hash&gt;.js.</p></aside>
+</section>
+
+<section class="slide" data-seg="Live" data-at="3">
+  <h2>Look at a build</h2>
+  <ol class="steps small">
+    <li><code>npm run build</code>: dist/index.html and dist/assets/index-&lt;hash&gt;.js</li>
+    <li><code>npm run preview</code>: serves dist/ at localhost:4173</li>
+    <li>Open dist/index.html in the editor: the script path starts with <code>/assets/</code></li>
+  </ol>
+  <p class="bottomline">The hash in the file name changes when the code changes (no stale caches).</p>
+  <aside class="notes"><p>dist/ is in .gitignore: never commit it to main; gh-pages puts it on its own branch.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="4">
+  <h2>Problem 1: the app lives in a folder</h2>
+  <table class="dbt small">
+    <tr><th>Address</th><th>The page asks for</th><th>Result</th></tr>
+    <tr><td>you.github.io/pokemon-app/</td><td><code>/assets/index.js</code></td><td>404: that's you.github.io/assets/</td></tr>
+    <tr><td>you.github.io/pokemon-app/</td><td class="pk"><code>/pokemon-app/assets/index.js</code></td><td class="pk">works</td></tr>
+  </table>
+  <p class="bottomline">base tells Vite the folder. Only for the build.</p>
+  <aside class="notes"><p>A blank white page on GitHub Pages = wrong base, almost always.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: base" data-at="6">
+  <h2>base, only in production <span class="say">vite.config.js</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="null" data-steps="f1s1" data-files="vite.config.js"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students type their own repo name.</p>
+<!-- steps:deploy-pages:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">defineConfig can take a function: Vite tells it the mode. Build = production. Use your own repo name between the slashes.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="9">
+  <h2>A real story: 8 red runs</h2>
+  <table class="dbt small">
+    <tr><th>Run</th><th>What happened</th></tr>
+    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29964339398" target="_blank" rel="noopener">✗ cypress base_url to hashrouter format</a></td><td>base set always: the dev server moved to /demo-test/, every test failed</td></tr>
+    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29964630256" target="_blank" rel="noopener">✗ trailing slash :(</a></td><td>still the same base problem</td></tr>
+    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965548794" target="_blank" rel="noopener">✓ conditional base in viteconfig</a></td><td class="pk">base only in production: green, then deployed</td></tr>
+  </table>
+  <p class="bottomline">Real runs from the instructor's rehearsal repo.</p>
+  <aside class="notes"><p>And in the class repo: <code>defineConfig((mode) =&gt;</code> instead of <code>({ mode })</code> made the base silently never apply (fixed in <a href="https://github.com/kabeier/demo_test2/actions/runs/30006937353" target="_blank" rel="noopener">fix mode typo</a>).</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="11">
+  <h2>Problem 2: refreshing /about</h2>
+  <table class="dbt small">
+    <tr><th>Router</th><th>Address</th><th>Refresh on GitHub Pages</th></tr>
+    <tr><td>browser</td><td>/pokemon-app/about</td><td>404: there is no file called about</td></tr>
+    <tr><td class="pk">hash</td><td class="pk">/pokemon-app/#/about</td><td class="pk">works: the server only sees /pokemon-app/</td></tr>
+  </table>
+  <p class="bottomline">Hash router in the build; normal paths while developing.</p>
+  <aside class="notes"><p>Hosts with a server (Netlify, Vercel, your own) can send every path to index.html instead.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: hash" data-at="13">
+  <h2>The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1 f2s2 f2s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
+<!-- steps:deploy-pages:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter, createHashRout…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Both router makers…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// GitHub Pages has no server to send every …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and pick one: hash in the build, normal paths while developing. Run the tests: 33 green (they run in development).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e-prod/smoke.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// Runs against the BUILT app (npm run build…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A small test for the built site: open a page by its address, refresh. It lives outside cypress/e2e, so the normal run skips it.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: gh-pages" data-at="18">
+  <h2>Publish with gh-pages <span class="say">package.json</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1 f3s2" data-files="package.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Then live: <code>npm install --save-dev gh-pages</code>, <code>npm run deploy</code>.</p>
+<!-- steps:deploy-pages:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"cy:run": "cypress run",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm run deploy: predeploy builds first (npm runs pre&lt;name&gt; before &lt;name&gt;), then gh-pages pushes dist/.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"cypress": "^16.2.0",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install --save-dev gh-pages. Then: npm run deploy, and in Settings → Pages pick the gh-pages branch.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live" data-at="21">
+  <h2>Deploy, step by step</h2>
+  <ol class="steps small">
+    <li><code>npm install --save-dev gh-pages</code></li>
+    <li><code>npm run deploy</code> (builds, then pushes dist/ to the gh-pages branch)</li>
+    <li>GitHub → Settings → Pages → Deploy from a branch → <b>gh-pages</b> / root</li>
+    <li>Wait for "pages build and deployment" in the Actions tab (GitHub's own run)</li>
+    <li>Open https://&lt;you&gt;.github.io/&lt;repo&gt;/#/about and refresh</li>
+  </ol>
+  <p class="bottomline">Each deploy = npm run deploy again.</p>
+  <aside class="notes"><p>The Actions tab run after a local deploy is GitHub's own, not a workflow you wrote (the curriculum's "check the Actions tab" means that one).</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="25">
+  <h2>When the page is blank</h2>
+  <table class="dbt small">
+    <tr><th>Symptom</th><th>Check</th></tr>
+    <tr><td>blank page, 404s for assets in the Network tab</td><td>base matches the repo name, with both slashes</td></tr>
+    <tr><td>works, refresh on a page gives 404</td><td>hash router in production</td></tr>
+    <tr><td>old version still showing</td><td>wait a minute; hard refresh (Ctrl+Shift+R)</td></tr>
+    <tr><td>404 for the whole site</td><td>Settings → Pages → branch gh-pages</td></tr>
+  </table>
+  <p class="bottomline">Network tab first.</p>
+  <aside class="notes"><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: deploy" data-at="28">
+  <h2>Activity: deploy your own copy</h2>
+  <div class="countdown" data-sec="480"></div>
+  <ol class="steps">
+    <li>Set base to <b>your</b> repo name</li>
+    <li><code>npm run deploy</code>; pick the gh-pages branch in Settings → Pages</li>
+    <li>Open your URL, go to About, refresh</li>
+    <li>Post your URL in the class chat</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Stuck? Use the table on the previous slide.</p>
+  <aside class="notes"><p>8 minutes. Walk the room: base and the Pages setting are 90% of the problems.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Mental model</h2>
+  <ul>
+    <li>Build = plain files in dist/; GitHub Pages serves files</li>
+    <li>base = the repo folder, only in production</li>
+    <li>Hash router in the build, so refresh works</li>
+    <li>gh-pages pushes dist/ to a branch Pages serves</li>
+  </ul>
+  <p class="bottomline">Next: GitHub runs the tests and deploys for you.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Portfolio Projects</b>: "Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2.</p>
+  <aside class="notes"><p>Suggest a checklist: live URL in the README, conditional base, hash router.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/course/router-hooks.js?v=1"></script>
+<script src="../shared/course/outlet-context.js?v=1"></script>
+<script src="../shared/course/deploy-pages.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>

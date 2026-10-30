@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 8 · Lecture 1 · useParams and useNavigate</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 8: React Router Hooks · Lecture 1 of 2</div>
+  <h1>useParams and useNavigate: pages that read the URL and move from code.</h1>
+  <p class="sub">A details page for every Pokemon, a Back button, and a login form.</p>
+  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. New spec today: details.cy.js, with the API stubbed by id.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="1">
+  <h2>One route for every Pokemon</h2>
+  <table class="dbt small">
+    <tr><th>Route</th><th>URL</th><th>useParams()</th></tr>
+    <tr><td rowspan="2"><code>pokemon/:id</code></td><td>/pokemon/25</td><td><code>{ id: '25' }</code></td></tr>
+    <tr><td>/pokemon/1</td><td><code>{ id: '1' }</code></td></tr>
+  </table>
+  <p class="bottomline">:name in a path = a parameter; useParams reads it (always a string).</p>
+  <aside class="notes"><p>Shareable: send /pokemon/25 to a friend, it opens Pikachu.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: param" data-at="3">
+  <h2>A route with a parameter <span class="say">details.cy.js · PokemonDetailsPage · router.jsx</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="cypress/e2e/details.cy.js src/pages/PokemonDetailsPage.jsx src/router.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Red, then green. Type /pokemon/7 in your own browser.</p>
+<!-- steps:router-hooks:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useParams reads the URL. The id is always a string.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The colon makes :id a parameter. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: fetch" data-at="7">
+  <h2>Fetch the Pokemon for that id <span class="say">pikachu.json · details.cy.js · PokemonDetailsPage</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f1s3" data-steps="f2s1 f2s2 f2s3" data-files="src/pages/PokemonDetailsPage.jsx cypress/e2e/details.cy.js cypress/fixtures/pikachu.json"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> The effect has [id] and the ignore flag (unit 4). Red, then green.</p>
+<!-- steps:router-hooks:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The details page shows more, so the fixture gets height, weight and types (copied from the real API).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the Pokemon from the API', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: name, picture, type. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: 404 id" data-at="13">
+  <h2>A Pokemon that does not exist <span class="say">details.cy.js · PokemonDetailsPage</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f2s3" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/details.cy.js src/pages/PokemonDetailsPage.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red: an unhandled 404 fails the test (Cypress fails on uncaught errors). Green with catch.</p>
+<!-- steps:router-hooks:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows a message for an unknown Pokemon',…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: the API answers 404. Red: the spinner never stops.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [pokemon, setPokemon] = useState(null)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A second state for the error.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.then((response) =&gt; { if (!ignore) setPokemo…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">catch: the request failed.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>if (error) return &lt;p&gt;{error}. &lt;Link to="/"&gt;B…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Show the message first, the spinner only while still waiting…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { Link, useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and import Link. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Details" data-at="16">
+  <h2>A Details link on every card <span class="say">details.cy.js · PokeCard.jsx</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f3s5" data-steps="f4s1 f4s2 f4s3" data-files="cypress/e2e/details.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Details is an &lt;a&gt; (a Link), so the test finds it with #pikachu-card a.</p>
+<!-- steps:router-hooks:f4 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('opens the details page from a card', () …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: Details on Pikachu's card goes to /pokemon/25. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import BsButton from 'react-bootstrap/Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Link from the router.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant="danger" onClick={() =&gt; rm…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A button that is really a Link: Bootstrap's look, the router's behaviour. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="19">
+  <h2>Link or useNavigate?</h2>
+  <table class="dbt small">
+    <tr><th>Situation</th><th>Use</th></tr>
+    <tr><td>the user clicks something to go to a page</td><td class="pk">&lt;Link to&gt;</td></tr>
+    <tr><td>go somewhere <b>after</b> logic: a form passed its check, a request finished</td><td class="pk">navigate('/…')</td></tr>
+    <tr><td>Back</td><td class="pk">navigate(-1)</td></tr>
+  </table>
+  <p class="bottomline">Link by default; navigate when code decides.</p>
+  <aside class="notes"><p><b>Different from the curriculum</b> (until merged): it suggests useNavigate in place of Link. Links are real &lt;a&gt; tags: right-click, open in new tab, screen readers.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Back" data-at="21">
+  <h2>A Back button <span class="say">details.cy.js · BackButton · NavBar</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f4s3" data-steps="f5s1 f5s2 f5s3 f5s4 f5s5" data-files="cypress/e2e/details.cy.js src/components/BackButton/BackButton.jsx src/components/NavBar/NavBar.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Only "goes back with the Back button" is red after N 1; cy.go('back') already works.</p>
+<!-- steps:router-hooks:f5 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('goes back with the Back button', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two tests: our Back button, and the browser's (cy.go('back')). The second already passes: Links add to the history.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/BackButton/BackButton.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useLocation, useNavigate } from 're…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">navigate(-1) = the browser's Back. If the page was opened directly there is no "back" inside the app, so go home.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/BackButton/index.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>export { default } from './BackButton'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Its index.js.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Nav from 'react-bootstrap/Nav'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">It goes in the NavBar…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Nav.Link as={Link} to="/about"&gt;About&lt;/Nav.L…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…outside the header. Green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: login" data-at="26">
+  <h2>A login form that moves on <span class="say">details.cy.js · LoginPage · router · NavBar</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f5s5" data-steps="f6s1 f6s2 f6s3 f6s4" data-files="cypress/e2e/details.cy.js src/pages/LoginPage.jsx src/router.jsx src/components/NavBar/NavBar.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 30 green. No real login yet: that comes with the back end.</p>
+<!-- steps:router-hooks:f6 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('logs in and goes home', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two tests first: a name goes home, an empty name stays. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/LoginPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Check, then navigate. controlId gives the input its id and links the label.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The route…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Nav.Link as={Link} to="/about"&gt;About&lt;/Nav.L…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and a link to it. Run the tests: 30 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="30">
+  <h2>Testing pages with data</h2>
+  <table class="dbt small">
+    <tr><th>The page asks for</th><th>Stub</th></tr>
+    <tr><td>/api/v2/pokemon/pikachu (home, on load)</td><td><code>pikachu.json</code></td></tr>
+    <tr><td>/api/v2/pokemon/25 (details)</td><td class="pk">the same <code>pikachu.json</code></td></tr>
+    <tr><td>/api/v2/pokemon/99999</td><td class="pk"><code>{ statusCode: 404, body: {} }</code></td></tr>
+  </table>
+  <p class="bottomline">Stub every address the page calls, the error ones too.</p>
+  <aside class="notes"><p>An unstubbed request goes to the real API: slow, and it changes.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="30">
+  <h2>Preview: loaders (later, with the back end)</h2>
+  <table class="dbt small">
+    <tr><th>Today</th><th>With a loader</th></tr>
+    <tr><td>the page renders, then an effect fetches</td><td>the router fetches <b>before</b> showing the page</td></tr>
+    <tr><td>spinner + error state in the page</td><td><code>useLoaderData()</code>; errors go to errorElement</td></tr>
+  </table>
+  <p class="bottomline">Same router, data first. We use it with protected routes later.</p>
+  <aside class="notes"><p>Keep it to one slide: the full-stack unit uses loaders + throw redirect() for protected routes.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="31">
+  <h2>Activity: Fix it (router hooks)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 8 · Lecture 1</b></li>
+    <li>Use the address bar, the Console and "What the tests said"</li>
+    <li>Fix, press <b>Fix</b>: all 30 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=router-hooks" target="_blank" rel="noopener">fixit.html?lesson=router-hooks</a></p>
+  <aside class="notes"><p>6 minutes.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Mental model</h2>
+  <ul>
+    <li><code>:id</code> in the route, <code>useParams()</code> in the page</li>
+    <li>The page fetches its own data: shareable URLs</li>
+    <li>Link when the user clicks; navigate when code decides</li>
+    <li>navigate(-1) = Back</li>
+  </ul>
+  <p class="bottomline">Next: keep state when pages change.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part I</h2>
+  <ol class="steps small">
+    <li><b>Rick and Morty III</b></li>
+  </ol>
+  <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/course/router-hooks.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>

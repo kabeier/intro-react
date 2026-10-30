@@ -13,5 +13,7 @@
   "router-intro.js",
   "router-pages.js",
   "router-hooks.js",
-  "outlet-context.js"
+  "outlet-context.js",
+  "deploy-pages.js",
+  "ci-actions.js"
 ]

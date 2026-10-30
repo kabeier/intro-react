@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit 8 · Lecture 2 · useOutletContext</title>
+<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/livepad.css?v=3">
+<style>
+  .slide.code { padding: 60px 64px 36px; }
+  .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.code h2 .say { font: 500 22px var(--mono); color: var(--muted); }
+  .slide.code .livepad { flex: 1; height: auto; min-height: 0; }
+  .loop { display: flex; gap: 18px; align-items: center; font: 700 30px var(--mono); }
+  .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
+  .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
+  .loop span { color: var(--muted); }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Front-End · Unit 8: React Router Hooks · Lecture 2 of 2</div>
+  <h1>useOutletContext: state that survives a change of page.</h1>
+  <p class="sub">The cards, the count, and Pikachu loading once.</p>
+  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Show the bug first: search, About, Home: gone.</p></aside>
+</section>
+
+<section class="slide" data-seg="Why" data-at="1">
+  <h2>Why the cards disappear</h2>
+  <table class="dbt small">
+    <tr><th>Step</th><th>What React does</th></tr>
+    <tr><td>search Bulbasaur</td><td>PokeSearch's list: [pikachu, bulbasaur]</td></tr>
+    <tr><td>click About</td><td class="pk">HomePage unmounts: PokeSearch's state is thrown away</td></tr>
+    <tr><td>click Home</td><td>HomePage mounts fresh: list = [] (then Pikachu loads again)</td></tr>
+  </table>
+  <p class="bottomline">State dies with the component that owns it.</p>
+  <aside class="notes"><p>The console shows the mounted/unmounted logs.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="3">
+  <h2>Move it up to the layout</h2>
+  <div class="loop"><div class="g">App<br><small>owns the list; never unmounts</small></div><span>→ &lt;Outlet context={…} /&gt; →</span><div class="b">any page<br><small>useOutletContext()</small></div></div>
+  <ul class="small" style="margin-top:28px">
+    <li>Same rule as unit 5: shared state lives in the closest common parent</li>
+    <li>Pages aren't written as tags in App, so no props: the Outlet carries a context</li>
+    <li>Inside the page it's normal props again (PokeSearch → PokeContainer → PokeCard)</li>
+  </ul>
+  <p class="bottomline">The layout owns what every page needs.</p>
+  <aside class="notes"><p><b>Different from the curriculum</b> (until merged): context is not "global state"; only pages under that Outlet can read it.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: list" data-at="5">
+  <h2>The cards survive <span class="say">navigation.cy.js · App.jsx · PokeSearch.jsx</span></h2>
+  <div class="livepad" data-lesson="outlet-context" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Red, then green.</p>
+<!-- steps:outlet-context:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps searched cards after visiting anot…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: search, leave, come back. Red: Bulbasaur is gone, the page started over.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The list lives in App now, and the Outlet hands it to whatever page is showing.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const { pokemonList, setPokemonList } = useO…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeSearch reads it instead of owning it…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import axios from 'axios'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…imported from the router. Run the test: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="11">
+  <h2>Reading useOutletContext</h2>
+  <pre style="font-size:24px">// App.jsx
+&lt;Outlet context={{ pokemonList, setPokemonList }} /&gt;
+
+// any page (or a component inside it)
+const { pokemonList, setPokemonList } = useOutletContext()</pre>
+  <p class="bottomline">Same names on both sides: it's one object.</p>
+  <aside class="notes"><p>Fix It: a renamed key, an array instead of an object, the hook used in App itself.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="13">
+  <h2>A new bug: Pikachu comes back</h2>
+  <table class="dbt small">
+    <tr><th>Step</th><th>Happens</th></tr>
+    <tr><td>remove Pikachu</td><td>the list in App: []</td></tr>
+    <tr><td>About, then Home</td><td class="pk">PokeSearch mounts again → its start-up effect fetches Pikachu → added again</td></tr>
+  </table>
+  <p class="bottomline">Start-up work for the app belongs where the app starts: App.</p>
+  <aside class="notes"><p>The instructor's version of this lesson had this bug; the test below catches it.</p></aside>
+</section>
+
+<section class="slide code" data-seg="Code along: Pikachu" data-at="15">
+  <h2>Pikachu loads once <span class="say">navigation.cy.js · PokeSearch.jsx · App.jsx</span></h2>
+  <div class="livepad" data-lesson="outlet-context" data-start="f1s4" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 6 minutes. **</b> The test searches Charizard so Pikachu's old request has time to arrive: an honest count.</p>
+<!-- steps:outlet-context:f2 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does not bring Pikachu back after it was…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first. Searching Charizard gives the old request time to arrive, so the count is honest. Red: two cards.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cut the Pikachu effect from PokeSearch…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>return () =&gt; console.log('page unmounted')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and paste it into App. App never unmounts, so it runs once per visit.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App needs axios now. Run the tests: green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: count" data-at="21">
+  <h2>The count survives too <span class="say">navigation.cy.js · App.jsx · Counter.jsx</span></h2>
+  <div class="livepad" data-lesson="outlet-context" data-start="f2s4" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/Counter/Counter.jsx"></div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 33 green.</p>
+<!-- steps:outlet-context:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps the click count across pages', () …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first. Red: back to 0.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const [pokemonList, setPokemonList] = useSta…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">count in App…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Outlet context={{ pokemonList, setPokemonLi…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…added to the context…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and Counter reads it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>const { count, setCount } = useOutletContext()</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same names, so nothing else in Counter changes. Run the tests: 33 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="25">
+  <h2>What about shiny?</h2>
+  <table class="dbt small">
+    <tr><th>State</th><th>Lives in</th><th>Survives a page change?</th></tr>
+    <tr><td>the list, the count</td><td>App</td><td class="pk">yes</td></tr>
+    <tr><td>one card's shiny</td><td>PokeCard</td><td>no: the card unmounts</td></tr>
+  </table>
+  <p class="bottomline">To keep it, lift it: App holds the shiny ids. Same rule, one more time.</p>
+  <aside class="notes"><p>Optional extension (instructor's call): shinyIds in App, toggleShiny(id) in the context. The curriculum's "shiny survives navigation" test needs it.</p></aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="27">
+  <h2>Where should this state live?</h2>
+  <table class="dbt small">
+    <tr><th>State</th><th>Where</th></tr>
+    <tr><td>the text in the search box</td><td>PokeSearch (fine to lose)</td></tr>
+    <tr><td>the team of cards</td><td class="pk">App (outlet context)</td></tr>
+    <tr><td>the details page's Pokemon</td><td>PokemonDetailsPage (comes from the URL)</td></tr>
+    <tr><td>the logged-in user (later)</td><td class="pk">App, or the server</td></tr>
+  </table>
+  <p class="bottomline">Ask: who needs it, and must it survive a page change?</p>
+  <aside class="notes"><p>Quick class discussion, 1 minute.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="28">
+  <h2>The suite now: 33 tests</h2>
+  <table class="dbt small">
+    <tr><th>New today</th><th>Guards</th></tr>
+    <tr><td>keeps searched cards after visiting another page</td><td>the list lives in App</td></tr>
+    <tr><td>does not bring Pikachu back after it was removed</td><td>start-up work runs once</td></tr>
+    <tr><td>keeps the click count across pages</td><td>count lives in App</td></tr>
+  </table>
+  <p class="bottomline">Each one leaves a page and comes back.</p>
+  <aside class="notes"><p>Unit 9 runs all 33 on GitHub for every push.</p></aside>
+</section>
+
+<section class="slide activity" data-seg="Activity: Fix it" data-at="29">
+  <h2>Activity: Fix it (outlet context)</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>Open <b>Fix it</b> → <b>Unit 8 · Lecture 2</b></li>
+    <li>Navigate away and back: does the state survive?</li>
+    <li>Fix, press <b>Fix</b>: all 33 tests must pass</li>
+    <li>Do 1–6. Fast? Try 7–10</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=outlet-context" target="_blank" rel="noopener">fixit.html?lesson=outlet-context</a></p>
+  <aside class="notes"><p>6 minutes.</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="36">
+  <h2>Mental model</h2>
+  <ul>
+    <li>Leaving a page unmounts it and its state</li>
+    <li>The layout (App) never unmounts: shared state lives there</li>
+    <li>&lt;Outlet context={…} /&gt; down, useOutletContext() in the page</li>
+    <li>Start-up work for the whole app runs in App</li>
+  </ul>
+  <p class="bottomline">Next unit: put it online, and let GitHub run the tests.</p>
+  <aside class="notes"><p>—</p></aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Homework, Part II</h2>
+  <ol class="steps small">
+    <li><b>Rick and Morty IV</b></li>
+  </ol>
+  <p class="small">Stretch: <b>News Site III</b>, <b>News Site IV</b></p>
+  <p class="bottomline">Links are on the class site.</p>
+  <aside class="notes"><p>R&amp;M IV's favorites page is this lecture's pattern: favorites in App, shared through the Outlet.</p></aside>
+</section>
+
+</div>
+
+<script src="../shared/deck.js?v=1"></script>
+<script src="../shared/course.js?v=5"></script>
+<script src="../shared/course/create-vite-react.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/hooks-usestate.js?v=1"></script>
+<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/components-props.js?v=1"></script>
+<script src="../shared/course/component-state.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/router-intro.js?v=1"></script>
+<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/course/router-hooks.js?v=1"></script>
+<script src="../shared/course/outlet-context.js?v=1"></script>
+<script src="../shared/livepad.js?v=3"></script>
+<script src="../shared/cyrunner.js?v=4"></script>
+</body>
+</html>
