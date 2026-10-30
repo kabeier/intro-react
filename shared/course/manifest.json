@@ -1,1 +1,1 @@
-["create-vite-react.js", "react-vite.js", "async-requests.js"]
+["create-vite-react.js", "react-vite.js", "async-requests.js", "cypress-react.js", "cypress-assertions.js"]

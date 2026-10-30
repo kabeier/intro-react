@@ -75,6 +75,10 @@
     }
     if (name === 'contain' || name === 'include') {
       if (els) { ok(els.some((e) => textOf(e).includes(rest[0])), `expected ${describeEls(els)} to contain ${q(rest[0])}`, `expected ${describeEls(els)} not to contain ${q(rest[0])}`); return subject }
+      if (Array.isArray(subject.value)) {
+        const shown = subject.value.length ? '[ ' + subject.value.map((x) => (typeof x === 'string' ? q(x) : JSON.stringify(x))).join(', ') + ' ]' : '[]'
+        ok(subject.value.includes(rest[0]), `expected ${shown} to include ${q(rest[0])}`, `expected ${shown} not to include ${q(rest[0])}`); return subject
+      }
       ok(String(subject.value).includes(rest[0]), `expected ${q(subject.value)} to include ${q(rest[0])}`, `expected ${q(subject.value)} not to include ${q(rest[0])}`); return subject
     }
     if (name === 'eq' || name === 'equal') {
@@ -166,6 +170,7 @@
         return chain({ kind: 'query', name: 'get', selector: sel, start: true, run: () => ({ els: [...doc().querySelectorAll(sel)] }) })
       },
       contains: (a, b) => chain({ ...containsOp(a, b, false), start: true }),
+      wrap: (value) => chain({ kind: 'query', name: 'wrap', start: true, run: () => ({ value }) }),
       url: () => chain({ kind: 'query', name: 'url', start: true, run: () => ({ value: pad.url || (pad.baseUrl || 'http://localhost:5173/') }) }),
       on: (event, fn) => chain({ kind: 'action', name: 'on', start: true, run: async () => { if (event === 'window:alert') current.alertHandlers.push(fn); return { els: [] } } }),
       intercept: (method, url, response) => {

@@ -118,3 +118,11 @@ test('a pad with cypress specs gets a Run tests button that runs every spec with
   assert.doesNotMatch(t, /Failing: [1-9]/)
   await p.close()
 })
+
+test('cy.wrap(array).should("include") retries until the alert arrives, and fails if it never does', async () => {
+  const ok = await run("it('alerts', () => {\n  cy.visit('/')\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.get('#warn').click()\n  cy.wrap(alerts).should('include', 'Pokemon Does not Exist')\n})")
+  assert.equal(ok.tests[0].state, 'passed', ok.tests[0].error)
+  const bad = await run("it('no alert', () => {\n  cy.visit('/')\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.wrap(alerts).should('include', 'Pokemon Does not Exist')\n})")
+  assert.equal(bad.tests[0].state, 'failed')
+  assert.match(bad.tests[0].error, /expected \[\] to include 'Pokemon Does not Exist'/)
+})
