@@ -274,7 +274,7 @@
       post({ type: 'livepad-error', message: String(m), line: l })
       post({ type: 'livepad-console', level: 'error', text: String(m) })
       // For the Cypress runner: an uncaught app error fails the running test.
-      post({ type: 'cy-app-error', message: err && err.message ? err.message : String(m).replace(/^Uncaught (\w*Error: )?/, '') })
+      post({ type: 'cy-app-error', message: err && err.message ? err.message : String(m).replace(/^Uncaught (\w*Error: )?/, ''), load: document.readyState !== 'complete' })
     }
     // A rejected promise nobody caught (an axios error without .catch): the browser logs it like this.
     window.addEventListener('unhandledrejection', function (e) {
@@ -484,7 +484,12 @@
     try {
       // Module errors name blob: URLs; show the file path instead, like Vite does.
       var named = function (msg) { Object.keys(mods).forEach(function (p) { msg = msg.split(mods[p]).join('/' + p) }); return msg }
-      import(load(ENTRY, ENTRY)).catch(function (e) { console.error(named(String(e && e.message || e))) })
+      import(load(ENTRY, ENTRY)).catch(function (e) {
+        var msg = named(String(e && e.message || e))
+        console.error(msg)
+        // The app never started: for the Cypress runner this is an uncaught error while the page loads.
+        try { parent.postMessage({ type: 'cy-app-error', message: msg, load: true }, '*') } catch (x) {}
+      })
     } catch (e) { console.error(e.message) }
   }
 

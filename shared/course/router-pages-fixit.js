@@ -41,14 +41,12 @@
       why: 'An errorElement replaces its own route\'s element. On the root it replaces App (and the header). Put it on the pathless child route that wraps the pages.',
     },
     {
-      id: 'outside', title: 'Two buttons in the header', base: 'f5', tabs: [APP, 'cypress/e2e/home.cy.js'],
-      symptom: '"changes the title when you click Change Title" fails: cy.click() can only be called on a single element. Your subject contained 2 elements.',
-      breaks: [
-        { file: APP, mode: 'replace', find: '    <>\n      <NavBar />\n      <main className="mx-auto max-w-5xl space-y-6 p-6">\n        <Heading />', code: '    <>\n      <main className="mx-auto max-w-5xl space-y-6 p-6">\n        <header><NavBar /></header>\n        <Heading />' },
-      ],
+      id: 'nonav', title: 'The navbar is gone', base: 'f5', tabs: [APP, NAV, SPEC],
+      symptom: 'No navbar on any page. "navigates with the navbar…" and "shows the nav links" fail: Expected to find element: `nav`.',
+      breaks: [{ file: APP, mode: 'replace', find: '      <NavBar />\n', code: '' }],
       checks: [allPass],
-      hint: 'What does header button find now?',
-      why: 'The test finds the title button with header button, so the header must hold one button. The navbar goes outside it, above main.',
+      hint: 'NavBar.jsx exists and is imported. Is it rendered anywhere?',
+      why: 'A component shows only where it is rendered: <NavBar /> in App, above <main>, so every page has it.',
     },
     {
       id: 'linkimport', title: 'Blank page: "Link is not defined"', base: 'f5', tabs: [NOTFOUND],

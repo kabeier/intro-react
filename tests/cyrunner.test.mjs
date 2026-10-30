@@ -222,3 +222,14 @@ test("cy.get('#id') finds only the first element with that id, like jQuery in Cy
   const r = await run("it('t', () => {\n  cy.visit('/')\n  cy.get('#pokemon-name').type('a{enter}')\n  cy.get('#pokemon-name').type('a{enter}')\n  cy.get('#a-card').should('have.length', 1)\n  cy.get('[id=\"a-card\"]').should('have.length', 2)\n})")
   assert.equal(r.tests[0].state, 'passed', r.tests[0].error)
 })
+
+test('an app that fails to load during a beforeEach visit fails the hook and skips the file, like Cypress', async () => {
+  const r = await page.evaluate(async () => {
+    const pad = window.pad.pad
+    const keep = pad.files
+    pad.files = { 'index.html': '<!doctype html><html><head></head><body><div id="root"></div><script>throw new Error("boom on load")</script></body></html>' }
+    try { return await CyRunner.run({ pad, spec: "beforeEach(() => { cy.visit('/') })\nit('first', () => {})\nit('second', () => {})" }) } finally { pad.files = keep }
+  })
+  assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['"before each" hook for "first"', 'failed']])
+  assert.match(r.tests[0].error, /originated from your application code/)
+})

@@ -96,11 +96,14 @@ for (const c of checkpoints) {
     const specs = readdirSync(path.join(dir, 'cypress/e2e')).sort()
     for (const spec of specs) {
       const report = path.join(dir, `results-${spec}.xml`)
-      try {
-        execFileSync('docker', ['run', '--rm', '--network', 'host', '-v', `${dir}:${dir}`, '-v', `${cache}:${cache}`, '-w', dir, 'cypress/included:16.2.0',
-          '--spec', `cypress/e2e/${spec}`, '--config', 'video=false', '--reporter', 'junit', '--reporter-options', `mochaFile=${report}`],
-          { stdio: 'pipe', timeout: 300000 })
-      } catch {}
+      // Docker now and then exits without running anything (no report): try once more before comparing.
+      for (let attempt = 0; attempt < 2 && !existsSync(report); attempt++) {
+        try {
+          execFileSync('docker', ['run', '--rm', '--network', 'host', '-v', `${dir}:${dir}`, '-v', `${cache}:${cache}`, '-w', dir, 'cypress/included:16.2.0',
+            '--spec', `cypress/e2e/${spec}`, '--config', 'video=false', '--reporter', 'junit', '--reporter-options', `mochaFile=${report}`],
+            { stdio: 'pipe', timeout: 300000 })
+        } catch {}
+      }
       // The container runs as root: give its files (reports, screenshots) back to us so the next run can delete them.
       try { execFileSync('docker', ['run', '--rm', '-v', `${dir}:${dir}`, '--entrypoint', 'chown', 'cypress/included:16.2.0', '-R', `${process.getuid()}:${process.getgid()}`, dir], { stdio: 'pipe' }) } catch {}
       const xml = existsSync(report) ? readFileSync(report, 'utf8') : ''

@@ -267,7 +267,11 @@
     // Errors the app throws (or promises it rejects without a catch) fail the running test.
     addEventListener('message', (e) => {
       if (!e.data || e.data.type !== 'cy-app-error' || e.source !== win() || !current) return
-      current.appErrors.push(appError(e.data))
+      const err = appError(e.data)
+      // A module that fails to load breaks the page before its load event: that belongs to cy.visit
+      // (the hook, if visit is in beforeEach). Errors while React renders come later, in the test.
+      err.duringVisit = !!e.data.load
+      current.appErrors.push(err)
     })
     addEventListener('message', (e) => {
       if (!e.data || e.data.type !== 'cy-responded' || e.source !== win()) return
@@ -286,7 +290,7 @@
       let i = 0
       while (i < ops.length) {
         const op = ops[i]
-        if (op.kind === 'action' && op.name !== 'type' && op.name !== 'clear' && op.name !== 'click') { subject = await op.run(subject); i++; continue }
+        if (op.kind === 'action' && op.name !== 'type' && op.name !== 'clear' && op.name !== 'click') { subject = await op.run(subject); i++; checkApp(); continue }
         // A segment = queries + assertions up to the next action; retried as one.
         let j = i
         while (j < ops.length && ops[j].kind !== 'action') j++
@@ -355,13 +359,14 @@
           }
         } catch (e) {
           // An app error during a hook fails the test itself, and the next tests still run.
-          if (e && e.fromApp) return { title: t.title, state: 'failed', error: e.message, ms: Date.now() - t0 }
+          if (e && e.fromApp && !e.duringVisit) return { title: t.title, state: 'failed', error: e.message, ms: Date.now() - t0 }
           // Like Cypress: the hook fails, under its own name, and the rest of the file is skipped.
           return { title: `"before each" hook for "${t.title}"`, state: 'failed', error: (e && e.message) || String(e), ms: Date.now() - t0, hookFailed: true }
         }
         t.fn()
         for (const ops of queue.splice(0)) await runChain(ops)
         if (current.errors.length) throw current.errors[0]
+        checkApp()
         return { title: t.title, state: 'passed', ms: Date.now() - t0 }
       } catch (e) {
         return { title: t.title, state: 'failed', error: (e && e.message) || String(e), ms: Date.now() - t0 }

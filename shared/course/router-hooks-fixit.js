@@ -30,6 +30,9 @@
         await ctx.wait(800)
         const w = ctx.doc().defaultView
         if (!w.__ROUTER) return false
+        // Open Pikachu's page first, then change only the id (the page stays mounted).
+        w.__ROUTER.navigate('/pokemon/25')
+        for (let i = 0; i < 40; i++) { await ctx.wait(100); const h = ctx.doc().querySelector('h2'); if (h && /pikachu/.test(h.textContent)) break }
         w.__ROUTER.navigate('/pokemon/1')
         for (let i = 0; i < 40; i++) { await ctx.wait(100); const h = ctx.doc().querySelector('h2'); if (h && /bulbasaur/.test(h.textContent)) return true }
         return false
