@@ -65,7 +65,7 @@ Course.register({
         {
           id: 'f2s1', file: 'cypress/e2e/pokemon.cy.js', mode: 'replace',
           find: "it('makes every card shiny with one click', () => {\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.contains('button', 'All Shiny').click()\n  cy.get('#pikachu-card img').should('have.attr', 'src').and('include', 'shiny')\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('include', 'shiny')\n})",
-          code: "it('makes only one card shiny', () => {\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card button').contains('Make Shiny').click()\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('include', 'shiny')\n  cy.get('#pikachu-card img').should('have.attr', 'src').and('not.include', 'shiny')\n  cy.get('#bulbasaur-card button').contains('Make Normal').click()\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('not.include', 'shiny')\n})",
+          code: "it('makes only one card shiny', () => {\n  cy.get('#pikachu-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card button').contains('Make Shiny').click()\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('include', 'shiny')\n  cy.get('#pikachu-card img').should('have.attr', 'src').and('not.include', 'shiny')\n  cy.get('#bulbasaur-card button').contains('Make Normal').click()\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('not.include', 'shiny')\n})",
           say: 'The requirement changed, so the test changes first. Bulbasaur shiny, Pikachu NOT. Run it: red.',
           notes: [{ match: "cy.get('#pikachu-card img').should('have.attr', 'src').and('not.include', 'shiny')", what: 'The other card must stay normal.', why: 'This line is what proves each card has its own state.' }],
         },
@@ -99,7 +99,7 @@ Course.register({
       steps: [
         {
           id: 'f3s1', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',
-          code: "it('keeps a card shiny when another card is removed', () => {\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card button').contains('Make Shiny').click()\n  cy.get('#pikachu-card button').contains('Remove').click()\n  cy.get('#pikachu-card').should('not.exist')\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('include', 'shiny')\n})",
+          code: "it('keeps a card shiny when another card is removed', () => {\n  cy.get('#pikachu-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card button').contains('Make Shiny').click()\n  cy.get('#pikachu-card button').contains('Remove').click()\n  cy.get('#pikachu-card').should('not.exist')\n  cy.get('#bulbasaur-card img').should('have.attr', 'src').and('include', 'shiny')\n})",
           say: 'A test for something that already works. Run it: green.',
         },
         {

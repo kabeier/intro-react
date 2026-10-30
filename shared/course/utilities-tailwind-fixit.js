@@ -82,7 +82,7 @@
     },
     {
       id: 'merge', testsPass: true, title: 'Bonus: every Button lost its style', base: 'f4', tabs: [BUTTON],
-      symptom: 'Change Title, Click me!, Make Shiny and Remove are plain grey buttons again.',
+      symptom: 'Change Title, Click me!, Make Shiny and Remove look like plain text: no background, no border.',
       breaks: [{ file: BUTTON, mode: 'replace', find: 'className={`rounded-md bg-blue-600 px-3 py-1.5 font-semibold text-white hover:bg-blue-700 ${className}`}', code: 'className={className}' }],
       checks: [allPass, styled('a Button is rounded', 'header button', 'borderRadius', '6px')],
       hint: 'Where did Button\'s own classes go?',

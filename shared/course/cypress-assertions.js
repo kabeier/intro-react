@@ -55,8 +55,12 @@ Course.register({
       steps: [
         {
           id: 'f3s1', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',
-          code: "it('does nothing on an empty search', () => {\n  cy.get('button[type=submit]').click()\n  cy.get('#poke-container').children().should('have.length', 0)\n})",
-          say: 'Empty box, Search: still no cards.',
+          code: "it('does nothing on an empty search', () => {\n  cy.intercept('GET', '**/api/v2/pokemon/').as('empty')\n  cy.get('button[type=submit]').click()\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('@empty.all').should('have.length', 0)\n})",
+          say: 'Empty box, Search: no request may go out. Then a real search, so a wrong request would have had time to happen, and count: zero requests to /pokemon/.',
+          notes: [
+            { match: "cy.intercept('GET', '**/api/v2/pokemon/').as('empty')", what: 'Watches requests to /pokemon/ with no name.', why: 'That is the request an empty search would send.' },
+            { match: "cy.get('@empty.all').should('have.length', 0)", what: 'Every request that matched: there must be none.', why: 'Checking "no cards" right after the click passes before any answer could arrive: a test that can\'t fail. Counting requests after another search can.' },
+          ],
         },
         {
           id: 'f3s2', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',

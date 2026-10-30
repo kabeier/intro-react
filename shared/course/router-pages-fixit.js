@@ -42,15 +42,15 @@
     },
     {
       id: 'nonav', title: 'The navbar is gone', base: 'f5', tabs: [APP, NAV, SPEC],
-      symptom: 'No navbar on any page. "navigates with the navbar…" and "shows the nav links" fail: Expected to find element: `nav`.',
+      symptom: 'No navbar on any page. "navigates with the navbar…" fails: Expected to find element: `nav`. "shows the nav links" fails: Expected to find content: \'About\' within the selector: \'nav a\'.',
       breaks: [{ file: APP, mode: 'replace', find: '      <NavBar />\n', code: '' }],
       checks: [allPass],
       hint: 'NavBar.jsx exists and is imported. Is it rendered anywhere?',
       why: 'A component shows only where it is rendered: <NavBar /> in App, above <main>, so every page has it.',
     },
     {
-      id: 'linkimport', title: 'Blank page: "Link is not defined"', base: 'f5', tabs: [NOTFOUND],
-      symptom: 'Visiting an unknown address: blank page. The console: ReferenceError: Link is not defined.',
+      id: 'linkimport', title: '"Link is not defined" on the 404 page', base: 'f5', tabs: [NOTFOUND],
+      symptom: 'An unknown address shows "Something went wrong: Link is not defined" (inside the layout) instead of the 404 page.',
       breaks: [{ file: NOTFOUND, mode: 'replace', find: "import { Link } from 'react-router'\n\n", code: '' }],
       checks: [allPass],
       hint: 'Each file imports what it uses.',

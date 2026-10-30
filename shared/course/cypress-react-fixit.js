@@ -7,7 +7,7 @@
   const problems = [
     {
       id: 'visit', title: 'Every test: "never found it"', base: 'f3', tabs,
-      symptom: 'Both tests fail with: Expected to find element: `header`, but never found it. The app works fine in the browser.',
+      symptom: 'Both tests fail: Expected to find element: `header`, but never found it (and `#poke-container` in the second). The app works fine in the browser.',
       breaks: [{ file: HOME, mode: 'replace', find: "  cy.visit('/')\n", code: '' }],
       checks: [allPass(2)],
       hint: 'Every Cypress test starts on a blank page. What opens the app?',

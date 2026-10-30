@@ -82,15 +82,13 @@ Course.register({
           say: 'And here.',
         },
         {
-          id: 'f4s5', file: 'cypress/e2e/pokemon.cy.js', mode: 'replace', find: "  cy.get('button[type=submit]').click()\n  cy.get('#poke-container').children().should('have.length', 0)",
-          code: "  cy.get('button[type=submit]').click()\n  cy.get('#poke-container').children().should('have.length', 1)",
-          say: 'An empty search still adds nothing: only Pikachu.',
-        },
-        {
-          id: 'f4s6', file: 'src/App.jsx', mode: 'insertAfter', find: '  }, [count])',
-          code: "\n  useEffect(() => {\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])",
+          id: 'f4s6', file: 'src/App.jsx', mode: 'replace', find: '  const rmData = (id) => {',
+          code: "  useEffect(() => {\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])\n\n  const rmData = (id) => {",
           say: 'Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.',
-          notes: [{ match: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')", what: 'The start-up request.', why: 'An effect with [] runs once after the first render: the right place to load start-up data.' }],
+          notes: [
+            { match: "axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')", what: 'The start-up request.', why: 'An effect with [] runs once after the first render: the right place to load start-up data.' },
+            { match: '.then((response) => addPokemonData(response.data))', what: 'Uses addPokemonData, so the effect goes below it.', why: 'A const can\'t be used before its line (the linter says so). [] is still right: addPokemonData only calls the setter with a function, which never needs a newer copy.' },
+          ],
         },
         {
           id: 'f4s7', file: 'src/App.jsx', mode: 'replace', find: "    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => addPokemonData(response.data))\n  }, [])",

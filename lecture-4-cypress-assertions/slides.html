@@ -100,7 +100,7 @@
     <p><b>** CODE ALONG, about 4 minutes. **</b></p>
 <!-- steps:cypress-assertions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does nothing on an empty search', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty box, Search: still no cards.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does nothing on an empty search', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty box, Search: no request may go out. Then a real search, so a wrong request would have had time to happen, and count: zero requests to /pokemon/.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does not add the same Pokemon twice', ()…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">[id="…"] finds every element with that id (#id stops at the first). Careful: this can pass before the second answer arrives. Feature 4 fixes that.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('alerts when a Pokemon does not exist', (…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cypress closes alerts for us; we collect their text and check it. If no alert ever comes, the test fails.</td></tr>
 </table>
@@ -178,7 +178,7 @@
   <table class="dbt small">
     <tr><th>Test</th><th>Unit 4.1 (useState)</th><th>Unit 4.2 (Pikachu on load)</th></tr>
     <tr><td>heading, search, multiple, clears, duplicates, alert</td><td class="pk">still pass, untouched</td><td class="pk">still pass</td></tr>
-    <tr><td>starts empty · empty search</td><td>still pass</td><td>rewritten: Pikachu is there from the start</td></tr>
+    <tr><td>starts empty</td><td>still passes</td><td>rewritten: Pikachu is there from the start</td></tr>
   </table>
   <p class="bottomline">We rewrite the page; the tests prove it still works.</p>
   <aside class="notes"><p>Say: "Next unit, every feature starts with a failing test."</p></aside>

@@ -134,19 +134,20 @@
     <li>Reproduce locally (<code>npm run cy:run</code>), fix, push again</li>
   </ol>
   <p class="bottomline">The first red line is usually the real one.</p>
-  <aside class="notes"><p>The cypress-io action also uploads screenshots on failure if you add an upload-artifact step (optional).</p></aside>
+  <aside class="notes"><p>Screenshots of failed tests: add an <code>actions/upload-artifact</code> step with <code>if: failure()</code> and <code>path: cypress/screenshots</code> (the Cypress action does not upload them by itself).</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: read the red X" data-at="26">
-  <h2>Activity: read the red ✗</h2>
+<section class="slide activity" data-seg="Activity: your own red X" data-at="26">
+  <h2>Activity: make and read your own red ✗</h2>
   <div class="countdown" data-sec="420"></div>
   <ol class="steps">
-    <li>Open each failed run below; find the failing step</li>
-    <li>Read the first red line of its log</li>
-    <li>Say the fix in one sentence</li>
+    <li>Add <b>e2e-tests.yml</b> to the repo you deployed; push: wait for green</li>
+    <li>On a branch, rename "Make Shiny" to "Shine"; push; open a pull request</li>
+    <li>Open the red ✗ → the job → the first red step: which test, which error?</li>
+    <li>Say the fix in one sentence; fix it; push: green</li>
   </ol>
-  <p class="small"><a href="https://github.com/kabeier/demo-test/actions/runs/29963914247" target="_blank" rel="noopener">..fixing ports</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29964339398" target="_blank" rel="noopener">cypress base_url to hashrouter format</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29964877544" target="_blank" rel="noopener">edit e2e tests</a> · <a href="https://github.com/kabeier/demo-test/actions/runs/29965398188" target="_blank" rel="noopener">conditional base in viteconfig</a></p>
-  <aside class="notes"><p>7 minutes. Then the stretch: push a branch that renames "Make Shiny", open a PR to your own repo, watch it go red and get blocked.</p></aside>
+  <p class="muted small">History to compare: <a href="https://github.com/kabeier/demo-test/actions" target="_blank" rel="noopener">kabeier/demo-test runs</a> (summaries only: GitHub deletes logs after 90 days)</p>
+  <aside class="notes"><p>7 minutes. The old demo runs' logs have expired, so each student makes a fresh red run. Have a pre-made red PR in your own repo as a backup.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="34">
@@ -171,7 +172,7 @@
 <section class="slide" data-seg="Wrap up" data-at="38">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
-    <li><b>CI/CD in Practice</b>: "Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li>
+    <li><b>CI/CD in Practice</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li>
   </ol>
   <p class="bottomline">The workflow files are on the class site to copy.</p>
   <aside class="notes"><p>A green CI badge in the README is a nice extra.</p></aside>

@@ -42,7 +42,7 @@
   <h2>A route with a parameter <span class="say">details.cy.js · PokemonDetailsPage · router.jsx</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="cypress/e2e/details.cy.js src/pages/PokemonDetailsPage.jsx src/router.jsx"></div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 4 minutes. **</b> Red, then green. Type /pokemon/7 in your own browser.</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red, then green. Type /pokemon/7 in your own browser.</p>
 <!-- steps:router-hooks:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.</td></tr>
@@ -53,11 +53,11 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: fetch" data-at="7">
+<section class="slide code" data-seg="Code along: fetch" data-at="6">
   <h2>Fetch the Pokemon for that id <span class="say">pikachu.json · details.cy.js · PokemonDetailsPage</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="f1s3" data-steps="f2s1 f2s2 f2s3" data-files="src/pages/PokemonDetailsPage.jsx cypress/e2e/details.cy.js cypress/fixtures/pikachu.json"></div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 6 minutes. **</b> The effect has [id] and the ignore flag (unit 4). Red, then green.</p>
+    <p><b>** CODE ALONG, about 4 minutes. **</b> The effect has [id] and the ignore flag (unit 4). Red, then green.</p>
 <!-- steps:router-hooks:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The details page shows more, so the fixture gets height, weight and types (copied from the real API).</td></tr>
@@ -68,7 +68,7 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: 404 id" data-at="13">
+<section class="slide code" data-seg="Code along: 404 id" data-at="10">
   <h2>A Pokemon that does not exist <span class="say">details.cy.js · PokemonDetailsPage</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="f2s3" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/details.cy.js src/pages/PokemonDetailsPage.jsx"></div>
   <aside class="notes">
@@ -85,11 +85,11 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: Details" data-at="16">
+<section class="slide code" data-seg="Code along: Details" data-at="13">
   <h2>A Details link on every card <span class="say">details.cy.js · PokeCard.jsx</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="f3s5" data-steps="f4s1 f4s2 f4s3" data-files="cypress/e2e/details.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 3 minutes. **</b> Details is an &lt;a&gt; (a Link), so the test finds it with #pikachu-card a.</p>
+    <p><b>** CODE ALONG, about 2 minutes. **</b> Details is an &lt;a&gt; (a Link), so the test finds it with #pikachu-card a.</p>
 <!-- steps:router-hooks:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('opens the details page from a card', () …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: Details on Pikachu's card goes to /pokemon/25. Red.</td></tr>
@@ -100,7 +100,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="19">
+<section class="slide" data-seg="Concept" data-at="15">
   <h2>Link or useNavigate?</h2>
   <table class="dbt small">
     <tr><th>Situation</th><th>Use</th></tr>
@@ -112,11 +112,11 @@
   <aside class="notes"><p><b>Different from the curriculum</b> (until merged): it suggests useNavigate in place of Link. Links are real &lt;a&gt; tags: right-click, open in new tab, screen readers.</p></aside>
 </section>
 
-<section class="slide code" data-seg="Code along: Back" data-at="21">
+<section class="slide code" data-seg="Code along: Back" data-at="16">
   <h2>A Back button <span class="say">details.cy.js · BackButton · NavBar</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="f4s3" data-steps="f5s1 f5s2 f5s3 f5s4 f5s5" data-files="cypress/e2e/details.cy.js src/components/BackButton/BackButton.jsx src/components/NavBar/NavBar.jsx"></div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 5 minutes. **</b> Only "goes back with the Back button" is red after N 1; cy.go('back') already works.</p>
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Only "goes back with the Back button" is red after N 1; cy.go('back') already works.</p>
 <!-- steps:router-hooks:f5 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('goes back with the Back button', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two tests: our Back button, and the browser's (cy.go('back')). The second already passes: Links add to the history.</td></tr>
@@ -129,11 +129,11 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: login" data-at="26">
+<section class="slide code" data-seg="Code along: login" data-at="20">
   <h2>A login form that moves on <span class="say">details.cy.js · LoginPage · router · NavBar</span></h2>
   <div class="livepad" data-lesson="router-hooks" data-start="f5s5" data-steps="f6s1 f6s2 f6s3 f6s4" data-files="cypress/e2e/details.cy.js src/pages/LoginPage.jsx src/router.jsx src/components/NavBar/NavBar.jsx"></div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 30 green. No real login yet: that comes with the back end.</p>
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Short on time? Students copy LoginPage from the Code Explorer while you explain navigate. ▶ Run tests: 30 green. No real login yet: that comes with the back end.</p>
 <!-- steps:router-hooks:f6 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('logs in and goes home', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two tests first: a name goes home, an empty name stays. Red.</td></tr>
@@ -145,7 +145,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="30">
+<section class="slide" data-seg="Concept" data-at="24">
   <h2>Testing pages with data</h2>
   <table class="dbt small">
     <tr><th>The page asks for</th><th>Stub</th></tr>
@@ -157,7 +157,7 @@
   <aside class="notes"><p>An unstubbed request goes to the real API: slow, and it changes.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="30">
+<section class="slide" data-seg="Concept" data-at="26">
   <h2>Preview: loaders (later, with the back end)</h2>
   <table class="dbt small">
     <tr><th>Today</th><th>With a loader</th></tr>
@@ -168,7 +168,7 @@
   <aside class="notes"><p>Keep it to one slide: the full-stack unit uses loaders + throw redirect() for protected routes.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: Fix it" data-at="31">
+<section class="slide activity" data-seg="Activity: Fix it" data-at="28">
   <h2>Activity: Fix it (router hooks)</h2>
   <div class="countdown" data-sec="360"></div>
   <ol class="steps">
@@ -181,7 +181,7 @@
   <aside class="notes"><p>6 minutes.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="37">
+<section class="slide" data-seg="Wrap up" data-at="35">
   <h2>Mental model</h2>
   <ul>
     <li><code>:id</code> in the route, <code>useParams()</code> in the page</li>
@@ -193,7 +193,7 @@
   <aside class="notes"><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="37">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Rick and Morty III</b></li>

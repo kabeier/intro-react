@@ -249,7 +249,7 @@
       <p>Lint, build and Cypress on every push and pull request; deploy only after green. Real red and green runs.</p>
       <a class="slides" href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
       <ol>
-        <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: read the red ✗</b><span>Real failed runs from the instructor's demo repo. (Slide 11.)</span></a></li>
+        <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: make and read your own red ✗</b><span>Break a test on a branch of your deployed repo, open a pull request, read the failure. (Slide 11.)</span></a></li>
         <li><a href="explore.html?lesson=ci-actions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Both workflow files, every line explained.</span></a></li>
       </ol>
     </section>
@@ -283,6 +283,7 @@ npm run dev</code></pre><button type="button" class="copy">Copy</button></div>
     <ol class="steps"><li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team project and add a Cypress test suite that will be capable of rendering the Home page and ensure it exists."</li></ol>
     <h4>Part II</h4>
     <ol class="steps"><li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team (or To-Do List React) project and add different spec files, each one dedicated to testing an independent feature of your project."</li></ol>
+    <p>"Note: You've only built React + Requests projects so far, so keep these tests focused on what actually exists: rendering the page and interacting with forms/requests. As you build Hooks, Components, and Router into future projects, come back and extend these same test suites, the same way we'll be extending our PokemonCard tests in lecture." </p>
     <h4>Setting up Cypress in your project</h4>
     <div class="cmdwrap"><pre class="cmd"><code>npm install cypress --save-dev
 npm run cy:open</code></pre><button type="button" class="copy">Copy</button></div>

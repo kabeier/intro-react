@@ -102,7 +102,8 @@ Before class: as unit 3. From now on every feature starts with a failing test: p
 | 10 | 18 | **N ×5**, ▶ all green | generateCard is gone; tests say users can't tell |
 | 11 | 24 | — | new arrays; spread (not "deconstruction") |
 | 12 | 25 | **N ×3**, ▶ red then green | Remove with filter |
-| 13–14 | 28–29 | timer | Fix It (useState) 1–6 |
+| 13 | 28 | — | mental model |
+| 14 | 29 | timer | Fix It (useState) 1–6 |
 | 15 | 37 | — | homework I |
 
 ## Lecture 2 · useEffect
@@ -113,7 +114,7 @@ Before class: as unit 3. From now on every feature starts with a failing test: p
 | 4–5 | 7–9 | **N** | dependency array; track pokemonList |
 | 6 | 11 | — | mount, update, unmount |
 | 7 | 13 | **N** 1, ▶ (red); **N** 2, ▶ (green); click "Click me!" | a visible side effect |
-| 8–9 | 17–18 | **N** 1–5, ▶ (red); **N** 6–7, ▶ (green) | planned change: tests first |
+| 8–9 | 17–18 | **N** 1–4, ▶ (red); **N** 5–6, ▶ (green) | planned change: tests first |
 | 10–11 | 24–26 | — | the ignore flag; when not to use an effect |
 | 12 | 28 | timer | Fix It (useEffect) 1–6 |
 | 13–14 | 35–37 | — | mental model; homework II |
@@ -226,15 +227,15 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 |---|---|---|---|
 | 2 | 1 | — | :id and useParams (strings) |
 | 3 | 3 | **N ×3**, red → green | route with a parameter |
-| 4 | 7 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
-| 5 | 13 | **N ×5**, red → green | unknown Pokemon: catch + message |
-| 6 | 16 | **N ×3**, red → green | Details link (BsButton as={Link}) |
-| 7 | 19 | — | Link or navigate |
-| 8 | 21 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
-| 9 | 26 | **N ×4**, ▶ 30 green | Login: navigate after the check |
-| 10–11 | 30 | — | stubbing by id; loaders preview (later, with protected routes) |
-| 12 | 31 | timer | Fix It (router hooks) 1–6 |
-| 13–14 | 37–38 | — | mental model; homework I |
+| 4 | 6 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
+| 5 | 10 | **N ×5**, red → green | unknown Pokemon: catch + message |
+| 6 | 13 | **N ×3**, red → green | Details link (BsButton as={Link}) |
+| 7 | 15 | — | Link or navigate |
+| 8 | 16 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
+| 9 | 20 | **N ×4**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
+| 10–11 | 24–26 | — | stubbing by id; loaders preview (later, with protected routes) |
+| 12 | 28 | timer | Fix It (router hooks) 1–6 |
+| 13–14 | 35–37 | — | mental model; homework I |
 
 ## Lecture 2 · useOutletContext
 | # | Min | Do | Say |
@@ -272,8 +273,8 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 5 | 11 | **N** | also test the built site |
 | 6 | 14 | show Settings → Rules | block the merge |
 | 7 | 16 | **N** | deploy.yml: workflow_run, if:, head_sha |
-| 8–10 | 22–25 | click the runs | the real chain; secrets; reading a failed run |
-| 11 | 26 | timer (7 min) | read the red ✗ |
+| 8–10 | 22–25 | click the runs (summaries; logs expired) | the real chain; secrets; reading a failed run |
+| 11 | 26 | timer (7 min); have a red PR of your own ready | students make and read their own red ✗ (old demo logs have expired) |
 | 12–14 | 34–38 | — | pipeline; mental model; homework II |
 
 Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected.

@@ -52,11 +52,11 @@
       why: 'Each component in the chain must pass the prop on: PokeContainer → <PokeCard … rmData={rmData} />.',
     },
     {
-      id: 'id', title: 'The page looks right, two tests fail', base: 'f7', tabs: [CONTAINER, 'cypress/e2e/home.cy.js', 'cypress/e2e/pokemon.cy.js'],
-      symptom: 'Everything works in the browser, but "should render the Pikachu card on load" and "does nothing on an empty search" fail: Expected to find element: `#poke-container`.',
+      id: 'id', title: 'The page looks right, a test fails', base: 'f7', tabs: [CONTAINER, 'cypress/e2e/home.cy.js', 'cypress/e2e/pokemon.cy.js'],
+      symptom: 'Everything works in the browser, but "should render the Pikachu card on load" fails: Expected to find element: `#poke-container`.',
       breaks: [{ file: CONTAINER, mode: 'replace', find: '<div id="poke-container">', code: '<div>' }],
       checks: [allPass],
-      hint: 'What do those two tests look for? Is it still on the page after the move?',
+      hint: 'What does that test look for? Is it still on the page after the move?',
       why: 'The tests find the cards through #poke-container. A refactor must keep what the tests (and users) rely on: <div id="poke-container">.',
     },
     {

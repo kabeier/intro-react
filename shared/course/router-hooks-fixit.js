@@ -24,7 +24,7 @@
     },
     {
       id: 'deps', title: 'Details never change from the first Pokemon', base: 'f6', tabs: [DETAILS],
-      symptom: 'Open Pikachu\'s details, then go straight to /pokemon/1 (no reload): still Pikachu. The console warns nothing.',
+      symptom: 'Open Pikachu\'s details, then change only the id in the URL (/pokemon/1) without a reload: still Pikachu. No link does this, so you won\'t see it by clicking: read the dependency array.',
       breaks: [{ file: DETAILS, mode: 'replace', find: '  }, [id])', code: '  }, [])' }],
       checks: [allPass, { name: 'the page follows the id in the URL', run: async (doc, win, ctx) => {
         await ctx.wait(800)
@@ -43,7 +43,7 @@
     },
     {
       id: 'loading', title: '"Cannot read properties of null (reading \'sprites\')"', base: 'f6', tabs: [DETAILS],
-      symptom: 'Opening a details page: blank. The console: TypeError: Cannot read properties of null (reading \'sprites\').',
+      symptom: 'Opening a details page shows "Something went wrong: Cannot read properties of null (reading \'sprites\')" inside the layout.',
       breaks: [{ file: DETAILS, mode: 'replace', find: '  if (!pokemon) return <Spinner animation="border" role="status" />\n', code: '' }],
       checks: [allPass],
       hint: 'What is pokemon on the very first render, before the answer arrives?',
@@ -74,8 +74,8 @@
       why: 'Check before navigating: if (!username.trim()) return.',
     },
     {
-      id: 'backcall', title: 'Bonus: "You should call navigate() in a React.useEffect()"', base: 'f6', tabs: [BACK],
-      symptom: 'The Back button does nothing, and the console warns: You should call navigate() in a React.useEffect(), not when your component is first rendered. Then: Expected `onClick` listener to be a function.',
+      id: 'backcall', title: 'Bonus: every link bounces back to Home', base: 'f6', tabs: [BACK],
+      symptom: 'Click About (or any link): you bounce straight back to Home. The console: You should call navigate() in a React.useEffect(), not when your component is first rendered. And: Expected `onClick` listener to be a function.',
       breaks: [{ file: BACK, mode: 'replace', find: 'onClick={goBack}', code: 'onClick={goBack()}' }],
       checks: [allPass],
       hint: 'Is goBack called on click, or while the button is drawn?',

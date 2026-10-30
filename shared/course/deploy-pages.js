@@ -40,7 +40,7 @@ Course.register({
         },
         {
           id: 'f2s3', file: 'cypress/e2e-prod/smoke.cy.js', mode: 'set',
-          code: "// Runs against the BUILT app (npm run build && npm run preview), not the dev server:\n// npx cypress run --config baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js\nbeforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })\n  cy.intercept('GET', '**/api/v2/pokemon/25', { fixture: 'pikachu.json' })\n})\n\nit('opens a page from its address and survives a refresh', () => {\n  cy.visit('/#/about')\n  cy.contains('h2', 'About This App')\n  cy.reload()\n  cy.contains('h2', 'About This App')\n})\n\nit('opens a Pokemon from its address', () => {\n  cy.visit('/#/pokemon/25')\n  cy.contains('h2', 'pikachu')\n})",
+          code: "// Runs against the BUILT app (npm run build && npm run preview), not the dev server:\n// npx cypress run --config \"baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js\"\nbeforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })\n  cy.intercept('GET', '**/api/v2/pokemon/25', { fixture: 'pikachu.json' })\n})\n\nit('opens a page from its address and survives a refresh', () => {\n  cy.visit('/#/about')\n  cy.contains('h2', 'About This App')\n  cy.reload()\n  cy.contains('h2', 'About This App')\n})\n\nit('opens a Pokemon from its address', () => {\n  cy.visit('/#/pokemon/25')\n  cy.contains('h2', 'pikachu')\n})",
           say: 'A small test for the built site: open a page by its address, refresh. It lives outside cypress/e2e, so the normal run skips it.',
         },
       ],

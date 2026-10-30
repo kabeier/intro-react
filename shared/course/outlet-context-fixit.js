@@ -45,15 +45,15 @@
     },
     {
       id: 'names', title: '"setPokemonList is not a function"', base: 'f3', tabs: [APP, SEARCH],
-      symptom: 'Search works until the answer arrives; then the console: TypeError: setPokemonList is not a function.',
+      symptom: 'Search Bulbasaur: an alert says "Pokemon Does not Exist", and the console: Request failed: setPokemonList is not a function.',
       breaks: [{ file: APP, mode: 'replace', find: '<Outlet context={{ pokemonList, setPokemonList, count, setCount }} />', code: '<Outlet context={{ pokemonList, setList: setPokemonList, count, setCount }} />' }],
       checks: [allPass],
       hint: 'The context is an object. Do the key names match what PokeSearch takes out?',
       why: 'PokeSearch destructures setPokemonList, so the context needs that exact key.',
     },
     {
-      id: 'appcontext', title: 'Blank page: useOutletContext in App', base: 'f3', tabs: [APP],
-      symptom: 'Blank page. The console: TypeError: Cannot destructure property \'pokemonList\' of \'useOutletContext(...)\' as it is null. The above error occurred in the <App> component.',
+      id: 'appcontext', title: '"Unexpected Application Error!"', base: 'f3', tabs: [APP],
+      symptom: 'Instead of the app, React Router\'s own screen: "Unexpected Application Error!" Cannot destructure property \'pokemonList\' of \'useOutletContext(...)\' as it is null.',
       breaks: [
         { file: APP, mode: 'replace', find: '  const [pokemonList, setPokemonList] = useState([])', code: '  const { pokemonList, setPokemonList } = useOutletContext()' },
         { file: APP, mode: 'replace', find: "import { Outlet } from 'react-router'", code: "import { Outlet, useOutletContext } from 'react-router'" },

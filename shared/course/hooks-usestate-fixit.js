@@ -57,7 +57,7 @@
     },
     {
       id: 'mapbraces', title: 'Bonus: no cards, no error', base: 'f5', tabs,
-      symptom: 'Searches work (the list grows in the console) but no card is drawn and there is no error.',
+      symptom: 'Searches work (no error), but no card is drawn.',
       breaks: [
         { file: APP, mode: 'replace', find: '        {pokemonList.map((pokemon) => (\n', code: '        {pokemonList.map((pokemon) => {\n' },
         { file: APP, mode: 'replace', find: '        ))}\n', code: '        })}\n' },
