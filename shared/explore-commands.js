@@ -4,7 +4,7 @@
 window.renderCommands = (mainEl, storyEl, esc) => {
   const C = Course.commands
   const TRACK = { both: 'Docker or not', docker: 'With Docker', laptop: 'Without Docker' }
-  let track = 'all'
+  let track = 'all', picked = null
   try { track = localStorage.getItem('ex-cmd-track') || 'all' } catch {}
 
   // The command split into its parts, in order; text between parts (spaces) stays plain.
@@ -22,10 +22,12 @@ window.renderCommands = (mainEl, storyEl, esc) => {
     return out.join('')
   }
   const all = C.groups.flatMap((g) => g.commands.map((c) => ({ g, c })))
-  const shown = (c) => track === 'all' || c.track === 'both' || c.track === track
+  const shown = (c) => track === 'all' || !c.track || c.track === 'both' || c.track === track
+  const stepText = (s) => (typeof s === 'string' ? s : s.text)
 
   function render() {
     let n = 0
+    const count = all.filter((x) => shown(x.c)).length
     mainEl.innerHTML = `
       <section class="ex-card">
         <p class="ex-kicker">React section · units 2–9</p>
@@ -34,9 +36,10 @@ window.renderCommands = (mainEl, storyEl, esc) => {
         <div class="ex-tools ex-track" role="group" aria-label="Show commands for">
           ${[['all', 'All'], ['docker', 'With Docker'], ['laptop', 'Without Docker']].map(([k, t]) => `<button type="button" data-track="${k}" class="${track === k ? 'on' : ''}" aria-pressed="${track === k}">${t}</button>`).join('')}
         </div>
-        <div class="ex-flows">${C.flows.map((f) => `<div class="ex-flow"><h3>${esc(f.title)}</h3><ol>${f.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol></div>`).join('')}</div>
+        <p class="ex-count" aria-live="polite">${track === 'all' ? `Showing all ${all.length} commands` : `Showing ${count} of ${all.length} commands: the ones you use ${track === 'docker' ? 'with Docker' : 'without Docker'}`}</p>
+        <div class="ex-flows">${C.flows.filter(shown).map((f) => `<div class="ex-flow"><h3>${esc(f.title)}</h3><ol>${f.steps.filter((s) => typeof s === 'string' || shown(s)).map((s) => `<li>${esc(stepText(s))}</li>`).join('')}</ol></div>`).join('')}</div>
       </section>
-      ${C.groups.map((g) => {
+      ${C.groups.filter((g) => g.commands.some(shown)).map((g) => {
         const cs = g.commands.filter(shown)
         return `<section class="ex-card ex-cmd-group">
           <p class="ex-kicker">${esc(g.when)}</p>
@@ -63,7 +66,11 @@ window.renderCommands = (mainEl, storyEl, esc) => {
     mainEl.querySelectorAll('.ex-track button').forEach((b) => (b.onclick = () => {
       track = b.dataset.track
       try { localStorage.setItem('ex-cmd-track', track) } catch {}
-      render(); hint()
+      render()
+      // The yellow box only changes if the command it explains was hidden.
+      const again = picked && mainEl.querySelector(`.ex-cmd[data-cmd="${picked.cmd}"] .ex-part[data-part="${picked.part}"]`)
+      if (again) again.classList.add('picked')
+      else if (picked) { picked = null; hint() }
     }))
     mainEl.querySelectorAll('.ex-part').forEach((b) => (b.onclick = () => pick(b)))
     mainEl.querySelectorAll('.ex-copy-cmd').forEach((b) => (b.onclick = () => {
@@ -79,7 +86,8 @@ window.renderCommands = (mainEl, storyEl, esc) => {
   function pick(b) {
     mainEl.querySelectorAll('.ex-part.picked').forEach((x) => x.classList.remove('picked'))
     b.classList.add('picked')
-    const { g, c } = all[b.closest('.ex-cmd').dataset.cmd]
+    picked = { cmd: b.closest('.ex-cmd').dataset.cmd, part: b.dataset.part }
+    const { g, c } = all[picked.cmd]
     const [p, means, change] = c.parts[b.dataset.part]
     storyEl.innerHTML = `<p class="ex-line-shown"><code>${esc(c.cmd)}</code></p>
       <p class="ex-boiler">${esc(g.when)} · ${TRACK[c.track]}</p>
@@ -90,5 +98,6 @@ window.renderCommands = (mainEl, storyEl, esc) => {
   }
 
   document.title = 'Terminal commands · Code Explorer'
+  document.querySelector('.ex-lede').innerHTML = 'Pick your setup. Click any <b>part</b> of a command to see what it means.'
   render(); hint()
 }

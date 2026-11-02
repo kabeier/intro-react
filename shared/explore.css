@@ -116,3 +116,7 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .ex-cmd .ex-api td:first-child { width: 30%; }
 .ex-repo-link { background: #fff; }
 .ex-tools a.ex-get { font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 8px 14px; border-radius: 4px; border: 2px solid var(--ink); background: var(--sticky); color: var(--ink); text-decoration: none; }
+.ex-tree-box { margin: 0 0 12px; border: 2px solid var(--ink); border-radius: 4px; }
+.ex-tree-box summary { padding: 7px 10px; font-weight: 700; cursor: pointer; }
+.ex-tree { padding: 0 0 6px; max-height: 420px; overflow: auto; }
+.ex-count { font-weight: 700; margin: 0 0 12px; }

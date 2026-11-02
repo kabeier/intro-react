@@ -11,6 +11,14 @@
   const POPOUT = new URL('popout.html', document.currentScript.src).href
   const channel = new BroadcastChannel('livepad')
   let splitOpen = false
+  // The file tree stays open or closed for every editor on the page, and after a reload.
+  const treeSaved = () => { try { return localStorage.getItem('livepad-tree') } catch { return null } }
+  let treeOpen = treeSaved() ? treeSaved() === 'on' : innerWidth > 700
+  function setTree(on) {
+    treeOpen = on
+    try { localStorage.setItem('livepad-tree', on ? 'on' : 'off') } catch {}
+    pads.forEach((p) => p.showTree())
+  }
   let popWin = null, popOpen = false, lastSent = 0
   let opening = false // this window just opened the pop-out: the new window has the focus, so answer its hello
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -47,16 +55,34 @@
   // ---------- Two editor kinds with one small API ----------
   function monacoEditor(m, host, pad) {
     const models = {}
+    // Typing inside a window moves the lines below it, so the windows move too.
+    const shift = (w, c) => {
+      const delta = c.text.split('\n').length - 1 - (c.range.endLineNumber - c.range.startLineNumber)
+      if (w[0] > c.range.endLineNumber) { w[0] += delta; w[1] += delta } else if (w[1] >= c.range.startLineNumber) w[1] += delta
+    }
+    const watch = (f) => models[f].onDidChangeContent((e) => {
+      if (pad.applying) return
+      for (const c of e.changes) (pad.windows && pad.windows[f] || []).forEach((w) => shift(w, c))
+      pad.edited(f, models[f].getValue())
+    })
+    const fold = () => {
+      if (!ed.getModel()) return // a step can work on a file with no tab
+      const areas = [], last = ed.getModel().getLineCount(), wins = pad.snippet && pad.windows && pad.windows[pad.tab]
+      let from = 1
+      for (const [a, b] of wins || []) { if (a > from) areas.push(new m.Range(from, 1, a - 1, 1)); from = b + 1 }
+      if (wins && from <= last) areas.push(new m.Range(from, 1, last, 1))
+      ed.setHiddenAreas(areas)
+    }
     for (const f of pad.tabs) {
       models[f] = m.editor.createModel(pad.files[f] || '', langOf(f))
-      models[f].onDidChangeContent(() => { if (!pad.applying) pad.edited(f, models[f].getValue()) })
+      watch(f)
     }
     const ed = m.editor.create(host, {
       model: models[pad.tab], theme: 'cp-dark', automaticLayout: true, minimap: { enabled: false }, scrollBeyondLastLine: false,
       fontFamily: "'JetBrains Mono', ui-monospace, monospace", fontSize: pad.fontSize, lineHeight: Math.round(pad.fontSize * 1.45),
       tabSize: 2, insertSpaces: true, detectIndentation: false, padding: { top: 6, bottom: 6 }, overviewRulerLanes: 0,
       scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10, alwaysConsumeMouseWheel: false },
-      readOnly: !pad.editable, stickyScroll: { enabled: false }, renderWhitespace: 'none',
+      readOnly: !pad.editable, stickyScroll: { enabled: false }, renderWhitespace: 'none', wordWrap: pad.wrap ? 'on' : 'off',
       // Type-what-you-see: no auto-closing, so typing from the notes comes out exactly as written
       autoIndent: 'none', autoClosingBrackets: 'never', autoClosingQuotes: 'never', autoClosingDelete: 'never',
       autoClosingOvertype: 'never', autoSurround: 'never', formatOnType: false, formatOnPaste: false,
@@ -67,7 +93,13 @@
     return {
       get value() { return models[pad.tab] ? models[pad.tab].getValue() : '' },
       set(file, text) { if (models[file].getValue() !== text) models[file].setValue(text) },
-      show(file) { ed.setModel(models[file]) },
+      add(file) {
+        models[file] = m.editor.createModel(pad.files[file] || '', langOf(file))
+        watch(file)
+      },
+      // Show only pad.windows for this file: { 'src/App.jsx': [[first, last], …] }, 1-based lines.
+      fold,
+      show(file) { ed.setModel(models[file]); fold() },
       flash(lines) {
         if (deco) deco.clear()
         deco = ed.createDecorationsCollection(lines.map((l) => ({ range: new m.Range(l, 1, l, 1), options: { isWholeLine: true, className: 'lp-new-m' } })))
@@ -116,16 +148,20 @@
       el, lesson: opts.lesson || null, steps: opts.steps || [], idx: 0, start: opts.start ?? null,
       files: { ...opts.files }, assets: opts.assets || {}, tabs: opts.tabs, tab: opts.tabs[0], editable: opts.editable !== false,
       fontSize: opts.fontSize || 18, onChange: opts.onChange || null, typeable: !!opts.typeable,
+      windows: opts.windows || null, snippet: !!opts.windows, wrap: !!opts.wrap, tree: opts.tree !== false,
       busy: false, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
     }
     el.classList.add('livepad')
-    el.innerHTML = `<div class="lp-bar"><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
+    el.innerHTML = `<div class="lp-bar"><button type="button" class="lp-btn lp-files" title="Show or hide the project files (E)">📁 Files</button><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
       `<span class="lp-status"></span><button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
-      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div>` +
+      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-work"><div class="lp-tree"></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
     const statusEl = el.querySelector('.lp-status')
     const host = el.querySelector('.lp-editor')
+    const treeEl = el.querySelector('.lp-tree')
+    const closedDirs = new Set()
+    let startNames = new Set(Object.keys(opts.files))
     pad.iframe = el.querySelector('iframe')
 
     pad.setStatus = (s, bad) => { pad.status = s; statusEl.textContent = s; statusEl.classList.toggle('bad', !!bad) }
@@ -198,11 +234,44 @@
       if (run) run.hidden = !(window.CyRunner && specsOf().length)
       el.querySelectorAll('.lp-tab').forEach((b) => (b.hidden = !(b.dataset.file in pad.files)))
       if (!(pad.tab in pad.files)) { const first = pad.tabs.find((f) => f in pad.files); if (first) pad.showTab(first) }
+      pad.drawTree()
     }
+    pad.drawTree = () => {
+      if (!window.FileTree) return
+      const files = Object.keys(pad.files)
+      FileTree.draw(treeEl, {
+        files, images: Object.keys(pad.assets).filter((f) => !files.includes(f)), active: pad.tab, closed: closedDirs,
+        fresh: new Set(files.filter((f) => !startNames.has(f))), onPick: pad.openFile,
+      })
+    }
+    pad.showTree = () => {
+      const on = !!window.FileTree && pad.tree && treeOpen
+      el.classList.toggle('no-tree', !on)
+      el.querySelector('.lp-files').classList.toggle('on', on)
+      el.querySelector('.lp-files').hidden = !window.FileTree || !pad.tree
+    }
+    // Snippet view (Fix It): only pad.windows, or everything.
+    pad.setSnippet = (on, windows) => {
+      pad.snippet = on
+      if (windows) pad.windows = windows
+      if (pad.editor && pad.editor.fold) pad.editor.fold()
+    }
+    // The tree lists every file, so a file without a tab gets one when it's opened.
+    pad.openFile = (f) => {
+      if (!pad.tabs.includes(f)) {
+        pad.tabs.push(f)
+        if (pad.editor && pad.editor.add) pad.editor.add(f)
+        el.querySelector('.lp-tabs').insertAdjacentHTML('beforeend', `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`)
+        tabClick(el.querySelector('.lp-tabs').lastElementChild)
+      }
+      pad.showTab(f)
+    }
+    const tabClick = (b) => (b.onclick = () => { b.blur(); pad.showTab(b.dataset.file) })
     pad.showTab = (f) => {
       pad.tab = f
       el.querySelectorAll('.lp-tab').forEach((b) => b.classList.toggle('on', b.dataset.file === f))
       if (pad.editor) pad.editor.show(f)
+      pad.drawTree()
     }
     pad.edited = (f, text) => {
       pad.files[f] = text
@@ -217,6 +286,7 @@
     }
     pad.setFiles = (files) => {
       pad.files = { ...files }
+      startNames = new Set(Object.keys(files))
       pad.syncTabs()
       for (const f of pad.tabs) pad.setFile(f, pad.files[f] || '')
       if (pad.editor) pad.editor.show(pad.tab)
@@ -301,11 +371,13 @@
       pad.showLater()
     }
 
-    el.querySelectorAll('.lp-tab').forEach((b) => (b.onclick = () => { b.blur(); pad.showTab(b.dataset.file) }))
+    el.querySelectorAll('.lp-tab').forEach(tabClick)
+    el.querySelector('.lp-files').onclick = (e) => { e.currentTarget.blur(); setTree(!treeOpen) }
     el.querySelector('.lp-app').onclick = (e) => { e.currentTarget.blur(); toggleSplit() }
     el.querySelector('.lp-pop').onclick = (e) => { e.currentTarget.blur(); popOut() }
     el.querySelector('.lp-run').onclick = (e) => { e.currentTarget.blur(); pad.runTests() }
     paint(pad)
+    pad.showTree()
     pad.showTab(pad.tab)
     pad.syncTabs()
     pad.refresh()
@@ -391,6 +463,7 @@
     if (e.key === 'n' && !e.shiftKey && pad.lesson) { e.preventDefault(); pad.next() }
     else if (e.key === 'N' && e.shiftKey && pad.lesson) { e.preventDefault(); pad.reset() }
     else if (e.key === 'a' || e.key === 'A') { e.preventDefault(); toggleSplit() }
+    else if (e.key === 'e' || e.key === 'E') { e.preventDefault(); setTree(!treeOpen) }
   })
 
   // A slide change sends the new slide's app to the pop-out.
@@ -424,7 +497,7 @@
 
   function mount(el, opts) {
     const tabs = opts.tabs || Course.tabOrder(Object.keys(opts.files))
-    const pad = createPad(el, { files: opts.files, assets: opts.assets, tabs, editable: opts.editable, typeable: opts.editable !== false, onChange: opts.onChange, fontSize: opts.fontSize || 16 })
+    const pad = createPad(el, { files: opts.files, assets: opts.assets, tabs, editable: opts.editable, typeable: opts.editable !== false, onChange: opts.onChange, fontSize: opts.fontSize || 16, windows: opts.windows, wrap: opts.wrap, tree: opts.tree })
     return { setFiles: pad.setFiles, getFiles: () => ({ ...pad.files }), preview: pad.iframe, pad }
   }
 

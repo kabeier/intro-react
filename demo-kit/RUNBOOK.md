@@ -289,3 +289,9 @@ Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Li
 - **Repo:** https://github.com/kabeier/intro-react-code. One branch per lecture, each holding the **finished** code. Start of a lecture = the branch of the lecture before it.
 - **Student page:** `code-repo/`, linked from the Code Explorer and the landing page.
 - **After changing a lesson:** run `node tools/build-code-repo.mjs`, then `node tools/verify-code-repo.mjs`. The build remakes the branches, so push them with `git push --force --all origin` from `../intro-react-code`.
+
+## File tree and Fix It
+
+- **File tree:** every editor in the slides and the Code Explorer shows the project's folders and files. Click a file to open it, click a folder to fold it.
+- **Slides:** press **E** or the **Files** button to hide or show it (**F** is still fullscreen). It stays that way on every slide. New files show green.
+- **Fix It:** shows only the lines around the bug, with the live app beside it, all on one screen. **Show all the code** brings back the whole project if a student asks.

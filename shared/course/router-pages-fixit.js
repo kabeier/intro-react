@@ -15,7 +15,7 @@
       why: 'The path must match the URL: path: \'about\'. Anything else falls through to *.',
     },
     {
-      id: 'aboutfile', title: 'Blank page: Failed to resolve import "./pages/About.jsx"', base: 'f5', tabs: [ROUTER],
+      id: 'aboutfile', title: 'Blank page: Failed to resolve import "./pages/About.jsx"', base: 'f5', tabs: [ROUTER], see: [['src/pages/AboutPage.jsx']],
       symptom: 'Blank page. The console: [plugin:vite:import-analysis] Failed to resolve import "./pages/About.jsx" from "src/router.jsx". Does the file exist?',
       breaks: [{ file: ROUTER, mode: 'replace', find: "import AboutPage from './pages/AboutPage.jsx'", code: "import AboutPage from './pages/About.jsx'" }],
       checks: [allPass],

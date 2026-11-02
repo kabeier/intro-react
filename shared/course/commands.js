@@ -1,22 +1,23 @@
 // Every terminal command of the React section, in the order the course uses them.
 // Shown by the Code Explorer (explore.html?view=commands).
 //   track: 'both' (same with or without Docker), 'docker' (only with Docker), 'laptop' (only without Docker)
+//   flows: a flow or a { track, text } step with a track only shows on that tab
 //   parts: [text, what it means, can you change it (and what happens)]
 // The Docker facts were checked with real runs (Docker 29, node:24): Ctrl+C without -it leaves the
 // container running; docker exec npm install works; with Cypress in package.json the image is ~2.4 GB.
 Course.commands = {
   flows: [
     {
-      title: 'A normal day, with Docker',
+      title: 'A normal day, with Docker', track: 'docker',
       steps: ['cd pokemon-app', 'bash run_container.sh', 'Open http://localhost:5173', 'Second terminal: npm run cy:open (from unit 3)', 'Code; the page reloads by itself', 'Done: docker stop react-container'],
     },
     {
-      title: 'A normal day, without Docker',
+      title: 'A normal day, without Docker', track: 'laptop',
       steps: ['cd pokemon-app', 'npm run dev', 'Open http://localhost:5173', 'Second terminal: npm run cy:open (from unit 3)', 'Code; the page reloads by itself', 'Done: Ctrl+C in the npm run dev terminal'],
     },
     {
       title: 'After you install a package',
-      steps: ['npm install <package> (on your laptop, in the project folder)', 'With Docker: docker stop react-container, then bash run_container.sh (the build installs it in the image)', 'Or, without restarting: docker exec react-container npm install', 'Without Docker: nothing else; if the import still fails, stop npm run dev and start it again'],
+      steps: ['npm install <package> (on your laptop, in the project folder)', { track: 'docker', text: 'With Docker: docker stop react-container, then bash run_container.sh (the build installs it in the image)' }, { track: 'docker', text: 'Or, without restarting: docker exec react-container npm install' }, { track: 'laptop', text: 'Without Docker: nothing else; if the import still fails, stop npm run dev and start it again' }],
     },
   ],
   groups: [

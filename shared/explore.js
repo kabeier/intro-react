@@ -11,6 +11,8 @@
   let showBefore = false
   const assets = lesson ? Course.assetsOf(lesson) : {}
   let tab = lesson ? Course.tabOrder(Object.keys(lesson.files))[0] : null
+  let treeOpen = innerWidth > 700
+  const closedDirs = new Set()
   let picked = null
   const channel = new BroadcastChannel('livepad')
   let popWin = null, opening = false
@@ -102,6 +104,7 @@
       </section>
       <section class="ex-card">
         <h3>All the code after this feature</h3>
+        ${window.FileTree ? `<details class="ex-tree-box"${treeOpen ? ' open' : ''}><summary>📁 Project files</summary><div class="ex-tree"></div></details>` : ''}
         <p class="muted">Green lines were added in this feature. Click any line.</p>
         <div class="ex-tabs">${Course.tabOrder(Object.keys(files)).map((n) => `<button type="button" class="ex-tab${n === tab ? ' on' : ''}" data-file="${esc(n)}">${esc(n)}</button>`).join('')}
           <button type="button" class="ex-copy">Copy file</button></div>
@@ -110,6 +113,14 @@
           return `<div class="ex-line${o && mine.has(o.stepId) ? ' ex-new' : ''}${picked === n + 1 ? ' picked' : ''}" data-line="${n + 1}"><span class="ln">${n + 1}</span><span class="src">${paint(l, tab) || ' '}</span></div>`
         }).join('')}</div>
       </section>`
+    if (window.FileTree) {
+      const names = Object.keys(files), before = filesBefore(at)
+      FileTree.draw(mainEl.querySelector('.ex-tree'), {
+        files: names, images: Object.keys(assets).filter((n) => !names.includes(n)), active: tab, closed: closedDirs,
+        fresh: new Set(names.filter((n) => !(n in before))), onPick: (n) => { tab = n; picked = null; renderMain(); storyHint() },
+      })
+      mainEl.querySelector('.ex-tree-box').ontoggle = (e) => { treeOpen = e.target.open }
+    }
     const frame = mainEl.querySelector('.ex-preview iframe')
     frame.srcdoc = Course.buildDoc(showBefore ? filesBefore(at) : files, assets)
     send()

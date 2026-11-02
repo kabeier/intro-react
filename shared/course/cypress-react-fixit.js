@@ -14,7 +14,7 @@
       why: 'Cypress starts each test on an empty page. cy.visit(\'/\') in beforeEach opens the app before every test.',
     },
     {
-      id: 'selector', title: 'The empty-container test cannot find the container', base: 'f3', tabs,
+      id: 'selector', title: 'The empty-container test cannot find the container', base: 'f3', tabs, see: [['src/App.jsx', 'poke-container']],
       symptom: 'starts with an empty poke container fails: Expected to find element: `#pokemon-container`, but never found it.',
       breaks: [{ file: HOME, mode: 'replace', find: "cy.get('#poke-container')", code: "cy.get('#pokemon-container')" }],
       checks: [allPass(2)],

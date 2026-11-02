@@ -62,3 +62,9 @@ textarea.lp-fallback { width: 100%; border: 0; resize: none; outline: none; disp
 .lp-later { padding: 6px 12px; font: 600 15px 'Atkinson Hyperlegible', system-ui, sans-serif; border-bottom: 1px solid #3c3c3c; }
 .lp-later.warn { background: #fff4d6; color: #5c3d00; }
 .lp-later.fixed { background: #dcf5e4; color: #14532d; }
+/* The project's files, left of the editor (shared/filetree.js). */
+.lp-work { flex: 1; display: flex; min-height: 0; }
+.lp-work .lp-body { flex: 1; min-width: 0; }
+.lp-tree { flex: none; width: 250px; overflow: auto; padding: 8px 0; background: #252526; border-right: 1px solid #3c3c3c; }
+.livepad.no-tree .lp-tree { display: none; }
+@media (max-width: 700px) { .lp-tree { width: 170px; } }

@@ -50,7 +50,7 @@
       why: 'The app clears the box (event.target.reset()), so the value must be the empty string.',
     },
     {
-      id: 'fixture', title: '"A fixture file could not be found"', base: 'f4', tabs,
+      id: 'fixture', title: '"A fixture file could not be found"', base: 'f4', tabs, see: [['cypress/fixtures/bulbasaur.json'], ['cypress/fixtures/charizard.json']],
       symptom: 'Every test fails before it starts: A fixture file could not be found … cypress/fixtures/charzard.json.',
       breaks: [{ file: SPEC, mode: 'replace', find: "{ fixture: 'charizard.json' }", code: "{ fixture: 'charzard.json' }" }],
       checks: [allPass(8)],

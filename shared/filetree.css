@@ -1,0 +1,11 @@
+/* File tree (shared/filetree.js): light on the Code Explorer, dark inside the slide editor. */
+.ft { --ft-ink: #1b2230; --ft-dim: #6b7486; --ft-hover: #e8ecf3; --ft-on: #ffe76a; --ft-on-ink: #1b2230; --ft-new: #13795b; font: 500 16px/1.3 'JetBrains Mono', ui-monospace, monospace; color: var(--ft-ink); }
+.ft-row { display: block; width: 100%; padding: 4px 8px 4px calc(8px + var(--d) * 14px); border: 0; background: none; color: inherit; font: inherit; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+button.ft-row { cursor: pointer; }
+button.ft-row:hover { background: var(--ft-hover); }
+.ft-root { font-weight: 700; text-transform: uppercase; letter-spacing: .03em; font-size: 14px; }
+.ft-dir { font-weight: 700; }
+.ft-file.on { background: var(--ft-on); color: var(--ft-on-ink); }
+.ft-file.new:not(.on) { color: var(--ft-new); font-weight: 700; }
+.ft-off { color: var(--ft-dim); font-style: italic; }
+.livepad .ft { --ft-ink: #d4d4d4; --ft-dim: #8a8a8a; --ft-hover: #333; --ft-on: #094771; --ft-on-ink: #fff; --ft-new: #7ec97e; }

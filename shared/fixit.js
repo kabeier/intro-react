@@ -19,6 +19,24 @@
   }
   const brokenFiles = (p) => apply(Course.checkpoint(lesson, p.base), p.breaks)
   const solutionFiles = (p) => apply(Course.checkpoint(lesson, p.base), p.solve)
+  // Only the lines around the bug are shown, so it's quick to find on a shared screen.
+  const CONTEXT = 3
+  function snippets(p) {
+    const broken = brokenFiles(p), sol = solutionFiles(p), out = {}
+    for (const f of Course.tabOrder(Object.keys(broken)).filter((n) => broken[n] !== (sol[n] ?? ''))) {
+      const count = broken[f].split('\n').length, wins = out[f] = []
+      for (const at of [...new Set(diff(broken[f], sol[f] ?? '').map((d) => d[2]))].sort((a, b) => a - b)) {
+        const a = Math.max(1, at + 1 - CONTEXT), b = Math.min(count, at + 1 + CONTEXT), last = wins[wins.length - 1]
+        if (last && a <= last[1] + 2) last[1] = b; else wins.push([a, b])
+      }
+    }
+    // see: [file, text]: lines from another file that the problem needs, around that text.
+    for (const [f, text] of p.see || []) {
+      const lines = broken[f].split('\n'), at = text ? lines.findIndex((l) => l.includes(text)) + 1 : 1
+      out[f] = [[Math.max(1, at - CONTEXT), Math.min(lines.length, at + CONTEXT)]]
+    }
+    return out
+  }
 
   let current = problems.find((p) => p.id === q.get('p')) || problems[0]
   let editor = null
@@ -27,10 +45,10 @@
 
   function renderList() {
     const lessons = Course.all().filter((l) => (window.FIXIT || {})[l.id])
-    listEl.innerHTML = `<div class="fx-lessons">${lessons.map((l, k) =>
-      `<a class="fx-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}">${esc(l.label || 'Lecture ' + (Course.all().indexOf(l) + 1))}: ${esc(l.title)}</a>`).join('')}</div>` +
-      '<h2>Problems</h2>' + problems.map((p, k) =>
-      `<button type="button" class="fx-item${p === current ? ' on' : ''}" data-id="${p.id}"><span class="fx-mark">${solved.has(p.id) ? '✅' : k + 1}</span> ${esc(p.title)}</button>`).join('')
+    listEl.innerHTML = problems.map((p, k) =>
+      `<button type="button" class="fx-item${p === current ? ' on' : ''}" data-id="${p.id}" title="${esc(p.title)}" aria-label="Problem ${k + 1}: ${esc(p.title)}"><span class="fx-mark">${solved.has(p.id) ? '✅' : k + 1}</span></button>`).join('') +
+      `<details class="fx-lessons"><summary>${esc(lesson.label || lesson.title)}</summary><div class="fx-menu">${lessons.map((l) =>
+      `<a class="fx-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}">${esc(l.label || 'Lecture ' + (Course.all().indexOf(l) + 1))}: ${esc(l.title)}</a>`).join('')}</div></details>`
     listEl.querySelectorAll('.fx-item').forEach((b) => (b.onclick = () => show(problems.find((p) => p.id === b.dataset.id))))
   }
 
@@ -40,25 +58,41 @@
     renderList()
     mainEl.innerHTML = `
       <section class="fx-card">
-        <p class="fx-kicker">Problem ${problems.indexOf(p) + 1} of ${problems.length}</p>
-        <h2>${esc(p.title)}</h2>
-        <p class="fx-symptom"><b>Symptom:</b> ${esc(p.symptom)}</p>
-        <div class="fx-pad"></div>
-        <div class="fx-buttons">
-          <button type="button" class="fx-fix">Fix</button>
-          <button type="button" class="fx-hint">Hint</button>
-          <button type="button" class="fx-solution">Show solution</button>
-          <button type="button" class="fx-reset">Reset</button>
+        <div class="fx-head">
+          <h2><span class="fx-kicker">${problems.indexOf(p) + 1} of ${problems.length}</span> ${esc(p.title)}</h2>
+          <p class="fx-symptom"><b>Symptom:</b> ${esc(p.symptom)}</p>
         </div>
-        <div class="fx-result" aria-live="polite"></div>
-        <p class="fx-hint-text" hidden></p>
-        <div class="fx-answer" hidden></div>
+        <div class="fx-pad"></div>
+        <div class="fx-foot">
+          <div class="fx-buttons">
+            <button type="button" class="fx-fix">Fix</button>
+            <button type="button" class="fx-hint">Hint</button>
+            <button type="button" class="fx-solution">Show solution</button>
+            <button type="button" class="fx-reset">Reset</button>
+            <button type="button" class="fx-whole">Show all the code</button>
+          </div>
+          <div class="fx-out">
+            <div class="fx-result" aria-live="polite"></div>
+            <p class="fx-hint-text" hidden></p>
+            <div class="fx-answer" hidden></div>
+          </div>
+        </div>
       </section>`
-    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), assets: Course.assetsOf(lesson), editable: true, tabs: p.tabs ? [...p.tabs, ...Course.tabOrder(Object.keys(brokenFiles(p))).filter((f) => !p.tabs.includes(f))] : undefined })
+    const wins = snippets(p)
+    const tabs = [...(p.tabs || []).filter((f) => f in wins), ...Object.keys(wins).filter((f) => !(p.tabs || []).includes(f))]
+    editor = Livepad.mount(mainEl.querySelector('.fx-pad'), { files: brokenFiles(p), assets: Course.assetsOf(lesson), editable: true, tabs, windows: wins, wrap: true, tree: false, fontSize: 20 })
+    let whole = false
+    mainEl.querySelector('.fx-whole').onclick = (e) => {
+      whole = !whole
+      e.target.textContent = whole ? 'Show just the snippet' : 'Show all the code'
+      editor.pad.tree = whole
+      editor.pad.showTree()
+      editor.pad.setSnippet(!whole)
+    }
     mainEl.querySelector('.fx-fix').onclick = check
     mainEl.querySelector('.fx-hint').onclick = () => { const h = mainEl.querySelector('.fx-hint-text'); h.hidden = false; h.textContent = '💡 ' + p.hint }
     mainEl.querySelector('.fx-solution').onclick = showSolution
-    mainEl.querySelector('.fx-reset').onclick = () => { editor.setFiles(brokenFiles(p)); mainEl.querySelector('.fx-result').textContent = '' }
+    mainEl.querySelector('.fx-reset').onclick = () => { editor.pad.windows = snippets(p); editor.setFiles(brokenFiles(p)); mainEl.querySelector('.fx-result').textContent = '' }
   }
 
   // Run the checks on a fresh copy of the page (real layout size, images loaded).
@@ -161,8 +195,8 @@
     let i = 0, j = 0
     while (i < x.length || j < y.length) {
       if (i < x.length && j < y.length && x[i] === y[j]) { i++; j++ }
-      else if (i < x.length && (j >= y.length || L[i + 1][j] >= L[i][j + 1])) out.push(['-', x[i++]])
-      else out.push(['+', y[j++]])
+      else if (i < x.length && (j >= y.length || L[i + 1][j] >= L[i][j + 1])) { out.push(['-', x[i], i]); i++ }
+      else out.push(['+', y[j++], Math.min(i, x.length - 1)])
     }
     return out
   }
@@ -174,6 +208,7 @@
     box.innerHTML = '<h3>The fix</h3>' + Object.keys(sol).filter((f) => broken[f] !== sol[f]).map((f) =>
       `<p class="fx-file">${esc(f)}</p><pre class="fx-diff">${diff(broken[f], sol[f]).map(([k, l]) => `<span class="${k === '+' ? 'add' : 'del'}">${k} ${esc(l)}</span>`).join('')}</pre>`).join('') +
       `<p><b>Why:</b> ${esc(p.why)}</p>`
+    box.scrollIntoView({ block: 'nearest' })
   }
 
   window.FixIt = {
@@ -181,6 +216,8 @@
     getFiles: () => editor.getFiles(),
     setFiles: (f) => editor.setFiles(f),
     check,
+    snippets,
+    problems,
   }
   document.title = 'Fix It · ' + lesson.title
   if (current) show(current)
