@@ -55,6 +55,7 @@
   function renderFeatures() {
     const cmds = Course.commands
     featuresEl.innerHTML = (cmds ? `<a class="ex-cmd-link${commandsView ? ' on' : ''}" href="?view=commands"${commandsView ? ' aria-current="page"' : ''}>⌨ Terminal commands</a>` : '') +
+      (Course.codeRepo ? `<a class="ex-cmd-link ex-repo-link" href="${Course.codeRepo.page}">⎇ All the code on GitHub</a>` : '') +
       '<h2>Lectures</h2><div class="ex-lessons">' + Course.all().map((l) =>
       `<a class="ex-lesson${l === lesson ? ' on' : ''}" href="?lesson=${l.id}&at=${l.features[0].id}"${l === lesson ? ' aria-current="page"' : ''}>${esc(lessonName(l))}: ${esc(l.title)}</a>`).join('') + '</div>' +
       // Phones: one dropdown instead of the long list.
@@ -85,6 +86,7 @@
           <button type="button" class="ex-after${showBefore ? '' : ' on'}">After</button>
           <button type="button" class="ex-pop">↗ Pop out the app</button>
           <button type="button" class="ex-download">⬇ Download the code at this feature</button>
+          ${Course.codeRepo ? `<a class="ex-get" href="${Course.codeRepo.page}#${lesson.id}">⎇ Start this lecture from GitHub</a>` : ''}
         </div>
         <div class="ex-preview"><iframe title="The app ${showBefore ? 'before' : 'after'} this feature"></iframe></div>
         <div class="ex-console" hidden><p class="ex-console-head">Console</p><div class="ex-console-lines"></div></div>

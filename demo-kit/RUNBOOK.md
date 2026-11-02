@@ -283,3 +283,9 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 12–14 | 34–38 | — | pipeline; mental model; homework II |
 
 Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected.
+
+## Code repo for students
+
+- **Repo:** https://github.com/kabeier/intro-react-code. One branch per lecture, each holding the **finished** code. Start of a lecture = the branch of the lecture before it.
+- **Student page:** `code-repo/`, linked from the Code Explorer and the landing page.
+- **After changing a lesson:** run `node tools/build-code-repo.mjs`, then `node tools/verify-code-repo.mjs`. The build remakes the branches, so push them with `git push --force --all origin` from `../intro-react-code`.

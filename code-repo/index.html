@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture Code on GitHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --red:#b3261e; --sticky:#ffe76a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.55;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 980px; margin: 0 auto; padding: 36px 28px 70px; }
+  .back { color: var(--blue); font-weight: 700; margin-right: 18px; }
+  h1 { font: 800 clamp(36px, 6vw, 60px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 14px 0 10px; }
+  .lede { color: var(--muted); font-size: 20px; max-width: 62ch; margin: 0 0 18px; }
+  a.repo { display: inline-block; background: var(--sticky); color: var(--ink); font: 800 22px 'Bricolage Grotesque', sans-serif; padding: 14px 20px; text-decoration: none; transform: rotate(-0.6deg); box-shadow: 0 10px 18px -10px rgb(27 34 48 / 0.45); margin-bottom: 26px; }
+  section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 22px 24px; margin-bottom: 22px; }
+  h2 { font: 800 27px/1.15 'Bricolage Grotesque', sans-serif; margin: 0 0 10px; }
+  h2 .n { color: var(--blue); margin-right: 6px; }
+  h3 { font: 800 20px 'Bricolage Grotesque', sans-serif; margin: 18px 0 4px; }
+  ul, ol { margin: 6px 0 10px; padding-left: 1.3em; } li { margin-bottom: 5px; }
+  code { font: 500 .88em 'JetBrains Mono', monospace; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+  .cmdwrap { position: relative; margin: 8px 0; }
+  pre.cmd { background: var(--ink); color: #fff; padding: 14px 16px; padding-right: 84px; border-radius: 4px; margin: 0; font: 500 15px/1.6 'JetBrains Mono', monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .copy { position: absolute; top: 8px; right: 8px; font: 700 14px 'Atkinson Hyperlegible', sans-serif; padding: 5px 11px; border-radius: 4px; border: 0; background: var(--sticky); color: var(--ink); cursor: pointer; }
+  pre.chain { background: #fbfcfe; border: 2px solid var(--grid); border-radius: 4px; padding: 12px 14px; font: 500 14.5px/1.6 'JetBrains Mono', monospace; overflow-x: auto; margin: 8px 0; }
+  label.pick { display: block; font-weight: 700; }
+  #lecture { display: block; width: 100%; font: 700 17px 'Atkinson Hyperlegible', sans-serif; padding: 9px 10px; border: 2px solid var(--ink); border-radius: 4px; background: #fff; color: var(--ink); margin-top: 4px; }
+  .say { background: #fff4d6; border-left: 4px solid #d97706; padding: 8px 12px; border-radius: 4px; margin: 10px 0; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 0; }
+  a { color: var(--blue); }
+  .tbl { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { color: var(--muted); font-size: 15px; }
+  tr.on td { background: var(--sticky); }
+  a:focus-visible, button:focus-visible, select:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (max-width: 600px) { main { padding: 22px 16px 50px; } section { padding: 16px 14px; } }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../explore.html">← Code Explorer</a><a class="back" href="../">Lectures</a>
+  <h1>All the code, one branch per lecture</h1>
+  <p class="lede">Missed a lecture, or your code won't run? This GitHub repo has the Pokemon app as it stands at the end of every lecture, so you can pick up from any point.</p>
+  <a class="repo" id="repo-link" href="https://github.com/kabeier/intro-react-code" target="_blank" rel="noopener">Open the repo on GitHub ↗</a>
+
+  <section>
+    <h2><span class="n">1</span>How the repo works</h2>
+    <ul>
+      <li>Each lecture has its own <b>branch</b>. A branch is a version of the project.</li>
+      <li>A branch holds the code at the <b>end</b> of that lecture.</li>
+      <li>So the <b>start</b> of a lecture is the branch of the lecture <b>before</b> it.</li>
+      <li>Inside a branch there's <b>one commit per feature</b>, matching the features in the Code Explorer.</li>
+    </ul>
+<pre class="chain">start ─→ Unit 2 L1 ─→ Unit 2 L2 ─→ Unit 3 L1 ─→ … ─→ Unit 9 L2 = main
+         (end of L1)  (end of L2)
+
+To start Unit 2 Lecture 2, use the end of Unit 2 Lecture 1.</pre>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Get the repo (once)</h2>
+    <p>Run this in the folder where you keep your projects. It makes a new folder, separate from your own code.</p>
+    <div class="cmdwrap"><pre class="cmd" id="clone"></pre><button type="button" class="copy">Copy</button></div>
+  </section>
+
+  <section id="pick">
+    <h2><span class="n">3</span>Get to the start of a lecture</h2>
+    <label class="pick">Which lecture are you starting?
+      <select id="lecture"></select>
+    </label>
+    <p class="say" id="explain"></p>
+    <div class="cmdwrap"><pre class="cmd" id="start-cmd"></pre><button type="button" class="copy">Copy</button></div>
+    <ul>
+      <li><code>git switch</code> moves you to that lecture's code.</li>
+      <li><code>git switch -c</code> makes <b>your own</b> branch from there, so your work stays separate.</li>
+      <li><code>npm install</code> gets the packages. Run it <b>every time you switch</b>: each lecture can add new ones.</li>
+    </ul>
+    <h3>Then run the app</h3>
+    <div class="cmdwrap"><pre class="cmd">npm run dev</pre><button type="button" class="copy">Copy</button></div>
+    <p>Or with Docker: <code>bash run_container.sh</code>. Every command is explained in the <a href="../explore.html?view=commands">terminal commands</a> list.</p>
+    <h3>See how this lecture ends</h3>
+    <div class="cmdwrap"><pre class="cmd" id="end-cmd"></pre><button type="button" class="copy">Copy</button></div>
+    <p class="links" id="links"></p>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span>Every lecture</h2>
+    <div class="tbl"><table id="all"></table></div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span>Save your own work on GitHub</h2>
+    <p>You can read this repo but not push to it. To push, make your own copy:</p>
+    <ol>
+      <li>On GitHub click <b>Fork</b>, and <b>untick "Copy the main branch only"</b>. If you leave it ticked, the lecture branches are not copied.</li>
+      <li>Clone <b>your</b> fork (your username in the address), then use the same commands as above.</li>
+      <li>Push your branch: <code>git push -u origin my-branch-name</code></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span>When something breaks</h2>
+    <div class="tbl"><table>
+      <tr><th>You see</th><th>It means</th><th>Fix</th></tr>
+      <tr><td><code>Your local changes to the following files would be overwritten by checkout</code></td><td>You have unsaved work that would be lost</td><td>Keep it: <code>git add -A</code>, then <code>git commit -m "my work"</code>. Or put it aside: <code>git stash</code> (<code>git stash pop</code> brings it back)</td></tr>
+      <tr><td><code>fatal: invalid reference: …</code></td><td>A typo in the branch name</td><td>Copy the command from this page. <code>git branch -r</code> lists them all</td></tr>
+      <tr><td><code>Failed to resolve import</code> or <code>Cannot find module</code></td><td>This lecture needs a package you don't have yet</td><td><code>npm install</code>. With Docker: <code>docker stop react-container</code>, then <code>bash run_container.sh</code></td></tr>
+      <tr><td><code>The container name "/react-container" is already in use</code></td><td>The last container is still running</td><td><code>docker stop react-container</code>, then run it again</td></tr>
+      <tr><td>A deployed page is blank (unit 9)</td><td><code>base</code> in <code>vite.config.js</code> says <code>/pokemon-app/</code></td><td>Change it to the name of <b>your</b> repo</td></tr>
+    </table></div>
+  </section>
+</main>
+<script src="../shared/course.js?v=7"></script>
+<script src="../shared/course/code-repo.js?v=1"></script>
+<script src="lectures.js?v=1"></script>
+<script>
+  const R = Course.codeRepo, L = window.LECTURES, $ = (s) => document.querySelector(s)
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  const name = (l) => `${l.label}: ${l.title}`
+  const mine = (l) => 'my-' + l.branch.replace(/^(unit-\d+-lecture-\d+|optional)-.*/, '$1')
+  const tree = (b) => `${R.url}/tree/${b}`
+  const compare = (l) => `${R.url}/compare/${l.start}...${l.branch}`
+  $('#clone').textContent = `git clone ${R.url}.git\ncd intro-react-code`
+  $('#repo-link').href = R.url
+  $('#lecture').innerHTML = L.map((l) => `<option value="${l.id}">${esc(name(l))}</option>`).join('')
+  $('#all').innerHTML = '<tr><th>Lecture</th><th>Start from</th><th>Finished code</th><th>What it adds</th></tr>' + L.map((l) =>
+    `<tr data-id="${l.id}"><td><b>${esc(l.label)}</b><br>${esc(l.title)}</td><td><code>${l.start}</code></td><td><a href="${tree(l.branch)}" target="_blank" rel="noopener"><code>${l.branch}</code></a></td><td><a href="${compare(l)}" target="_blank" rel="noopener">See the changes</a></td></tr>`).join('')
+  function show(id) {
+    const l = L.find((x) => x.id === id) || L[0]
+    $('#lecture').value = l.id
+    const prev = L.find((x) => x.branch === l.start)
+    $('#explain').textContent = prev ? `This lecture starts where "${prev.label}: ${prev.title}" ended.`
+      : l.start === 'start' ? 'This lecture starts from the create-vite template. In class you make it yourself with npm create vite, so you only need this to catch up.'
+      : 'This optional page starts part-way through Unit 2 Lecture 1, at the branch below.'
+    $('#start-cmd').textContent = `git switch ${l.start}\ngit switch -c ${mine(l)}\nnpm install`
+    $('#end-cmd').textContent = `git switch ${l.branch}\nnpm install`
+    $('#links').innerHTML = `<a href="${tree(l.branch)}" target="_blank" rel="noopener">Finished code on GitHub ↗</a><a href="${compare(l)}" target="_blank" rel="noopener">Everything this lecture changes ↗</a><a href="../explore.html?lesson=${l.id}&at=f1">This lecture in the Code Explorer</a>`
+    document.querySelectorAll('#all tr').forEach((r) => r.classList.toggle('on', r.dataset.id === l.id))
+  }
+  $('#lecture').onchange = (e) => { history.replaceState(null, '', '#' + e.target.value); show(e.target.value) }
+  addEventListener('hashchange', () => show(location.hash.slice(1)))
+  show(location.hash.slice(1))
+  document.querySelectorAll('.copy').forEach((b) => (b.onclick = async () => {
+    try { await navigator.clipboard.writeText(b.previousElementSibling.textContent.trim()); b.textContent = 'Copied' } catch { b.textContent = 'Select it' }
+    setTimeout(() => (b.textContent = 'Copy'), 1500)
+  }))
+</script>
+</body>
+</html>

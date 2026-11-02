@@ -114,3 +114,5 @@ code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; }
 .ex-cmd .ex-api { margin-top: 8px; }
 .ex-cmd .ex-api code { overflow-wrap: anywhere; }
 .ex-cmd .ex-api td:first-child { width: 30%; }
+.ex-repo-link { background: #fff; }
+.ex-tools a.ex-get { font: 700 16px 'Atkinson Hyperlegible', sans-serif; padding: 8px 14px; border-radius: 4px; border: 2px solid var(--ink); background: var(--sticky); color: var(--ink); text-decoration: none; }
