@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 6 · Lecture 1 · Tailwind CSS</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>Tailwind: style in the JSX, one small class at a time.</h1>
   <p class="sub">The Pokemon app gets a real design. The tests keep it working.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today the Pokemon app gets a real design with Tailwind, and the tests keep it working.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. The live preview needs internet (Tailwind compiles in the page).</p>
     <p>Students: after <code>npm install</code>, rebuild the Docker image (<code>bash run_container.sh</code>) so the new packages are inside it.</p>
   </aside>
@@ -40,7 +41,8 @@
     <tr><td>old rules pile up; nobody dares delete them</td><td class="pk">delete the element, its style goes too</td></tr>
   </table>
   <p class="bottomline">A utility class does one thing, and its name says what.</p>
-  <aside class="notes"><p>Say: "It looks messy at first. Read the classes left to right like a sentence."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why Tailwind: use ready-made class names on the element instead of inventing your own.</p><p>Say: "It looks messy at first. Read the classes left to right like a sentence."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -53,13 +55,15 @@
     <tr><td><code>rounded-md</code> · <code>shadow</code> · <code>font-bold</code></td><td>border-radius 6px · box-shadow · font-weight 700</td></tr>
   </table>
   <p class="bottomline">Number × 0.25rem = the size: p-4 = 1rem.</p>
-  <aside class="notes"><p>The Tailwind CSS IntelliSense extension shows the CSS on hover.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to read utility classes like p-4 and bg-slate-800.</p><p>The Tailwind CSS IntelliSense extension shows the CSS on hover.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: install" data-at="5">
   <h2>Install Tailwind <span class="say">package.json · vite.config.js · index.css</span></h2>
   <div class="livepad" data-lesson="utilities-tailwind" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="vite.config.js src/index.css package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We install Tailwind: two packages, a Vite plugin and one line of CSS.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>npm install tailwindcss @tailwindcss/vite</code>, then rebuild the image.</p>
 <!-- steps:utilities-tailwind:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -81,13 +85,15 @@
     <li>Our tests still pass: they check ids, text and behaviour, not looks</li>
   </ul>
   <p class="bottomline">The page looks plainer before it looks better.</p>
-  <aside class="notes"><p>Press A after slide 4: the h1 is now normal-size text. That's Preflight.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why the page suddenly looks plain: Preflight, Tailwind's reset.</p><p>Press A after slide 4: the h1 is now normal-size text. That's Preflight.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: layout" data-at="10">
   <h2>Layout with utilities <span class="say">pokemon.cy.js · App.jsx · PokeContainer.jsx</span></h2>
   <div class="livepad" data-lesson="utilities-tailwind" data-start="f1s4" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress/e2e/pokemon.cy.js src/components/PokeSearch/PokeContainer.jsx src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We delete App.css and rebuild the card layout with three utilities. A test proves the layout stays.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> N 1 ▶ green (App.css). N 2–3 ▶ red. N 4 ▶ green.</p>
 <!-- steps:utilities-tailwind:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -109,13 +115,15 @@
     <tr><td>colours, shadows, rounding</td><td>usually not</td><td>look at the page; tests guard behaviour</td></tr>
   </table>
   <p class="bottomline">Test the result, not the class name.</p>
-  <aside class="notes"><p>Next lecture uses one such test to catch Bootstrap overriding Tailwind.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What to test when you style: check the real CSS, not the class name.</p><p>Next lecture uses one such test to catch Bootstrap overriding Tailwind.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: card" data-at="16">
   <h2>A Tailwind card, with the Pokedex number <span class="say">home.cy.js · PokeCard.jsx</span></h2>
   <div class="livepad" data-lesson="utilities-tailwind" data-start="f2s4" data-steps="f3s1 f3s2" data-files="cypress/e2e/home.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We restyle the card with utilities, and add the Pokedex number, test first.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> New feature, test first: red, then green.</p>
 <!-- steps:utilities-tailwind:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -137,6 +145,7 @@
   </table>
   <p class="bottomline">variant:class = "this class, only when…".</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Variants add a condition: hover, focus, screen size, dark mode.</p>
     <p>Mobile first: no prefix = all sizes; md: = from 48rem up.</p>
     <p><b>Different from the curriculum</b> (until merged): a <code>.dark</code> class toggle needs <code>@custom-variant dark (&amp;:where(.dark, .dark *));</code> in index.css. Without it, dark: follows the OS setting.</p>
   </aside>
@@ -146,6 +155,7 @@
   <h2>Style the rest <span class="say">Button · Heading · Counter · PokeForm · App · PokeSearch</span></h2>
   <div class="livepad" data-lesson="utilities-tailwind" data-start="f3s2" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5 f4s6 f4s7 f4s8" data-files="src/components/Button/Button.jsx src/components/Heading/Heading.jsx src/components/PokeSearch/PokeForm.jsx src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We style everything else: Button, header, counter, form and page layout, and the CSS Module goes.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 16 green. Click "Click me!": the page colour still changes behind main.</p>
 <!-- steps:utilities-tailwind:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -170,7 +180,8 @@
     <li>Write class names <b>whole</b>: Tailwind finds them by reading your files, so <code>{`bg-${color}-500`}</code> is never generated</li>
   </ul>
   <p class="bottomline">Long class lists are fine; repeated ones become components.</p>
-  <aside class="notes"><p>The whole-names rule surprises everyone once.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How Tailwind works with React: components are the reuse, and class names must be written whole.</p><p>The whole-names rule surprises everyone once.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="30">
@@ -183,7 +194,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=utilities-tailwind" target="_blank" rel="noopener">fixit.html?lesson=utilities-tailwind</a></p>
-  <aside class="notes"><p>6 minutes. Many Tailwind bugs give no error: a misspelt class is just ignored.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken Tailwind setups on their own. Problems 1 to 6.</p><p>6 minutes. Many Tailwind bugs give no error: a misspelt class is just ignored.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -195,7 +207,8 @@
     <li>Test layout by computed style, never by class name</li>
   </ul>
   <p class="bottomline">Next: a component library, and what happens when two libraries meet.</p>
-  <aside class="notes"><p>Lecture 2: React Bootstrap inside the same app.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for utility classes.</p><p>Lecture 2: React Bootstrap inside the same app.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
@@ -204,7 +217,8 @@
     <li><b>Tailwind and Bootstrap Project</b></li>
   </ol>
   <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
-  <aside class="notes"><p>Start the Tailwind half tonight; the Bootstrap half needs lecture 2.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Start the Tailwind half tonight; the Bootstrap half needs lecture 2.</p></aside>
 </section>
 
 </div>

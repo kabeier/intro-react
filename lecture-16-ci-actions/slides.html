@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 9 · Lecture 2 · GitHub Actions for CI/CD</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -25,7 +25,8 @@
   <div class="kicker">Front-End · Unit 9: CI/CD · Lecture 2 of 2</div>
   <h1>GitHub Actions: test every change, deploy only green.</h1>
   <p class="sub">Lint, build and Cypress on every push and pull request; deploy after the tests pass.</p>
-  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open the demo repos' Actions tabs in a browser tab. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today GitHub tests every change for us, and deploys only when the tests pass.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open the demo repos' Actions tabs in a browser tab. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="1">
@@ -36,13 +37,15 @@
     <tr><td><b>CD</b> (continuous deployment)</td><td>a change that passes goes live by itself</td><td>gh-pages after green</td></tr>
   </table>
   <p class="bottomline">Nobody deploys a red build.</p>
-  <aside class="notes"><p>Same YAML as fundamentals week, bigger job.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What CI and CD mean, and what ours will do.</p><p>Same YAML as fundamentals week, bigger job.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: CI" data-at="3">
   <h2>Run the tests on every push <span class="say">.github/workflows/e2e-tests.yml</span></h2>
   <div class="livepad" data-lesson="ci-actions" data-start="null" data-steps="f1s1" data-files=".github/workflows/e2e-tests.yml"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We write our first workflow: on every push, a clean machine installs, lints, builds and runs Cypress.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Walk the file top to bottom. Checked with actionlint: no findings.</p>
 <!-- steps:ci-actions:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -63,13 +66,15 @@
     <tr><td><code>cypress-io/github-action@v7</code></td><td>start the server, wait, run Cypress</td></tr>
   </table>
   <p class="bottomline">Cheap checks first, Cypress last.</p>
-  <aside class="notes"><p><b>Different from the curriculum</b> (until merged): it uses older action versions and never lints or builds.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What each step of that workflow does, in one line.</p><p><b>Different from the curriculum</b> (until merged): it uses older action versions and never lints or builds.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: built site" data-at="11">
   <h2>Also test the built site <span class="say">e2e-tests.yml</span></h2>
   <div class="livepad" data-lesson="ci-actions" data-start="f1s1" data-steps="f2s1" data-files=".github/workflows/e2e-tests.yml"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We add a second Cypress run against the built site, because that's what users really get.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> The smoke test from lecture 1, against npm run preview.</p>
 <!-- steps:ci-actions:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -87,13 +92,15 @@
     <li>Now a red pull request says "Merging is blocked"</li>
   </ul>
   <p class="bottomline">The workflow tests; the rule enforces.</p>
-  <aside class="notes"><p>Same as fundamentals week lecture 2, slide 10.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to turn a red check into a blocked merge.</p><p>Same as fundamentals week lecture 2, slide 10.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: deploy" data-at="16">
   <h2>Deploy only after green <span class="say">.github/workflows/deploy.yml</span></h2>
   <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We write the deploy workflow: it waits for the tests and deploys only after green.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Same gh-pages command as npm run deploy, with the run's token.</p>
 <!-- steps:ci-actions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -111,7 +118,8 @@
     <tr><td>conditional base in viteconfig (fixed)</td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965548794" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965609807" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965632597" target="_blank" rel="noopener">✓ deployed</a></td></tr>
   </table>
   <p class="bottomline">Red tests = no deploy. That's the point.</p>
-  <aside class="notes"><p>Click through live. The skipped deploy is the if: condition doing its job.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The whole chain on a real repo: what happened when the tests were red, and when they were green.</p><p>Click through live. The skipped deploy is the if: condition doing its job.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="24">
@@ -123,7 +131,8 @@
     <tr><td><code>contents: write</code> only on the deploy job</td><td>deploys from pull requests</td></tr>
   </table>
   <p class="bottomline">Least access, no secrets in files.</p>
-  <aside class="notes"><p>Repo secrets (Settings → Secrets) for API keys later; never commit .env.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Secrets and permissions: what's safe to put in a workflow.</p><p>Repo secrets (Settings → Secrets) for API keys later; never commit .env.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="25">
@@ -135,7 +144,8 @@
     <li>Reproduce locally (<code>npm run cy:run</code>), fix, push again</li>
   </ol>
   <p class="bottomline">The first red line is usually the real one.</p>
-  <aside class="notes"><p>Screenshots of failed tests: add an <code>actions/upload-artifact</code> step with <code>if: failure()</code> and <code>path: cypress/screenshots</code> (the Cypress action does not upload them by itself).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to read a failed run.</p><p>Screenshots of failed tests: add an <code>actions/upload-artifact</code> step with <code>if: failure()</code> and <code>path: cypress/screenshots</code> (the Cypress action does not upload them by itself).</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: your own red X" data-at="26">
@@ -148,14 +158,16 @@
     <li>Say the fix in one sentence; fix it; push: green</li>
   </ol>
   <p class="muted small">History to compare: <a href="https://github.com/kabeier/demo-test/actions" target="_blank" rel="noopener">kabeier/demo-test runs</a> (summaries only: GitHub deletes logs after 90 days)</p>
-  <aside class="notes"><p>7 minutes. The old demo runs' logs have expired, so each student makes a fresh red run. Have a pre-made red PR in your own repo as a backup.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students make their own red X on purpose, then read it.</p><p>7 minutes. The old demo runs' logs have expired, so each student makes a fresh red run. Have a pre-made red PR in your own repo as a backup.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="34">
   <h2>The whole pipeline</h2>
   <div class="loop"><div class="b">push / PR</div><span>→</span><div class="b">lint · build · Cypress (dev + built)</div><span>→</span><div class="g">green: deploy</div></div>
   <p class="bottomline" style="margin-top:40px">From a laptop to a live, tested site with one git push.</p>
-  <aside class="notes"><p>This is the story to tell an employer about your project.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The whole pipeline, from one git push to a live site.</p><p>This is the story to tell an employer about your project.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="36">
@@ -167,7 +179,8 @@
     <li>Deploy runs after green, only for main</li>
   </ul>
   <p class="bottomline">The tests you wrote since unit 3 now guard every change.</p>
-  <aside class="notes"><p>—</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for GitHub Actions.</p><p>—</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
@@ -176,7 +189,8 @@
     <li><b>CI/CD in Practice</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li>
   </ol>
   <p class="bottomline">The workflow files are on the class site to copy.</p>
-  <aside class="notes"><p>A green CI badge in the README is a nice extra.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p><p>A green CI badge in the README is a nice extra.</p></aside>
 </section>
 
 </div>

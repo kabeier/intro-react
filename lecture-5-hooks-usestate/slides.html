@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 4 · Lecture 1 · useState</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>State: React redraws the page for you.</h1>
   <p class="sub">The Pokemon page moves from DOM code to useState, and the tests prove nothing broke.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today the Pokemon page moves from DOM code to useState, and our tests prove nothing broke.</p>
     <p><b>Before class</b>: app in Docker; Cypress works on your laptop. <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <p>From today: every new behaviour starts with a failing test (▶ Run tests on the code slides).</p>
   </aside>
@@ -40,7 +41,8 @@
     <tr><td><b>Does React know?</b></td><td>no</td><td>yes: the list <b>is</b> the page</td></tr>
   </table>
   <p class="bottomline">Change the data; React updates the page.</p>
-  <aside class="notes"><p>Say: "Last unit we promised this: the cards become data."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The same app two ways: building cards by hand vs keeping a list and letting React draw it.</p><p>Say: "Last unit we promised this: the cards become data."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -52,7 +54,8 @@
     <li>React compares the new render with the last one (the virtual DOM) and changes only the differences</li>
   </ul>
   <p class="bottomline">Never change state directly; always through its setter.</p>
-  <aside class="notes"><p>Fix It 1 and 3 (practice after class) are exactly "changed it directly".</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The loop to remember: an event calls a setter, the component runs again, and React updates the page.</p><p>Fix It 1 and 3 (practice after class) are exactly "changed it directly".</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: State hunt" data-at="4">
@@ -66,6 +69,7 @@
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../state-hunt/" target="_blank" rel="noopener">state-hunt</a> · 30 boxes, each a real React component</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Activity: going around the room, each student points out what one box on the demo app has to remember.</p>
     <p><b>8 minutes, about 15 seconds a student.</b> Go round the room. Type the box number (or point), the student answers, then press <b>Answer</b> on that box.</p>
     <p>Say: "State is what the box has to remember while you use it. Not the variable name: just say what it is."</p>
     <p>Each answer also shows the <code>useState</code> line from that box's code. Read one out: "there's the value and its setter, the next slide."</p>
@@ -78,13 +82,15 @@
   <h2>From today: red, green, then tidy</h2>
   <div class="loop"><div class="r">1. write the test: red</div><span>→</span><div class="g">2. build until green</div><span>→</span><div class="b">3. tidy, still green</div></div>
   <p class="bottomline">The test describes the feature before the code exists.</p>
-  <aside class="notes"><p>Same loop as fundamentals week TDD, with Cypress instead of Jest.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How we work from today on: write a failing test, build until it's green, then tidy.</p><p>Same loop as fundamentals week TDD, with Cypress instead of Jest.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: title" data-at="13">
   <h2>First state: the title <span class="say">home.cy.js · src/App.jsx</span></h2>
   <div class="livepad" data-lesson="hooks-usestate" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Our first state: a test, then a button that changes the page title.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> After N 1: ▶ Run tests: red. After N 4: green.</p>
 <!-- steps:hooks-usestate:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -108,13 +114,15 @@
     <tr><td><code>[ , ]</code></td><td>array destructuring: name the two things it gives back</td></tr>
   </table>
   <p class="bottomline">Pick the first value = what the page shows first: '' · 0 · [].</p>
-  <aside class="notes"><p><b>Rules of hooks</b>: call them at the top of the component, never inside if/loops/handlers.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read one useState line piece by piece.</p><p><b>Rules of hooks</b>: call them at the top of the component, never inside if/loops/handlers.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: counter" data-at="18">
   <h2>A counter, with a functional update <span class="say">home.cy.js · src/App.jsx</span></h2>
   <div class="livepad" data-lesson="hooks-usestate" data-start="f1s4" data-steps="f2s1 f2s2 f2s3" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We build a click counter, test first, and meet the safe way to update a number.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 3.</p>
 <!-- steps:hooks-usestate:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -134,13 +142,15 @@
     <tr><td class="pk"><code>setCount((c) =&gt; c + 1)</code> ×2</td><td>each gets the latest value</td><td class="pk">2</td></tr>
   </table>
   <p class="bottomline">New value based on the old one? Pass a function.</p>
-  <aside class="notes"><p>Same reason the list uses setPokemonList((list) =&gt; …): requests can finish close together.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why we write setCount((count) =&gt; count + 1): what goes wrong with the short version.</p><p>Same reason the list uses setPokemonList((list) =&gt; …): requests can finish close together.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: input" data-at="22">
   <h2>A controlled input <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="hooks-usestate" data-start="f2s3" data-steps="f3s1 f3s2 f3s3 f3s4" data-files="src/App.jsx cypress/e2e/pokemon.cy.js"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We put the search box text in state, so React controls it. No more FormData.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests before N 1 and after N 4: green both times. A refactor = same behaviour, new code.</p>
 <!-- steps:hooks-usestate:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -157,6 +167,7 @@
   <h2>The cards become a list in state <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="hooks-usestate" data-start="f3s4" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5" data-files="src/App.jsx cypress/e2e/pokemon.cy.js"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The big one: the cards become a list in state and generateCard goes away. Same app, and the tests stay green.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> The big moment: generateCard is deleted. ▶ Run tests at the end: <b>all green</b>.</p>
 <!-- steps:hooks-usestate:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -181,6 +192,7 @@
   </table>
   <p class="bottomline">React notices a new array, not a changed old one.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The rule for arrays and objects in state: never change them in place, always make a new one.</p>
     <p><b>Different from the curriculum</b> (until merged): it called the spread "deconstruction"; it's the <b>spread</b> syntax (destructuring is the [ , ] on the left).</p>
   </aside>
 </section>
@@ -189,6 +201,7 @@
   <h2>Remove a card <span class="say">pokemon.cy.js · src/App.jsx</span></h2>
   <div class="livepad" data-lesson="hooks-usestate" data-start="f4s5" data-steps="f5s1 f5s2 f5s3" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We add a Remove button to every card, test first, using filter.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 3.</p>
 <!-- steps:hooks-usestate:f5 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -209,7 +222,8 @@
     <li>Tests describe what users see, so they survive rewrites</li>
   </ul>
   <p class="bottomline">Change data, not the DOM.</p>
-  <aside class="notes"><p>Next lecture: useEffect, for code that runs after the render.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model: state is the truth, and the page is drawn from it.</p><p>Next lecture: useEffect, for code that runs after the render.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -220,7 +234,8 @@
   </ol>
   <p class="small">Practice: <b>Fix it</b> → Unit 4 · Lecture 1 (<a href="../fixit.html?lesson=hooks-usestate" target="_blank" rel="noopener">fixit.html?lesson=hooks-usestate</a>), problems 1–6.</p>
   <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
-  <aside class="notes"><p>Top to bottom, as the curriculum says.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I.</p><p>Top to bottom, as the curriculum says.</p></aside>
 </section>
 
 </div>

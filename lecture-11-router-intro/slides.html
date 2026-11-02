@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 7 · Lecture 1 · Intro to React Router</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>One app, many pages: the URL picks what you see.</h1>
   <p class="sub">React Router 8 in the Pokemon app. Nothing changes for the user yet, and the tests prove it.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we add React Router: one app with many pages. Nothing changes for the user yet, and the tests prove it.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. The live app shows an address bar once the router is in.</p>
     <p>Students: <code>npm install react-router</code>, then rebuild the Docker image.</p>
   </aside>
@@ -40,7 +41,8 @@
     <tr><td>each page has a URL</td><td class="pk">each page still has a URL you can share</td></tr>
   </table>
   <p class="bottomline">The router keeps the URL and the screen in sync.</p>
-  <aside class="notes"><p>Activity idea (if time): draw the URL → page map of a site the class uses.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What a single-page app is: one HTML page, and JavaScript swaps the content.</p><p>Activity idea (if time): draw the URL → page map of a site the class uses.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -53,7 +55,8 @@
     <tr><td><code>/login</code></td><td>Log in</td><td>unit 8</td></tr>
   </table>
   <p class="bottomline">Every page shares the layout: navbar and heading.</p>
-  <aside class="notes"><p>Say: "Today is plumbing. Lecture 2 adds the pages."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The pages our app will have, and which lecture adds each one.</p><p>Say: "Today is plumbing. Lecture 2 adds the pages."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="5">
@@ -65,6 +68,7 @@
   </table>
   <p class="bottomline">One package: <code>npm install react-router</code>.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Which version we use, and where each import comes from.</p>
     <p><b>Different from the curriculum</b> (until merged): it installs <code>react-router-dom</code>. That package stopped at version 7; version 8 merged it into <code>react-router</code>. Old tutorials still say react-router-dom.</p>
   </aside>
 </section>
@@ -73,6 +77,7 @@
   <h2>Install the router <span class="say">package.json · router.jsx · main.jsx</span></h2>
   <div class="livepad" data-lesson="router-intro" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="src/router.jsx src/main.jsx package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We install the router and make one route: the path / shows App. All 17 tests stay green.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 17 green, nothing looks different.</p>
 <!-- steps:router-intro:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -95,7 +100,8 @@
     <tr><td><code>index: true</code></td><td>the child for the parent's own path</td></tr>
   </table>
   <p class="bottomline">A route is an object: URL → element.</p>
-  <aside class="notes"><p>Unknown keys (a typo like chidren) are silently ignored: Fix It problem 6.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read one route object: path, element, children.</p><p>Unknown keys (a typo like chidren) are silently ignored: Fix It problem 6.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="15">
@@ -107,13 +113,15 @@
     <li>Pages live in <code>src/pages</code>; parts of pages stay in <code>src/components</code></li>
   </ul>
   <p class="bottomline">Layout once, pages inside it.</p>
-  <aside class="notes"><p>Next slide makes it real.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How a layout works: App stays on screen, and the Outlet is the hole the page fills.</p><p>Next slide makes it real.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: layout" data-at="17">
   <h2>App becomes the layout <span class="say">HomePage.jsx · App.jsx · router.jsx</span></h2>
   <div class="livepad" data-lesson="router-intro" data-start="f1s3" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="src/pages/HomePage.jsx src/App.jsx src/router.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> App becomes the layout: the home page moves to src/pages, and an Outlet takes its place.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> <b>Show the red:</b> after N 3, delete &lt;Outlet /&gt;, ▶: 15 red. Put it back, N 4, ▶: 17 green.</p>
 <!-- steps:router-intro:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -135,7 +143,8 @@
     <tr><td>AboutPage</td><td>mounts fresh</td></tr>
   </table>
   <p class="bottomline">State in a page lives only while you're on that page.</p>
-  <aside class="notes"><p>This is the problem unit 8 lecture 2 solves (state moves up to App).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Leaving a page throws away its state.</p><p>This is the problem unit 8 lecture 2 solves (state moves up to App).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="25">
@@ -147,7 +156,8 @@
     <tr><td><code>cy.go('back')</code></td><td>the browser's Back button</td></tr>
   </table>
   <p class="bottomline">Every page gets a test that visits it by its URL.</p>
-  <aside class="notes"><p>In the slides, the live app's address bar shows the same path.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How we test pages: visit an address, check the path, press Back.</p><p>In the slides, the live app's address bar shows the same path.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="27">
@@ -160,7 +170,8 @@
     <tr><td>a typo in a key (chidren)</td><td>the router ignores unknown keys: spell them</td></tr>
   </table>
   <p class="bottomline">Heading only = the router is half wired.</p>
-  <aside class="notes"><p>These are Fix It problems 1, 2, 3 and 6.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What to check when only the heading shows.</p><p>These are Fix It problems 1, 2, 3 and 6.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="28">
@@ -173,7 +184,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=router-intro" target="_blank" rel="noopener">fixit.html?lesson=router-intro</a></p>
-  <aside class="notes"><p>6 minutes. Most problems show "heading only": the router is half wired.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken router setups on their own. Problems 1 to 6.</p><p>6 minutes. Most problems show "heading only": the router is half wired.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="35">
@@ -185,7 +197,8 @@
     <li>Leaving a page unmounts it</li>
   </ul>
   <p class="bottomline">Next: About, 404, errors, and a navbar.</p>
-  <aside class="notes"><p>—</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for the router.</p><p>—</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -194,7 +207,8 @@
     <li><b>Rick and Morty</b></li>
   </ol>
   <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
-  <aside class="notes"><p>The repo is README-only; use npm install react-router (not react-router-dom).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>The repo is README-only; use npm install react-router (not react-router-dom).</p></aside>
 </section>
 
 </div>

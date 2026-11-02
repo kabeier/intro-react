@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 5 · Lecture 1 · Components and props</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>Components: one big App becomes small parts.</h1>
   <p class="sub">Same app, same 12 tests, eight files instead of one.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today one big App.jsx becomes small parts: same app, same 12 tests, eight files instead of one.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. App in Docker, Cypress on the laptop.</p>
     <p>Today is a refactor: the behaviour never changes, so the tests stay green after every feature. Press ▶ Run tests after each one.</p>
   </aside>
@@ -40,7 +41,8 @@
     <tr><td>a card is markup inside a .map</td><td class="pk">&lt;PokeCard /&gt; you can reuse</td></tr>
   </table>
   <p class="bottomline">A component is one piece of the page, in its own file.</p>
-  <aside class="notes"><p>Say: "Look at App.jsx. Where is the counter? Where are the cards? Today each gets a name and a file."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What's wrong with one big file, and what components fix.</p><p>Say: "Look at App.jsx. Where is the counter? Where are the cards? Today each gets a name and a file."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -54,6 +56,7 @@
   </table>
   <p class="bottomline">Capital letter = component. Lowercase = HTML tag.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The rules for a component: a function, a PascalCase name, returns JSX, exported and imported.</p>
     <p><b>Different from the curriculum</b> (until merged): it says "camelCase with an uppercase letter"; the name is <b>PascalCase</b>.</p>
   </aside>
 </section>
@@ -62,6 +65,7 @@
   <h2>First component: Counter <span class="say">Counter.jsx · App.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4 f1s5" data-files="src/components/Counter/Counter.jsx src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Our first move: the counter leaves App.jsx for its own file, and the tests stay green.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> ▶ Run tests at the end: all green.</p>
 <!-- steps:components-props:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -85,13 +89,15 @@
     <li>Red after a move = you dropped something (an id, a prop)</li>
   </ul>
   <p class="bottomline">Good tests make big rewrites safe.</p>
-  <aside class="notes"><p>Same idea as unit 4, when generateCard went away.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What a refactor is: green before, move the code, green after.</p><p>Same idea as unit 4, when generateCard went away.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: Heading" data-at="11">
   <h2>Heading, and index.js files <span class="say">components/Heading · App.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f1s5" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="src/components/Heading/Heading.jsx src/components/Heading/index.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We move the heading into its own folder, and add an index.js so imports stay short.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> One folder per component; index.js makes the import short.</p>
     <p>Optional for curious students: <a href="../optional-css-modules/" target="_blank" rel="noopener">Components in folders, and CSS Modules</a> (folders + index.js, then a CSS Module per component).</p>
 <!-- steps:components-props:f2 -->
@@ -121,6 +127,7 @@
   </ul>
   <p class="bottomline">Attributes in, one props object out.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Props are the arguments of a component. What you write, and what the component gets.</p>
     <p><b>Different from the curriculum</b> (until merged): it calls <code>({ pokemon })</code> "deconstructing"; it's <b>destructuring</b>.</p>
   </aside>
 </section>
@@ -129,6 +136,7 @@
   <h2>A reusable Button <span class="say">components/Button · Counter · Heading</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f2s6" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5 f3s6" data-files="src/components/Button/Button.jsx src/components/Counter/Counter.jsx src/components/Heading/Heading.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We build one reusable Button with children, and use it in Counter and Heading.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Forget <code>{children}</code> and "counts clicks" goes red (an empty button).</p>
 <!-- steps:components-props:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -147,6 +155,7 @@
   <h2>The search feature: PokeSearch <span class="say">components/PokeSearch · App.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f3s6" data-steps="f4s1 f4s2 f4s3" data-files="src/components/PokeSearch/PokeSearch.jsx src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Everything about searching moves into PokeSearch, so App is only the page layout.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Cut and paste: the state, the effects, the functions, the JSX. Nothing new.</p>
 <!-- steps:components-props:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -162,6 +171,7 @@
   <h2>PokeCard, with props <span class="say">PokeCard.jsx · PokeSearch.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f4s3" data-steps="f5s1 f5s2 f5s3" data-files="src/components/PokeSearch/PokeCard.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We pull out PokeCard: the parent passes the Pokemon and the remove function down as props.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> <b>Show the red:</b> pass only <code>pokemon</code>: "can remove a card" fails (rmData is not a function).</p>
 <!-- steps:components-props:f5 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -182,13 +192,15 @@
     <li>Passing props through a component that only hands them on = <b>prop drilling</b></li>
   </ul>
   <p class="bottomline">State has one owner. Everyone else gets props.</p>
-  <aside class="notes"><p>Lecture 2: what decides who owns the state.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The rule for moving data: data goes down, functions go up.</p><p>Lecture 2: what decides who owns the state.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: PokeContainer" data-at="28">
   <h2>PokeContainer <span class="say">PokeContainer.jsx · PokeSearch.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f5s3" data-steps="f6s1 f6s2 f6s3" data-files="src/components/PokeSearch/PokeContainer.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We add PokeContainer, and see props passing through a part that only hands them on: prop drilling.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> Keep <code>id="poke-container"</code>: two tests look for it.</p>
 <!-- steps:components-props:f6 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -204,6 +216,7 @@
   <h2>PokeForm <span class="say">PokeForm.jsx · PokeSearch.jsx</span></h2>
   <div class="livepad" data-lesson="components-props" data-start="f6s3" data-steps="f7s1 f7s2 f7s3" data-files="src/components/PokeSearch/PokeForm.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We pull out PokeForm. That finishes the job: all 12 tests green, eight small files.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> ▶ Run tests: all 12 green.</p>
 <!-- steps:components-props:f7 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -226,7 +239,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=components-props" target="_blank" rel="noopener">fixit.html?lesson=components-props</a></p>
-  <aside class="notes"><p>6 minutes. Every problem is a broken import, export or prop.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken components on their own. Problems 1 to 6.</p><p>6 minutes. Every problem is a broken import, export or prop.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
@@ -238,7 +252,8 @@
     <li>Refactor with the tests running</li>
   </ul>
   <p class="bottomline">Small parts, same behaviour.</p>
-  <aside class="notes"><p>Next lecture: state inside a component (one shiny card).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for components and props.</p><p>Next lecture: state inside a component (one shiny card).</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="39">
@@ -247,7 +262,8 @@
     <li><b>Hangman</b></li>
   </ol>
   <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
-  <aside class="notes"><p>Top to bottom, as the curriculum says.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Top to bottom, as the curriculum says.</p></aside>
 </section>
 
 </div>

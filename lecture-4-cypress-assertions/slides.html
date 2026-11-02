@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 3 · Lecture 2 · Cypress Assertions</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -22,6 +22,7 @@
   <h1>Test every feature, then make the tests fast and reliable.</h1>
   <p class="sub">pokemon.cy.js: searches, edge cases, and stubbing the PokeAPI.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we test every feature, then make the tests fast and reliable by faking the PokeAPI.</p>
     <p><b>Before class</b>: app in Docker; <code>npm run cy:open</code> works on your laptop. <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <p>Features 1–3 call the real PokeAPI (internet). Feature 4 stubs it.</p>
   </aside>
@@ -34,7 +35,8 @@
     <div class="card red"><h3>Not this</h3><p>"generateCard was called", "the div has class card"</p></div>
   </div>
   <p class="bottomline">Then the tests survive a rewrite: unit 4 replaces generateCard, and these tests stay green.</p>
-  <aside class="notes"><p>Say: "If a user can't tell the difference, the test shouldn't either."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The main rule: test what the user sees, not how the code works.</p><p>Say: "If a user can't tell the difference, the test shouldn't either."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -49,13 +51,15 @@
     <tr><td>tells you when a name doesn't exist</td><td>alerts when a Pokemon does not exist</td></tr>
   </table>
   <p class="bottomline">One test per behaviour, named like a sentence.</p>
-  <aside class="notes"><p>Write this list first; it is the test plan.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Our list of features, and the test each one gets.</p><p>Write this list first; it is the test plan.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: search" data-at="5">
   <h2>A search shows a card <span class="say">cypress/e2e/pokemon.cy.js</span></h2>
   <div class="livepad" data-lesson="cypress-assertions" data-start="null" data-steps="f1s1 f1s2 f1s3" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We start pokemon.cy.js with the core test: type a name, search, and a card appears with its picture.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests after N 2 and N 3.</p>
 <!-- steps:cypress-assertions:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -77,13 +81,15 @@
     <tr><td><code>cy.contains('text')</code></td><td>finds by text</td><td><code>have.attr, 'src'</code> + <code>.and('include', …)</code></td><td>an attribute</td></tr>
   </table>
   <p class="bottomline">Find with ids we planned (#bulbasaur-card), not with styling classes.</p>
-  <aside class="notes"><p><code>.contain()</code> does not exist: it's <code>.contains()</code> or <code>.should('contain', …)</code> (Fix It 1).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The Cypress commands and checks we'll use today.</p><p><code>.contain()</code> does not exist: it's <code>.contains()</code> or <code>.should('contain', …)</code> (Fix It 1).</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: more searches" data-at="11">
   <h2>More searches <span class="say">cypress/e2e/pokemon.cy.js</span></h2>
   <div class="livepad" data-lesson="cypress-assertions" data-start="f1s3" data-steps="f2s1 f2s2" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We test more searches: several cards on the page, and the box clearing after each search.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b></p>
 <!-- steps:cypress-assertions:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -98,6 +104,7 @@
   <h2>What must NOT happen <span class="say">cypress/e2e/pokemon.cy.js</span></h2>
   <div class="livepad" data-lesson="cypress-assertions" data-start="f2s2" data-steps="f3s1 f3s2 f3s3" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We test what must NOT happen: empty searches, duplicate cards, and names that don't exist.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b></p>
 <!-- steps:cypress-assertions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -119,7 +126,8 @@
     <li>Fix the one that is wrong, run again</li>
   </ol>
   <p class="bottomline">A red test is information, not a disaster.</p>
-  <aside class="notes"><p>Show one: change 'have.value', '' to 'Bulbasaur' and run.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> A routine for reading a red test: which test, which line, and is the test wrong or the app?</p><p>Show one: change 'have.value', '' to 'Bulbasaur' and run.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="19">
@@ -131,13 +139,15 @@
     <tr><td><b>Errors on purpose</b></td><td>hard (need a missing name)</td><td class="pk"><code>{ statusCode: 404 }</code></td></tr>
   </table>
   <p class="bottomline">Fixtures = saved answers. The app can't tell the difference.</p>
-  <aside class="notes"><p>Our fixtures hold only the fields the app reads; we'll add fields when later units read more.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why fake the API: real requests are slow, can go down and can't fail on demand.</p><p>Our fixtures hold only the fields the app reads; we'll add fields when later units read more.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: stubs" data-at="21">
   <h2>Stub the API <span class="say">cypress/fixtures · pokemon.cy.js</span></h2>
   <div class="livepad" data-lesson="cypress-assertions" data-start="f3s3" data-steps="f4s1 f4s2 f4s3 f4s4" data-files="cypress/e2e/pokemon.cy.js cypress/fixtures/bulbasaur.json cypress/fixtures/charizard.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We save fake answers as fixtures, then use cy.intercept so the tests never touch the real PokeAPI.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests at the end: all 8 green, fast.</p>
 <!-- steps:cypress-assertions:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -158,7 +168,8 @@
     <tr><td><code>cy.on('window:alert', (t) =&gt; expect(t)…)</code></td><td>no alert = the expect never runs</td><td class="pk">collect alerts, <code>cy.wrap(alerts).should('include', …)</code></td></tr>
   </table>
   <p class="bottomline">Check: break the app on purpose. Does the test go red?</p>
-  <aside class="notes"><p>These are Fix It problems 7 and 8: the checker breaks the app and expects your test to fail.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> A test that can't fail tests nothing: how to spot a weak test and make it strong.</p><p>These are Fix It problems 7 and 8: the checker breaks the app and expects your test to fail.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="28">
@@ -171,7 +182,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=cypress-assertions" target="_blank" rel="noopener">fixit.html?lesson=cypress-assertions</a></p>
-  <aside class="notes"><p>6 minutes. The stubs make these checks fast and offline-safe (except the preview needs React from the internet).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken or too-weak tests on their own. Problems 1 to 6.</p><p>6 minutes. The stubs make these checks fast and offline-safe (except the preview needs React from the internet).</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="35">
@@ -182,7 +194,8 @@
     <tr><td>starts empty</td><td>still passes</td><td>rewritten: Pikachu is there from the start</td></tr>
   </table>
   <p class="bottomline">We rewrite the page; the tests prove it still works.</p>
-  <aside class="notes"><p>Say: "Next unit, every feature starts with a failing test."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Which of these tests survive unit 4, and which ones we'll rewrite on purpose.</p><p>Say: "Next unit, every feature starts with a failing test."</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -191,7 +204,8 @@
     <li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team (or To-Do List React) project and add different spec files, each one dedicated to testing an independent feature of your project."</li>
   </ol>
   <p class="bottomline">Keep the tests to what exists: rendering the page and interacting with forms/requests.</p>
-  <aside class="notes"><p>Curriculum note: "As you build Hooks, Components, and Router into future projects, come back and extend these same test suites."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p><p>Curriculum note: "As you build Hooks, Components, and Router into future projects, come back and extend these same test suites."</p></aside>
 </section>
 
 </div>

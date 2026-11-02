@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 6 · Lecture 2 · React Bootstrap</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>React Bootstrap: finished components, and a clash.</h1>
   <p class="sub">A component library next to Tailwind, with a test that catches the clash.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we add React Bootstrap next to Tailwind, hit a real style clash, and use a test to catch it.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Students: <code>npm install react-bootstrap bootstrap</code>, then rebuild the image.</p>
   </aside>
 </section>
@@ -41,6 +42,7 @@
   </table>
   <p class="bottomline">Speed and consistency vs control.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Two kinds of library: finished parts vs small classes to build your own.</p>
     <p><b>Different from the curriculum</b> (until merged): Bootstrap 5 does not need jQuery; React Bootstrap never did.</p>
   </aside>
 </section>
@@ -53,13 +55,15 @@
     <li>One import per component: <code>import Card from 'react-bootstrap/Card'</code></li>
   </ul>
   <p class="bottomline">You need both packages: components and their CSS.</p>
-  <aside class="notes"><p>Versions: react-bootstrap 2.10 (3.0 is still beta), bootstrap 5.3.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What React Bootstrap is: two packages, and one import per component.</p><p>Versions: react-bootstrap 2.10 (3.0 is still beta), bootstrap 5.3.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: install" data-at="5">
   <h2>Install Bootstrap, keep the Tailwind look <span class="say">home.cy.js · package.json · main.jsx · index.css</span></h2>
   <div class="livepad" data-lesson="utilities-bootstrap" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4 f1s5" data-files="cypress/e2e/home.cy.js src/main.jsx src/index.css package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We write a guard test, install Bootstrap, watch the test go red from a style clash, and fix it with one word.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> N 1 ▶ green. N 2–4 ▶ <b>red</b> (press A: the h1 is thinner, buttons square). N 5 ▶ green.</p>
 <!-- steps:utilities-bootstrap:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -82,7 +86,8 @@
     <tr><td>Tailwind with <code>important</code></td><td>layer, <code>!important</code></td><td class="pk">yes: layered !important beats unlayered</td></tr>
   </table>
   <p class="bottomline">Import order does not fix it; <code>important</code> does.</p>
-  <aside class="notes"><p>This is why "just import Bootstrap first" (the curriculum's order) isn't enough with Tailwind v4.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why Bootstrap won that clash: cascade layers.</p><p>This is why "just import Bootstrap first" (the curriculum's order) isn't enough with Tailwind v4.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="13">
@@ -93,13 +98,15 @@
     <li>A guard test (computed styles) tells you when a clash comes back</li>
   </ul>
   <p class="bottomline">In real projects, pick one. Today we learn both.</p>
-  <aside class="notes"><p>Alternative: <code>prefix(tw)</code> renames Tailwind's classes; it avoids name clashes but not Reboot's element styles.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The rules for running two libraries in one app.</p><p>Alternative: <code>prefix(tw)</code> renames Tailwind's classes; it avoids name clashes but not Reboot's element styles.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: Card" data-at="15">
   <h2>PokeCard as a React Bootstrap Card <span class="say">PokeCard.jsx</span></h2>
   <div class="livepad" data-lesson="utilities-bootstrap" data-start="f1s5" data-steps="f2s1" data-files="src/components/PokeSearch/PokeCard.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We rebuild PokeCard from Bootstrap's Card parts, and the tests stay green.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Type it part by part. ▶ Run tests: 17 green.</p>
 <!-- steps:utilities-bootstrap:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -119,7 +126,8 @@
     <tr><td><code>id</code>, <code>style</code>, <code>onClick</code></td><td>passed to the element</td></tr>
   </table>
   <p class="bottomline">The library turns props into Bootstrap's classes.</p>
-  <aside class="notes"><p>Inspect the card in DevTools to show the generated classes.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> With Bootstrap you write props, and they become classes.</p><p>Inspect the card in DevTools to show the generated classes.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="23">
@@ -130,7 +138,8 @@
     <tr><td><code>import BsButton from 'react-bootstrap/Button'</code></td><td class="pk">Bootstrap's, renamed</td></tr>
   </table>
   <p class="bottomline">A default import can take any name you choose.</p>
-  <aside class="notes"><p>Two imports with the same name in one file is a syntax error.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Two Buttons with one name: how to rename an import.</p><p>Two imports with the same name in one file is a syntax error.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="25">
@@ -142,7 +151,8 @@
     <tr><td>the team knows Bootstrap</td><td>the team knows Tailwind</td></tr>
   </table>
   <p class="bottomline">Both are fine. Mixing them costs a guard test and a rule.</p>
-  <aside class="notes"><p>Ask: "Which one would you pick for the final project, and why?"</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> When to pick a component library, and when to pick utilities.</p><p>Ask: "Which one would you pick for the final project, and why?"</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="27">
@@ -154,7 +164,8 @@
     <tr><td>layout · Tailwind look</td><td class="pk">computed styles: wrapping row, the clash</td></tr>
   </table>
   <p class="bottomline">Two big restyles, zero behaviour broken.</p>
-  <aside class="notes"><p>Unit 7 adds pages (React Router).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The test suite so far: 17 tests, and what each group guards.</p><p>Unit 7 adds pages (React Router).</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="29">
@@ -167,7 +178,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=utilities-bootstrap" target="_blank" rel="noopener">fixit.html?lesson=utilities-bootstrap</a></p>
-  <aside class="notes"><p>6 minutes.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken Bootstrap setups on their own. Problems 1 to 6.</p><p>6 minutes.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="36">
@@ -179,7 +191,8 @@
     <li>One library per component; tests guard the result</li>
   </ul>
   <p class="bottomline">Next unit: pages, with React Router.</p>
-  <aside class="notes"><p>—</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for component libraries.</p><p>—</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -188,7 +201,8 @@
     <li><b>Reading Assignment - Beginning React</b> (Chapter 20: Testing Section)</li>
   </ol>
   <p class="bottomline">Links are on the class site.</p>
-  <aside class="notes"><p>Finish the Tailwind and Bootstrap Project first.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p><p>Finish the Tailwind and Bootstrap Project first.</p></aside>
 </section>
 
 </div>

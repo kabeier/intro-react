@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 2 · Lecture 1 · React + Vite</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>React draws the page. Vite runs it while we code.</h1>
   <p class="sub">We start the Pokemon project: create it, run it in Docker, learn JSX.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we start the Pokemon project: create it, run it in Docker, and learn how JSX works.</p>
     <p><b>Before class</b>: Docker Desktop running; Node 24 on your laptop. Open this deck, <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <p>The live preview here runs React in the browser (no server needed). Students run the real thing in Docker.</p>
     <p>Press <b>T</b> to start the clock.</p>
@@ -40,6 +41,7 @@
   </div>
   <p class="bottomline">React decides what is on the page. Vite serves it to the browser while you work.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The two tools we're using and what each one does: React draws the page, Vite runs it while we code.</p>
     <p>Say: "Unit 1 we changed the page by hand with querySelector. React lets us describe the page; it does the DOM work."</p>
     <p>Vite = French for "fast". Its dev server reloads the page the moment you save.</p>
   </aside>
@@ -55,6 +57,7 @@
   </table>
   <p class="bottomline">The virtual DOM is React's copy of the last render, not a copy it checks the real page against.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why React at all: we say what the page should look like, and React works out what to change.</p>
     <p>Say: "React keeps the last thing your component returned. Next time, it compares the new one with that, and touches the real page only where they differ."</p>
     <p><b>Different from the curriculum</b> (until merged): it said the virtual DOM is "compared against the DOM". React compares render output with the previous render output.</p>
   </aside>
@@ -72,6 +75,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </ul>
   <p class="bottomline">This template is our starting point. Next: run it in Docker.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We create the project live with npm create vite, install it, and see the starter page in the browser.</p>
     <p><b>** LIVE, about 2 minutes. **</b> Students type along in a terminal (Node 24).</p>
     <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
       <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">Part</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Means</th></tr>
@@ -87,6 +91,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>Ready for Docker <span class="say">package.json</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="null" data-steps="f1s1 f1s2" data-files="package.json src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Two small changes to package.json so the app can run inside Docker: the --host flag and the Node versions.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> The preview shows the template running.</p>
 <!-- steps:react-vite:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -102,6 +107,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>Dockerfile and run_container.sh <span class="say">Dockerfile · .dockerignore · run_container.sh</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f1s2" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="Dockerfile .dockerignore run_container.sh package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We write the Dockerfile and run_container.sh, so the app runs in a container and still reloads when we save.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> Then students run <code>bash run_container.sh</code> and open http://localhost:5173.</p>
 <!-- steps:react-vite:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -139,6 +145,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </table>
   <p class="bottomline">We work in src/. index.html and main.jsx just wire React up.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> A tour of the files create-vite made, and what each one is for.</p>
     <p>Commit <code>package-lock.json</code>: it pins exact versions; <code>npm ci</code> (CI, a future lecture) installs from it.</p>
   </aside>
 </section>
@@ -158,6 +165,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </ul>
   <p class="bottomline">App() returns JSX; React turns it into elements inside #root.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> How the page gets from index.html to our component: index.html, then main.jsx, then App.</p>
     <p>Show it: DevTools → Elements: everything React draws sits inside &lt;div id="root"&gt;.</p>
   </aside>
 </section>
@@ -166,6 +174,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>Make the page ours <span class="say">src/App.jsx · index.css · App.css</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f2s6" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5 f3s6" data-files="src/App.jsx src/index.css src/App.css src/assets/react.svg src/assets/vite.svg index.html"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We clear out the demo page, so App.jsx is ours and shows a plain heading.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Press <b>A</b>: the template disappears, our heading appears.</p>
 <!-- steps:react-vite:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -193,6 +202,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </table>
   <p class="bottomline">Every Fix It problem today breaks one of these rules.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The rules of JSX: it looks like HTML, but it follows JavaScript rules.</p>
     <p>Say: "JSX looks like HTML but it is JavaScript underneath, so it follows JavaScript's rules."</p>
   </aside>
 </section>
@@ -201,6 +211,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>{ } puts JavaScript values on the page <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f3s6" data-steps="f4s1 f4s2" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We put a JavaScript variable on the page using curly braces.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b></p>
 <!-- steps:react-vite:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -215,6 +226,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>Call a function inside { } <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f4s2" data-steps="f5s1 f5s2" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We call a function inside curly braces and show what it returns.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> Ask: "what if we write {sayHello} without ()?" (Fix It problem 5.)</p>
 <!-- steps:react-vite:f5 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -229,6 +241,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>className and a CSS import <span class="say">src/App.css · src/App.jsx</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f5s2" data-steps="f6s1 f6s2 f6s3" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We style the message: a class in App.css, an import, and className instead of class.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> After N 1 nothing changes: point out that App.jsx does not import App.css yet.</p>
 <!-- steps:react-vite:f6 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -251,6 +264,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </table>
   <p class="bottomline">A CSS file is not private to the component that imports it.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> A warning before it bites: every CSS file you import ends up in one stylesheet for the whole page.</p>
     <p>Say: "Importing a CSS file in a component does NOT scope it to that component. Vite adds every imported file to the same page."</p>
     <p>Fixes students meet later: unique class names, <b>CSS Modules</b> (unit 5, lecture 2), Tailwind (unit 6).</p>
     <p>Optional, for curious students: <a href="../optional-css-modules/index.html" target="_blank" rel="noopener">Components in folders, and CSS Modules</a> (not part of the lecture).</p>
@@ -261,6 +275,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   <h2>Inline styles are objects <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="react-vite" data-start="f6s3" data-steps="f7s1" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We add an inline style and see why it has double curly braces: it's a JavaScript object.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b></p>
 <!-- steps:react-vite:f7 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -281,6 +296,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=react-vite" target="_blank" rel="noopener">fixit.html?lesson=react-vite</a> · stuck 2 minutes? <b>Hint</b>, then <b>Show solution</b></p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken components on their own. Problems 1 to 6.</p>
     <p>Click the timer (6 minutes). Every problem breaks one rule from the JSX rules slide.</p>
     <p>Answers: teacher guide, and behind <b>Show solution</b>.</p>
   </aside>
@@ -294,6 +310,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
   </ol>
   <p class="bottomline">Top to bottom: they get harder as you go. Links are on the class site.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes after lecture 2.</p>
     <p>Curriculum: "It is important to practice making these React projects to the point where it's a reflex."</p>
   </aside>
 </section>

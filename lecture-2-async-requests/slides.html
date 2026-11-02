@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 2 · Lecture 2 · Async Requests</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -23,6 +23,7 @@
   <h1>Ask a server for data, and wait without freezing.</h1>
   <p class="sub">Search the PokeAPI with axios and draw a card for every Pokemon.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today the app talks to a real server: search the PokeAPI with axios and draw a card for every Pokemon.</p>
     <p><b>Before class</b>: open https://pokeapi.co/api/v2/pokemon/pikachu in a tab (to show the raw JSON). <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <p>The live preview calls the real PokeAPI: you need internet.</p>
   </aside>
@@ -41,6 +42,7 @@
   </ul>
   <p class="bottomline">Front ends are mostly: ask for data, then show it.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> What a request and a response look like, using the real PokeAPI answer for Pikachu.</p>
     <p>Show the raw JSON tab. Point at <b>sprites.front_default</b>: that is our card image.</p>
   </aside>
 </section>
@@ -62,6 +64,7 @@
   </div>
   <p class="bottomline">axios.get returns a promise at once. The data comes later.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> What asynchronous means: start the request, keep going, handle the answer when it comes.</p>
     <p>Say: "JavaScript has one thread. If it waited for the network, every click would freeze. So it hands back a promise: 'I'll tell you when it's done.'"</p>
   </aside>
 </section>
@@ -70,6 +73,7 @@
   <h2>Install axios <span class="say">package.json</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="null" data-steps="f1s1" data-files="package.json src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We install axios, the small library we'll use to make requests.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> Students run <code>npm install axios</code> (in Docker: rebuild the image, or <code>docker exec react-container npm install</code>).</p>
 <!-- steps:async-requests:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -84,6 +88,7 @@
   <h2>The search page <span class="say">src/App.jsx · src/App.css</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f1s1" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We build the search page: a heading, a search form and an empty box for the cards, with some CSS.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> The ids are on purpose: our tests (unit 3) and React (unit 4) use the same ones.</p>
 <!-- steps:async-requests:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -101,6 +106,7 @@
   <h2>Read the form <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f2s5" data-steps="f3s1 f3s2 f3s3" data-files="src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read what's typed in the form: stop the reload, grab the name, and ignore empty searches.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Press <b>A</b>, type Pikachu, Search: the Console shows "pikachu".</p>
 <!-- steps:async-requests:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -116,6 +122,7 @@
   <h2>Send the request: .then, .catch, .finally <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f3s3" data-steps="f4s1 f4s2 f4s3 f4s4" data-files="src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We send the real request with axios, and handle the answer with .then, .catch and .finally.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> After N 3, search: the Console shows <b>Promise</b> (pending). After N 4: the data, then try <b>pikachoo</b> → catch.</p>
 <!-- steps:async-requests:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -132,6 +139,7 @@
   <h2>Draw a card with the DOM <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f4s4" data-steps="f5s1 f5s2 f5s3 f5s4" data-files="src/App.jsx src/App.css"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We turn the answer into a card on the page: picture and name. Search pikachu, then bulbasaur.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Unit 1's createElement + appendChild, inside React.</p>
 <!-- steps:async-requests:f5 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -155,6 +163,7 @@
   </table>
   <p class="bottomline">catch catches everything in the chain, not only failed requests.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> All the ways a request can fail, and where each failure lands.</p>
     <p>Say: "If your card never shows and the console says Request failed, read the error message: it may be your own typo."</p>
   </aside>
 </section>
@@ -163,6 +172,7 @@
   <h2>Same request with async / await <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f5s4" data-steps="f6s1 f6s2 f6s3" data-files="src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We rewrite the same request with async and await. It does the same thing, but reads top to bottom.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b></p>
 <!-- steps:async-requests:f6 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -189,6 +199,7 @@
   </div>
   <p class="bottomline">await only works inside an async function, and it pauses that function, not the page.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Side by side: .then and await are the same promise, written two ways.</p>
     <p>Most code you'll read uses async/await. Both are fine; don't mix them in one function.</p>
   </aside>
 </section>
@@ -197,6 +208,7 @@
   <h2>Tell the user, and no duplicates <span class="say">src/App.jsx</span></h2>
   <div class="livepad" data-lesson="async-requests" data-start="f6s3" data-steps="f7s1 f7s2" data-files="src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We handle the real problems: tell the user when a name doesn't exist, and stop the same card being drawn twice.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Search pikachoo (alert), then pikachu twice (one card).</p>
 <!-- steps:async-requests:f7 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -218,6 +230,7 @@
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=async-requests" target="_blank" rel="noopener">fixit.html?lesson=async-requests</a> · the checks call the real PokeAPI</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken searches on their own. Problems 1 to 6.</p>
     <p>6 minutes. Problems 2 and 3 show "catch catches our own bugs too".</p>
   </aside>
 </section>
@@ -232,6 +245,7 @@
   </ul>
   <p class="bottomline">Today: requests and async. Next: test the app from the outside (unit 3).</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> An honest flag: React doesn't know about these cards yet. We fix that in unit 4.</p>
     <p>Say: "This works, but it is the unit-1 way inside React. Remember the pain; state fixes it."</p>
   </aside>
 </section>
@@ -245,6 +259,7 @@
   </ol>
   <p class="bottomline">Top to bottom. Links (and the setup notes) are on the class site.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p>
     <p>The class site's homework section has the Node 24 / port 5173 setup notes for these repos.</p>
   </aside>
 </section>

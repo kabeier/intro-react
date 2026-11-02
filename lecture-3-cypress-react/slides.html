@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 3 · Lecture 1 · Cypress and React</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -22,6 +22,7 @@
   <h1>A robot that uses your app the way a user does.</h1>
   <p class="sub">Install Cypress and write the first tests for the Pokemon search.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we add a robot that uses the app like a user: install Cypress and write our first tests.</p>
     <p><b>Before class</b>: the unit 2 app running in Docker (http://localhost:5173). Node 24 on your laptop (Cypress 16 needs Node 22, 24 or 26).</p>
     <p>In the slides, <b>▶ Run tests</b> runs the specs beside the live app (results match real Cypress: checked).</p>
     <p>Press <b>T</b> to start the clock.</p>
@@ -37,6 +38,7 @@
   </ul>
   <p class="bottomline">A test is a check you never have to do by hand again.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why write tests at all: a test re-checks in seconds what takes minutes by hand.</p>
     <p>Say: "In unit 4 we rewrite this page in React state. These tests will tell us if we broke anything."</p>
   </aside>
 </section>
@@ -51,6 +53,7 @@
   </table>
   <p class="bottomline">Many small unit tests, fewer end-to-end tests: e2e tests are slower but closest to the user.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The three kinds of tests, and which one Cypress is.</p>
     <p>The testing pyramid: unit at the bottom (many, fast), e2e at the top (few, slow, most realistic).</p>
   </aside>
 </section>
@@ -70,13 +73,15 @@
     </ul>
   </div>
   <p class="bottomline">Cypress drives a browser like a user, and checks what the user would see.</p>
-  <aside class="notes"><p>Say: "Cypress commands are queued and run one after another; you don't use their return values like in Jest."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why we picked Cypress: a real browser, built-in waiting, and every step visible.</p><p>Say: "Cypress commands are queued and run one after another; you don't use their return values like in Jest."</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: install" data-at="6">
   <h2>Install Cypress <span class="say">package.json</span></h2>
   <div class="livepad" data-lesson="cypress-react" data-start="null" data-steps="f1s1 f1s2" data-files="package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We install Cypress as a dev dependency and add two scripts: one opens it, one runs every test.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students run <code>npm install cypress --save-dev</code> <b>on their laptop</b> (not in Docker).</p>
 <!-- steps:cypress-react:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -97,6 +102,7 @@
   </table>
   <p class="bottomline">Start the app first. Then run Cypress.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Where everything runs: the app in Docker, Cypress on the laptop, and how they meet on port 5173.</p>
     <p>Windows/WSL: Cypress needs extra Linux libraries (the Cypress docs list them). Ask for help early.</p>
   </aside>
 </section>
@@ -105,6 +111,7 @@
   <h2>Configure Cypress <span class="say">cypress.config.js · .gitignore · .oxlintrc.json</span></h2>
   <div class="livepad" data-lesson="cypress-react" data-start="f1s2" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress.config.js .gitignore .oxlintrc.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We set up Cypress: where the app lives, the browser size, what git ignores, and teaching the linter about Cypress.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b></p>
 <!-- steps:cypress-react:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -127,7 +134,8 @@
 ├─ cypress.config.js
 └─ package.json</pre>
   <p class="bottomline">One spec file per area of the app: home.cy.js today, pokemon.cy.js next.</p>
-  <aside class="notes"><p>The first <code>cy:open</code> may create <code>cypress/support</code> and <code>fixtures/example.json</code>: delete them (we set supportFile: false).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Where test files go in the project.</p><p>The first <code>cy:open</code> may create <code>cypress/support</code> and <code>fixtures/example.json</code>: delete them (we set supportFile: false).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="17">
@@ -141,13 +149,15 @@
     <tr><td class="pk"><code>.should('be.visible')</code></td><td>what must be true (retried until it is)</td></tr>
   </table>
   <p class="bottomline">Visit, find, check. Every test starts on a blank page.</p>
-  <aside class="notes"><p>Fix It problem 1 is exactly "forgot cy.visit".</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We take one test apart, piece by piece, before we write any.</p><p>Fix It problem 1 is exactly "forgot cy.visit".</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: first tests" data-at="19">
   <h2>The first tests <span class="say">cypress/e2e/home.cy.js</span></h2>
   <div class="livepad" data-lesson="cypress-react" data-start="f2s4" data-steps="f3s1 f3s2 f3s3" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We write our first two tests in home.cy.js: the header is there, and there are no cards before a search.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> After N 2 and N 3 press <b>▶ Run tests</b>. Then break one on purpose (change 0 to 1) and run again: read the red message together.</p>
 <!-- steps:cypress-react:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -169,6 +179,7 @@
   </table>
   <p class="bottomline">Green in cy:open, green in cy:run: same tests, two ways to watch.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> The two ways to run tests on your laptop, and when to use each.</p>
     <p><b>** LIVE, about 2 minutes. **</b> Run <code>npm run cy:open</code> on your laptop with the Docker app running.</p>
     <p><b>Different from the curriculum</b> (until merged): <code>"cy:run": "npx cypress run --spec"</code> fails without a file name; we use <code>"cypress run"</code> and pass <code>-- --spec</code> when needed.</p>
   </aside>
@@ -185,7 +196,8 @@
     <tr><td>Timed out retrying after 4000ms</td><td>it never became true within 4 s</td></tr>
   </table>
   <p class="bottomline">The first line of the error tells you which of these it is.</p>
-  <aside class="notes"><p>These are the Fix It problems, in the same words.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to read a red test: what Cypress says, and what it usually means.</p><p>These are the Fix It problems, in the same words.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="28">
@@ -198,7 +210,8 @@
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=cypress-react" target="_blank" rel="noopener">fixit.html?lesson=cypress-react</a></p>
-  <aside class="notes"><p>6 minutes. "What the tests said" under the result shows the runner's output.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken tests and config on their own. The app is fine. Problems 1 to 6.</p><p>6 minutes. "What the tests said" under the result shows the runner's output.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="35">
@@ -209,7 +222,8 @@
     <li>We will rewrite it to say what the app does then, and every other test stays</li>
   </ul>
   <p class="bottomline">A failing test after a planned change = update the test. An unplanned one = a bug.</p>
-  <aside class="notes"><p>Say: "From unit 4 on, every feature starts with a failing test."</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> One of today's tests will fail on purpose in unit 4. That's normal: tests change when the app changes.</p><p>Say: "From unit 4 on, every feature starts with a failing test."</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -218,7 +232,8 @@
     <li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team project and add a Cypress test suite that will be capable of rendering the Home page and ensure it exists."</li>
   </ol>
   <p class="bottomline">Part II comes with lecture 2. Links are on the class site.</p>
-  <aside class="notes"><p>Same setup as today: app in Docker, Cypress on the laptop, baseUrl 5173, supportFile: false.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I.</p><p>Same setup as today: app in Docker, Cypress on the laptop, baseUrl 5173, supportFile: false.</p></aside>
 </section>
 
 </div>

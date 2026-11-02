@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 9 · Lecture 1 · GitHub Pages</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -26,6 +26,7 @@
   <h1>GitHub Pages: put the app on the internet.</h1>
   <p class="sub">Build it, make it work under /&lt;repo&gt;/, and publish with gh-pages.</p>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we put the app on the internet: build it, make it work under the repo's address, and publish with gh-pages.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Have a repo with the Pokemon app pushed (a fork of your class repo works).</p>
     <p>The build and the deploy run on laptops, not in the slides: the slides show the files.</p>
   </aside>
@@ -40,7 +41,8 @@
     <tr><td>Mode</td><td>development (StrictMode doubles, warnings)</td><td>production (small, fast)</td></tr>
   </table>
   <p class="bottomline">GitHub Pages serves files. It runs no server code.</p>
-  <aside class="notes"><p>Show <code>npm run build</code> and <code>npm run preview</code> (localhost:4173): dist/index.html + assets/index-&lt;hash&gt;.js.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Development vs production: what npm run build really makes.</p><p>Show <code>npm run build</code> and <code>npm run preview</code> (localhost:4173): dist/index.html + assets/index-&lt;hash&gt;.js.</p></aside>
 </section>
 
 <section class="slide" data-seg="Live" data-at="3">
@@ -51,7 +53,8 @@
     <li>Open dist/index.html in the editor: the script path starts with <code>/assets/</code></li>
   </ol>
   <p class="bottomline">The hash in the file name changes when the code changes (no stale caches).</p>
-  <aside class="notes"><p>dist/ is in .gitignore: never commit it to main; gh-pages puts it on its own branch.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We run a real build, look at dist/, and serve it locally.</p><p>dist/ is in .gitignore: never commit it to main; gh-pages puts it on its own branch.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="4">
@@ -62,13 +65,15 @@
     <tr><td>you.github.io/pokemon-app/</td><td class="pk"><code>/pokemon-app/assets/index.js</code></td><td class="pk">works</td></tr>
   </table>
   <p class="bottomline">base tells Vite the folder. Only for the build.</p>
-  <aside class="notes"><p>A blank white page on GitHub Pages = wrong base, almost always.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Problem 1: on GitHub Pages the app lives in a folder, so its files can't be found.</p><p>A blank white page on GitHub Pages = wrong base, almost always.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: base" data-at="6">
   <h2>base, only in production <span class="say">vite.config.js</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="null" data-steps="f1s1" data-files="vite.config.js"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We fix Problem 1 by setting base in vite.config.js, only for production.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students type their own repo name.</p>
 <!-- steps:deploy-pages:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -87,7 +92,8 @@
     <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965548794" target="_blank" rel="noopener">✓ conditional base in viteconfig</a></td><td class="pk">base only in production: green, then deployed</td></tr>
   </table>
   <p class="bottomline">Real runs from the instructor's rehearsal repo.</p>
-  <aside class="notes"><p>And in the class repo: <code>defineConfig((mode) =&gt;</code> instead of <code>({ mode })</code> made the base silently never apply (fixed in <a href="https://github.com/kabeier/demo_test2/actions/runs/30006937353" target="_blank" rel="noopener">fix mode typo</a>).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> A real story: 8 red runs caused by getting base wrong.</p><p>And in the class repo: <code>defineConfig((mode) =&gt;</code> instead of <code>({ mode })</code> made the base silently never apply (fixed in <a href="https://github.com/kabeier/demo_test2/actions/runs/30006937353" target="_blank" rel="noopener">fix mode typo</a>).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="11">
@@ -98,13 +104,15 @@
     <tr><td class="pk">hash</td><td class="pk">/pokemon-app/#/about</td><td class="pk">works: the server only sees /pokemon-app/</td></tr>
   </table>
   <p class="bottomline">Hash router in the build; normal paths while developing.</p>
-  <aside class="notes"><p>Hosts with a server (Netlify, Vercel, your own) can send every path to index.html instead.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Problem 2: refreshing /about on GitHub Pages gives a 404.</p><p>Hosts with a server (Netlify, Vercel, your own) can send every path to index.html instead.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: hash" data-at="13">
   <h2>The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1 f2s2 f2s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production, and add a small test for the built site.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
 <!-- steps:deploy-pages:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -120,6 +128,7 @@
   <h2>Publish with gh-pages <span class="say">package.json</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1 f3s2" data-files="package.json"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We set up the gh-pages package, so npm run deploy publishes the app.</p>
     <p><b>** CODE ALONG, about 3 minutes. **</b> Then live: <code>npm install --save-dev gh-pages</code>, <code>npm run deploy</code>.</p>
 <!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -140,7 +149,8 @@
     <li>Open https://&lt;you&gt;.github.io/&lt;repo&gt;/#/about and refresh</li>
   </ol>
   <p class="bottomline">Each deploy = npm run deploy again.</p>
-  <aside class="notes"><p>The Actions tab run after a local deploy is GitHub's own, not a workflow you wrote (the curriculum's "check the Actions tab" means that one).</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We deploy live, step by step, and turn on GitHub Pages.</p><p>The Actions tab run after a local deploy is GitHub's own, not a workflow you wrote (the curriculum's "check the Actions tab" means that one).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="25">
@@ -153,7 +163,8 @@
     <tr><td>404 for the whole site</td><td>Settings → Pages → branch gh-pages</td></tr>
   </table>
   <p class="bottomline">Network tab first.</p>
-  <aside class="notes"><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What to check when the deployed page is blank.</p><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: deploy" data-at="28">
@@ -166,7 +177,8 @@
     <li>Post your URL in the class chat</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Stuck? Use the table on the previous slide.</p>
-  <aside class="notes"><p>8 minutes. Walk the room: base and the Pages setting are 90% of the problems.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages setting are 90% of the problems.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -178,7 +190,8 @@
     <li>gh-pages pushes dist/ to a branch Pages serves</li>
   </ul>
   <p class="bottomline">Next: GitHub runs the tests and deploys for you.</p>
-  <aside class="notes"><p>—</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model for deploying.</p><p>—</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
@@ -187,7 +200,8 @@
     <li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>
   </ol>
   <p class="bottomline">Part II comes with lecture 2.</p>
-  <aside class="notes"><p>Suggest a checklist: live URL in the README, conditional base, hash router.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Suggest a checklist: live URL in the README, conditional base, hash router.</p></aside>
 </section>
 
 </div>

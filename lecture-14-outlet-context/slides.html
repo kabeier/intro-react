@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Unit 8 · Lecture 2 · useOutletContext</title>
-<link rel="stylesheet" href="../shared/deck.css?v=1">
+<link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
 <link rel="stylesheet" href="../shared/livepad.css?v=5">
 <style>
@@ -25,7 +25,8 @@
   <div class="kicker">Front-End · Unit 8: React Router Hooks · Lecture 2 of 2</div>
   <h1>useOutletContext: state that survives a change of page.</h1>
   <p class="sub">The cards, the count, and Pikachu loading once.</p>
-  <aside class="notes"><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Show the bug first: search, About, Home: gone.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Today we fix a real bug: the cards and the count disappear when you change page. By the end, Pikachu loads only once too.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Show the bug first: search, About, Home: gone.</p></aside>
 </section>
 
 <section class="slide" data-seg="Why" data-at="1">
@@ -37,7 +38,8 @@
     <tr><td>click Home</td><td>HomePage mounts fresh: list = [] (then Pikachu loads again)</td></tr>
   </table>
   <p class="bottomline">State dies with the component that owns it.</p>
-  <aside class="notes"><p>The console shows the mounted/unmounted logs.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why the cards disappear: leaving a page throws away its state.</p><p>The console shows the mounted/unmounted logs.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="3">
@@ -49,13 +51,15 @@
     <li>Inside the page it's normal props again (PokeSearch → PokeContainer → PokeCard)</li>
   </ul>
   <p class="bottomline">The layout owns what every page needs.</p>
-  <aside class="notes"><p><b>Different from the curriculum</b> (until merged): context is not "global state"; only pages under that Outlet can read it.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The fix: move the state up to App, which never leaves, and pass it down through the Outlet.</p><p><b>Different from the curriculum</b> (until merged): context is not "global state"; only pages under that Outlet can read it.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: list" data-at="5">
   <h2>The cards survive <span class="say">navigation.cy.js · App.jsx · PokeSearch.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We move the card list up to App, and a test proves the cards survive a trip to About.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Red, then green.</p>
 <!-- steps:outlet-context:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -76,7 +80,8 @@
 // any page (or a component inside it)
 const { pokemonList, setPokemonList } = useOutletContext()</pre>
   <p class="bottomline">Same names on both sides: it's one object.</p>
-  <aside class="notes"><p>Fix It: a renamed key, an array instead of an object, the hook used in App itself.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read useOutletContext: how state gets from App down to a page.</p><p>Fix It: a renamed key, an array instead of an object, the hook used in App itself.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="13">
@@ -87,13 +92,15 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <tr><td>About, then Home</td><td class="pk">PokeSearch mounts again → its start-up effect fetches Pikachu → added again</td></tr>
   </table>
   <p class="bottomline">Start-up work for the app belongs where the app starts: App.</p>
-  <aside class="notes"><p>The instructor's version of this lesson had this bug; the test below catches it.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> That fix makes a new bug: remove Pikachu, come back, and Pikachu returns.</p><p>The instructor's version of this lesson had this bug; the test below catches it.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: Pikachu" data-at="15">
   <h2>Pikachu loads once <span class="say">navigation.cy.js · PokeSearch.jsx · App.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="f1s4" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> We move the Pikachu request up to App, so it runs once. A test proves a removed Pikachu stays gone.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> The test searches Charizard so Pikachu's old request has time to arrive: an honest count.</p>
 <!-- steps:outlet-context:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -110,6 +117,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   <h2>The count survives too <span class="say">navigation.cy.js · App.jsx · Counter.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="f2s4" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/Counter/Counter.jsx"></div>
   <aside class="notes">
+    <p class="plan"><b>The plan:</b> Same problem, same fix: the click count moves to App too. That takes us to 33 green tests.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 33 green.</p>
 <!-- steps:outlet-context:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -131,7 +139,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <tr><td>one card's shiny</td><td>PokeCard</td><td>no: the card unmounts</td></tr>
   </table>
   <p class="bottomline">To keep it, lift it: App holds the shiny ids. Same rule, one more time.</p>
-  <aside class="notes"><p>Optional extension (instructor's call): shinyIds in App, toggleShiny(id) in the context. The curriculum's "shiny survives navigation" test needs it.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Why shiny still resets, and what it would take to keep it.</p><p>Optional extension (instructor's call): shinyIds in App, toggleShiny(id) in the context. The curriculum's "shiny survives navigation" test needs it.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="27">
@@ -144,7 +153,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <tr><td>the logged-in user (later)</td><td class="pk">App, or the server</td></tr>
   </table>
   <p class="bottomline">Ask: who needs it, and must it survive a page change?</p>
-  <aside class="notes"><p>Quick class discussion, 1 minute.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> A review: where should each piece of state live?</p><p>Quick class discussion, 1 minute.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="28">
@@ -156,7 +166,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <tr><td>keeps the click count across pages</td><td>count lives in App</td></tr>
   </table>
   <p class="bottomline">Each one leaves a page and comes back.</p>
-  <aside class="notes"><p>Unit 9 runs all 33 on GitHub for every push.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The test suite now: 33 tests, and what each new one guards.</p><p>Unit 9 runs all 33 on GitHub for every push.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="29">
@@ -169,7 +180,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <li>Do 1–6. Fast? Try 7–10</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=outlet-context" target="_blank" rel="noopener">fixit.html?lesson=outlet-context</a></p>
-  <aside class="notes"><p>6 minutes.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students fix broken outlet context on their own. Problems 1 to 6.</p><p>6 minutes.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="36">
@@ -181,7 +193,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <li>Start-up work for the whole app runs in App</li>
   </ul>
   <p class="bottomline">Next unit: put it online, and let GitHub run the tests.</p>
-  <aside class="notes"><p>—</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> The mental model: leaving a page unmounts it, and the layout never does.</p><p>—</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
@@ -191,7 +204,8 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </ol>
   <p class="small">Stretch: <b>News Site III</b>, <b>News Site IV</b></p>
   <p class="bottomline">Links are on the class site.</p>
-  <aside class="notes"><p>R&amp;M IV's favorites page is this lecture's pattern: favorites in App, shared through the Outlet.</p></aside>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p><p>R&amp;M IV's favorites page is this lecture's pattern: favorites in App, shared through the Outlet.</p></aside>
 </section>
 
 </div>
