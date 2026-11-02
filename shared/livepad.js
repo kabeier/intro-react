@@ -12,6 +12,7 @@
   const channel = new BroadcastChannel('livepad')
   let splitOpen = false
   let popWin = null, popOpen = false, lastSent = 0
+  let opening = false // this window just opened the pop-out: the new window has the focus, so answer its hello
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   const langOf = (f) => (f.endsWith('.css') ? 'css' : f.endsWith('.js') ? 'javascript' : f.endsWith('.html') ? 'html' : 'plaintext')
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -362,12 +363,12 @@
     if (popWin && !popWin.closed) { popWin.focus(); return }
     const g = readGeom() || { w: Math.round(screen.availWidth / 2), h: screen.availHeight, x: Math.round(screen.availWidth / 2), y: 0 }
     popWin = window.open(POPOUT, 'livepad-popout', `popup=yes,width=${g.w},height=${g.h},left=${g.x},top=${g.y}`)
-    if (popWin) setPop(true)
+    if (popWin) { opening = true; setPop(true) }
   }
   let lastHello = 0
   channel.onmessage = (e) => {
     const t = e.data && e.data.type
-    if (t === 'hello') { lastHello = Date.now(); if (!popOpen) setPop(true); if (document.hasFocus() || !lastSent) broadcast() }
+    if (t === 'hello') { lastHello = Date.now(); if (!popOpen) setPop(true); if (document.hasFocus() || !lastSent || opening) broadcast(); opening = false }
     else if (t === 'bye') { popWin = null; setPop(false) }
   }
   // Is the pop-out still there? (Its "bye" can be lost, e.g. during a reload.)

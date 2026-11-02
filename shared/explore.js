@@ -13,7 +13,7 @@
   let tab = lesson ? Course.tabOrder(Object.keys(lesson.files))[0] : null
   let picked = null
   const channel = new BroadcastChannel('livepad')
-  let popWin = null
+  let popWin = null, opening = false
 
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   const featOf = (id) => feats.find((f) => f.id === id)
@@ -182,6 +182,7 @@
   }
   function popOut() {
     if (popWin && !popWin.closed) return popWin.focus()
+    opening = true // the new window takes the focus: answer its hello anyway
     popWin = window.open('shared/popout.html', 'livepad-popout', 'popup=yes,width=900,height=800')
   }
   // Messages from the preview: console lines, and a form submit nobody prevented (reload, like a real browser).
@@ -201,7 +202,7 @@
   })
   const clearConsole = () => { const l = document.querySelector('.ex-console-lines'); if (l) l.textContent = '' }
   // Answer the pop-out only while this tab is the one being used.
-  channel.onmessage = (e) => { if (e.data && e.data.type === 'hello' && document.hasFocus()) send() }
+  channel.onmessage = (e) => { if (e.data && e.data.type === 'hello' && (document.hasFocus() || opening)) { opening = false; send() } }
   addEventListener('focus', send)
 
   function go(fid) {

@@ -117,3 +117,15 @@ test('a pop-out that goes silent is shown as closed', async () => {
   await until(page, () => /Pop out/.test(document.querySelector('.slide.active .lp-pop').textContent), null, 8000)
   await context.close()
 })
+
+// A new window takes the focus, so the deck is not focused when the pop-out says hello.
+test('Pop out on a later code slide shows that slide, though the new window has the focus', async () => {
+  const { context, page } = await open()
+  await page.keyboard.press('ArrowRight') // moving between slides is what sends a page first
+  await page.waitForTimeout(300)
+  await page.evaluate(() => { document.hasFocus = () => false })
+  const [popup] = await Promise.all([context.waitForEvent('page'), page.evaluate(() => document.querySelector('.slide.active .lp-pop').click())])
+  await until(popup, () => /slide 3/.test(document.querySelector('.pop-title').textContent))
+  await until(popup, () => document.querySelector('iframe').contentDocument.querySelector('h1'))
+  await context.close()
+})
