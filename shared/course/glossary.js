@@ -132,8 +132,6 @@
     { file: /package\.json$/, line: /^"private": true/, boilerplate: true, note: () => n('Marks the project as private.', 'npm refuses to publish it to the npm registry by accident.') },
     { file: /package\.json$/, line: /^"version": "([^"]+)"/, boilerplate: true, note: (m) => n(`The project's version: ${m[1]}.`, 'Only matters for published packages.') },
     { file: /package\.json$/, line: /^"type": "module"/, boilerplate: true, note: () => n('Files use import/export (ES modules).', 'Instead of the older require().') },
-    { file: /package\.json$/, line: /^"engines": \{/, boilerplate: true, note: () => n('Which Node.js versions the project needs.', 'npm warns when your Node is too old.') },
-    { file: /package\.json$/, line: /^"node": "([^"]+)"/, boilerplate: true, note: (m) => n(`Allowed Node.js versions: ${m[1]}.`, 'Vite 8 needs Node 20.19+ or 22.12+; we use 24.') },
     { file: /package\.json$/, line: /^"scripts": \{/, boilerplate: true, note: () => n('Shortcuts you run with npm run <name>.', 'npm run dev, npm run build…') },
     { file: /package\.json$/, line: /^"dependencies": \{/, boilerplate: true, note: () => n('Packages the app needs to run.', 'npm install puts them in node_modules.') },
     { file: /package\.json$/, line: /^"devDependencies": \{/, boilerplate: true, note: () => n('Packages needed only while developing (build tools, linters, test runners).', 'They are not part of the built site.') },

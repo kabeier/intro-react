@@ -12,7 +12,7 @@ Course.register({
     // ---------------------------------------------------------------- f1
     {
       id: 'f1', title: 'Ready for Docker',
-      why: 'Inside a container the dev server must listen on every network interface (--host), or the port we publish can\'t reach it. engines says which Node versions the project needs.',
+      why: 'Inside a container the dev server must listen on every network interface (--host), or the port we publish can\'t reach it.',
       steps: [
         {
           id: 'f1s1', file: 'package.json', mode: 'replace', find: '"dev": "vite",', code: '"dev": "vite --host",',
@@ -20,14 +20,6 @@ Course.register({
           notes: [
             { match: '"dev": "vite --host"', what: 'The dev script: npm run dev runs vite --host.', why: 'By default Vite only listens on localhost inside the container. --host makes it listen on all interfaces, so -p 5173:5173 can reach it.',
               api: { name: 'vite (dev server)', does: 'Serves the app with hot reload while you code.', params: [['--host', 'listen on all network interfaces', 'needed in Docker; not needed when you run Vite directly on your laptop'], ['--port', 'which port (default 5173)', 'leave it at 5173 unless something else uses it']], mistakes: ['Forgetting --host in Docker: the container runs, but http://localhost:5173 says "connection reset".'] } },
-          ],
-        },
-        {
-          id: 'f1s2', file: 'package.json', mode: 'insertAfter', find: '"type": "module",',
-          code: '  "engines": {\n    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"\n  },',
-          say: 'engines documents which Node versions work: Vite 8 and (later) Cypress 16 both need one of these.',
-          notes: [
-            { match: '"engines"', what: 'The Node versions this project works with.', why: 'Vite 8 needs Node 20.19+ or 22.12+; Cypress 16 (unit 3) needs 22, 24 or 26+. npm warns when your Node does not fit.' },
           ],
         },
       ],

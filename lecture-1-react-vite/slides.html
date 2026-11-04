@@ -89,14 +89,13 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
 
 <section class="slide code" data-seg="Code along: Docker prep" data-at="7">
   <h2>Ready for Docker <span class="say">package.json</span></h2>
-  <div class="livepad" data-lesson="react-vite" data-start="null" data-steps="f1s1 f1s2" data-files="package.json src/App.jsx"></div>
+  <div class="livepad" data-lesson="react-vite" data-start="null" data-steps="f1s1" data-files="package.json src/App.jsx"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Two small changes to package.json so the app can run inside Docker: the --host flag and the Node versions.</p>
-    <p><b>** CODE ALONG, about 2 minutes. **</b> The preview shows the template running.</p>
+    <p class="plan"><b>The plan:</b> One small change to package.json so the app can run inside Docker: the --host flag.</p>
+    <p><b>** CODE ALONG, about 1 minute. **</b> The preview shows the template running.</p>
 <!-- steps:react-vite:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"dev": "vite --host",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm run dev starts Vite. --host: listen on all interfaces, so Docker's published port can reach it.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"engines": {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">engines documents which Node versions work: Vite 8 and (later) Cypress 16 both need one of these.</td></tr>
 </table>
 <!-- /steps -->
     <p><b>Different from the curriculum</b> (until merged): it said --host is needed "at every parent level" of a Docker network. Real reason: inside a container Vite listens only on the container's own localhost.</p>
@@ -105,7 +104,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
 
 <section class="slide code" data-seg="Code along: Docker" data-at="9">
   <h2>Dockerfile and run_container.sh <span class="say">Dockerfile · .dockerignore · run_container.sh</span></h2>
-  <div class="livepad" data-lesson="react-vite" data-start="f1s2" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="Dockerfile .dockerignore run_container.sh package.json"></div>
+  <div class="livepad" data-lesson="react-vite" data-start="f1s1" data-steps="f2s1 f2s2 f2s3 f2s4 f2s5 f2s6" data-files="Dockerfile .dockerignore run_container.sh package.json"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We write the Dockerfile and run_container.sh, so the app runs in a container and still reloads when we save.</p>
     <p><b>** CODE ALONG, about 5 minutes. **</b> Then students run <code>bash run_container.sh</code> and open http://localhost:5173.</p>
@@ -319,7 +318,7 @@ npm run dev        <span class="c"># http://localhost:5173</span></pre>
 <script src="../shared/deck.js?v=2"></script>
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>
-<script src="../shared/course/react-vite.js?v=1"></script>
+<script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=10"></script>
 </body>

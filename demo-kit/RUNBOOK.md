@@ -19,7 +19,7 @@ Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code 
 | 2 | 1 | — | two tools, two jobs |
 | 3 | 3 | — | virtual DOM = compare with the previous render |
 | 4 | 5 | students run create vite in a terminal | @latest, --template react |
-| 5 | 7 | **N ×2** | --host, engines |
+| 5 | 7 | **N ×1** | --host |
 | 6 | 9 | **N ×6**, students `bash run_container.sh` | flag table in notes |
 | 7 | 14 | — | file tour |
 | 8 | 15 | DevTools → Elements on the pop-out | index.html → main.jsx → App |

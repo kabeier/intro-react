@@ -27,9 +27,13 @@ test('features f1..f7 with a why; every step applies, is short, has a say', () =
   }
 })
 
+test('package.json stays as Vite made it, apart from --host (no engines block)', () => {
+  for (const s of steps) assert.doesNotMatch(Course.filesAt(lesson, s.id)['package.json'], /"engines"/, s.id)
+})
+
 test('every Docker instruction, docker flag and JSX idea has a note', () => {
   for (const k of ['FROM node:24', 'WORKDIR', 'COPY . .', 'RUN npm install', 'EXPOSE 5173', 'CMD [', '--host', '-p 5173:5173', '-v "$(pwd)":/app', '-v /app/node_modules',
-    '--name react-container', 'docker build', '"engines"', '<>', '{message}', '{sayHello()}', 'className=', 'style={{', "import './App.css'", 'export default App', 'function App()'])
+    '--name react-container', 'docker build', '<>', '{message}', '{sayHello()}', 'className=', 'style={{', "import './App.css'", 'export default App', 'function App()'])
     assert.ok(notes.some((n) => n.match.includes(k) || k.includes(n.match)), 'note for ' + k)
   for (const n of notes) assert.ok(n.what && n.why, n.match)
 })
