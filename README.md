@@ -17,7 +17,7 @@ Lecture site for Code Platoon Phase II, Front-End units 2–9: one Pokemon app b
 
 ## Deck keys
 
-→ / Space next · ← back · **N** next step · **Shift+N** reset slide · **A** live app · **↗ Pop out** · P notes · T clock · F fullscreen
+→ / Space next · ← back · **N** next step · **Shift+N** reset slide (or the **▶ Next line** / **↺ Reset** buttons on the code bar; the presenter window has **Type next step** and **↺ Reset slide code**) · **A** live app · **↗ Pop out** · P notes · T clock · F fullscreen
 
 ## Notes
 

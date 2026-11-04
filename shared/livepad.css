@@ -36,6 +36,9 @@
   font: 600 15px/1 system-ui, sans-serif; cursor: pointer; white-space: nowrap;
 }
 .lp-btn.on { background: #f0a020; color: #111; border-color: #f0a020; }
+/* Next line / Reset: what N and Shift+N do, for students following along */
+.lp-next { background: #1f9d6b; border-color: #1f9d6b; color: #fff; }
+.lp-btn:disabled { opacity: .45; cursor: default; }
 /* A: the live app slides in on the right */
 .livepad.split .lp-body { grid-template-columns: 1.15fr 1fr; }
 .livepad.split .lp-preview { position: static; width: auto; height: auto; border-left: 1px solid #3c3c3c; }

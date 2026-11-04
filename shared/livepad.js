@@ -5,6 +5,7 @@
 //                  data-steps="f2s1 f2s2" data-files="index.html styles.css"></div>
 //   N        type the next step (short chunk) into the editor
 //   Shift+N  reset this slide to its start
+//   (the bar's "Next line" and "Reset" buttons do the same, for students following along)
 // On a page:  Livepad.mount(el, { files, editable: true, onChange(files) })
 (() => {
   const MONACO = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/'
@@ -149,11 +150,14 @@
       files: { ...opts.files }, assets: opts.assets || {}, tabs: opts.tabs, tab: opts.tabs[0], editable: opts.editable !== false,
       fontSize: opts.fontSize || 18, onChange: opts.onChange || null, typeable: !!opts.typeable,
       windows: opts.windows || null, snippet: !!opts.windows, wrap: !!opts.wrap, tree: opts.tree !== false,
-      busy: false, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
+      busy: false, gen: 0, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
     }
     el.classList.add('livepad')
     el.innerHTML = `<div class="lp-bar"><button type="button" class="lp-btn lp-files" title="Show or hide the project files (E)">📁 Files</button><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
-      `<span class="lp-status"></span><button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
+      `<span class="lp-status"></span>` +
+      `<button type="button" class="lp-btn lp-next" title="Type the next step (N)" hidden>▶ Next line</button>` +
+      `<button type="button" class="lp-btn lp-reset" title="Start this slide's code over (Shift+N)" hidden>↺ Reset</button>` +
+      `<button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
       `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-work"><div class="lp-tree"></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
@@ -296,6 +300,19 @@
     pad.next = async () => {
       if (pad.busy || pad.idx >= pad.steps.length) return
       const step = pad.steps[pad.idx]
+      // A move renames the file: its tab hides and the new name's tab shows the same text.
+      if (step.mode === 'move') {
+        pad.files[step.to] = pad.files[step.file]
+        delete pad.files[step.file]
+        if (!pad.tabs.includes(step.to)) pad.openFile(step.to)
+        pad.setFile(step.to, pad.files[step.to])
+        pad.syncTabs()
+        pad.showTab(step.to)
+        pad.idx++
+        pad.refresh()
+        pad.showLater()
+        return
+      }
       if (step.mode === 'delete') {
         delete pad.files[step.file]
         pad.syncTabs()
@@ -313,6 +330,7 @@
         throw e
       }
       pad.busy = true
+      const gen = pad.gen // Reset while typing bumps it: stop, and leave the start code alone
       if (!(step.file in pad.files)) { pad.files[step.file] = ''; pad.syncTabs() }
       pad.showTab(step.file)
       // Type only the part that changes, a few characters per frame.
@@ -326,6 +344,7 @@
         pad.setFile(step.file, head + mid.slice(0, Math.ceil((mid.length * k) / frames)) + tail)
         if (!pad.editor || pad.editor.set === undefined) break
         await sleep(20)
+        if (gen !== pad.gen) return
       }
       pad.setFile(step.file, text)
       const first = head.split('\n').length
@@ -363,8 +382,17 @@
         box.hidden = false
       } else box.hidden = true
     }
+    // Next line greyed out while typing or when every step is in; both hidden on pages without steps.
+    pad.drawSteps = () => {
+      const on = !!(pad.lesson && pad.steps.length)
+      el.querySelector('.lp-next').hidden = !on
+      el.querySelector('.lp-reset').hidden = !on
+      el.querySelector('.lp-next').disabled = pad.busy || pad.idx >= pad.steps.length
+    }
     pad.reset = () => {
-      if (pad.busy || !pad.lesson) return
+      if (!pad.lesson) return
+      pad.gen++
+      pad.busy = false
       pad.idx = 0
       pad.setFiles(Course.filesAt(pad.lesson, pad.start))
       if (pad.editor) pad.editor.flash([])
@@ -376,6 +404,9 @@
     el.querySelector('.lp-app').onclick = (e) => { e.currentTarget.blur(); toggleSplit() }
     el.querySelector('.lp-pop').onclick = (e) => { e.currentTarget.blur(); popOut() }
     el.querySelector('.lp-run').onclick = (e) => { e.currentTarget.blur(); pad.runTests() }
+    el.querySelector('.lp-next').onclick = (e) => { e.currentTarget.blur(); nextStep(pad) }
+    el.querySelector('.lp-reset').onclick = (e) => { e.currentTarget.blur(); resetSteps(pad) }
+    pad.drawSteps()
     paint(pad)
     pad.showTree()
     pad.showTab(pad.tab)
@@ -455,13 +486,32 @@
   addEventListener('focus', () => broadcast())
   document.addEventListener('visibilitychange', () => { if (!document.hidden) broadcast() })
 
+  // The presenter window shows the step count, and its button does what N does (deck.js).
+  function reportPad() {
+    pads.forEach((p) => p.drawSteps && p.drawSteps())
+    const pad = active()
+    const on = pad && pad.lesson && pad.steps.length
+    dispatchEvent(new CustomEvent('deck-pad-status', { detail: on
+      ? { step: pad.idx, total: pad.steps.length, busy: !!pad.busy, error: /^✕ can't apply/.test(pad.status || '') ? pad.status : null }
+      : null }))
+  }
+  function nextStep(pad) {
+    const typed = pad.next()
+    reportPad() // busy while it types
+    return typed.finally(reportPad)
+  }
+  function resetSteps(pad) { pad.reset(); reportPad() }
+  addEventListener('deck-pad-ask', reportPad)
+  addEventListener('deck-pad-next', () => { const pad = active(); if (pad && pad.lesson) nextStep(pad) })
+  addEventListener('deck-pad-reset', () => { const pad = active(); if (pad && pad.lesson) resetSteps(pad) })
+
   addEventListener('keydown', (e) => {
     if (e.target.closest && e.target.closest('.monaco-editor, input, textarea, select, [contenteditable]')) return
     if (e.ctrlKey || e.metaKey || e.altKey) return
     const pad = active()
     if (!pad) return
-    if (e.key === 'n' && !e.shiftKey && pad.lesson) { e.preventDefault(); pad.next() }
-    else if (e.key === 'N' && e.shiftKey && pad.lesson) { e.preventDefault(); pad.reset() }
+    if (e.key === 'n' && !e.shiftKey && pad.lesson) { e.preventDefault(); nextStep(pad) }
+    else if (e.key === 'N' && e.shiftKey && pad.lesson) { e.preventDefault(); resetSteps(pad) }
     else if (e.key === 'a' || e.key === 'A') { e.preventDefault(); toggleSplit() }
     else if (e.key === 'e' || e.key === 'E') { e.preventDefault(); setTree(!treeOpen) }
   })
@@ -470,7 +520,7 @@
   let shown = null
   const slideWatch = new MutationObserver(() => {
     const s = document.querySelector('.slide.active')
-    if (s !== shown) { shown = s; broadcast() }
+    if (s !== shown) { shown = s; broadcast(); reportPad() }
   })
   document.querySelectorAll('.slide').forEach((s) => slideWatch.observe(s, { attributes: true, attributeFilter: ['class'] }))
 

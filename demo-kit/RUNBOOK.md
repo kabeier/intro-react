@@ -10,6 +10,8 @@
 
 Keys: **N** next step · **Shift+N** reset · **A** live app · **↗ Pop out** (real DevTools there).
 
+Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code slide's bar (students following along use these; Reset also stops a step halfway through typing). The presenter window shows **Type next step (N)** with "Typed 2 of 6 steps", and **↺ Reset slide code (Shift+N)**.
+
 ## Lecture 1 · React + Vite (~40 min)
 | # | Min | Do | Say |
 |---|---|---|---|

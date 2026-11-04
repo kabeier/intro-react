@@ -77,8 +77,12 @@
   }
   channel.onmessage = (e) => {
     if (e.data.type === 'go' && e.data.i !== i) go(e.data.i, true)
-    if (e.data.type === 'hello') channel.postMessage({ type: 'go', i, total }) // presenter window just opened
+    if (e.data.type === 'hello') { channel.postMessage({ type: 'go', i, total }); dispatchEvent(new Event('deck-pad-ask')) } // presenter window just opened
+    if (e.data.type === 'pad-next') dispatchEvent(new Event('deck-pad-next')) // its "Type next step" button (N)
+    if (e.data.type === 'pad-reset') dispatchEvent(new Event('deck-pad-reset')) // its "Reset" button (Shift+N)
   }
+  // Code slides report their step count; the presenter window shows it (livepad.js).
+  addEventListener('deck-pad-status', (e) => channel.postMessage({ type: 'pad', pad: e.detail }))
 
   addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select')) return
@@ -122,6 +126,11 @@
         <div class="side">
           <div><div class="meta">LECTURE CLOCK (T to start/pause)</div><div class="clock">0:00</div><div class="meta target"></div></div>
           <div class="next"></div>
+          <div id="padbox" hidden style="display:flex;flex-direction:column;gap:6px">
+            <button id="stepb" style="background:#1f9d6b;color:#fff;font-size:24px;padding:20px">Type next step (N)</button>
+            <button id="padreset">↺ Reset slide code (Shift+N)</button>
+            <div id="stepinfo" class="meta" style="font-size:17px"></div>
+          </div>
           <button id="prev">← Back</button><button id="nextb" style="background:#2552c9;color:#fff">Next →</button>
           <button id="clockb">Start / pause clock</button><button id="resetb">Reset clock</button>
         </div>
@@ -142,19 +151,39 @@
       c.className = 'clock ' + (m > targetMin(slides[i]) + 3 ? 'late' : 'ok')
     }
     const go2 = (n) => { i = Math.min(Math.max(n, 0), total - 1); channel.postMessage({ type: 'go', i }); draw() }
+    let pad = null
+    // The code slide's next step: step = steps typed, total = steps on the slide.
+    const drawPad = () => {
+      const on = !!(pad && pad.total)
+      $('#padbox').hidden = !on
+      $('#padbox').style.display = on ? 'flex' : 'none'
+      if (!on) return
+      const done = pad.step >= pad.total
+      $('#stepb').disabled = done || pad.busy
+      $('#stepb').style.opacity = $('#stepb').disabled ? 0.45 : 1
+      $('#stepinfo').textContent = pad.error || (done ? `All ${pad.total} steps typed` : `Typed ${pad.step} of ${pad.total} steps`)
+      $('#stepinfo').style.color = pad.error ? '#ff8a80' : ''
+    }
+    const nextStep = () => { if (pad && pad.total && !$('#stepb').disabled) channel.postMessage({ type: 'pad-next' }) }
     channel.onmessage = (e) => {
+      if (e.data.type === 'pad') { pad = e.data.pad; return drawPad() }
       if (e.data.type !== 'go') return
       if (e.data.total && e.data.total !== total) return location.reload() // the deck changed since this window opened: load the new one
       i = e.data.i; draw()
     }
     $('#prev').onclick = () => go2(i - 1); $('#nextb').onclick = () => go2(i + 1)
+    $('#stepb').onclick = nextStep
+    $('#padreset').onclick = () => { if (pad && pad.total) channel.postMessage({ type: 'pad-reset' }) }
     $('#clockb').onclick = toggleClock
     $('#resetb').onclick = () => writeClock({ start: null, paused: 0, pausedAt: null })
     addEventListener('keydown', (e) => {
       if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); go2(i + 1) }
       if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go2(i - 1) }
       if (e.key === 't' || e.key === 'T') toggleClock()
+      if (e.key === 'n') nextStep()
+      if (e.key === 'N' && e.shiftKey) $('#padreset').click()
     })
+    drawPad()
     setInterval(tickClock, 500); draw(); tickClock()
     channel.postMessage({ type: 'hello' })
   }
