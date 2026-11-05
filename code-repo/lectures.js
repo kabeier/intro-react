@@ -30,7 +30,7 @@ window.LECTURES = [
   "title": "Cypress: testing the search",
   "branch": "unit-3-lecture-2-cypress-assertions",
   "start": "unit-3-lecture-1-cypress-react",
-  "features": 4
+  "features": 3
  },
  {
   "id": "hooks-usestate",
@@ -78,7 +78,7 @@ window.LECTURES = [
   "title": "React Bootstrap",
   "branch": "unit-6-lecture-2-utilities-bootstrap",
   "start": "unit-6-lecture-1-utilities-tailwind",
-  "features": 2
+  "features": 3
  },
  {
   "id": "router-intro",
