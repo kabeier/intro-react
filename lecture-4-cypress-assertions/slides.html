@@ -19,12 +19,12 @@
 
 <section class="slide title" data-seg="Open" data-at="0">
   <div class="kicker">Front-End · Unit 3: End-to-End Testing · Lecture 2 of 2</div>
-  <h1>Test every feature, then make the tests fast and reliable.</h1>
-  <p class="sub">pokemon.cy.js: searches, edge cases, and stubbing the PokeAPI.</p>
+  <h1>Test every feature, with tests that can fail.</h1>
+  <p class="sub">pokemon.cy.js: searches, edge cases, and what must NOT happen.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today we test every feature, then make the tests fast and reliable by faking the PokeAPI.</p>
+    <p class="plan"><b>The plan:</b> Today we test every feature of the search, and check that each test can really fail.</p>
     <p><b>Before class</b>: app in Docker; <code>npm run cy:open</code> works on your laptop. <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
-    <p>Features 1–3 call the real PokeAPI (internet). Feature 4 stubs it.</p>
+    <p>Every test calls the real PokeAPI, so the laptop needs internet.</p>
   </aside>
 </section>
 
@@ -105,15 +105,15 @@
   <div class="livepad" data-lesson="cypress-assertions" data-start="f2s2" data-steps="f3s1 f3s2 f3s3" data-files="cypress/e2e/pokemon.cy.js src/App.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We test what must NOT happen: empty searches, duplicate cards, and names that don't exist.</p>
-    <p><b>** CODE ALONG, about 4 minutes. **</b></p>
+    <p><b>** CODE ALONG, about 5 minutes. **</b> ▶ Run tests at the end: all 8 green.</p>
 <!-- steps:cypress-assertions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does nothing on an empty search', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty box, Search: no request may go out. Then a real search, so a wrong request would have had time to happen, and count: zero requests to /pokemon/.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does not add the same Pokemon twice', ()…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">[id="…"] finds every element with that id (#id stops at the first). Careful: this can pass before the second answer arrives. Feature 4 fixes that.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('alerts when a Pokemon does not exist', (…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Cypress closes alerts for us; we collect their text and check it. If no alert ever comes, the test fails.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does nothing on an empty search', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Empty box, Search: nothing may happen. Without the empty check the app asks the API for /pokemon/ and shows an alert. Give that wrong answer one second to come back, then check: no alerts.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('does not add the same Pokemon twice', ()…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bulbasaur twice, then Charizard. Once Charizard shows, the second Bulbasaur answer is back too: now count. [id="…"] finds every element with that id (#id stops at the first).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('alerts when a Pokemon does not exist', (…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same alert list as the empty search. pikachoo is not a Pokemon, so the real PokeAPI answers 404. If no alert ever comes, the test fails.</td></tr>
 </table>
 <!-- /steps -->
-    <p>Ask: "If I delete the duplicate guard from App.jsx, does this test fail?" Try it: with the live API it can pass too early. Feature 4 fixes that.</p>
+    <p>Ask: "If I delete the duplicate guard from App.jsx, does this test fail?" Try it: delete <code>if (document.getElementById(`${data.name}-card`)) return</code> in App.jsx, ▶ Run tests: <b>red</b> (2 cards). Put it back: green. The Charizard search is what makes the test wait long enough.</p>
   </aside>
 </section>
 
@@ -131,50 +131,53 @@
 </section>
 
 <section class="slide" data-seg="Concept" data-at="19">
-  <h2>Why stub the API?</h2>
+  <h2>Our tests talk to the real PokeAPI</h2>
   <table class="dbt small">
-    <tr><th></th><th>Real PokeAPI</th><th>Stubbed (cy.intercept)</th></tr>
-    <tr><td><b>Speed</b></td><td>network round trip every search</td><td class="pk">instant</td></tr>
-    <tr><td><b>Same result every run?</b></td><td>no: slow days, outages, data changes</td><td class="pk">yes</td></tr>
-    <tr><td><b>Errors on purpose</b></td><td>hard (need a missing name)</td><td class="pk"><code>{ statusCode: 404 }</code></td></tr>
+    <tr><th>The test searches</th><th>The PokeAPI answers</th><th>The test checks</th></tr>
+    <tr><td>Bulbasaur, Charizard</td><td>200: the Pokemon</td><td class="pk">a card appears</td></tr>
+    <tr><td>pikachoo</td><td>404: Not Found</td><td class="pk">the alert</td></tr>
+    <tr><td>(empty box)</td><td>/pokemon/ would answer a list, not a Pokemon</td><td class="pk">no alert may happen</td></tr>
   </table>
-  <p class="bottomline">Fixtures = saved answers. The app can't tell the difference.</p>
+  <p class="bottomline">Real requests: the laptop needs internet, and Cypress waits (up to 4 s) for each answer.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Why fake the API: real requests are slow, can go down and can't fail on demand.</p><p>Our fixtures hold only the fields the app reads; we'll add fields when later units read more.</p></aside>
-</section>
-
-<section class="slide code" data-seg="Code along: stubs" data-at="21">
-  <h2>Stub the API <span class="say">cypress/fixtures · pokemon.cy.js</span></h2>
-  <div class="livepad" data-lesson="cypress-assertions" data-start="f3s3" data-steps="f4s1 f4s2 f4s3 f4s4" data-files="cypress/e2e/pokemon.cy.js cypress/fixtures/bulbasaur.json cypress/fixtures/charizard.json"></div>
-  <aside class="notes">
-    <p class="plan"><b>The plan:</b> We save fake answers as fixtures, then use cy.intercept so the tests never touch the real PokeAPI.</p>
-    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests at the end: all 8 green, fast.</p>
-<!-- steps:cypress-assertions:f4 -->
-<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/bulbasaur.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A fixture: the parts of the real answer our app reads.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/charizard.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One fixture per Pokemon we search for.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Set up the stubs before visiting. ** matches any start of the URL. The 404 stub makes "does not exist" happen for sure.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cy.wait('@bulbasaur')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">cy.wait('@bulbasaur') waits for the next answer from that stub. Wait for both answers, then count: now the test cannot pass too early.</td></tr>
-</table>
-<!-- /steps -->
+    <p class="plan"><b>The plan:</b> What the real PokeAPI sends back for each search our tests do.</p>
+    <p>Point at each row: what the test types, what comes back, what the test looks for.</p>
+    <p>Show it: open <code>https://pokeapi.co/api/v2/pokemon/pikachoo</code> in a new tab: "Not Found". That 404 is the alert test's answer.</p>
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Concept" data-at="21">
+  <h2>Break it on purpose</h2>
+  <table class="dbt small">
+    <tr><th>Delete this line in App.jsx</th><th>This test must go red</th></tr>
+    <tr><td><code>if (!name) return</code></td><td class="pk">does nothing on an empty search</td></tr>
+    <tr><td><code>if (document.getElementById(`${data.name}-card`)) return</code></td><td class="pk">does not add the same Pokemon twice</td></tr>
+    <tr><td><code>alert("Pokemon Does not Exist")</code></td><td class="pk">alerts when a Pokemon does not exist</td></tr>
+  </table>
+  <p class="bottomline">Green, break it, red, put it back, green. Now you can trust the test.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We prove each edge-case test can fail by breaking the app on purpose.</p>
+    <p>Do one live: press <b>E</b>, open <code>src/App.jsx</code>, delete <code>if (!name) return</code>, ▶ Run tests: <b>red</b> on "does nothing on an empty search". Put it back, ▶: green.</p>
+    <p>Say: "A test you have never seen fail might be testing nothing."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="23">
   <h2>A test that can't fail tests nothing</h2>
   <table class="dbt small">
     <tr><th>Weak</th><th>Why it always passes</th><th>Strong</th></tr>
-    <tr><td><code>cy.get('#bulbasaur-card').should('have.length', 1)</code></td><td>#id finds only the first match; and it may count before the 2nd answer</td><td class="pk"><code>cy.wait('@bulbasaur')</code> twice, then <code>[id="bulbasaur-card"]</code></td></tr>
+    <tr><td><code>cy.get('#bulbasaur-card').should('have.length', 1)</code></td><td>#id finds only the first match; and it may count before the 2nd answer</td><td class="pk">search Charizard, wait for its card, then <code>[id="bulbasaur-card"]</code></td></tr>
+    <tr><td>click Search, then <code>cy.wrap(alerts).should('have.length', 0)</code></td><td>checks before any answer could come back</td><td class="pk"><code>cy.wait(1000)</code> first, then check</td></tr>
     <tr><td><code>cy.on('window:alert', (t) =&gt; expect(t)…)</code></td><td>no alert = the expect never runs</td><td class="pk">collect alerts, <code>cy.wrap(alerts).should('include', …)</code></td></tr>
   </table>
   <p class="bottomline">Check: break the app on purpose. Does the test go red?</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> A test that can't fail tests nothing: how to spot a weak test and make it strong.</p><p>These are Fix It problems 7 and 8: the checker breaks the app and expects your test to fail.</p></aside>
+    <p class="plan"><b>The plan:</b> A test that can't fail tests nothing: how to spot a weak test and make it strong.</p><p>Point at each row: Weak, then why, then Strong.</p><p>These are Fix It problems 7, 8 and 9: the checker breaks the app and expects your test to fail.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: Fix it" data-at="28">
+<section class="slide activity" data-seg="Activity: Fix it" data-at="25">
   <h2>Activity: Fix it (assertions)</h2>
-  <div class="countdown" data-sec="360"></div>
+  <div class="countdown" data-sec="480"></div>
   <ol class="steps">
     <li>Open <b>Fix it</b> → <b>Unit 3 · Lecture 2</b></li>
     <li>The tests are broken (or too weak): read "What the tests said"</li>
@@ -183,10 +186,10 @@
   </ol>
   <p class="muted small" style="margin-top:24px">Page: <a href="../fixit.html?lesson=cypress-assertions" target="_blank" rel="noopener">fixit.html?lesson=cypress-assertions</a></p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students fix broken or too-weak tests on their own. Problems 1 to 6.</p><p>6 minutes. The stubs make these checks fast and offline-safe (except the preview needs React from the internet).</p></aside>
+    <p class="plan"><b>The plan:</b> Students fix broken or too-weak tests on their own. Problems 1 to 6.</p><p>8 minutes. The checks run the tests against the live PokeAPI, so students need internet.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="35">
+<section class="slide" data-seg="Wrap up" data-at="33">
   <h2>What happens to these tests in unit 4</h2>
   <table class="dbt small">
     <tr><th>Test</th><th>Unit 4.1 (useState)</th><th>Unit 4.2 (Pikachu on load)</th></tr>
@@ -198,7 +201,7 @@
     <p class="plan"><b>The plan:</b> Which of these tests survive unit 4, and which ones we'll rewrite on purpose.</p><p>Say: "Next unit, every feature starts with a failing test."</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="37">
+<section class="slide" data-seg="Wrap up" data-at="36">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
     <li><b>Pokémon Theme Team Tests</b>: "Go back to your Pokémon Theme Team (or To-Do List React) project and add different spec files, each one dedicated to testing an independent feature of your project."</li>
@@ -215,9 +218,9 @@
 <script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/course/cypress-react.js?v=2"></script>
-<script src="../shared/course/cypress-assertions.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

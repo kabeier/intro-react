@@ -1,7 +1,6 @@
 // Unit 8 · Lecture 1 · useParams and useNavigate: a details page for each Pokemon (the id comes
 // from the URL), a Back button, and a login form that moves to another page after submitting.
 // Follows phase-II/04-Front-End/8-react-router-hooks/1-useParams-useNav.md
-const DETAILS_INTERCEPTS = "beforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })\n  cy.intercept('GET', '**/api/v2/pokemon/25', { fixture: 'pikachu.json' })\n  cy.intercept('GET', '**/api/v2/pokemon/99999', { statusCode: 404, body: {} })\n})\n"
 const ROUTER_8 = (extraImports, extraRoutes) => "import { createBrowserRouter } from 'react-router'\nimport App from './App.jsx'\nimport HomePage from './pages/HomePage.jsx'\nimport AboutPage from './pages/AboutPage.jsx'\nimport NotFoundPage from './pages/NotFoundPage.jsx'\nimport ErrorPage from './pages/ErrorPage.jsx'\n" + extraImports +
   "\nconst router = createBrowserRouter([\n  {\n    path: '/',\n    element: <App />,\n    children: [\n      {\n        errorElement: <ErrorPage />,\n        children: [\n          { index: true, element: <HomePage /> },\n          { path: 'about', element: <AboutPage /> },\n" + extraRoutes + "          { path: '*', element: <NotFoundPage /> },\n        ],\n      },\n    ],\n  },\n])\n\nexport default router"
 Course.register({
@@ -17,11 +16,11 @@ Course.register({
       steps: [
         {
           id: 'f1s1', file: 'cypress/e2e/details.cy.js', mode: 'set',
-          code: DETAILS_INTERCEPTS + "\nit('reads the id from the URL', () => {\n  cy.visit('/pokemon/25')\n  cy.contains('h2', '#25')\n})",
-          say: 'A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.',
+          code: "it('reads the id from the URL', () => {\n  cy.visit('/pokemon/25')\n  cy.contains('h2', '#25')\n})",
+          say: 'A spec for the details page. Visit /pokemon/25: the page must know it is #25. Red.',
         },
         {
-          id: 'f1s2', later: { how: "A stub that only shows the id from the URL.", where: "Feature 2, next (the real Pokemon)" }, file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
+          id: 'f1s2', later: { how: "A placeholder page that only shows the id from the URL.", where: "Feature 2, next (the real Pokemon)" }, file: 'src/pages/PokemonDetailsPage.jsx', mode: 'set',
           code: "import { useParams } from 'react-router'\n\nfunction PokemonDetailsPage() {\n  const { id } = useParams()\n\n  return <h2>Pokemon #{id}</h2>\n}\n\nexport default PokemonDetailsPage",
           say: 'useParams reads the URL. The id is always a string.',
           notes: [{ match: 'const { id } = useParams()', what: 'The URL parameters, by name.', why: 'The route says :id, so the object has an id.',
@@ -39,11 +38,6 @@ Course.register({
       id: 'f2', title: 'Fetch the Pokemon for that id',
       why: 'The page loads its own data from the id, so /pokemon/25 works even when you open it directly or share it.',
       steps: [
-        {
-          id: 'f2s1', file: 'cypress/fixtures/pikachu.json', mode: 'set',
-          code: '{\n  "id": 25,\n  "name": "pikachu",\n  "height": 4,\n  "weight": 60,\n  "types": [{ "slot": 1, "type": { "name": "electric" } }],\n  "sprites": { "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png", "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png" }\n}',
-          say: 'The details page shows more, so the fixture gets height, weight and types (copied from the real API).',
-        },
         {
           id: 'f2s2', file: 'cypress/e2e/details.cy.js', mode: 'append',
           code: "\nit('shows the Pokemon from the API', () => {\n  cy.visit('/pokemon/25')\n  cy.contains('h2', 'pikachu')\n  cy.get('img[alt=pikachu]').should('be.visible')\n  cy.contains('Type: electric')\n})",

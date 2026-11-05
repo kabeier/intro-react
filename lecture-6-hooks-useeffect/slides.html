@@ -128,19 +128,16 @@
 </section>
 
 <section class="slide code" data-seg="Code along: Pikachu" data-at="18">
-  <h2>Load Pikachu when the app opens <span class="say">fixtures · specs · src/App.jsx</span></h2>
-  <div class="livepad" data-lesson="hooks-useeffect" data-start="f3s2" data-steps="f4s1 f4s2 f4s3 f4s4 f4s6 f4s7" data-files="src/App.jsx cypress/e2e/home.cy.js cypress/e2e/pokemon.cy.js cypress/fixtures/pikachu.json"></div>
+  <h2>Load Pikachu when the app opens <span class="say">home.cy.js · src/App.jsx</span></h2>
+  <div class="livepad" data-lesson="hooks-useeffect" data-start="f3s2" data-steps="f4s3 f4s6 f4s7" data-files="src/App.jsx cypress/e2e/home.cy.js cypress/e2e/pokemon.cy.js"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We load Pikachu when the app opens: fixtures and tests first, then the effect, then a cleanup for late answers.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> Tests change first (N 1–4: red), then the effect (N 5–6: green).</p>
+    <p class="plan"><b>The plan:</b> We load Pikachu when the app opens: the test first, then the effect, then a cleanup for late answers.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> The test changes first (N 1: red), then the effect (N 2–3: green).</p>
 <!-- steps:hooks-useeffect:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A fixture for Pikachu: the page will ask for it on every visit.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Stub the start-up request in this spec too.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('should render the Pikachu card on load',…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The planned rewrite from unit 3: the page now starts with Pikachu. Red until we build it.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/pokemon.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cy.intercept('GET', '**/api/v2/pokemon/pikac…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">And here.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.<br><b>⚠ For now (not the final way):</b> No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state. Fixed in: the next step (the ignore flag).</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let ignore = false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.<br><b>✓ The right way:</b> replaces No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('should render the Pikachu card on load',…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The planned rewrite from unit 3: the page now starts with Pikachu. Red until we build it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Fetch Pikachu after the first render. Watch the Network tab: two requests in development (StrictMode). addPokemonData skips the duplicate, but there is a better way.<br><b>⚠ For now (not the final way):</b> No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state. Fixed in: the next step (the ignore flag).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>let ignore = false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The cleanup sets ignore: an answer that arrives after the cleanup is thrown away. This is the pattern from react.dev for requests in effects. Run every test: green.<br><b>✓ The right way:</b> replaces No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -221,11 +218,11 @@
 <script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/course/cypress-react.js?v=2"></script>
-<script src="../shared/course/cypress-assertions.js?v=1"></script>
-<script src="../shared/course/hooks-usestate.js?v=1"></script>
-<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=2"></script>
+<script src="../shared/course/hooks-usestate.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

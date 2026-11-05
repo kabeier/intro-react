@@ -37,8 +37,8 @@
     <p><b>** CODE ALONG, about 4 minutes. **</b> Red after N 1, green after N 3.</p>
 <!-- steps:router-pages:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A new spec for pages. Visit /about: the About heading, and the layout (header) still there. Run it: red.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/AboutPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function AboutPage() {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The page component.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/navigation.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('/about renders the About page', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A new spec for pages. Visit /about: the About heading, and the layout (header) still there. Run it: red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/AboutPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Card from 'react-bootstrap/Card'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The page component: a React Bootstrap Card, like the rest of the app. h2, because the header has the h1.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A child route: path 'about' (no slash) = /about. Run the test: green.</td></tr>
 </table>
 <!-- /steps -->
@@ -224,17 +224,17 @@
 <script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/course/cypress-react.js?v=2"></script>
-<script src="../shared/course/cypress-assertions.js?v=1"></script>
-<script src="../shared/course/hooks-usestate.js?v=1"></script>
-<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=2"></script>
+<script src="../shared/course/hooks-usestate.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=2"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
 <script src="../shared/course/utilities-tailwind.js?v=2"></script>
-<script src="../shared/course/utilities-bootstrap.js?v=2"></script>
-<script src="../shared/course/router-intro.js?v=2"></script>
-<script src="../shared/course/router-pages.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=3"></script>
+<script src="../shared/course/router-intro.js?v=3"></script>
+<script src="../shared/course/router-pages.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

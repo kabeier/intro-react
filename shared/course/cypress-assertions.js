@@ -1,5 +1,4 @@
-// Unit 3 · Lecture 2 · Cypress Assertions: test every feature of the search app, first
-// against the live PokeAPI, then with cy.intercept and fixtures (fast and reliable).
+// Unit 3 · Lecture 2 · Cypress Assertions: test every feature of the search app, against the live PokeAPI.
 // Follows phase-II/04-Front-End/3-e2e-testing/2-cypress-assertions.md
 Course.register({
   id: 'cypress-assertions',
@@ -55,50 +54,31 @@ Course.register({
       steps: [
         {
           id: 'f3s1', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',
-          code: "it('does nothing on an empty search', () => {\n  cy.intercept('GET', '**/api/v2/pokemon/').as('empty')\n  cy.get('button[type=submit]').click()\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('@empty.all').should('have.length', 0)\n})",
-          say: 'Empty box, Search: no request may go out. Then a real search, so a wrong request would have had time to happen, and count: zero requests to /pokemon/.',
+          code: "it('does nothing on an empty search', () => {\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.get('button[type=submit]').click()\n  cy.wait(1000)\n  cy.wrap(alerts).should('have.length', 0)\n})",
+          say: 'Empty box, Search: nothing may happen. Without the empty check the app asks the API for /pokemon/ and shows an alert. Give that wrong answer one second to come back, then check: no alerts.',
           notes: [
-            { match: "cy.intercept('GET', '**/api/v2/pokemon/').as('empty')", what: 'Watches requests to /pokemon/ with no name.', why: 'That is the request an empty search would send.' },
-            { match: "cy.get('@empty.all').should('have.length', 0)", what: 'Every request that matched: there must be none.', why: 'Checking "no cards" right after the click passes before any answer could arrive: a test that can\'t fail. Counting requests after another search can.' },
+            { match: "cy.on('window:alert'", what: 'Listens for alert() in the page.', why: 'Cypress clicks OK automatically; this lets us read the message.' },
+            { match: 'cy.wait(1000)', what: 'Waits one second, on purpose.', why: 'To check that something did NOT happen, give it time to happen first. Checking right after the click passes before any answer could arrive: a test that can\'t fail.',
+              api: { name: 'cy.wait(ms)', does: 'Pauses the test for that many milliseconds.', params: [['ms', 'how long', '1000 = one second']], mistakes: ['Using it to wait for something to appear: should() already retries for that.'] } },
+            { match: 'cy.wrap(alerts)', what: 'Turns a normal value into something Cypress can assert on.', why: 'have.length 0: no alert happened.' },
           ],
         },
         {
           id: 'f3s2', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',
-          code: "it('does not add the same Pokemon twice', () => {\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)\n})",
-          say: '[id="…"] finds every element with that id (#id stops at the first). Careful: this can pass before the second answer arrives. Feature 4 fixes that.',
-          notes: [{ match: '[id="bulbasaur-card"]', what: 'An attribute selector: every element whose id is bulbasaur-card.', why: '#bulbasaur-card only ever finds the first one, so it cannot count duplicates.' }],
+          code: "it('does not add the same Pokemon twice', () => {\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n  cy.get('#charizard-card').should('be.visible')\n  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)\n})",
+          say: 'Bulbasaur twice, then Charizard. Once Charizard shows, the second Bulbasaur answer is back too: now count. [id="…"] finds every element with that id (#id stops at the first).',
+          notes: [
+            { match: "type('Charizard{enter}')", what: 'A last search, only so we know when to count.', why: 'Counting right after the second Bulbasaur would pass before its answer arrives: a test that can\'t fail.' },
+            { match: '[id="bulbasaur-card"]', what: 'An attribute selector: every element whose id is bulbasaur-card.', why: '#bulbasaur-card only ever finds the first one, so it cannot count duplicates.' },
+          ],
         },
         {
           id: 'f3s3', file: 'cypress/e2e/pokemon.cy.js', mode: 'append',
           code: "it('alerts when a Pokemon does not exist', () => {\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.get('input[id=pokemon-name]').type('pikachoo{enter}')\n  cy.wrap(alerts).should('include', 'Pokemon Does not Exist')\n})",
-          say: 'Cypress closes alerts for us; we collect their text and check it. If no alert ever comes, the test fails.',
+          say: 'The same alert list as the empty search. pikachoo is not a Pokemon, so the real PokeAPI answers 404. If no alert ever comes, the test fails.',
           notes: [
-            { match: "cy.on('window:alert'", what: 'Listens for alert() in the page.', why: 'Cypress clicks OK automatically; this lets us read the message.' },
             { match: 'cy.wrap(alerts)', what: 'Turns a normal value into something Cypress can assert on, retrying.', why: 'should(\'include\') re-checks until the alert arrives (up to 4 s).' },
           ],
-        },
-      ],
-    },
-    {
-      id: 'f4', title: 'Stub the API',
-      why: 'The real PokeAPI is slow sometimes and can be down. cy.intercept answers the request with a fixture (saved JSON): tests get fast and always give the same result.',
-      steps: [
-        { id: 'f4s1', file: 'cypress/fixtures/bulbasaur.json', mode: 'append', code: '{\n  "id": 1,\n  "name": "bulbasaur",\n  "sprites": { "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png", "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/1.png" }\n}', say: 'A fixture: the parts of the real answer our app reads.',
-          notes: [{ match: '"sprites"', what: 'Only the fields the app uses.', why: 'Copy them from the real response (the raw JSON tab), so the stub looks real.' }] },
-        { id: 'f4s2', file: 'cypress/fixtures/charizard.json', mode: 'append', code: '{\n  "id": 6,\n  "name": "charizard",\n  "sprites": { "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png", "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/6.png" }\n}', say: 'One fixture per Pokemon we search for.' },
-        {
-          id: 'f4s3', file: 'cypress/e2e/pokemon.cy.js', mode: 'replace', find: "beforeEach(() => {\n  cy.visit('/')\n})",
-          code: "beforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/bulbasaur', { fixture: 'bulbasaur.json' }).as('bulbasaur')\n  cy.intercept('GET', '**/api/v2/pokemon/charizard', { fixture: 'charizard.json' }).as('charizard')\n  cy.intercept('GET', '**/api/v2/pokemon/pikachoo', { statusCode: 404, body: {} })\n  cy.visit('/')\n})",
-          say: 'Set up the stubs before visiting. ** matches any start of the URL. The 404 stub makes "does not exist" happen for sure.',
-          notes: [{ match: 'cy.intercept(', what: 'Catches matching requests and answers them with a fixture (or a status).', why: 'No network: fast, and the same answer every run.',
-            api: { name: 'cy.intercept(method, url, response)', does: 'Stubs a request.', params: [["method", 'the HTTP method', "'GET'"], ['url', 'a URL or glob', "'**/api/v2/pokemon/bulbasaur' (** = anything before)"], ['response', 'what to answer', "{ fixture: 'bulbasaur.json' } or { statusCode: 404, body: {} }"]], returns: 'a route; .as(\'name\') names it for cy.wait(\'@name\')', mistakes: ['Calling it after cy.visit: requests made during the visit are not caught.'] } }],
-        },
-        {
-          id: 'f4s4', file: 'cypress/e2e/pokemon.cy.js', mode: 'replace', find: "  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)",
-          code: "  cy.wait('@bulbasaur')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.wait('@bulbasaur')\n  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)",
-          say: 'cy.wait(\'@bulbasaur\') waits for the next answer from that stub. Wait for both answers, then count: now the test cannot pass too early.',
-          notes: [{ match: "cy.wait('@bulbasaur')", what: 'Waits until the next request on the bulbasaur route has its response.', why: 'The second answer must arrive (and be handled) before we count the cards.',
-            api: { name: "cy.wait('@alias')", does: 'Waits for the next request/response on a named route.', params: [["'@alias'", 'the name given with .as()', "'@bulbasaur'; call it again to wait for the next one"]], mistakes: ['A typo in the name: "could not find a registered alias".'] } }],
         },
       ],
     },

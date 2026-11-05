@@ -15,14 +15,14 @@ Course.register({
       steps: [
         {
           id: 'f1s1', file: 'cypress/e2e/navigation.cy.js', mode: 'set',
-          code: "beforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })\n})\n\nit('/about renders the About page', () => {\n  cy.visit('/about')\n  cy.contains('h2', 'About This App')\n  cy.get('header').should('be.visible')\n})",
+          code: "it('/about renders the About page', () => {\n  cy.visit('/about')\n  cy.contains('h2', 'About This App')\n  cy.get('header').should('be.visible')\n})",
           say: 'A new spec for pages. Visit /about: the About heading, and the layout (header) still there. Run it: red.',
           notes: [{ match: "cy.visit('/about')", what: 'Opens the app at /about, like typing the address.', why: 'Every page has its own URL you can share or bookmark.' }],
         },
         {
           id: 'f1s2', file: 'src/pages/AboutPage.jsx', mode: 'set',
-          code: "function AboutPage() {\n  return (\n    <section className=\"space-y-3 rounded-xl bg-white p-4 shadow\">\n      <h2 className=\"text-2xl font-bold\">About This App</h2>\n      <p>Search the PokeAPI, collect cards, and make them shiny.</p>\n    </section>\n  )\n}\n\nexport default AboutPage",
-          say: 'The page component.',
+          code: "import Card from 'react-bootstrap/Card'\n\nfunction AboutPage() {\n  return (\n    <Card body>\n      <h2>About This App</h2>\n      <p>Search the PokeAPI, collect cards, and make them shiny.</p>\n    </Card>\n  )\n}\n\nexport default AboutPage",
+          say: 'The page component: a React Bootstrap Card, like the rest of the app. h2, because the header has the h1.',
         },
         {
           id: 'f1s3', file: 'src/router.jsx', mode: 'set',
@@ -43,7 +43,7 @@ Course.register({
         },
         {
           id: 'f2s2', file: 'src/pages/NotFoundPage.jsx', mode: 'set',
-          code: "import { Link } from 'react-router'\n\nfunction NotFoundPage() {\n  return (\n    <section className=\"space-y-3 rounded-xl bg-white p-4 shadow\">\n      <h2 className=\"text-2xl font-bold\">404 - Page Not Found</h2>\n      <Link to=\"/\">Back home</Link>\n    </section>\n  )\n}\n\nexport default NotFoundPage",
+          code: "import { Link } from 'react-router'\nimport Card from 'react-bootstrap/Card'\n\nfunction NotFoundPage() {\n  return (\n    <Card body>\n      <h2>404 - Page Not Found</h2>\n      <Link to=\"/\">Back home</Link>\n    </Card>\n  )\n}\n\nexport default NotFoundPage",
           say: 'A page with a way back. Link is the router\'s <a>: no page reload.',
         },
         {
@@ -65,12 +65,12 @@ Course.register({
         },
         {
           id: 'f3s2', file: 'src/pages/AboutPage.jsx', mode: 'set',
-          code: "import { useState } from 'react'\nimport Button from '../components/Button'\n\nfunction AboutPage() {\n  const [crash, setCrash] = useState(false)\n  if (crash) throw new Error('This page intentionally crashed')\n\n  return (\n    <section className=\"space-y-3 rounded-xl bg-white p-4 shadow\">\n      <h2 className=\"text-2xl font-bold\">About This App</h2>\n      <p>Search the PokeAPI, collect cards, and make them shiny.</p>\n      <Button onClick={() => setCrash(true)}>Test errorElement</Button>\n    </section>\n  )\n}\n\nexport default AboutPage",
+          code: "import { useState } from 'react'\nimport Card from 'react-bootstrap/Card'\nimport Button from '../components/Button'\n\nfunction AboutPage() {\n  const [crash, setCrash] = useState(false)\n  if (crash) throw new Error('This page intentionally crashed')\n\n  return (\n    <Card body>\n      <h2>About This App</h2>\n      <p>Search the PokeAPI, collect cards, and make them shiny.</p>\n      <Button onClick={() => setCrash(true)}>Test errorElement</Button>\n    </Card>\n  )\n}\n\nexport default AboutPage",
           say: 'A button that makes the page throw while rendering, so we can see what happens.',
         },
         {
           id: 'f3s3', file: 'src/pages/ErrorPage.jsx', mode: 'set',
-          code: "import { Link, isRouteErrorResponse, useRouteError } from 'react-router'\n\nfunction ErrorPage() {\n  const error = useRouteError()\n  const message = isRouteErrorResponse(error) ? `${error.status} ${error.statusText}` : error.message\n\n  return (\n    <section className=\"space-y-3 rounded-xl bg-white p-4 shadow\">\n      <h2 className=\"text-2xl font-bold\">Something went wrong</h2>\n      <p>{message}</p>\n      <Link to=\"/\">Back home</Link>\n    </section>\n  )\n}\n\nexport default ErrorPage",
+          code: "import { Link, isRouteErrorResponse, useRouteError } from 'react-router'\nimport Card from 'react-bootstrap/Card'\n\nfunction ErrorPage() {\n  const error = useRouteError()\n  const message = isRouteErrorResponse(error) ? `${error.status} ${error.statusText}` : error.message\n\n  return (\n    <Card body>\n      <h2>Something went wrong</h2>\n      <p>{message}</p>\n      <Link to=\"/\">Back home</Link>\n    </Card>\n  )\n}\n\nexport default ErrorPage",
           say: 'useRouteError gives the error the router caught.',
           notes: [
             { match: 'const error = useRouteError()', what: 'The error that stopped the page.', why: 'A thrown Error, or a response error (404 from a loader).' },

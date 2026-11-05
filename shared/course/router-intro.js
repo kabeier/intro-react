@@ -6,8 +6,8 @@ Course.register({
   id: 'router-intro',
   label: 'Unit 7 · Lecture 1',
   title: 'Intro to React Router',
-  base: { lesson: 'utilities-bootstrap', feature: 'f2' },
-  files: { ...Course.checkpoint(Course.get('utilities-bootstrap'), 'f2') },
+  base: { lesson: 'utilities-bootstrap', feature: 'f3' },
+  files: { ...Course.checkpoint(Course.get('utilities-bootstrap'), 'f3') },
   features: [
     {
       id: 'f1', title: 'Install the router',

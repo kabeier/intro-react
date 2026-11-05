@@ -65,21 +65,10 @@ Course.register({
       id: 'f4', title: 'Pikachu on load',
       why: 'Loading data when the page opens is the classic effect. The tests that said "starts empty" change first: we decide the new behaviour, then build it.',
       steps: [
-        { id: 'f4s1', file: 'cypress/fixtures/pikachu.json', mode: 'append', code: '{\n  "id": 25,\n  "name": "pikachu",\n  "sprites": { "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png", "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png" }\n}', say: 'A fixture for Pikachu: the page will ask for it on every visit.' },
-        {
-          id: 'f4s2', file: 'cypress/e2e/home.cy.js', mode: 'replace', find: "beforeEach(() => {\n  cy.visit('/')\n})",
-          code: "beforeEach(() => {\n  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })\n  cy.visit('/')\n})",
-          say: 'Stub the start-up request in this spec too.',
-        },
         {
           id: 'f4s3', file: 'cypress/e2e/home.cy.js', mode: 'replace', find: "it('starts with an empty poke container', () => {\n  cy.get('#poke-container').children().should('have.length', 0)\n})",
           code: "it('should render the Pikachu card on load', () => {\n  cy.get('#pikachu-card').should('be.visible')\n  cy.get('#poke-container').children().should('have.length', 1)\n})",
           say: 'The planned rewrite from unit 3: the page now starts with Pikachu. Red until we build it.',
-        },
-        {
-          id: 'f4s4', file: 'cypress/e2e/pokemon.cy.js', mode: 'insertAfter', find: "  cy.intercept('GET', '**/api/v2/pokemon/charizard', { fixture: 'charizard.json' }).as('charizard')",
-          code: "  cy.intercept('GET', '**/api/v2/pokemon/pikachu', { fixture: 'pikachu.json' })",
-          say: 'And here.',
         },
         {
           id: 'f4s6', later: { how: "No cleanup yet: in development StrictMode runs this twice, and a late answer could still change state.", where: "the next step (the ignore flag)" }, file: 'src/App.jsx', mode: 'replace', find: '  const rmData = (id) => {',

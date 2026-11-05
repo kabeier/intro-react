@@ -51,7 +51,7 @@
     {
       id: 'linkimport', title: '"Link is not defined" on the 404 page', base: 'f5', tabs: [NOTFOUND],
       symptom: 'An unknown address shows "Something went wrong: Link is not defined" (inside the layout) instead of the 404 page.',
-      breaks: [{ file: NOTFOUND, mode: 'replace', find: "import { Link } from 'react-router'\n\n", code: '' }],
+      breaks: [{ file: NOTFOUND, mode: 'replace', find: "import { Link } from 'react-router'\n", code: '' }],
       checks: [allPass],
       hint: 'Each file imports what it uses.',
       why: 'NotFoundPage uses Link, so it needs import { Link } from \'react-router\'.',

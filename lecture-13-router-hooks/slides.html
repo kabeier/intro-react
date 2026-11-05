@@ -26,7 +26,7 @@
   <h1>useParams and useNavigate: pages that read the URL and move from code.</h1>
   <p class="sub">A details page for every Pokemon, a Back button, and a login form.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today we build a details page for every Pokemon, a Back button and a login form.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. New spec today: details.cy.js, with the API stubbed by id.</p></aside>
+    <p class="plan"><b>The plan:</b> Today we build a details page for every Pokemon, a Back button and a login form.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. New spec today: details.cy.js. It calls the real PokeAPI, so the laptop needs internet.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="1">
@@ -49,8 +49,8 @@
     <p><b>** CODE ALONG, about 3 minutes. **</b> Red, then green. Type /pokemon/7 in your own browser.</p>
 <!-- steps:router-hooks:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>beforeEach(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A spec for the details page, with the API stubbed by id. Visit /pokemon/25: the page must know it is #25. Red.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useParams reads the URL. The id is always a string.<br><b>⚠ For now (not the final way):</b> A stub that only shows the id from the URL. Fixed in: Feature 2, next (the real Pokemon).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('reads the id from the URL', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A spec for the details page. Visit /pokemon/25: the page must know it is #25. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useParams } from 'react-router'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">useParams reads the URL. The id is always a string.<br><b>⚠ For now (not the final way):</b> A placeholder page that only shows the id from the URL. Fixed in: Feature 2, next (the real Pokemon).</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter } from 'react-r…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The colon makes :id a parameter. Green.</td></tr>
 </table>
 <!-- /steps -->
@@ -58,16 +58,15 @@
 </section>
 
 <section class="slide code" data-seg="Code along: fetch" data-at="6">
-  <h2>Fetch the Pokemon for that id <span class="say">pikachu.json · details.cy.js · PokemonDetailsPage</span></h2>
-  <div class="livepad" data-lesson="router-hooks" data-start="f1s3" data-steps="f2s1 f2s2 f2s3" data-files="src/pages/PokemonDetailsPage.jsx cypress/e2e/details.cy.js cypress/fixtures/pikachu.json"></div>
+  <h2>Fetch the Pokemon for that id <span class="say">details.cy.js · PokemonDetailsPage</span></h2>
+  <div class="livepad" data-lesson="router-hooks" data-start="f1s3" data-steps="f2s2 f2s3" data-files="src/pages/PokemonDetailsPage.jsx cypress/e2e/details.cy.js"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> The page loads its own Pokemon from that id, so the address works when opened directly or shared.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> The effect has [id] and the ignore flag (unit 4). Red, then green.</p>
 <!-- steps:router-hooks:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/fixtures/pikachu.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>{</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The details page shows more, so the fixture gets height, weight and types (copied from the real API).</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the Pokemon from the API', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: name, picture, type. Red.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.<br><b>✓ The right way:</b> replaces A stub that only shows the id from the URL.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('shows the Pokemon from the API', () =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: name, picture, type. Red.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/pages/PokemonDetailsPage.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useEffect, useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">An effect on [id]: load when the page opens, and again if the id changes. A spinner until the answer arrives. Green, both tests.<br><b>✓ The right way:</b> replaces A placeholder page that only shows the id from the URL.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -158,14 +157,14 @@
 <section class="slide" data-seg="Concept" data-at="24">
   <h2>Testing pages with data</h2>
   <table class="dbt small">
-    <tr><th>The page asks for</th><th>Stub</th></tr>
-    <tr><td>/api/v2/pokemon/pikachu (home, on load)</td><td><code>pikachu.json</code></td></tr>
-    <tr><td>/api/v2/pokemon/25 (details)</td><td class="pk">the same <code>pikachu.json</code></td></tr>
-    <tr><td>/api/v2/pokemon/99999</td><td class="pk"><code>{ statusCode: 404, body: {} }</code></td></tr>
+    <tr><th>The test visits</th><th>The page asks the PokeAPI for</th><th>The real answer</th></tr>
+    <tr><td>/</td><td>/api/v2/pokemon/pikachu (on load)</td><td>Pikachu</td></tr>
+    <tr><td>/pokemon/25</td><td>/api/v2/pokemon/25</td><td class="pk">Pikachu again, by id</td></tr>
+    <tr><td>/pokemon/99999</td><td>/api/v2/pokemon/99999</td><td class="pk">404: "Pokemon not found"</td></tr>
   </table>
-  <p class="bottomline">Stub every address the page calls, the error ones too.</p>
+  <p class="bottomline">Test with data that never changes: Pikachu is always #25, and 99999 is never a Pokemon.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> How we fake the API for pages that load data.</p><p>An unstubbed request goes to the real API: slow, and it changes.</p></aside>
+    <p class="plan"><b>The plan:</b> What the details tests ask the real PokeAPI for, and why those values are safe to test.</p><p>Point at each row: the address the test visits, the request the page sends, what comes back.</p><p>Show it: open <code>https://pokeapi.co/api/v2/pokemon/99999</code> in a tab: "Not Found". That 404 is what the "unknown Pokemon" test needs.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="26">
@@ -225,18 +224,18 @@
 <script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/course/cypress-react.js?v=2"></script>
-<script src="../shared/course/cypress-assertions.js?v=1"></script>
-<script src="../shared/course/hooks-usestate.js?v=1"></script>
-<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=2"></script>
+<script src="../shared/course/hooks-usestate.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=2"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
 <script src="../shared/course/utilities-tailwind.js?v=2"></script>
-<script src="../shared/course/utilities-bootstrap.js?v=2"></script>
-<script src="../shared/course/router-intro.js?v=2"></script>
-<script src="../shared/course/router-pages.js?v=1"></script>
-<script src="../shared/course/router-hooks.js?v=1"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=3"></script>
+<script src="../shared/course/router-intro.js?v=3"></script>
+<script src="../shared/course/router-pages.js?v=2"></script>
+<script src="../shared/course/router-hooks.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

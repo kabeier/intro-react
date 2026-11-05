@@ -9,7 +9,7 @@ globalThis.Course = Course
 for (const f of JSON.parse(readFileSync(new URL('../shared/course/manifest.json', import.meta.url)))) await import('../shared/course/' + f)
 const lines = (code) => code.replace(/\n$/, '').split('\n').length
 
-for (const [id, base, feats] of [['cypress-react', ['async-requests', 'f7'], 3], ['cypress-assertions', ['cypress-react', 'f3'], 4]]) {
+for (const [id, base, feats] of [['cypress-react', ['async-requests', 'f7'], 3], ['cypress-assertions', ['cypress-react', 'f3'], 3]]) {
   const lesson = Course.get(id)
   const steps = lesson.features.flatMap((f) => f.steps)
   test(id + ': starts where the previous lesson ended; features, short steps, says', () => {
@@ -34,6 +34,6 @@ test('every Cypress idea used in the specs has a note', () => {
   const notes = ['cypress-react', 'cypress-assertions'].flatMap((id) => Course.get(id).features.flatMap((f) => f.steps).flatMap((s) => s.notes || []))
   for (const k of ['"cypress"', '"cy:open"', '"cy:run"', 'defineConfig', 'e2e: {', 'baseUrl', 'supportFile: false', 'viewportWidth', 'cypress/videos', '"overrides"',
     'beforeEach(', "cy.visit('/')", 'it(', "cy.get('header')", ".should('be.visible')", '.children()', ".type('Bulbasaur')", '.click()', '{enter}',
-    ".should('have.attr', 'src')", '[id="bulbasaur-card"]', "cy.on('window:alert'", 'cy.wrap(alerts)', 'cy.intercept(', "cy.wait('@bulbasaur')", '"sprites"'])
+    ".should('have.attr', 'src')", '[id="bulbasaur-card"]', "cy.on('window:alert'", 'cy.wrap(alerts)', "type('Charizard{enter}')", 'cy.wait(1000)'])
     assert.ok(notes.some((n) => n.match.includes(k) || k.includes(n.match)), 'note for ' + k)
 })

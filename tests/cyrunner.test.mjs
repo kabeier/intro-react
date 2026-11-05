@@ -127,6 +127,14 @@ test('cy.wrap(array).should("include") retries until the alert arrives, and fail
   assert.match(bad.tests[0].error, /expected \[\] to include 'Pokemon Does not Exist'/)
 })
 
+test('cy.wrap(array).should("have.length", n) counts the array, like Cypress', async () => {
+  const none = await run("it('no alert', () => {\n  cy.visit('/')\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.wrap(alerts).should('have.length', 0)\n})")
+  assert.equal(none.tests[0].state, 'passed', none.tests[0].error)
+  const one = await run("it('an alert', () => {\n  cy.visit('/')\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.get('#warn').click()\n  cy.wrap(alerts).should('have.length', 0)\n})")
+  assert.equal(one.tests[0].state, 'failed')
+  assert.match(one.tests[0].error, /expected \[ 'Pokemon Does not Exist' \] to have a length of 0 but got 1/)
+})
+
 test('each test starts on a blank page, like Cypress: forgetting cy.visit fails', async () => {
   const r = await run("it('no visit', () => {\n  cy.get('header').should('be.visible')\n})")
   assert.equal(r.tests[0].state, 'failed')
@@ -232,4 +240,11 @@ test('an app that fails to load during a beforeEach visit fails the hook and ski
   })
   assert.deepEqual(r.tests.map((t) => [t.title, t.state]), [['"before each" hook for "first"', 'failed']])
   assert.match(r.tests[0].error, /originated from your application code/)
+})
+
+test('cy.wait(ms) pauses the test for that long, like Cypress', async () => {
+  const r = await run("it('waits', () => {\n  cy.visit('/')\n  let t = 0\n  cy.window().then(() => { t = Date.now() })\n  cy.wait(600)\n  cy.window().then(() => { if (Date.now() - t < 550) throw new Error('did not wait') })\n})")
+  assert.equal(r.tests[0].state, 'passed', r.tests[0].error)
+  const late = await run("it('an alert after a wait', () => {\n  cy.visit('/')\n  const alerts = []\n  cy.on('window:alert', (text) => alerts.push(text))\n  cy.window().then((win) => { setTimeout(() => win.alert('late'), 300) })\n  cy.wait(800)\n  cy.wrap(alerts).should('have.length', 0)\n})")
+  assert.equal(late.tests[0].state, 'failed', 'the late alert is seen after the wait')
 })

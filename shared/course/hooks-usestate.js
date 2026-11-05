@@ -5,8 +5,8 @@ Course.register({
   id: 'hooks-usestate',
   label: 'Unit 4 · Lecture 1',
   title: 'useState: state drives the page',
-  base: { lesson: 'cypress-assertions', feature: 'f4' },
-  files: { ...Course.checkpoint(Course.get('cypress-assertions'), 'f4') },
+  base: { lesson: 'cypress-assertions', feature: 'f3' },
+  files: { ...Course.checkpoint(Course.get('cypress-assertions'), 'f3') },
   features: [
     {
       id: 'f1', title: 'Change the title (state)',

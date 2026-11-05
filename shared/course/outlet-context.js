@@ -15,7 +15,7 @@ Course.register({
       steps: [
         {
           id: 'f1s1', file: 'cypress/e2e/navigation.cy.js', mode: 'append',
-          code: "\nit('keeps searched cards after visiting another page', () => {\n  cy.intercept('GET', '**/api/v2/pokemon/bulbasaur', { fixture: 'bulbasaur.json' })\n  cy.visit('/')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('nav').contains('a', 'About').click()\n  cy.get('nav').contains('a', 'Home').click()\n  cy.get('#bulbasaur-card').should('be.visible')\n})",
+          code: "\nit('keeps searched cards after visiting another page', () => {\n  cy.visit('/')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('nav').contains('a', 'About').click()\n  cy.get('nav').contains('a', 'Home').click()\n  cy.get('#bulbasaur-card').should('be.visible')\n})",
           say: 'Test first: search, leave, come back. Red: Bulbasaur is gone, the page started over.',
         },
         {
@@ -44,7 +44,7 @@ Course.register({
       steps: [
         {
           id: 'f2s1', file: 'cypress/e2e/navigation.cy.js', mode: 'append',
-          code: "\nit('does not bring Pikachu back after it was removed', () => {\n  cy.intercept('GET', '**/api/v2/pokemon/charizard', { fixture: 'charizard.json' })\n  cy.visit('/')\n  cy.get('#pikachu-card button').contains('Remove').click()\n  cy.get('nav').contains('a', 'About').click()\n  cy.get('nav').contains('a', 'Home').click()\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n  cy.get('#charizard-card').should('be.visible')\n  cy.get('#poke-container').children().should('have.length', 1)\n})",
+          code: "\nit('does not bring Pikachu back after it was removed', () => {\n  cy.visit('/')\n  cy.get('#pikachu-card button').contains('Remove').click()\n  cy.get('nav').contains('a', 'About').click()\n  cy.get('nav').contains('a', 'Home').click()\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n  cy.get('#charizard-card').should('be.visible')\n  cy.get('#poke-container').children().should('have.length', 1)\n})",
           say: 'Test first. Searching Charizard gives the old request time to arrive, so the count is honest. Red: two cards.',
         },
         {

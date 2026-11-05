@@ -84,12 +84,15 @@ Before class: the unit 2 app running in Docker; Node 24 on your laptop; `npm ins
 | 1–3 | 0–3 | — | test what users see; features → tests |
 | 4 | 5 | **N ×3**, ▶ Run tests | type, click, ids |
 | 5 | 9 | — | commands and assertions |
-| 6–7 | 11–14 | **N** through, ▶ Run tests | {enter}, have.value, edge cases |
+| 6–7 | 11–14 | **N** through, ▶ Run tests (8 green); delete the duplicate guard, ▶ (red), put it back | {enter}, have.value, edge cases; Charizard tells the test when to count |
 | 8 | 18 | break a test on purpose | reading a red test |
-| 9–10 | 19–21 | **N ×4**, ▶ Run tests | stubs: fast, same every run |
-| 11 | 25 | — | a test that can't fail tests nothing |
-| 12 | 28 | timer | Fix It (assertions) 1–6 |
-| 13–14 | 35–37 | — | unit 4 preview; homework II |
+| 9 | 19 | open pokeapi.co/api/v2/pokemon/pikachoo | the real PokeAPI's answers |
+| 10 | 21 | **E**, delete `if (!name) return`, ▶ (red), put it back, ▶ | break it on purpose |
+| 11 | 23 | — | a test that can't fail tests nothing |
+| 12 | 25 | timer (8 min) | Fix It (assertions) 1–6 |
+| 13–14 | 33–36 | — | unit 4 preview; homework II |
+
+Every test calls the live PokeAPI: no stubs. The laptop (and the Fix It checks) need internet.
 
 Things to expect: students running Cypress inside Docker (it must run on the laptop); Node 25 on the laptop (Cypress 16 refuses it: use 24); `cy:run` without the app running ("cy.visit() failed trying to load").
 
@@ -123,7 +126,7 @@ State Hunt: the harder boxes (something changes but is not state) are 4, 8, 12, 
 | 4–5 | 7–9 | **N** | dependency array; track pokemonList |
 | 6 | 11 | — | mount, update, unmount |
 | 7 | 13 | **N** 1, ▶ (red); **N** 2, ▶ (green); click "Click me!" | a visible side effect |
-| 8–9 | 17–18 | **N** 1–4, ▶ (red); **N** 5–6, ▶ (green) | planned change: tests first |
+| 8–9 | 17–18 | **N** 1, ▶ (red); **N** 2–3, ▶ (green) | planned change: tests first |
 | 10–11 | 24–26 | — | the ignore flag; when not to use an effect |
 | 12 | 28 | timer | Fix It (useEffect) 1–6 |
 | 13–14 | 35–37 | — | mental model; homework II |
@@ -189,15 +192,17 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | — | component vs utility libraries; two packages |
-| 4 | 5 | **N** 1 ▶ green; **N** 2 runs `npm install react-bootstrap@2 bootstrap@5` in the slide's terminal; **N** 3 ▶ red, **A**; **N** 4 ▶ green | the clash and `important` |
-| 5–6 | 11–13 | — | cascade layers; the two-library rules |
-| 7 | 15 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
-| 8–10 | 21–25 | — | props not classes; BsButton; when to use which |
-| 11 | 27 | — | the 17 tests |
-| 12 | 29 | timer | Fix It (React Bootstrap) 1–6 |
-| 13–14 | 36–37 | — | mental model; homework II |
+| 4 | 5 | **N** 1 ▶ green; **N** 2 runs `npm install react-bootstrap@2 bootstrap@5` in the slide's terminal; **N** 3 ▶ red (cards 48px apart), **A**; **N** 4 ▶ green | the clash (`gap-5` in both libraries) and `important` |
+| 5–6 | 11–13 | — | cascade layers; Bootstrap for components, Tailwind for layout |
+| 7 | 14 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
+| 8 | 19 | — | props not classes |
+| 9 | 20 | **N ×5**, **A** after each, ▶ 17 green | Button wraps BsButton; Heading, Counter, PokeForm (controlId) |
+| 10–11 | 26–27 | — | BsButton; when to use which |
+| 12 | 28 | — | the 17 tests |
+| 13 | 29 | timer | Fix It (React Bootstrap) 1–6 |
+| 14–15 | 36–37 | — | mental model; homework II |
 
-Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); Bootstrap making h1 thin and buttons square.
+Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); the cards drifting apart after Bootstrap loads (forgot `important`); search tests failing because `controlId` is missing.
 
 # Runbook · Unit 7 (React Router)
 
@@ -236,13 +241,13 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 |---|---|---|---|
 | 2 | 1 | — | :id and useParams (strings) |
 | 3 | 3 | **N ×3**, red → green | route with a parameter |
-| 4 | 6 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
+| 4 | 6 | **N ×2**, red → green | fetch by id (effect on [id], ignore flag) |
 | 5 | 10 | **N ×5**, red → green | unknown Pokemon: catch + message |
 | 6 | 13 | **N ×3**, red → green | Details link (BsButton as={Link}) |
 | 7 | 15 | — | Link or navigate |
 | 8 | 16 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
 | 9 | 20 | **N ×4**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
-| 10–11 | 24–26 | — | stubbing by id; loaders preview (later, with protected routes) |
+| 10–11 | 24–26 | — | the real API answers (25 = Pikachu, 99999 = 404); loaders preview (later, with protected routes) |
 | 12 | 28 | timer | Fix It (router hooks) 1–6 |
 | 13–14 | 35–37 | — | mental model; homework I |
 

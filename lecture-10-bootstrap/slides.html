@@ -23,10 +23,10 @@
 
 <section class="slide title" data-seg="Open" data-at="0">
   <div class="kicker">Front-End · Unit 6: Utility vs Component Libraries · Lecture 2 of 2</div>
-  <h1>React Bootstrap: finished components, and a clash.</h1>
-  <p class="sub">A component library next to Tailwind, with a test that catches the clash.</p>
+  <h1>React Bootstrap: finished components for the whole app.</h1>
+  <p class="sub">Every component becomes React Bootstrap; Tailwind keeps the layout. A test catches the clash.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today we add React Bootstrap next to Tailwind, hit a real style clash, and use a test to catch it.</p>
+    <p class="plan"><b>The plan:</b> Today we add React Bootstrap, catch a real style clash with a test, and rebuild every component with Bootstrap. Tailwind keeps only the page layout.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Students: <code>npm install react-bootstrap bootstrap</code>, then rebuild the image.</p>
   </aside>
 </section>
@@ -60,16 +60,16 @@
 </section>
 
 <section class="slide code" data-seg="Code along: install" data-at="5">
-  <h2>Install Bootstrap, keep the Tailwind look <span class="say">home.cy.js · package.json · main.jsx · index.css</span></h2>
+  <h2>Install Bootstrap, keep the Tailwind layout <span class="say">home.cy.js · package.json · main.jsx · index.css</span></h2>
   <div class="livepad" data-lesson="utilities-bootstrap" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4 f1s5" data-files="cypress/e2e/home.cy.js src/main.jsx src/index.css package.json"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We write a guard test, install Bootstrap, watch the test go red from a style clash, and fix it with one word.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> N 1 ▶ green. N 2 runs <code>npm install react-bootstrap@2 bootstrap@5</code> in the terminal, N 3 ▶ <b>red</b> (press A: the h1 is thinner, buttons square). N 4 ▶ green.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> N 1 ▶ green. N 2 runs <code>npm install react-bootstrap@2 bootstrap@5</code> in the terminal, N 3 ▶ <b>red</b> (press A: the cards drift apart, 48px). N 4 ▶ green.</p>
 <!-- steps:utilities-bootstrap:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps the Tailwind look after Bootstrap …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A guard test before we install anything: the heading is bold, the search button is rounded. Run it: green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps the Tailwind layout after Bootstra…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A guard test before we install anything: the cards sit 20px apart (gap-5). Run it: green.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">terminal</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>$ npm install react-bootstrap@2 bootstrap@5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install react-bootstrap bootstrap: Bootstrap's CSS… …and its React components. npm writes package.json by itself.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/main.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import 'bootstrap/dist/css/bootstrap.min.css'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's CSS, before ours. Run the tests: the guard test is red. The heading is weight 500, the button square.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/main.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import 'bootstrap/dist/css/bootstrap.min.css'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's CSS, before ours. Run the tests: the guard test is red. The gap is 48px: Bootstrap's gap-5.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss" important;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">important: every Tailwind utility becomes !important, so it beats Bootstrap. Run the tests: green.</td></tr>
 </table>
 <!-- /steps -->
@@ -80,33 +80,34 @@
   <h2>Why Bootstrap wins: cascade layers</h2>
   <table class="dbt small">
     <tr><th>Rule</th><th>Where it lives</th><th>Wins?</th></tr>
-    <tr><td>Tailwind <code>.font-bold</code></td><td>inside <code>@layer utilities</code></td><td>no</td></tr>
-    <tr><td>Bootstrap <code>h1 { font-weight: 500 }</code></td><td>no layer</td><td class="pk">yes: unlayered beats every layer</td></tr>
-    <tr><td>Tailwind with <code>important</code></td><td>layer, <code>!important</code></td><td class="pk">yes: layered !important beats unlayered</td></tr>
+    <tr><td>Tailwind <code>.gap-5 { gap: 1.25rem }</code></td><td>inside <code>@layer utilities</code></td><td>no</td></tr>
+    <tr><td>Bootstrap <code>.gap-5 { gap: 3rem !important }</code></td><td>no layer</td><td class="pk">yes: !important, and unlayered</td></tr>
+    <tr><td>Tailwind with <code>important</code></td><td>layer, <code>!important</code></td><td class="pk">yes: layered !important beats unlayered !important</td></tr>
   </table>
   <p class="bottomline">Import order does not fix it; <code>important</code> does.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Why Bootstrap won that clash: cascade layers.</p><p>This is why "just import Bootstrap first" (the curriculum's order) isn't enough with Tailwind v4.</p></aside>
+    <p class="plan"><b>The plan:</b> Why Bootstrap won that clash: the same class name in both libraries, and cascade layers.</p><p>Point at each row, top to bottom: Tailwind's gap-5, Bootstrap's gap-5, then Tailwind with important.</p><p>This is why "just import Bootstrap first" (the curriculum's order) isn't enough with Tailwind v4.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="13">
   <h2>Two libraries in one app: the rules</h2>
   <ul>
     <li><code>@import "tailwindcss" important;</code> so utilities win clashes</li>
-    <li><b>One library per component</b>: PokeCard is Bootstrap; everything else is Tailwind</li>
+    <li><b>Bootstrap for components</b> (card, buttons, header, form); <b>Tailwind for layout</b> (column, card row)</li>
+    <li><b>One library per component</b>: no Tailwind classes on Bootstrap parts</li>
     <li>A guard test (computed styles) tells you when a clash comes back</li>
   </ul>
-  <p class="bottomline">In real projects, pick one. Today we learn both.</p>
+  <p class="bottomline">Our app: mostly Bootstrap, a little Tailwind.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> The rules for running two libraries in one app.</p><p>Alternative: <code>prefix(tw)</code> renames Tailwind's classes; it avoids name clashes but not Reboot's element styles.</p></aside>
 </section>
 
-<section class="slide code" data-seg="Code along: Card" data-at="15">
+<section class="slide code" data-seg="Code along: Card" data-at="14">
   <h2>PokeCard as a React Bootstrap Card <span class="say">PokeCard.jsx</span></h2>
   <div class="livepad" data-lesson="utilities-bootstrap" data-start="f1s5" data-steps="f2s1" data-files="src/components/PokeSearch/PokeCard.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We rebuild PokeCard from Bootstrap's Card parts, and the tests stay green.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> Type it part by part. ▶ Run tests: 17 green.</p>
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Type it part by part. ▶ Run tests: 17 green.</p>
 <!-- steps:utilities-bootstrap:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same card from Bootstrap's parts. Keep the id on &lt;Card&gt;: the tests find cards by it. Run the tests: all 17 green.</td></tr>
@@ -115,7 +116,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="21">
+<section class="slide" data-seg="Concept" data-at="19">
   <h2>Props, not classes</h2>
   <table class="dbt small">
     <tr><th>Prop</th><th>Becomes</th></tr>
@@ -129,11 +130,29 @@
     <p class="plan"><b>The plan:</b> With Bootstrap you write props, and they become classes.</p><p>Inspect the card in DevTools to show the generated classes.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="23">
+<section class="slide code" data-seg="Code along: the rest" data-at="20">
+  <h2>The rest of the page in Bootstrap <span class="say">Button · Heading · Counter · PokeForm</span></h2>
+  <div class="livepad" data-lesson="utilities-bootstrap" data-start="f2s1" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="src/components/Button/Button.jsx src/components/Heading/Heading.jsx src/components/Counter/Counter.jsx src/components/PokeSearch/PokeForm.jsx"></div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We rebuild our Button, the heading, the counter and the search form from React Bootstrap parts. The tests stay green.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Press <b>A</b> after each N to show the new look. ▶ Run tests at the end: 17 green.</p>
+<!-- steps:utilities-bootstrap:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Button/Button.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import BsButton from 'react-bootstrap/Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Our Button wraps Bootstrap's. Change Title, Click me! and every later Button get the Bootstrap look from here.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A dark Card. as="header" keeps the &lt;header&gt; tag: the tests find header h1 and header button.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Button from '../Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The Counter becomes a Card…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…a white card. The page behind it still changes colour.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeForm.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Card from 'react-bootstrap/Card'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The form from Bootstrap's parts. controlId gives the input its id, so input[id=pokemon-name] still finds it. Run the tests: 17 green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="26">
   <h2>Two Buttons, one name</h2>
   <table class="dbt small">
     <tr><th>Import</th><th>Name in the file</th></tr>
-    <tr><td><code>import Button from '../Button'</code></td><td>our Button (Tailwind)</td></tr>
+    <tr><td><code>import Button from '../Button'</code></td><td>our Button (it wraps Bootstrap's)</td></tr>
     <tr><td><code>import BsButton from 'react-bootstrap/Button'</code></td><td class="pk">Bootstrap's, renamed</td></tr>
   </table>
   <p class="bottomline">A default import can take any name you choose.</p>
@@ -141,7 +160,7 @@
     <p class="plan"><b>The plan:</b> Two Buttons with one name: how to rename an import.</p><p>Two imports with the same name in one file is a syntax error.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Concept" data-at="27">
   <h2>When should you use React Bootstrap?</h2>
   <table class="dbt small">
     <tr><th>Pick a component library when…</th><th>Pick utilities when…</th></tr>
@@ -149,20 +168,20 @@
     <tr><td>you need modals, dropdowns, tooltips that just work</td><td>you want small CSS and full control</td></tr>
     <tr><td>the team knows Bootstrap</td><td>the team knows Tailwind</td></tr>
   </table>
-  <p class="bottomline">Both are fine. Mixing them costs a guard test and a rule.</p>
+  <p class="bottomline">Both are fine. Mixing them costs a guard test and a rule: Bootstrap for parts, Tailwind for layout.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> When to pick a component library, and when to pick utilities.</p><p>Ask: "Which one would you pick for the final project, and why?"</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="27">
+<section class="slide" data-seg="Wrap up" data-at="28">
   <h2>The suite now: 17 tests</h2>
   <table class="dbt small">
     <tr><th>Tests</th><th>Guard</th></tr>
     <tr><td>14 from units 4–5</td><td>behaviour: search, remove, shiny, keys</td></tr>
     <tr><td>Pokedex number</td><td>a feature added while styling</td></tr>
-    <tr><td>layout · Tailwind look</td><td class="pk">computed styles: wrapping row, the clash</td></tr>
+    <tr><td>layout · Tailwind layout</td><td class="pk">computed styles: wrapping row, the gap-5 clash</td></tr>
   </table>
-  <p class="bottomline">Two big restyles, zero behaviour broken.</p>
+  <p class="bottomline">Two big restyles, zero behaviour broken: the tests use ids, labels and tags.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> The test suite so far: 17 tests, and what each group guards.</p><p>Unit 7 adds pages (React Router).</p></aside>
 </section>
@@ -186,8 +205,8 @@
   <ul>
     <li>Component library = finished parts, configured with props</li>
     <li>Install both: the components and the CSS</li>
-    <li>Unlayered Bootstrap beats layered Tailwind; <code>important</code> fixes it</li>
-    <li>One library per component; tests guard the result</li>
+    <li>Same class name, two libraries: Bootstrap wins; <code>important</code> fixes it</li>
+    <li>Bootstrap for components, Tailwind for layout; tests guard the result</li>
   </ul>
   <p class="bottomline">Next unit: pages, with React Router.</p>
   <aside class="notes">
@@ -212,15 +231,15 @@
 <script src="../shared/course/react-vite.js?v=2"></script>
 <script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/course/cypress-react.js?v=2"></script>
-<script src="../shared/course/cypress-assertions.js?v=1"></script>
-<script src="../shared/course/hooks-usestate.js?v=1"></script>
-<script src="../shared/course/hooks-useeffect.js?v=1"></script>
+<script src="../shared/course/cypress-assertions.js?v=2"></script>
+<script src="../shared/course/hooks-usestate.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=2"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
 <script src="../shared/course/utilities-tailwind.js?v=2"></script>
-<script src="../shared/course/utilities-bootstrap.js?v=2"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=3"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

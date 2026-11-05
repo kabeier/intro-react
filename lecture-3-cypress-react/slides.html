@@ -65,7 +65,7 @@
       <li>Runs your app in a <b>real browser</b></li>
       <li><b>Waits</b> by itself: retries a check up to 4 s</li>
       <li>Shows each step: you can <b>see</b> the test click and type</li>
-      <li>Can <b>stub</b> the network (lecture 2)</li>
+      <li>Waits for the <b>real PokeAPI</b> to answer</li>
     </ul>
     <ul>
       <li>Tests read like the feature: visit, type, click, should…</li>
@@ -129,13 +129,12 @@
   <h2>Where things go</h2>
   <pre style="font-size:24px">pokemon-app/
 ├─ cypress/
-│  ├─ e2e/          <span class="c"># the tests: *.cy.js</span>
-│  └─ fixtures/     <span class="c"># fake data for lecture 2</span>
+│  └─ e2e/          <span class="c"># the tests: *.cy.js</span>
 ├─ cypress.config.js
 └─ package.json</pre>
   <p class="bottomline">One spec file per area of the app: home.cy.js today, pokemon.cy.js next.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Where test files go in the project.</p><p>The first <code>cy:open</code> may create <code>cypress/support</code> and <code>fixtures/example.json</code>: delete them (we set supportFile: false).</p></aside>
+    <p class="plan"><b>The plan:</b> Where test files go in the project.</p><p>The first <code>cy:open</code> may create <code>cypress/support</code> and <code>cypress/fixtures</code> folders: delete them (we set supportFile: false, and our tests use the real PokeAPI).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="17">
@@ -245,6 +244,6 @@
 <script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
 <script src="../shared/livepad.js?v=11"></script>
-<script src="../shared/cyrunner.js?v=5"></script>
+<script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

@@ -62,6 +62,12 @@
     const ok = (cond, msgPos, msgNeg) => { if (cond === not) throw new AssertionError(not ? msgNeg : msgPos) }
     if (name === 'have.length') {
       const n = rest[0]
+      if (!els) {
+        const v = subject.value, len = v == null ? undefined : v.length
+        const shown = Array.isArray(v) ? (v.length ? '[ ' + v.map((x) => (typeof x === 'string' ? q(x) : JSON.stringify(x))).join(', ') + ' ]' : '[]') : q(v)
+        ok(len === n, `expected ${shown} to have a length of ${n} but got ${len}`, `expected ${shown} to not have a length of ${n}`)
+        return subject
+      }
       if (els.length !== n && !not) throw new AssertionError(els.length < n ? `Not enough elements found. Found '${els.length}', expected '${n}'.` : `Too many elements found. Found '${els.length}', expected '${n}'.`)
       if (els.length === n && not) throw new AssertionError(`expected ${describeEls(els)} not to have a length of ${n}`)
       return subject
@@ -246,6 +252,7 @@
       },
       // Each cy.wait('@a') waits for the next response on that route, like Cypress.
       wait: (alias) => {
+        if (typeof alias === 'number') return chain({ kind: 'action', name: 'wait', start: true, run: async () => { await sleep(alias); return { els: [] } } })
         const name = alias.slice(1)
         let mine = null
         return chain({ kind: 'query', name: 'wait', selector: alias, start: true, run: () => {

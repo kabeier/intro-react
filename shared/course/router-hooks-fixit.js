@@ -62,7 +62,7 @@
       symptom: 'Every Details link opens /pokemon/undefined: "Pokemon not found".',
       breaks: [{ file: CARD, mode: 'replace', find: 'to={`/pokemon/${pokemon.id}`}', code: 'to={`/pokemon/${pokemon.ID}`}' }],
       checks: [allPass],
-      hint: 'Check the property name against the fixture (or the API).',
+      hint: 'Check the property name against the real API answer (open the URL in the browser).',
       why: 'The API\'s field is id (lowercase): to={`/pokemon/${pokemon.id}`}.',
     },
     {

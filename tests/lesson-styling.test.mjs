@@ -35,15 +35,34 @@ test('Tailwind compiles in the preview: utility classes apply', async () => {
   await page.close()
 })
 
-test('Bootstrap CSS beats Tailwind until `important`, like a real Vite build', async () => {
+test("Bootstrap's gap-5 beats Tailwind's until `important`, like a real Vite build", async () => {
   const before = await open('utilities-bootstrap', 'f1s4')
-  assert.equal(await settle(before.frame, 'header h1', 'fontWeight', '500'), '500')
-  assert.equal(await settle(before.frame, 'button[type=submit]', 'borderRadius', '0px'), '0px')
+  assert.equal(await settle(before.frame, '#poke-container', 'columnGap', '48px'), '48px')
   await before.page.close()
   const after = await open('utilities-bootstrap', 'f1')
-  assert.equal(await settle(after.frame, 'header h1', 'fontWeight', '700'), '700')
-  assert.equal(await settle(after.frame, 'button[type=submit]', 'borderRadius', '6px'), '6px')
+  assert.equal(await settle(after.frame, '#poke-container', 'columnGap', '20px'), '20px')
   await after.page.close()
+})
+
+test('after the Bootstrap lecture the components are React Bootstrap and Tailwind keeps the layout', async () => {
+  const { page, frame } = await open('utilities-bootstrap', 'f3')
+  await until(page, () => { const f = [...document.querySelectorAll('iframe')].pop(); return f && f.contentDocument.querySelector('#pikachu-card.card') }, null, 30000)
+  const look = await frame.evaluate(() => ({
+    header: document.querySelector('header').className,
+    input: document.querySelector('#pokemon-name').className,
+    label: document.querySelector('label[for=pokemon-name]') !== null,
+    search: document.querySelector('button[type=submit]').className,
+    click: [...document.querySelectorAll('button')].find((b) => b.textContent === 'Click me!').className,
+  }))
+  assert.match(look.header, /\bcard\b.*\bbg-dark\b|\bbg-dark\b.*\bcard\b/)
+  assert.match(look.input, /\bform-control\b/)
+  assert.ok(look.label, 'the label is linked to the input')
+  assert.match(look.search, /\bbtn-success\b/)
+  assert.match(look.click, /\bbtn-primary\b/)
+  assert.equal(await settle(frame, '#poke-container', 'display', 'flex'), 'flex')
+  assert.equal(await settle(frame, '#poke-container', 'columnGap', '20px'), '20px')
+  assert.equal(await settle(frame, 'main', 'maxWidth', '1024px'), '1024px')
+  await page.close()
 })
 
 test('React Bootstrap components render (react-bootstrap/Card etc.) with one React', async () => {
