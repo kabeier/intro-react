@@ -6,6 +6,8 @@
 //   N        type the next step (short chunk) into the editor
 //   Shift+N  reset this slide to its start
 //   (the bar's "Next line" and "Reset" buttons do the same, for students following along)
+// A step with run: 'npm install x' is typed into the slide's terminal; package.json then changes by
+// itself (with the steps after it that share the command), the way npm does it. npm: its real output.
 // On a page:  Livepad.mount(el, { files, editable: true, onChange(files) })
 (() => {
   const MONACO = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/'
@@ -157,9 +159,12 @@
       `<span class="lp-status"></span>` +
       `<button type="button" class="lp-btn lp-next" title="Type the next step (N)" hidden>▶ Next line</button>` +
       `<button type="button" class="lp-btn lp-reset" title="Start this slide's code over (Shift+N)" hidden>↺ Reset</button>` +
+      `<button type="button" class="lp-btn lp-termb" title="Show or hide the terminal" hidden>&gt;_ Terminal</button>` +
       `<button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
       `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-work"><div class="lp-tree"></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div></div>` +
+      `<div class="lp-term" hidden><div class="lp-term-head">Terminal</div><div class="lp-term-lines"></div>` +
+      `<label class="lp-term-row"><span class="lp-term-ps">pokemon-app $</span><input class="lp-term-in" spellcheck="false" autocomplete="off" aria-label="Terminal: type a command, then Enter"></label></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
     const statusEl = el.querySelector('.lp-status')
     const host = el.querySelector('.lp-editor')
@@ -297,9 +302,85 @@
       pad.refresh()
     }
 
+    // ---------- The terminal (npm install steps) ----------
+    const termEl = el.querySelector('.lp-term'), termLines = el.querySelector('.lp-term-lines'), termIn = el.querySelector('.lp-term-in')
+    pad.showTerm = (on) => { termEl.hidden = !on; el.querySelector('.lp-termb').classList.toggle('on', on) }
+    const termPrint = (cls, text) => {
+      const row = document.createElement('div')
+      row.className = 'lp-tl ' + cls
+      row.textContent = text
+      termLines.append(row)
+      termLines.scrollTop = termLines.scrollHeight
+      return row
+    }
+    pad.clearTerm = () => { termLines.textContent = '' }
+    const sameCmd = (a, b) => {
+      const norm = (c) => c.trim().split(/\s+/).map((t) => (t === 'i' || t === 'add' ? 'install' : t === '-D' ? '--save-dev' : t.replace(/(.)@.*/, '$1'))).sort().join(' ') // axios@1.20.0 = axios
+      return norm(a) === norm(b)
+    }
+    termIn.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return
+      e.preventDefault()
+      const line = termIn.value.trim()
+      termIn.value = ''
+      if (!line) return
+      if (line === 'clear') return pad.clearTerm()
+      const next = pad.steps[pad.idx]
+      if (next && next.run && !pad.busy && sameCmd(line, next.run)) { pad.typedCmd = line; nextStep(pad); return }
+      termPrint('cmd', '$ ' + line)
+      if (/^npm (install|i|add)\b/.test(line)) termPrint('note', next && next.run
+        ? `(On this slide the terminal runs: ${next.run}. Install other packages in your own terminal.)`
+        : '(Nothing to install on this slide. Install packages in your own terminal.)')
+      else termPrint('note', '(This terminal runs the npm install steps on these slides. Run other commands in your own terminal.)')
+    })
+    const cantApply = (e) => pad.setStatus(/more than once/.test(e.message)
+      ? "✕ can't apply the next step: the line it needs is in your code twice. Shift+N resets this slide"
+      : "✕ can't apply the next step: your code changed. Shift+N resets this slide", true)
+    pad.runInstall = async () => {
+      const step = pad.steps[pad.idx]
+      const group = []
+      for (let i = pad.idx; i < pad.steps.length && pad.steps[i].run === step.run; i++) group.push(pad.steps[i])
+      const old = pad.files[step.file] || ''
+      let text = old
+      try { for (const g of group) text = Course.applyStep(text, g) } catch (e) {
+        if (e instanceof Course.StepMismatch) return cantApply(e)
+        throw e
+      }
+      pad.busy = true
+      const gen = pad.gen
+      pad.showTerm(true)
+      const typed = pad.typedCmd
+      pad.typedCmd = null
+      const row = termPrint('cmd', '$ ')
+      if (typed) row.textContent = '$ ' + typed
+      else {
+        for (let k = 1; k <= step.run.length; k += 2) { row.textContent = '$ ' + step.run.slice(0, k); await sleep(30); if (gen !== pad.gen) return }
+        row.textContent = '$ ' + step.run
+      }
+      await sleep(500)
+      if (gen !== pad.gen) return
+      const n = step.npm
+      if (n) {
+        ;['', `added ${n.added} packages, and audited ${n.audited} packages in ${n.secs}s`, '', `${n.funding} packages are looking for funding`, '  run `npm fund` for details', '', 'found 0 vulnerabilities']
+          .forEach((l) => termPrint('out', l))
+        if (n.extra) termPrint('note', '(' + n.extra + ')')
+      }
+      termPrint('note', `(npm wrote the new line${group.length > 1 ? 's' : ''} into package.json for you.${/@\d/.test(step.run) ? '' : ' Your version number may be a little newer.'})`)
+      termLines.scrollTop = row.offsetTop // keep the command in view
+      pad.setFile(step.file, text)
+      pad.showTab(step.file)
+      const had = new Set(old.split('\n'))
+      if (pad.editor) pad.editor.flash(text.split('\n').map((l, k) => (had.has(l) ? 0 : k + 1)).filter(Boolean))
+      pad.idx += group.length
+      pad.refresh()
+      pad.busy = false
+      pad.showLater()
+    }
+
     pad.next = async () => {
       if (pad.busy || pad.idx >= pad.steps.length) return
       const step = pad.steps[pad.idx]
+      if (step.run) return pad.runInstall()
       // A move renames the file: its tab hides and the new name's tab shows the same text.
       if (step.mode === 'move') {
         pad.files[step.to] = pad.files[step.file]
@@ -324,9 +405,7 @@
       const old = pad.files[step.file] || ''
       let text
       try { text = Course.applyStep(old, step) } catch (e) {
-        if (e instanceof Course.StepMismatch) return pad.setStatus(/more than once/.test(e.message)
-          ? "✕ can't apply the next step: the line it needs is in your code twice. Shift+N resets this slide"
-          : "✕ can't apply the next step: your code changed. Shift+N resets this slide", true)
+        if (e instanceof Course.StepMismatch) return cantApply(e)
         throw e
       }
       pad.busy = true
@@ -393,6 +472,8 @@
       if (!pad.lesson) return
       pad.gen++
       pad.busy = false
+      pad.typedCmd = null
+      pad.clearTerm()
       pad.idx = 0
       pad.setFiles(Course.filesAt(pad.lesson, pad.start))
       if (pad.editor) pad.editor.flash([])
@@ -406,6 +487,8 @@
     el.querySelector('.lp-run').onclick = (e) => { e.currentTarget.blur(); pad.runTests() }
     el.querySelector('.lp-next').onclick = (e) => { e.currentTarget.blur(); nextStep(pad) }
     el.querySelector('.lp-reset').onclick = (e) => { e.currentTarget.blur(); resetSteps(pad) }
+    el.querySelector('.lp-termb').hidden = !pad.lesson
+    el.querySelector('.lp-termb').onclick = (e) => { e.currentTarget.blur(); pad.showTerm(termEl.hidden); if (!termEl.hidden) termIn.focus() }
     pad.drawSteps()
     paint(pad)
     pad.showTree()

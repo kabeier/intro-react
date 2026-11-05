@@ -56,7 +56,7 @@ Course.register({
           notes: [{ match: '"deploy": "gh-pages -d dist"', what: 'Push the dist folder to the gh-pages branch.', why: 'Vite builds into dist (not build, as in create-react-app).' }],
         },
         {
-          id: 'f3s2', file: 'package.json', mode: 'replace', find: '    "cypress": "^16.2.0",',
+          id: 'f3s2', run: 'npm install gh-pages --save-dev', npm: { added: 45, audited: 307, secs: 3, funding: 75 }, file: 'package.json', mode: 'replace', find: '    "cypress": "^16.2.0",',
           code: '    "cypress": "^16.2.0",\n    "gh-pages": "^6.3.0",',
           say: 'npm install --save-dev gh-pages. Then: npm run deploy, and in Settings → Pages pick the gh-pages branch.',
         },

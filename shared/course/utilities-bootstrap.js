@@ -19,12 +19,12 @@ Course.register({
           notes: [{ match: "should('have.css', 'border-radius', '6px')", what: 'rounded-md = 0.375rem = 6px.', why: 'Checks the result on the page, so it catches any CSS that overrides ours.' }],
         },
         {
-          id: 'f1s2', file: 'package.json', mode: 'replace', find: '    "axios": "^1.20.0",',
+          id: 'f1s2', run: 'npm install react-bootstrap@2 bootstrap@5', npm: { added: 37, audited: 259, secs: 5, funding: 67 }, file: 'package.json', mode: 'replace', find: '    "axios": "^1.20.0",',
           code: '    "axios": "^1.20.0",\n    "bootstrap": "^5.3.8",',
           say: 'npm install react-bootstrap bootstrap: Bootstrap\'s CSS…',
         },
         {
-          id: 'f1s3', file: 'package.json', mode: 'replace', find: '    "react": "^19.3.1",',
+          id: 'f1s3', run: 'npm install react-bootstrap@2 bootstrap@5', file: 'package.json', mode: 'replace', find: '    "react": "^19.3.1",',
           code: '    "react": "^19.3.1",\n    "react-bootstrap": "^2.10.10",',
           say: '…and its React components.',
         },

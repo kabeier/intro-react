@@ -6,7 +6,7 @@
 <title>Unit 6 · Lecture 2 · React Bootstrap</title>
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=6">
+<link rel="stylesheet" href="../shared/livepad.css?v=7">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -64,14 +64,13 @@
   <div class="livepad" data-lesson="utilities-bootstrap" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4 f1s5" data-files="cypress/e2e/home.cy.js src/main.jsx src/index.css package.json"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We write a guard test, install Bootstrap, watch the test go red from a style clash, and fix it with one word.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> N 1 ▶ green. N 2–4 ▶ <b>red</b> (press A: the h1 is thinner, buttons square). N 5 ▶ green.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> N 1 ▶ green. N 2 runs <code>npm install react-bootstrap@2 bootstrap@5</code> in the terminal, N 3 ▶ <b>red</b> (press A: the h1 is thinner, buttons square). N 4 ▶ green.</p>
 <!-- steps:utilities-bootstrap:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('keeps the Tailwind look after Bootstrap …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A guard test before we install anything: the heading is bold, the search button is rounded. Run it: green.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"axios": "^1.20.0",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install react-bootstrap bootstrap: Bootstrap's CSS…</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"react": "^19.3.1",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and its React components.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/main.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import 'bootstrap/dist/css/bootstrap.min.css'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's CSS, before ours. Run the tests: the guard test is red. The heading is weight 500, the button square.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss" important;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">important: every Tailwind utility becomes !important, so it beats Bootstrap. Run the tests: green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">terminal</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>$ npm install react-bootstrap@2 bootstrap@5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install react-bootstrap bootstrap: Bootstrap's CSS… …and its React components. npm writes package.json by itself.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/main.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import 'bootstrap/dist/css/bootstrap.min.css'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's CSS, before ours. Run the tests: the guard test is red. The heading is weight 500, the button square.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss" important;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">important: every Tailwind utility becomes !important, so it beats Bootstrap. Run the tests: green.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -211,17 +210,17 @@
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>
 <script src="../shared/course/react-vite.js?v=2"></script>
-<script src="../shared/course/async-requests.js?v=1"></script>
-<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=2"></script>
+<script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/course/cypress-assertions.js?v=1"></script>
 <script src="../shared/course/hooks-usestate.js?v=1"></script>
 <script src="../shared/course/hooks-useeffect.js?v=1"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
-<script src="../shared/course/utilities-tailwind.js?v=1"></script>
-<script src="../shared/course/utilities-bootstrap.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=2"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
-<script src="../shared/livepad.js?v=10"></script>
+<script src="../shared/livepad.js?v=11"></script>
 <script src="../shared/cyrunner.js?v=5"></script>
 </body>
 </html>

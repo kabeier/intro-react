@@ -15,7 +15,7 @@ Course.register({
       why: 'axios is a small library for HTTP requests: it turns JSON into objects for us and treats 404/500 answers as errors.',
       steps: [
         {
-          id: 'f1s1', file: 'package.json', mode: 'replace', find: '"react": "^19.3.1",', code: '"axios": "^1.20.0",\n    "react": "^19.3.1",',
+          id: 'f1s1', run: 'npm install axios@1.20.0', npm: { added: 27, audited: 52, secs: 2, funding: 15 }, file: 'package.json', mode: 'replace', find: '"react": "^19.3.1",', code: '"axios": "^1.20.0",\n    "react": "^19.3.1",',
           say: 'npm install axios adds this line. In Docker: rebuild the image (or docker exec react-container npm install).',
           notes: [{ match: '"axios"', what: 'axios, added to dependencies by npm install axios.', why: 'The app needs it to run, so it is a dependency (not a devDependency).',
             api: { name: 'npm install axios', does: 'Downloads axios and records it in package.json.', params: [['package', 'the npm package name', 'axios (npm install axios@1.20.0 pins this exact version)']], mistakes: ['Installing on the laptop while the app runs in Docker: the container still lacks it. Rebuild the image.'] } }],

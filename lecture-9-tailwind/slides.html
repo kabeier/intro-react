@@ -6,7 +6,7 @@
 <title>Unit 6 · Lecture 1 · Tailwind CSS</title>
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=6">
+<link rel="stylesheet" href="../shared/livepad.css?v=7">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -67,10 +67,9 @@
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>npm install tailwindcss @tailwindcss/vite</code>, then rebuild the image.</p>
 <!-- steps:utilities-tailwind:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"@tailwindcss/vite": "^4.3.3",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install tailwindcss @tailwindcss/vite: two packages land in dependencies.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"react-dom": "^19.3.1",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The second one.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Add the plugin next to react(). Keep react(): without it JSX stops working.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss";</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One line. It also adds Preflight, a reset: headings lose their size, lists their bullets. Rebuild the Docker image so the new packages are inside it.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">terminal</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>$ npm install tailwindcss @tailwindcss/vite</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install tailwindcss @tailwindcss/vite: two packages land in dependencies. The second one. npm writes package.json by itself.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Add the plugin next to react(). Keep react(): without it JSX stops working.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss";</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">One line. It also adds Preflight, a reset: headings lose their size, lists their bullets. Rebuild the Docker image so the new packages are inside it.</td></tr>
 </table>
 <!-- /steps -->
     <p><b>Different from the curriculum</b> (until merged): its vite.config.js drops <code>react()</code>. Keep both plugins.</p>
@@ -227,16 +226,16 @@
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>
 <script src="../shared/course/react-vite.js?v=2"></script>
-<script src="../shared/course/async-requests.js?v=1"></script>
-<script src="../shared/course/cypress-react.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=2"></script>
+<script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/course/cypress-assertions.js?v=1"></script>
 <script src="../shared/course/hooks-usestate.js?v=1"></script>
 <script src="../shared/course/hooks-useeffect.js?v=1"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
-<script src="../shared/course/utilities-tailwind.js?v=1"></script>
+<script src="../shared/course/utilities-tailwind.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
-<script src="../shared/livepad.js?v=10"></script>
+<script src="../shared/livepad.js?v=11"></script>
 <script src="../shared/cyrunner.js?v=5"></script>
 </body>
 </html>

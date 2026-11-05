@@ -13,11 +13,11 @@ Course.register({
       why: 'Tailwind v4 is a Vite plugin plus one CSS line. It scans your files for class names and writes only the CSS you use.',
       steps: [
         {
-          id: 'f1s1', file: 'package.json', mode: 'replace', find: '    "axios": "^1.20.0",',
+          id: 'f1s1', run: 'npm install tailwindcss @tailwindcss/vite', npm: { added: 15, audited: 222, secs: 5, funding: 65 }, file: 'package.json', mode: 'replace', find: '    "axios": "^1.20.0",',
           code: '    "@tailwindcss/vite": "^4.3.3",\n    "axios": "^1.20.0",',
           say: 'npm install tailwindcss @tailwindcss/vite: two packages land in dependencies.',
         },
-        { id: 'f1s2', file: 'package.json', mode: 'replace', find: '    "react-dom": "^19.3.1"\n', code: '    "react-dom": "^19.3.1",\n    "tailwindcss": "^4.3.3"\n', say: 'The second one.' },
+        { id: 'f1s2', run: 'npm install tailwindcss @tailwindcss/vite', file: 'package.json', mode: 'replace', find: '    "react-dom": "^19.3.1"\n', code: '    "react-dom": "^19.3.1",\n    "tailwindcss": "^4.3.3"\n', say: 'The second one.' },
         {
           id: 'f1s3', file: 'vite.config.js', mode: 'set',
           code: "import react from '@vitejs/plugin-react'\nimport tailwindcss from '@tailwindcss/vite'\nimport { defineConfig } from 'vite'\n\n// https://vite.dev/config/\nexport default defineConfig({\n  plugins: [react(), tailwindcss()],\n})",

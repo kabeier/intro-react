@@ -8,6 +8,8 @@
 | Open one code slide and wait a few seconds | the preview loads React and Babel from the internet the first time |
 | Share the **whole screen** if you use **↗ Pop out** | separate window |
 
+Install steps: **N** types `npm install …` into the slide's terminal (it opens by itself) and npm writes package.json; nobody types dependency lines. Students can type the command into that terminal too. **>_ Terminal** opens and closes it.
+
 Keys: **N** next step · **Shift+N** reset · **A** live app · **↗ Pop out** (real DevTools there).
 
 Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code slide's bar (students following along use these; Reset also stops a step halfway through typing). The presenter window shows **Type next step (N)** with "Typed 2 of 6 steps", and **↺ Reset slide code (Shift+N)**.
@@ -37,7 +39,7 @@ Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code 
 | 1 | 0 | T; raw JSON tab open | ask a server, wait without freezing |
 | 2 | 1 | show the JSON | request → 200 + JSON / 404 |
 | 3 | 3 | — | sync vs async; promise states |
-| 4 | 5 | **N**; students `npm install axios` | rebuild the Docker image after installing |
+| 4 | 5 | **N** runs `npm install axios@1.20.0` in the slide's terminal; students type it in theirs | npm writes package.json; rebuild the Docker image after installing |
 | 5 | 7 | **N ×5** | the ids are for tests and unit 4 |
 | 6 | 11 | **N ×3**, A, search Pikachu | Console shows "pikachu" |
 | 7 | 14 | **N ×4**; after N 3 search: pending Promise; try pikachoo | then / catch / finally |
@@ -66,7 +68,7 @@ Before class: the unit 2 app running in Docker; Node 24 on your laptop; `npm ins
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–4 | 0–5 | — | why test; unit / integration / e2e; why Cypress |
-| 5 | 6 | **N ×2**; students `npm install cypress --save-dev` on the laptop | dev dependency; two scripts |
+| 5 | 6 | **N ×2** (N 1 runs `npm install cypress --save-dev` in the slide's terminal; students type it on the laptop) | dev dependency; two scripts |
 | 6 | 9 | — | app in Docker, Cypress on the laptop |
 | 7 | 11 | **N ×4** | config, gitignore, lint globals |
 | 8–9 | 15–17 | — | folders; anatomy of a test |
@@ -172,7 +174,7 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | — | why utilities; reading classes (number × 0.25rem) |
-| 4 | 5 | **N ×4**; **A** | install: plugin + one CSS line; keep react() |
+| 4 | 5 | **N ×3** (N 1 runs `npm install tailwindcss @tailwindcss/vite` in the slide's terminal); **A** | install: plugin + one CSS line; keep react() |
 | 5 | 9 | — | Preflight reset |
 | 6 | 10 | **N** 1 ▶ green; **N** 2–3 ▶ red; **N** 4 ▶ green | layout test by computed style |
 | 7 | 14 | — | test results, not class names |
@@ -187,7 +189,7 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | — | component vs utility libraries; two packages |
-| 4 | 5 | **N** 1 ▶ green; **N** 2–4 ▶ red, **A**; **N** 5 ▶ green | the clash and `important` |
+| 4 | 5 | **N** 1 ▶ green; **N** 2 runs `npm install react-bootstrap@2 bootstrap@5` in the slide's terminal; **N** 3 ▶ red, **A**; **N** 4 ▶ green | the clash and `important` |
 | 5–6 | 11–13 | — | cascade layers; the two-library rules |
 | 7 | 15 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
 | 8–10 | 21–25 | — | props not classes; BsButton; when to use which |

@@ -45,6 +45,16 @@
 textarea.lp-fallback { width: 100%; border: 0; resize: none; outline: none; display: block; }
 .lp-console { border-top: 1px solid #3c3c3c; background: #181818; max-height: 140px; display: flex; flex-direction: column; }
 .lp-console[hidden] { display: none; }
+/* Terminal: npm install steps run here (a real terminal's look) */
+.lp-term { border-top: 1px solid #3c3c3c; background: #181818; height: 190px; display: flex; flex-direction: column; flex: none; }
+.lp-term[hidden] { display: none; }
+.lp-term-head { font: 600 14px system-ui, sans-serif; color: #9d9d9d; padding: 4px 12px; border-bottom: 1px solid #2b2b2b; }
+.lp-term-lines { position: relative; flex: 1; overflow: auto; padding: 4px 12px; font: 16px/1.4 'JetBrains Mono', ui-monospace, monospace; color: #d4d4d4; white-space: pre-wrap; }
+.lp-tl.cmd { color: #fff; font-weight: 600; }
+.lp-tl.note { color: #8fa1bd; font-style: italic; }
+.lp-tl:empty::before { content: '\200b'; }
+.lp-term-row { display: flex; gap: 8px; align-items: center; padding: 4px 12px 8px; font: 16px 'JetBrains Mono', ui-monospace, monospace; color: #7ec97e; }
+.lp-term-in { flex: 1; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; }
 .lp-console-head { font: 600 14px system-ui, sans-serif; color: #9d9d9d; padding: 4px 12px; border-bottom: 1px solid #2b2b2b; }
 .lp-console-lines { overflow: auto; padding: 4px 12px; font: 15px/1.45 'JetBrains Mono', ui-monospace, monospace; color: #d4d4d4; }
 .lp-log { white-space: pre-wrap; border-bottom: 1px solid #222; }

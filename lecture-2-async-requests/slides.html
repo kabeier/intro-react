@@ -6,7 +6,7 @@
 <title>Unit 2 · Lecture 2 · Async Requests</title>
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=1">
-<link rel="stylesheet" href="../shared/livepad.css?v=6">
+<link rel="stylesheet" href="../shared/livepad.css?v=7">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -77,7 +77,7 @@
     <p><b>** CODE ALONG, about 2 minutes. **</b> Students run <code>npm install axios</code> (in Docker: rebuild the image, or <code>docker exec react-container npm install</code>).</p>
 <!-- steps:async-requests:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"axios": "^1.20.0",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install axios adds this line. In Docker: rebuild the image (or docker exec react-container npm install).</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">terminal</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>$ npm install axios@1.20.0</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install axios adds this line. In Docker: rebuild the image (or docker exec react-container npm install). npm writes package.json by itself.</td></tr>
 </table>
 <!-- /steps -->
     <p>Why axios and not fetch? Same idea; axios parses JSON for us and treats 404 as an error. fetch comes back in a future lecture.</p>
@@ -269,8 +269,8 @@
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>
 <script src="../shared/course/react-vite.js?v=2"></script>
-<script src="../shared/course/async-requests.js?v=1"></script>
+<script src="../shared/course/async-requests.js?v=2"></script>
 <script src="../shared/filetree.js?v=1"></script>
-<script src="../shared/livepad.js?v=10"></script>
+<script src="../shared/livepad.js?v=11"></script>
 </body>
 </html>

@@ -13,7 +13,7 @@ Course.register({
       why: 'Cypress is a dev dependency (only developers need it), plus two scripts: one opens the Cypress app, one runs every test in the terminal.',
       steps: [
         {
-          id: 'f1s1', file: 'package.json', mode: 'insertAfter', find: '"@vitejs/plugin-react": "^6.1.2",', code: '    "cypress": "^16.2.0",',
+          id: 'f1s1', run: 'npm install cypress --save-dev', npm: { added: 149, audited: 201, secs: 4, funding: 63, extra: 'Cypress also downloads its app the first time: a few hundred MB, so it takes a minute.' }, file: 'package.json', mode: 'insertAfter', find: '"@vitejs/plugin-react": "^6.1.2",', code: '    "cypress": "^16.2.0",',
           say: 'npm install cypress --save-dev adds this line under devDependencies. It downloads the Cypress app too (a few hundred MB, once).',
           notes: [{ match: '"cypress"', what: 'Cypress, as a dev dependency.', why: 'Needed to develop and test, not to run the app, so --save-dev.',
             api: { name: 'npm install cypress --save-dev', does: 'Installs Cypress and records it in devDependencies.', params: [['--save-dev', 'only for development', 'tools: test runners, linters, build tools']], mistakes: ['Running it inside Docker: Cypress runs on your laptop (it opens a browser); the app runs in Docker. Your laptop needs Node 22, 24 or 26.'] } }],

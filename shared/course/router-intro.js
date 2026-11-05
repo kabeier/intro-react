@@ -14,7 +14,7 @@ Course.register({
       why: 'A router picks what to render from the URL. createBrowserRouter takes a list of routes; RouterProvider renders the one that matches.',
       steps: [
         {
-          id: 'f1s1', file: 'package.json', mode: 'replace', find: '    "react-dom": "^19.3.1",',
+          id: 'f1s1', run: 'npm install react-router', npm: { added: 3, audited: 262, secs: 1, funding: 67 }, file: 'package.json', mode: 'replace', find: '    "react-dom": "^19.3.1",',
           code: '    "react-dom": "^19.3.1",\n    "react-router": "^8.5.1",',
           say: 'npm install react-router. One package: react-router-dom was merged into it in version 8.',
           notes: [{ match: '"react-router": "^8.5.1"', what: 'React Router 8.', why: 'Different from the curriculum (until merged): it installs react-router-dom, which stopped at version 7.' }],
