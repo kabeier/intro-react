@@ -73,6 +73,10 @@ function parseJunit(xml) {
   return out
 }
 
+// Another dev server on 5173 would answer instead of ours, and every run would test the wrong app.
+const portTaken = await new Promise((r) => { const s = net.createServer().once('error', () => r(true)).listen(5173, () => s.close(() => r(false))) })
+if (portTaken) { console.error('Port 5173 is in use (a dev server already running?). Stop it first.'); process.exit(2) }
+
 const work = path.join(os.tmpdir(), 'real-cypress')
 let bad = 0
 const site = await serve(ROOT)

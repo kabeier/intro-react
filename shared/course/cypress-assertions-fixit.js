@@ -26,12 +26,12 @@
       why: '.contains(\'bulbasaur\') is the command (with an s). Even better, check the card by its id: cy.get(\'#bulbasaur-card\').should(\'be.visible\').',
     },
     {
-      id: 'classsel', title: 'The Charizard card is "never found"', base: 'f3', tabs,
-      symptom: 'should render MULTIPLE Pokemon cards fails: Expected to find element: `.charizard-card`, but never found it.',
-      breaks: [{ file: SPEC, mode: 'replace', find: "  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('#charizard-card').should('be.visible')", code: "  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('.charizard-card').should('be.visible')" }],
+      id: 'order', title: 'Bulbasaur is "never found" in the MULTIPLE test', base: 'f3', tabs,
+      symptom: 'should render MULTIPLE Pokemon cards waits 4 seconds and fails: Expected to find element: `#bulbasaur-card`, but never found it. The same test types Bulbasaur.',
+      breaks: [{ file: SPEC, mode: 'replace', find: "  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n  cy.get('#bulbasaur-card').should('be.visible')\n", code: "  cy.get('#bulbasaur-card').should('be.visible')\n  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n" }],
       checks: [allPass(8)],
-      hint: 'charizard-card is an id or a class? Look at generateCard.',
-      why: 'generateCard sets card.id; the selector for an id starts with #.',
+      hint: 'A test runs top to bottom. When the first line runs, has anything been searched yet?',
+      why: 'Cypress runs the commands in order. Search first (type … {enter}), then check for the card.',
     },
     {
       id: 'enter', title: 'Charizard never appears', base: 'f3', tabs,
@@ -67,11 +67,11 @@
     },
     {
       id: 'dupweak', title: 'Bonus: a test that can never fail', base: 'f3', tabs,
-      symptom: 'does not add the same Pokemon twice passes, but it also passes if you delete the duplicate guard from App.jsx. A test that cannot fail tests nothing.',
-      breaks: [{ file: SPEC, mode: 'replace', find: "  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('input[id=pokemon-name]').type('Charizard{enter}')\n  cy.get('#charizard-card').should('be.visible')\n  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)", code: "  cy.get('input[id=pokemon-name]').type('Bulbasaur{enter}')\n  cy.get('#bulbasaur-card').should('have.length', 1)" }],
+      symptom: 'does not add the same Pokemon twice passes, but it also passes when App.jsx adds Bulbasaur twice. A test that cannot fail tests nothing.',
+      breaks: [{ file: SPEC, mode: 'replace', find: "  cy.get('[id=\"bulbasaur-card\"]').should('have.length', 1)", code: "  cy.get('[id=\"bulbasaur-card\"]').should('exist')" }],
       checks: [allPass(8), catches('does not add the same Pokemon twice', '    if (document.getElementById(`${data.name}-card`)) return\n', 'no duplicate guard')],
-      hint: 'How many elements can #bulbasaur-card ever find? And does the test wait for the second search to finish?',
-      why: '#id finds only the first match, so it always counts 1, and the count can run before the second answer arrives. Search Charizard after the second Bulbasaur and wait for its card, then count with [id="bulbasaur-card"].',
+      hint: 'The test is about "not twice". Does should(\'exist\') care if there are 1 or 2 cards?',
+      why: 'should(\'exist\') passes for 1 card or 2. Count them instead: should(\'have.length\', 1).',
     },
     {
       id: 'alertweak', title: 'Bonus: an alert test that passes with no alert', base: 'f3', tabs,
@@ -90,12 +90,12 @@
       why: 'The check runs right after the click, before any answer is back, so it always sees 0 alerts. Give the wrong answer time to arrive first: cy.wait(1000), then count the alerts.',
     },
     {
-      id: 'skip', title: 'Bonus: "1 pending"', base: 'f3', tabs,
-      symptom: 'The run shows 7 passing and 1 pending. One test never runs.',
-      breaks: [{ file: SPEC, mode: 'replace', find: "it('clears the input after a search'", code: "it.skip('clears the input after a search'" }],
+      id: 'alerttext', title: 'Bonus: the alert test fails, but the alert shows', base: 'f3', tabs,
+      symptom: 'alerts when a Pokemon does not exist waits 4 seconds and fails: expected [ \'Pokemon Does not Exist\' ] to include \'Pokemon does not exist\'.',
+      breaks: [{ file: SPEC, mode: 'replace', find: "cy.wrap(alerts).should('include', 'Pokemon Does not Exist')", code: "cy.wrap(alerts).should('include', 'Pokemon does not exist')" }],
       checks: [allPass(8)],
-      hint: 'Look for a word after it that tells Cypress to skip a test.',
-      why: 'it.skip marks a test pending: it never runs. Remove .skip.',
+      hint: 'The error shows both texts. Compare them letter by letter.',
+      why: 'include matches the exact text, capitals too. The app says \'Pokemon Does not Exist\'.',
     },
   ]
   root.FIXIT = root.FIXIT || {}

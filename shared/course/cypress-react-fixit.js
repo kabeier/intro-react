@@ -14,12 +14,12 @@
       why: 'Cypress starts each test on an empty page. cy.visit(\'/\') in beforeEach opens the app before every test.',
     },
     {
-      id: 'selector', title: 'The empty-container test cannot find the container', base: 'f3', tabs, see: [['src/App.jsx', 'poke-container']],
-      symptom: 'starts with an empty poke container fails: Expected to find element: `#pokemon-container`, but never found it.',
-      breaks: [{ file: HOME, mode: 'replace', find: "cy.get('#poke-container')", code: "cy.get('#pokemon-container')" }],
+      id: 'notvisible', title: '"expected <header> not to be visible"', base: 'f3', tabs,
+      symptom: 'should have a heading waits 4 seconds and fails: expected <header> not to be visible. The heading is right there on the page.',
+      breaks: [{ file: HOME, mode: 'replace', find: "cy.get('header').should('be.visible')", code: "cy.get('header').should('not.be.visible')" }],
       checks: [allPass(2)],
-      hint: 'Open src/App.jsx: what is the id of the div that holds the cards?',
-      why: 'The test must use the id the app really has: #poke-container.',
+      hint: 'Read the test name, then read the assertion. Do they say the same thing?',
+      why: 'not. flips a check. The test wants the heading on screen, so the assertion is should(\'be.visible\').',
     },
     {
       id: 'chainer', title: '"The chainer `visable` was not found"', base: 'f3', tabs,
