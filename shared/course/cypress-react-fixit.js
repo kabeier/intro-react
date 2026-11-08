@@ -62,12 +62,12 @@
       why: 'Without supportFile: false, Cypress expects cypress/support/e2e.js. Either create one or set supportFile: false.',
     },
     {
-      id: 'only', title: 'Bonus: only one test runs', base: 'f3', tabs,
-      symptom: 'The run says 1 passing. There are two tests in the file.',
-      breaks: [{ file: HOME, mode: 'replace', find: "it('should have a heading'", code: "it.only('should have a heading'" }],
+      id: 'nocy', title: 'Bonus: "get is not defined"', base: 'f3', tabs,
+      symptom: 'starts with an empty poke container fails at once: ReferenceError: get is not defined.',
+      breaks: [{ file: HOME, mode: 'replace', find: "  cy.get('#poke-container')", code: "  get('#poke-container')" }],
       checks: [allPass(2)],
-      hint: 'Look for a word after it that tells Cypress to run just one test.',
-      why: 'it.only runs only that test (handy while debugging). Remove .only before you commit.',
+      hint: 'Compare that line with the line in the other test. What is missing at the start?',
+      why: 'Every Cypress command starts with cy. Without it, get is just an unknown name, so JavaScript stops: cy.get(\'#poke-container\').',
     },
     {
       id: 'syntax', title: 'Bonus: the spec file will not even load', base: 'f3', tabs,
