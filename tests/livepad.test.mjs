@@ -40,9 +40,25 @@ test('opens with the start files in tabs and an up-to-date status', async () => 
   await page.close()
 })
 
-test('N three times types the steps; preview follows', async () => {
+test('a step that removes code shows it in red first; the next N deletes it and types', async () => {
   const page = await openSlide2()
-  for (let k = 0; k < 3; k++) {
+  await page.keyboard.press('n')
+  await until(page, () => !window.Livepad.current().busy)
+  const before = (await state(page)).files
+  await page.keyboard.press('n') // f2s2 replaces rgb(0, 0, 255)
+  await until(page, () => /red goes next/.test(window.Livepad.current().status))
+  assert.deepEqual((await state(page)).files, before, 'nothing deleted yet')
+  assert.equal(await page.locator('.slide.active .lp-gone-t').allTextContents().then((t) => t.join('').replace(/\u00a0/g, ' ')), '0, 0, 255')
+  await page.keyboard.press('n')
+  await until(page, () => !window.Livepad.current().busy && window.Livepad.current().step === 2)
+  assert.deepEqual((await state(page)).files, Course.filesAt(lesson, 'f2s2'))
+  assert.equal(await page.locator('.slide.active .lp-gone-t').count(), 0)
+  await page.close()
+})
+
+test('N types the steps (two presses for one that removes code); preview follows', async () => {
+  const page = await openSlide2()
+  for (let k = 0; k < 4; k++) {
     await page.keyboard.press('n')
     await until(page, () => !window.Livepad.current().busy)
   }

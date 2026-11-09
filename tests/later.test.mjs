@@ -36,7 +36,13 @@ test('a code slide warns while for-now code is on screen, and says so when the r
   await page.goto(srv.url + '/lecture-12-router-pages/slides.html#' + idx)
   await until(page, () => window.Livepad && window.Livepad.current() && window.Livepad.current().ready, null, 30000)
   const notice = () => page.evaluate(() => { const b = document.querySelector('.slide.active .lp-later'); return b.hidden ? '' : b.className + ' ' + b.textContent })
-  const step = async (k) => { await page.keyboard.press('n'); await until(page, (n) => window.Livepad.current().step === n, k, 10000) }
+  // A step that removes code takes two presses (red first).
+  const step = async (k) => {
+    await page.keyboard.press('n')
+    await until(page, (n) => window.Livepad.current().step === n || window.Livepad.current().marked, k, 10000)
+    if (await page.evaluate(() => window.Livepad.current().marked)) await page.keyboard.press('n')
+    await until(page, (n) => window.Livepad.current().step === n, k, 10000)
+  }
   await step(1)
   assert.equal(await notice(), '')
   await step(2)

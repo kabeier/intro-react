@@ -31,6 +31,9 @@
 }
 .lp-line { display: inline-block; min-width: 100%; }
 .lp-new, .lp-new-m { background: rgba(80, 160, 80, 0.28); }
+/* Code the next press deletes */
+.lp-gone, .lp-gone-m { background: rgba(244, 71, 71, 0.4); }
+.lp-gone-t { text-decoration: line-through; text-decoration-color: rgba(255, 120, 120, 0.9); }
 .lp-btn {
   background: #3a3a3a; color: #eee; border: 1px solid #5a5a5a; border-radius: 6px; padding: 6px 12px;
   font: 600 15px/1 system-ui, sans-serif; cursor: pointer; white-space: nowrap;

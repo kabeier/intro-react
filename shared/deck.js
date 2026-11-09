@@ -161,7 +161,7 @@
       const done = pad.step >= pad.total
       $('#stepb').disabled = done || pad.busy
       $('#stepb').style.opacity = $('#stepb').disabled ? 0.45 : 1
-      $('#stepinfo').textContent = pad.error || (done ? `All ${pad.total} steps typed` : `Typed ${pad.step} of ${pad.total} steps`)
+      $('#stepinfo').textContent = pad.error || (done ? `All ${pad.total} steps typed` : `Typed ${pad.step} of ${pad.total} steps${pad.marked ? ' · red shown: next press deletes it' : ''}`)
       $('#stepinfo').style.color = pad.error ? '#ff8a80' : ''
     }
     const nextStep = () => { if (pad && pad.total && !$('#stepb').disabled) channel.postMessage({ type: 'pad-next' }) }

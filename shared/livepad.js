@@ -118,7 +118,7 @@
       acceptSuggestionOnEnter: 'off', tabCompletion: 'off', quickSuggestions: false, suggestOnTriggerCharacters: false,
     })
     ed.addCommand(m.KeyCode.Escape, () => document.activeElement && document.activeElement.blur())
-    let deco = null
+    let deco = null, gone = null
     return {
       get value() { return models[pad.tab] ? models[pad.tab].getValue() : '' },
       set(file, text) { if (models[file].getValue() !== text) models[file].setValue(text) },
@@ -133,6 +133,15 @@
         if (deco) deco.clear()
         deco = ed.createDecorationsCollection(lines.map((l) => ({ range: new m.Range(l, 1, l, 1), options: { isWholeLine: true, className: 'lp-new-m' } })))
         if (lines.length) ed.revealLineInCenterIfOutsideViewport(lines[lines.length - 1])
+      },
+      // Code about to be deleted, in red (from, to: offsets in the shown file). No arguments: clear it.
+      mark(from, to) {
+        if (gone) gone.clear()
+        gone = null
+        if (from === undefined) return
+        const model = ed.getModel(), a = model.getPositionAt(from), b = model.getPositionAt(to)
+        gone = ed.createDecorationsCollection([{ range: new m.Range(a.lineNumber, a.column, b.lineNumber, b.column), options: { className: 'lp-gone-m', inlineClassName: 'lp-gone-t' } }])
+        ed.revealRangeInCenterIfOutsideViewport(new m.Range(a.lineNumber, a.column, b.lineNumber, b.column))
       },
     }
   }
@@ -157,17 +166,22 @@
     const pre = document.createElement('pre')
     pre.className = 'lp-fallback'
     host.append(pre)
-    let lit = []
+    let lit = [], red = []
     const draw = () => {
       pre.innerHTML = (pad.files[pad.tab] || '').split('\n')
-        .map((l, k) => `<span class="lp-line${lit.includes(k + 1) ? ' lp-new' : ''}">${esc(l) || ' '}</span>`).join('\n')
+        .map((l, k) => `<span class="lp-line${lit.includes(k + 1) ? ' lp-new' : ''}${red.includes(k + 1) ? ' lp-gone' : ''}">${esc(l) || ' '}</span>`).join('\n')
     }
     draw()
     return {
       get value() { return pad.files[pad.tab] || '' },
       set() { draw() },
-      show() { lit = []; draw() },
+      show() { lit = []; red = []; draw() },
       flash(lines) { lit = lines; draw() },
+      mark(from, to) {
+        const t = pad.files[pad.tab] || '', line = (o) => t.slice(0, o).split('\n').length
+        red = from === undefined ? [] : Array.from({ length: line(to) - line(from) + 1 }, (_, k) => line(from) + k)
+        draw()
+      },
     }
   }
 
@@ -434,15 +448,33 @@
         if (e instanceof Course.StepMismatch) return cantApply(e)
         throw e
       }
-      pad.busy = true
-      const gen = pad.gen // Reset while typing bumps it: stop, and leave the start code alone
-      if (!(step.file in pad.files)) { pad.files[step.file] = ''; pad.syncTabs() }
-      pad.showTab(step.file)
       // Type only the part that changes, a few characters per frame.
       let p = 0
       while (p < old.length && p < text.length && old[p] === text[p]) p++
       let s = 0
       while (s < old.length - p && s < text.length - p && old[old.length - 1 - s] === text[text.length - 1 - s]) s++
+      // Code that goes away: whole words, never half of one.
+      if (old.length - s > p) {
+        const w = (c) => c !== undefined && /\w/.test(c)
+        while (p > 0 && w(old[p - 1]) && w(old[p])) p--
+        while (s > 0 && w(old[old.length - s]) && w(old[old.length - s - 1])) s--
+      }
+      // A step that removes code takes two presses: the first shows it in red, the second deletes it and types.
+      const gone = old.slice(p, old.length - s)
+      const mark = step.id + '|' + p + '|' + gone
+      if (gone.trim() && pad.marked !== mark) {
+        pad.marked = mark
+        pad.showTab(step.file)
+        if (pad.editor) { pad.editor.flash([]); if (pad.editor.mark) pad.editor.mark(p, old.length - s) }
+        pad.setStatus('✂ red goes next')
+        return
+      }
+      pad.marked = null
+      if (pad.editor && pad.editor.mark) pad.editor.mark()
+      pad.busy = true
+      const gen = pad.gen // Reset while typing bumps it: stop, and leave the start code alone
+      if (!(step.file in pad.files)) { pad.files[step.file] = ''; pad.syncTabs() }
+      pad.showTab(step.file)
       const head = text.slice(0, p), mid = text.slice(p, text.length - s), tail = text.slice(text.length - s)
       const frames = Math.max(1, Math.min(60, Math.ceil(mid.length / 3)))
       for (let k = 1; k <= frames; k++) {
@@ -501,8 +533,9 @@
       pad.typedCmd = null
       pad.clearTerm()
       pad.idx = 0
+      pad.marked = null
       pad.setFiles(Course.filesAt(pad.lesson, pad.start))
-      if (pad.editor) pad.editor.flash([])
+      if (pad.editor) { pad.editor.flash([]); if (pad.editor.mark) pad.editor.mark() }
       pad.showLater()
     }
 
@@ -601,7 +634,7 @@
     const pad = active()
     const on = pad && pad.lesson && pad.steps.length
     dispatchEvent(new CustomEvent('deck-pad-status', { detail: on
-      ? { step: pad.idx, total: pad.steps.length, busy: !!pad.busy, error: /^✕ can't apply/.test(pad.status || '') ? pad.status : null }
+      ? { step: pad.idx, total: pad.steps.length, busy: !!pad.busy, marked: !!pad.marked, error: /^✕ can't apply/.test(pad.status || '') ? pad.status : null }
       : null }))
   }
   function nextStep(pad) {
@@ -650,7 +683,7 @@
     return {
       lesson: pad.lesson && pad.lesson.id, files: { ...pad.files }, doc: Course.buildDoc(pad.files, pad.assets),
       status: pad.status, busy: pad.busy, ready: pad.ready, tab: pad.tab,
-      editorValue: pad.editor ? pad.editor.value : null, step: pad.idx,
+      editorValue: pad.editor ? pad.editor.value : null, step: pad.idx, marked: !!pad.marked,
     }
   }
 

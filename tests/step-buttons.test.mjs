@@ -21,6 +21,9 @@ const state = (page) => page.evaluate(() => { const c = window.Livepad.current()
 const cur = (page) => page.evaluate(() => { const c = window.Livepad.current(); return { files: c.files, step: c.step, busy: c.busy, status: c.status, editor: c.editorValue, tab: c.tab } })
 const btn = (page, cls) => page.evaluate((cls) => { const b = document.querySelector('.slide.active .livepad ' + cls); return b && { shown: !b.hidden && b.offsetWidth > 0, disabled: b.disabled, text: b.textContent } }, cls)
 
+// Step 2 (f2s2) removes code: the first press shows it in red, the second types.
+const redShown = (page) => until(page, () => window.Livepad.current().marked)
+
 async function open(hash = '#2') {
   const page = await browser.newPage({ viewport: { width: 1600, height: 900 } })
   await page.goto(srv.url + DECK + hash)
@@ -34,6 +37,7 @@ test('a code slide has Next line and Reset buttons; Next line types the steps on
   assert.ok((await btn(page, '.lp-reset')).shown, 'Reset is on the slide')
   assert.match((await btn(page, '.lp-next')).text, /Next line/)
   for (let k = 1; k <= 3; k++) {
+    if (k === 2) { await page.click('.slide.active .lp-next'); await redShown(page) }
     await page.click('.slide.active .lp-next')
     await until(page, (k) => window.Livepad.current().step === k && !window.Livepad.current().busy, k)
   }
@@ -47,6 +51,7 @@ test('a code slide has Next line and Reset buttons; Next line types the steps on
 test('Reset puts the code back to how the slide started and the steps start over', async () => {
   const page = await open()
   await page.click('.slide.active .lp-next'); await until(page, () => window.Livepad.current().step === 1 && !window.Livepad.current().busy)
+  await page.click('.slide.active .lp-next'); await redShown(page)
   await page.click('.slide.active .lp-next'); await until(page, () => window.Livepad.current().step === 2 && !window.Livepad.current().busy)
   await page.click('.slide.active .lp-reset')
   let s = await cur(page)
@@ -98,6 +103,8 @@ test('presenter: a Reset button next to "Type next step" does what Shift+N does'
   await notes.waitForSelector('#stepb:visible')
   await notes.waitForSelector('#padreset:visible')
   await notes.click('#stepb'); await until(page, () => window.Livepad.current().step === 1 && !window.Livepad.current().busy)
+  await notes.click('#stepb'); await redShown(page)
+  await until(notes, () => /red shown/.test(document.querySelector('#stepinfo').textContent))
   await notes.click('#stepb'); await until(page, () => window.Livepad.current().step === 2 && !window.Livepad.current().busy)
   await until(notes, () => /2 of 3/.test(document.querySelector('#stepinfo').textContent))
   await notes.click('#padreset')
@@ -127,6 +134,7 @@ test('presenter: the button types the next step, like N, and shows the step coun
   await until(page, () => window.Livepad.current().step === 1 && !window.Livepad.current().busy)
   assert.match((await state(page)).files['index.html'], /intro/)
   await until(notes, () => /1 of 3/.test(document.querySelector('#stepinfo').textContent))
+  await notes.keyboard.press('n'); await redShown(page)
   await notes.keyboard.press('n')
   await until(page, () => window.Livepad.current().step === 2 && !window.Livepad.current().busy)
   await notes.click('#stepb')

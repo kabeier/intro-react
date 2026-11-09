@@ -1,6 +1,9 @@
 # Runbook · Unit 2 (React and Requests)
 
 ## Before class
+
+**N counts below include the red press:** a step that removes code takes two presses. The first shows the code that goes in red (crossed out); the second deletes it and types the new code. The presenter window says "red shown" between them.
+
 | Do | Why |
 |---|---|
 | Docker Desktop running; Node 24 on the laptop | students follow along with both |
@@ -25,7 +28,7 @@ Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code 
 | 6 | 9 | **N ×6**, students `bash run_container.sh` | flag table in notes |
 | 7 | 14 | — | file tour |
 | 8 | 15 | DevTools → Elements on the pop-out | index.html → main.jsx → App |
-| 9 | 17 | **N ×6**, A | make the page ours |
+| 9 | 17 | **N ×10**, A | make the page ours |
 | 10 | 20 | — | JSX rules |
 | 11–13 | 21–25 | **N** through each | {}, functions, className + import |
 | 14 | 27 | — | all CSS is one stylesheet (two .title rules clash); optional page for the curious |
@@ -40,12 +43,12 @@ Buttons do the same by mouse: **▶ Next line** and **↺ Reset** on every code 
 | 2 | 1 | show the JSON | request → 200 + JSON / 404 |
 | 3 | 3 | — | sync vs async; promise states |
 | 4 | 5 | **N** runs `npm install axios@1.20.0` in the slide's terminal; students type it in theirs | npm writes package.json; rebuild the Docker image after installing |
-| 5 | 7 | **N ×5** | the ids are for tests and unit 4 |
-| 6 | 11 | **N ×3**, A, search Pikachu | Console shows "pikachu" |
-| 7 | 14 | **N ×4**; after N 3 search: pending Promise; try pikachoo | then / catch / finally |
-| 8 | 19 | **N ×4** | createElement inside React |
+| 5 | 7 | **N ×8** | the ids are for tests and unit 4 |
+| 6 | 11 | **N ×4**, A, search Pikachu | Console shows "pikachu" |
+| 7 | 14 | **N ×6**; after N 3 search: pending Promise; try pikachoo | then / catch / finally |
+| 8 | 19 | **N ×5** | createElement inside React |
 | 9 | 23 | — | catch catches our bugs too |
-| 10 | 24 | **N ×3** | await |
+| 10 | 24 | **N ×5** | await |
 | 11 | 27 | — | .then vs await |
 | 12 | 28 | **N ×2**; pikachoo, pikachu twice | alert; no duplicates |
 | 13 | 31 | timer | Fix It (requests) 1–6 |
@@ -109,8 +112,8 @@ Before class: as unit 3. From now on every feature starts with a failing test: p
 | 6 | 13 | **N** 1, ▶ (red); **N** 2–4, ▶ (green) | first state: the title |
 | 7 | 17 | — | [value, setter]; rules of hooks |
 | 8–9 | 18–21 | **N ×3**, ▶ red then green | functional update |
-| 10 | 22 | ▶, **N ×4**, ▶ (green both times) | a refactor keeps behaviour |
-| 11 | 26 | **N ×5**, ▶ all green | generateCard is gone; tests say users can't tell |
+| 10 | 22 | ▶, **N ×7**, ▶ (green both times) | a refactor keeps behaviour |
+| 11 | 26 | **N ×7**, ▶ all green | generateCard is gone; tests say users can't tell |
 | 12 | 32 | — | new arrays; spread (not "deconstruction") |
 | 13 | 33 | **N ×3**, ▶ red then green | Remove with filter |
 | 14 | 36 | — | mental model |
@@ -141,15 +144,15 @@ Before class: as unit 4. Lecture 1 is a refactor: the 12 tests are green before 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | — | why components; function, PascalCase, import/export, used as a tag |
-| 4 | 5 | **N ×5**, ▶ green; type `<counter />` → ▶ red → fix | first component |
+| 4 | 5 | **N ×8**, ▶ green; type `<counter />` → ▶ red → fix | first component |
 | 5 | 10 | — | a refactor: green before and after |
-| 6 | 11 | **N ×6**, ▶ | one folder per component, index.js |
+| 6 | 11 | **N ×9**, ▶ | one folder per component, index.js |
 | 7 | 14 | — | props: one object; children; read-only; destructuring |
-| 8 | 16 | **N ×6**, ▶ | Button with children |
-| 9 | 20 | **N ×3**, ▶ | PokeSearch owns the search |
-| 10 | 24 | **N ×3**, ▶; drop rmData → red → back | PokeCard with props |
+| 8 | 16 | **N ×8**, ▶ | Button with children |
+| 9 | 20 | **N ×4**, ▶ | PokeSearch owns the search |
+| 10 | 24 | **N ×4**, ▶; drop rmData → red → back | PokeCard with props |
 | 11 | 27 | — | data down, functions up; prop drilling |
-| 12–13 | 28–30 | **N ×3** each, ▶ all 12 green | PokeContainer, PokeForm |
+| 12–13 | 28–30 | **N ×5** (slide 12), **N ×4** (slide 13), ▶ all 12 green | PokeContainer, PokeForm |
 | 14 | 32 | timer | Fix It (components) 1–6 |
 | 15–16 | 38–39 | — | mental model; homework I |
 
@@ -177,13 +180,13 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | — | why utilities; reading classes (number × 0.25rem) |
-| 4 | 5 | **N ×3** (N 1 runs `npm install tailwindcss @tailwindcss/vite` in the slide's terminal); **A** | install: plugin + one CSS line; keep react() |
+| 4 | 5 | **N ×4** (N 1 runs `npm install tailwindcss @tailwindcss/vite` in the slide's terminal); **A** | install: plugin + one CSS line; keep react() |
 | 5 | 9 | — | Preflight reset |
 | 6 | 10 | **N** 1 ▶ green; **N** 2–3 ▶ red; **N** 4 ▶ green | layout test by computed style |
 | 7 | 14 | — | test results, not class names |
 | 8 | 16 | **N** 1 ▶ red; **N** 2 ▶ green | Tailwind card + Pokedex number |
 | 9 | 20 | — | variants: hover, focus, md, dark (`@custom-variant` note) |
-| 10 | 22 | **N ×8**, ▶ 16 green; click "Click me!" | the rest; no background on main |
+| 10 | 22 | **N ×13**, ▶ 16 green; click "Click me!" | the rest; no background on main |
 | 11 | 28 | — | components are the reuse; whole class names |
 | 12 | 30 | timer | Fix It (Tailwind) 1–6 |
 | 13–14 | 37–38 | — | mental model; homework I |
@@ -196,7 +199,7 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | 5–6 | 11–13 | — | cascade layers; Bootstrap for components, Tailwind for layout |
 | 7 | 14 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
 | 8 | 19 | — | props not classes |
-| 9 | 20 | **N ×5**, **A** after each, ▶ 17 green | Button wraps BsButton; Heading, Counter, PokeForm (controlId) |
+| 9 | 20 | **N ×9**, **A** after each, ▶ 17 green | Button wraps BsButton; Heading, Counter, PokeForm (controlId) |
 | 10–11 | 26–27 | — | BsButton; when to use which |
 | 12 | 28 | — | the 17 tests |
 | 13 | 29 | timer | Fix It (React Bootstrap) 1–6 |
@@ -212,9 +215,9 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–4 | 0–5 | — | SPA with pages; the URL plan; react-router 8 (not react-router-dom) |
-| 5 | 7 | **N ×3**, ▶ 17 green | install, router.jsx, RouterProvider |
+| 5 | 7 | **N ×4**, ▶ 17 green | install, router.jsx, RouterProvider |
 | 6–7 | 13–15 | — | reading a route; layout + Outlet |
-| 8 | 17 | **N ×3**; delete Outlet ▶ red; back; **N**, ▶ green | App becomes the layout |
+| 8 | 17 | **N ×5**; delete Outlet ▶ red; back; **N ×2**, ▶ green | App becomes the layout |
 | 9–10 | 23–25 | — | pages unmount; visit / location / go |
 | 11 | 27 | — | "heading only" checklist |
 | 12 | 28 | timer | Fix It (router setup) 1–6 |
@@ -226,10 +229,10 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 2 | 1 | **N** 1 ▶ red; **N** 2–3 ▶ green | About page |
 | 3 | 5 | same | 404 page (`*`) |
 | 4 | 8 | — | 404 vs error page |
-| 5 | 10 | **N ×4**; show errorElement on the root first (header gone) | error page inside the layout |
+| 5 | 10 | **N ×6**; show errorElement on the root first (header gone) | error page inside the layout |
 | 6–7 | 15–16 | — | route tree; a vs Link |
 | 8 | 17 | **N** 1–5 ▶ red (reload); **N** 6 ▶ green | NavBar: a, then Link |
-| 9 | 23 | **N ×2**, ▶ 22 green | React Bootstrap Navbar (as={Link}) |
+| 9 | 23 | **N ×3**, ▶ 22 green | React Bootstrap Navbar (as={Link}) |
 | 10–11 | 27–28 | — | as=; the 22 tests |
 | 12 | 29 | timer | Fix It (pages and links) 1–6 |
 | 13–14 | 36–38 | — | mental model (show the list reset); homework II |
@@ -240,13 +243,13 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | # | Min | Do | Say |
 |---|---|---|---|
 | 2 | 1 | — | :id and useParams (strings) |
-| 3 | 3 | **N ×3**, red → green | route with a parameter |
-| 4 | 6 | **N ×2**, red → green | fetch by id (effect on [id], ignore flag) |
+| 3 | 3 | **N ×4**, red → green | route with a parameter |
+| 4 | 6 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
 | 5 | 10 | **N ×5**, red → green | unknown Pokemon: catch + message |
 | 6 | 13 | **N ×3**, red → green | Details link (BsButton as={Link}) |
 | 7 | 15 | — | Link or navigate |
 | 8 | 16 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
-| 9 | 20 | **N ×4**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
+| 9 | 20 | **N ×5**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
 | 10–11 | 24–26 | — | the real API answers (25 = Pikachu, 99999 = 404); loaders preview (later, with protected routes) |
 | 12 | 28 | timer | Fix It (router hooks) 1–6 |
 | 13–14 | 35–37 | — | mental model; homework I |
@@ -255,10 +258,10 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | show the bug (search, About, Home) | pages unmount; lift to App |
-| 4 | 5 | **N ×4**, red → green | the list in App, Outlet context |
+| 4 | 5 | **N ×6**, red → green | the list in App, Outlet context |
 | 5–6 | 11–13 | — | reading the hook; Pikachu comes back |
-| 7 | 15 | **N ×4**, red → green | Pikachu loads once (in App) |
-| 8 | 21 | **N ×5**, ▶ 33 green | the count too |
+| 7 | 15 | **N ×5**, red → green | Pikachu loads once (in App) |
+| 8 | 21 | **N ×7**, ▶ 33 green | the count too |
 | 9–11 | 25–28 | — | shiny (optional lift); where state lives; 33 tests |
 | 12 | 29 | timer | Fix It (outlet context) 1–6 |
 | 13–14 | 36–38 | — | mental model; homework II |
@@ -273,7 +276,7 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 2–4 | 1–4 | `npm run build`, `npm run preview` live | dev vs build; the folder problem |
 | 5 | 6 | **N** | base only in production (own repo name) |
 | 6 | 9 | open the run links | 8 red runs from an always-on base |
-| 7–8 | 11–13 | **N ×3** | refresh problem; hash router in the build; smoke test |
+| 7–8 | 11–13 | **N ×4** | refresh problem; hash router in the build; smoke test |
 | 9–10 | 18–21 | **N ×2**; `npm run deploy` live; Settings → Pages | gh-pages |
 | 11 | 25 | — | blank page checklist |
 | 12 | 28 | timer (8 min) | students deploy their own copy |
