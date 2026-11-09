@@ -25,7 +25,11 @@
   let popWin = null, popOpen = false, lastSent = 0
   let opening = false // this window just opened the pop-out: the new window has the focus, so answer its hello
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  const langOf = (f) => (f.endsWith('.css') ? 'css' : f.endsWith('.js') ? 'javascript' : f.endsWith('.html') ? 'html' : 'plaintext')
+  // VS Code's own grammars and its default dark colors (Dark+), through Shiki. Without them, Monaco's colors.
+  const SHIKI = 'https://cdn.jsdelivr.net/npm/'
+  let vscodeColors = false
+  const langOf = (f) => (f.endsWith('.css') ? 'css' : f.endsWith('.jsx') ? (vscodeColors ? 'jsx' : 'javascript') : f.endsWith('.js') ? 'javascript'
+    : f.endsWith('.html') ? 'html' : f.endsWith('.json') ? (vscodeColors ? 'cp-json' : 'json') : 'plaintext')
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   const pads = []
 
@@ -44,15 +48,37 @@
         window.require.config({ paths: { vs: MONACO + 'vs' } })
         window.require(['vs/editor/editor.main'], () => {
           const m = window.monaco
-          m.editor.defineTheme('cp-dark', { base: 'vs-dark', inherit: true, rules: [], colors: {
-            'editor.background': '#1f1f1f', 'editor.lineHighlightBackground': '#2a2d2e', 'editor.lineHighlightBorder': '#2a2d2e',
-            'editorLineNumber.foreground': '#6e7681', 'editorLineNumber.activeForeground': '#cccccc' } })
-          give(m)
+          const colors = { 'editor.background': '#1f1f1f', 'editor.lineHighlightBackground': '#2a2d2e', 'editor.lineHighlightBorder': '#2a2d2e',
+            'editorLineNumber.foreground': '#6e7681', 'editorLineNumber.activeForeground': '#cccccc' }
+          m.editor.defineTheme('cp-dark', { base: 'vs-dark', inherit: true, rules: [], colors })
+          withVscodeColors(m, colors).catch(() => {}).then(() => give(m))
         }, () => give(null))
       }
       document.head.append(s)
     })
     return monacoPromise
+  }
+  // Replaces cp-dark with Dark+ token colors (same editor background), for .js, .jsx, .css, .html and .json.
+  async function withVscodeColors(m, colors) {
+    const get = (p) => import(SHIKI + p + '/+esm')
+    const langs = ['javascript', 'jsx', 'css', 'html', 'json']
+    const [core, engine, bridge, theme, ...grammars] = await Promise.all([get('shiki@4.5.0/core'), get('shiki@4.5.0/engine/javascript'),
+      get('@shikijs/monaco@4.5.0'), get('@shikijs/themes@4.5.0/dark-plus'), ...langs.map((l) => get('@shikijs/langs@4.5.0/' + l))])
+    const darkPlus = theme.default
+    const highlighter = await core.createHighlighterCore({
+      themes: [{ ...darkPlus, name: 'cp-dark', colors: { ...darkPlus.colors, ...colors } }],
+      // Monaco's own JSON support sets its colors when it loads, so .json gets a name of its own.
+      langs: grammars.map((g, k) => (langs[k] === 'json' ? g.default.map((l) => ({ ...l, name: 'cp-json' })) : g.default)),
+      engine: engine.createJavaScriptRegexEngine(),
+    })
+    m.languages.register({ id: 'jsx', extensions: ['.jsx'] })
+    m.languages.register({ id: 'cp-json' })
+    m.languages.setLanguageConfiguration('cp-json', { brackets: [['{', '}'], ['[', ']']] })
+    // The brackets the bracket pair colors use (VS Code's gold, pink and blue).
+    m.languages.setLanguageConfiguration('jsx', { comments: { lineComment: '//', blockComment: ['/*', '*/'] },
+      brackets: [['{', '}'], ['[', ']'], ['(', ')']] })
+    bridge.shikiToMonaco(highlighter, m)
+    vscodeColors = true
   }
 
   // ---------- Two editor kinds with one small API ----------
@@ -85,7 +111,7 @@
       fontFamily: "'JetBrains Mono', ui-monospace, monospace", fontSize: pad.fontSize, lineHeight: Math.round(pad.fontSize * 1.45),
       tabSize: 2, insertSpaces: true, detectIndentation: false, padding: { top: 6, bottom: 6 }, overviewRulerLanes: 0,
       scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10, alwaysConsumeMouseWheel: false },
-      readOnly: !pad.editable, stickyScroll: { enabled: false }, renderWhitespace: 'none', wordWrap: pad.wrap ? 'on' : 'off',
+      readOnly: !pad.editable, stickyScroll: { enabled: false }, bracketPairColorization: { enabled: true }, renderWhitespace: 'none', wordWrap: pad.wrap ? 'on' : 'off',
       // Type-what-you-see: no auto-closing, so typing from the notes comes out exactly as written
       autoIndent: 'none', autoClosingBrackets: 'never', autoClosingQuotes: 'never', autoClosingDelete: 'never',
       autoClosingOvertype: 'never', autoSurround: 'never', formatOnType: false, formatOnPaste: false,

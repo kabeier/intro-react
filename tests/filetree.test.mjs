@@ -95,7 +95,7 @@ test('slides: folders come first and collapse, a file off the tabs opens, a new 
   await page.click('.slide.active [data-dir="src"]')
   await page.click('.slide.active [data-file="src/main.jsx"]')
   assert.equal(await page.textContent('.slide.active .lp-tab.on'), 'src/main.jsx')
-  await until(page, () => Livepad.current().editorValue.includes('createRoot'))
+  await until(page, () => (Livepad.current().editorValue || '').includes('createRoot'))
   await page.evaluate(() => { const p = Livepad.pads.find((x) => x.el.closest('.slide.active')); p.files['src/New.jsx'] = ''; p.syncTabs() })
   assert.equal(await page.locator('.slide.active .ft-file.new').textContent(), 'New.jsx')
   await page.close()

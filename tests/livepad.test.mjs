@@ -258,3 +258,37 @@ test('stopPropagation in a submit handler, or preventDefault on window, still me
     await page.close()
   }
 })
+
+// Colors as in VS Code's default dark theme (Dark+): tag blue, component teal, attribute light blue, string orange.
+const colorsOf = (page, code, lang) => page.evaluate(async ([code, lang]) => {
+  const d = document.createElement('div')
+  d.className = 'monaco-editor'
+  d.innerHTML = await window.monaco.editor.colorize(code, lang)
+  document.body.append(d)
+  const hex = (c) => '#' + c.match(/\d+/g).slice(0, 3).map((x) => (+x).toString(16).padStart(2, '0')).join('')
+  const out = Object.fromEntries([...d.querySelectorAll('span span')].filter((s) => s.textContent.trim()).map((s) => [s.textContent.trim(), hex(getComputedStyle(s).color)]))
+  d.remove()
+  return out
+}, [code, lang])
+
+test('JSX, JSON and CSS get VS Code Dark+ colors', async () => {
+  const page = await openSlide2()
+  const jsx = await colorsOf(page, 'const x = <Card title="Hi" />\nconst y = <div></div>', 'jsx')
+  assert.deepEqual([jsx.const, jsx.Card, jsx.title, jsx['"Hi"'], jsx.div], ['#569cd6', '#4ec9b0', '#9cdcfe', '#ce9178', '#569cd6'])
+  const json = await colorsOf(page, '{ "name": "app", "n": 1 }', 'cp-json')
+  assert.deepEqual([json['"name"'], json['"app"'], json['1']], ['#9cdcfe', '#ce9178', '#b5cea8'])
+  const css = await colorsOf(page, '.card { color: red; }', 'css')
+  assert.deepEqual([css['.card'], css.color, css.red], ['#d7ba7d', '#9cdcfe', '#ce9178'])
+  await page.close()
+})
+
+test('if the VS Code colors cannot load, the editor still works with Monaco colors', async () => {
+  const page = await browser.newPage({ viewport: { width: 1600, height: 900 } })
+  await page.route('**/{shiki,@shikijs}*/**', (r) => r.abort())
+  await page.goto(srv.url + DECK + '#2')
+  await until(page, () => window.Livepad && window.Livepad.current() && window.Livepad.current().ready)
+  assert.ok(await page.$('.slide.active .monaco-editor'))
+  await page.keyboard.press('n')
+  await until(page, () => /up to date/.test(window.Livepad.current().status))
+  await page.close()
+})
