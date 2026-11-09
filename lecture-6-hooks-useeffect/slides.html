@@ -151,18 +151,33 @@
 
 <section class="slide" data-seg="Concept" data-at="24">
   <h2>Why the ignore flag?</h2>
-  <table class="dbt small">
-    <tr><th>Time</th><th>Without ignore</th><th>With ignore</th></tr>
-    <tr><td>effect run 1 starts a request</td><td>request A</td><td>request A (ignore₁ = false)</td></tr>
-    <tr><td>cleanup (StrictMode, or the page leaves)</td><td>—</td><td class="pk">ignore₁ = true</td></tr>
-    <tr><td>effect run 2 starts a request</td><td>request B</td><td>request B (ignore₂ = false)</td></tr>
-    <tr><td>A's answer arrives</td><td>used (maybe after B: stale data)</td><td class="pk">thrown away</td></tr>
-  </table>
-  <p class="bottomline">An answer for an effect that was cleaned up must not change state.</p>
+  <div class="cols">
+    <pre style="font-size:20px">useEffect(() =&gt; {
+  let ignore = false  <span class="c">// 1</span>
+  axios.get('…/pokemon/pikachu')
+    .then((response) =&gt; {
+      <span class="c">// 3</span>
+      if (!ignore) addPokemonData(response.data)
+    })
+  return () =&gt; { ignore = true }  <span class="c">// 2</span>
+}, [])</pre>
+    <div>
+      <p><b>The problem:</b> an answer can arrive <b>after</b> React has thrown that effect away.</p>
+      <ol class="steps">
+        <li>The effect runs and asks for Pikachu. <code>ignore</code> is <code>false</code>.</li>
+        <li>React cleans the effect up (StrictMode does this once in development). The cleanup sets <code>ignore = true</code>.</li>
+        <li>The answer arrives. <code>ignore</code> is <code>true</code>, so we skip it.</li>
+      </ol>
+    </div>
+  </div>
+  <p class="bottomline">Each run of the effect has its own ignore. Only the newest run may change state.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Why the ignore flag is there: a step-by-step timeline of a late answer.</p>
-    <p>This is react.dev's pattern for requests in effects. Without it, a slow first answer can overwrite newer data (a race).</p>
-    <p><b>Different from the curriculum</b> (until merged): it fetched with no cleanup.</p>
+    <p class="plan"><b>The plan:</b> Read the ignore code from slide 9 one numbered step at a time: what happens to an answer that comes back late.</p>
+    <p>Point at <b>1</b> in the code, then step 1: "Every time the effect runs, it makes a new ignore, set to false, and sends the request."</p>
+    <p>Point at <b>2</b>: "The function we return is the cleanup. React calls it when it throws this effect away. In development StrictMode does that once on purpose, which is why we saw mounted, unmounted, mounted."</p>
+    <p>Point at <b>3</b>: "When the answer finally comes back, we check this run's ignore. If the effect was cleaned up, we throw the answer away."</p>
+    <p>Say: "Without it, an old, slow answer can land after a newer one and overwrite it. Here addPokemonData already skips a duplicate Pikachu, but when the request depends on something that changes, like the id in the router lectures, an old answer would show the wrong Pokemon."</p>
+    <p>This is react.dev's pattern for requests in effects. <b>Different from the curriculum</b> (until merged): it fetched with no cleanup.</p>
   </aside>
 </section>
 
