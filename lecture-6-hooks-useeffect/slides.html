@@ -30,12 +30,18 @@
 <section class="slide" data-seg="Concept" data-at="1">
   <h2>Rendering vs effects</h2>
   <div class="cols">
-    <div class="card blue"><h3>Rendering</h3><p>App() returns JSX. Must be <b>pure</b>: same state in, same JSX out. No requests, no timers, no touching the page.</p></div>
-    <div class="card green"><h3>Effects</h3><p>Run <b>after</b> React has updated the page: requests, logging, timers, changing things outside React (document.body).</p></div>
+    <div class="card blue"><h3>Rendering · <code>App()</code></h3><p>React calls your component to work out what the page should show, from its props and state.</p><p>Rendering must be <b>pure</b>: no requests, no timers, no changing the page yourself.</p></div>
+    <div class="card green"><h3>Effects · <code>useEffect()</code></h3><p>Code that runs <b>after</b> React has updated the page, to work with things outside React. Today:</p><ul><li>logging when the page mounts, and cleaning up</li><li>changing the page's background colour (<code>document.body</code>)</li><li>fetching Pikachu from the PokeAPI</li></ul></div>
   </div>
-  <p class="bottomline">Draw in the component; talk to the outside world in an effect.</p>
+  <p class="bottomline">Rendering decides what to show. Effects let your component talk to the outside world.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> The difference between rendering, which must be pure, and effects, which talk to the outside world.</p><p>Say: "If it isn't drawing, and it isn't a reaction to a click, it's probably an effect."</p></aside>
+    <p class="plan"><b>The plan:</b> Two kinds of code in a component: rendering, which works out what to show, and effects, which talk to the outside world.</p>
+    <p>Point at the blue card: "React calls App() whenever props or state change. Its only job is to return what the page should look like. Same state in, same JSX out."</p>
+    <p>Point at "pure": "So no API calls, no timers and no changing the page by hand in here. React may call App() many times."</p>
+    <p>Point at the green card: "Anything that reaches outside React goes in useEffect. It runs after React has updated the page."</p>
+    <p>Point at the three examples: "These are today's code-alongs, in order: a mount log with its cleanup, the background colour, then loading Pikachu."</p>
+    <p>Say: "If it isn't drawing, and it isn't a reaction to a click, it's probably an effect."</p>
+  </aside>
 </section>
 
 <section class="slide code" data-seg="Code along: first effect" data-at="3">
