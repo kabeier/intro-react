@@ -33,15 +33,12 @@
       why: 'The text between the tags arrives as the children prop. Button must render it: {children}.',
     },
     {
-      id: 'propname', title: 'Blank page: "Cannot read properties of undefined (reading \'map\')"', base: 'f7', tabs: [CONTAINER, SEARCH],
-      symptom: 'The page goes blank. The console: TypeError: Cannot read properties of undefined (reading \'map\').',
-      breaks: [
-        { file: CONTAINER, mode: 'replace', find: 'function PokeContainer({ pokemonList, rmData })', code: 'function PokeContainer({ pokemons, rmData })' },
-        { file: CONTAINER, mode: 'replace', find: '{pokemonList.map(', code: '{pokemons.map(' },
-      ],
-      checks: [allPass],
-      hint: 'Compare the prop name PokeSearch sends with the name PokeContainer reads.',
-      why: 'Props arrive under the name the parent wrote: pokemonList={…}. Reading pokemons gives undefined. Use the same name on both sides.',
+      id: 'missingkey', testsPass: true, title: '"Each child in a list should have a unique key"', base: 'f7', tabs: [CONTAINER],
+      symptom: 'Everything works, but the console warns: Each child in a list should have a unique "key" prop. Check the render method of `PokeContainer`.',
+      breaks: [{ file: CONTAINER, mode: 'replace', find: '<PokeCard key={pokemon.id} pokemon={pokemon} rmData={rmData} />', code: '<PokeCard pokemon={pokemon} rmData={rmData} />' }],
+      checks: [allPass, noWarning(/unique "key" prop/, 'keys')],
+      hint: 'The .map makes one <PokeCard /> per pokemon. How does React tell those cards apart?',
+      why: 'Every element a .map returns needs a unique, stable key. Each pokemon has an id, so: <PokeCard key={pokemon.id} … />.',
     },
     {
       id: 'rmdata', title: 'Remove: "rmData is not a function"', base: 'f7', tabs: [CONTAINER, CARD, SEARCH],
