@@ -130,15 +130,15 @@
 </section>
 
 <section class="slide diagram" data-seg="Concept" data-at="22">
-  <img src="../diagrams/CS-01-state-and-props.png" alt="Diagram of our app at the end of the lecture. PokeSearch, at the top, owns the state pokemonName and pokemonList and the functions handleSubmit and rmData. Purple arrows show props going down: pokemonName, setPokemonName and handleSubmit to PokeForm; pokemonList and rmData to PokeContainer; and pokemon and rmData from PokeContainer to each PokeCard. PokeForm and PokeContainer have no state. Each PokeCard, keyed by pokemon.id, owns its own shiny state. Orange dashed arrows show children calling back up to PokeSearch: typing calls setPokemonName, submitting calls handleSubmit, and Remove calls rmData with the pokemon's id. A note gives the rule: state goes in the lowest component that needs it; the shared list lives in PokeSearch, and shiny lives in each card.">
+  <img src="../diagrams/CS-01-state-and-props.png" alt="Diagram titled: Who STORES the state, and who USES it. Our app at the end of the lecture. PokeSearch, at the top, stores pokemonName and pokemonList, and uses pokemonName to search. PokeForm stores nothing and uses pokemonName, the text in the box. PokeContainer stores nothing and uses pokemonList to draw one card per pokemon. Each PokeCard, keyed by pokemon.id, stores its own shiny and uses shiny and pokemon. Purple arrows show props going down: pokemonName, setPokemonName and handleSubmit to PokeForm; pokemonList and rmData to PokeContainer; pokemon and rmData to each PokeCard. Orange dashed arrows show children calling back up to PokeSearch: typing calls setPokemonName, submit calls handleSubmit, and Remove calls rmData with the pokemon's id. A note says: STORES means it has the useState; USES means it reads the value, from its own state or from a prop.">
   <div class="src">diagrams/CS-01-state-and-props.tldr</div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> One picture of everything we built today: where each piece of state lives, and how it travels.</p>
-    <p>Start at the top: PokeSearch owns the search text and the list, because more than one child needs them.</p>
-    <p>Follow the purple arrows down: these are props. PokeForm and PokeContainer own nothing; they only show what they are given.</p>
-    <p>Point at the green card: shiny lives here, because only that one card needs it. That's the move we made in the code-along.</p>
-    <p>Follow the orange arrows up: a child never changes its parent's state directly. It calls a function the parent passed down (setPokemonName, handleSubmit, rmData).</p>
-    <p>Say: "Data goes down as props. Changes come back up as function calls. State lives in the lowest component that needs it."</p>
+    <p class="plan"><b>The plan:</b> One picture of today's app: which component STORES each piece of state (has the useState) and which components USE it (read it, often through props).</p>
+    <p>Start at the top: PokeSearch STORES pokemonName and pokemonList. They live there because more than one child needs them.</p>
+    <p>The grey boxes STORE nothing. PokeForm USES pokemonName to show the text in the box; PokeContainer USES pokemonList to draw the cards. Both get those values as props (purple arrows).</p>
+    <p>Point at the green card: it STORES shiny itself, because only that one card needs it. That's the move we made in the code-along.</p>
+    <p>Follow the orange arrows up: a child that uses state can't change it directly. It calls the function the storing component passed down (setPokemonName, handleSubmit, rmData).</p>
+    <p>Say: "One component stores each piece of state. Others can use it through props. To change it, they call a function the storing component gave them."</p>
   </aside>
 </section>
 
