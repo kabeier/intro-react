@@ -129,61 +129,17 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="22">
-  <h2>Who should own the form's text?</h2>
-  <div class="cols">
-    <div>
-      <h3 style="margin:0 0 8px;font-size:26px;color:var(--blue,#2b5bd7)">Another way: the form owns it</h3>
-      <pre style="font-size:15px;padding:16px 20px"><span class="c">// PokeForm.jsx</span>
-function PokeForm({ onSearch }) {
-  <span style="background:rgba(255,214,102,.22);outline:1px solid rgba(255,214,102,.55)">const [pokemonName, setPokemonName] = useState('')</span>
-
-  const handleSubmit = (event) =&gt; {
-    event.preventDefault()
-    onSearch(pokemonName)  <span class="c">// hand the name up</span>
-    setPokemonName('')
-  }
-  return (
-    &lt;form onSubmit={handleSubmit}&gt;
-      &lt;input value={pokemonName}
-        onChange={(event) =&gt; setPokemonName(event.target.value)} /&gt;
-    &lt;/form&gt;
-  )
-}
-
-<span class="c">// PokeSearch.jsx: never sees the typing</span>
-&lt;PokeForm onSearch={getPokemonData} /&gt;</pre>
-    </div>
-    <div>
-      <h3 style="margin:0 0 8px;font-size:26px;color:var(--green,#1f7a55)">Ours (and the curriculum's): PokeSearch owns it</h3>
-      <pre style="font-size:15px;padding:16px 20px"><span class="c">// PokeSearch.jsx</span>
-<span style="background:rgba(255,214,102,.22);outline:1px solid rgba(255,214,102,.55)">const [pokemonName, setPokemonName] = useState('')</span>
-
-const handleSubmit = (event) =&gt; {
-  event.preventDefault()
-  <span class="c">// …trim it, check it isn't empty, search…</span>
-  setPokemonName('')  <span class="c">// clear the box</span>
-}
-
-&lt;PokeForm handleSubmit={handleSubmit}
-  pokemonName={pokemonName} setPokemonName={setPokemonName} /&gt;
-
-<span class="c">// PokeForm.jsx: only shows the box</span>
-function PokeForm({
-  handleSubmit, pokemonName, setPokemonName,
-}) {
-  return (
-    &lt;form onSubmit={(event) =&gt; handleSubmit(event)}&gt;
-      &lt;input value={pokemonName}
-        onChange={(event) =&gt; setPokemonName(event.target.value)} /&gt;
-    &lt;/form&gt;
-  )
-}</pre>
-    </div>
-  </div>
-  <p class="bottomline">Both work. The <b>useState</b> line moves. Ask: who else needs this value?</p>
+<section class="slide diagram" data-seg="Concept" data-at="22">
+  <img src="../diagrams/CS-01-state-and-props.png" alt="Diagram of our app at the end of the lecture. PokeSearch, at the top, owns the state pokemonName and pokemonList and the functions handleSubmit and rmData. Purple arrows show props going down: pokemonName, setPokemonName and handleSubmit to PokeForm; pokemonList and rmData to PokeContainer; and pokemon and rmData from PokeContainer to each PokeCard. PokeForm and PokeContainer have no state. Each PokeCard, keyed by pokemon.id, owns its own shiny state. Orange dashed arrows show children calling back up to PokeSearch: typing calls setPokemonName, submitting calls handleSubmit, and Remove calls rmData with the pokemon's id. A note gives the rule: state goes in the lowest component that needs it; the shared list lives in PokeSearch, and shiny lives in each card.">
+  <div class="src">diagrams/CS-01-state-and-props.tldr</div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> A design choice: who should own the form's text. Our app and the curriculum page both use the right-hand version; the left is a common alternative the page also describes.</p><p>Point at the highlighted line on each side: the useState line is the only real difference. Everything else follows from where it sits.</p><p>Left: the form keeps the text and only hands the finished name up through one callback, onSearch. PokeSearch never sees the typing.</p><p>Right (ours): PokeSearch keeps the text and passes the value, the setter and the submit handler down. PokeForm only shows the box.</p><p>Say: "The left version is simpler if nothing outside the form needs the text. We keep the right one: PokeSearch searches with the name, checks it isn't empty, and clears the box after a search. The test 'clears the input after a search' checks that."</p><p>The left code is shown only to compare. We don't type it.</p></aside>
+    <p class="plan"><b>The plan:</b> One picture of everything we built today: where each piece of state lives, and how it travels.</p>
+    <p>Start at the top: PokeSearch owns the search text and the list, because more than one child needs them.</p>
+    <p>Follow the purple arrows down: these are props. PokeForm and PokeContainer own nothing; they only show what they are given.</p>
+    <p>Point at the green card: shiny lives here, because only that one card needs it. That's the move we made in the code-along.</p>
+    <p>Follow the orange arrows up: a child never changes its parent's state directly. It calls a function the parent passed down (setPokemonName, handleSubmit, rmData).</p>
+    <p>Say: "Data goes down as props. Changes come back up as function calls. State lives in the lowest component that needs it."</p>
+  </aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="24">
