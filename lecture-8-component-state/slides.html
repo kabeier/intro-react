@@ -132,12 +132,12 @@
 <section class="slide" data-seg="Concept" data-at="22">
   <h2>Who should own the form's text?</h2>
   <div class="cols">
-    <div class="card blue"><h3>Curriculum: PokemonForm owns it</h3><p>The form keeps <code>pokemonName</code> and calls the parent with the name on submit. The parent never sees the typing.</p></div>
-    <div class="card green"><h3>Ours: PokeSearch owns it</h3><p>PokeForm only shows the box. PokeSearch keeps the text, so it can clear it after a search.</p></div>
+    <div class="card blue"><h3>Another common design: the form owns it</h3><p>The form keeps <code>pokemonName</code> in its own <code>useState</code> and calls the parent with the name on submit. The parent never sees the typing.</p></div>
+    <div class="card green"><h3>Our app (and the curriculum): PokeSearch owns it</h3><p>PokeForm only shows the box. PokeSearch keeps the text, so it can clear it after a search.</p></div>
   </div>
   <p class="bottomline">Both work. Ask: who else needs this value?</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> A design choice: who should own the form's text, and why ours differs from the curriculum.</p><p>If nothing outside the form needs the text, the curriculum's version is simpler. We keep ours: the search clears the box.</p></aside>
+    <p class="plan"><b>The plan:</b> A design choice: who should own the form's text. Our app and the curriculum page both use the right-hand version; the left is a common alternative the page also describes.</p><p>Say: "The left version is simpler if nothing outside the form needs the text. We keep the right one: PokeSearch searches with the name, checks it isn't empty, and clears the box after a search. The test 'clears the input after a search' checks that."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="24">
