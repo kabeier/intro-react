@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs Guide: Tailwind CSS</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; --warn:#fff4d6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.55;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 40px 28px 80px; }
+  .back { color: var(--blue); font-weight: 700; }
+  .tag { display: inline-block; margin: 18px 0 8px; padding: 3px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 15px; }
+  h1 { font: 800 clamp(36px, 6vw, 64px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 0 0 14px; }
+  .lede { max-width: 64ch; color: var(--muted); font-size: 20px; margin: 0 0 24px; }
+  section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 26px 28px; margin: 0 0 28px; }
+  h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 0 0 12px; }
+  h2 .n { color: var(--blue); margin-right: 8px; }
+  ul.points, ol.points { margin: 0 0 14px; padding-left: 1.3em; } .points li { margin-bottom: 6px; }
+  code { font-size: 0.92em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+  a { color: var(--blue); }
+  .bottom { border-left: 6px solid var(--blue); padding: 6px 12px; font-weight: 700; margin: 14px 0 0; }
+  .warn { background: var(--warn); border-left: 4px solid #d97706; padding: 8px 12px; border-radius: 4px; margin: 12px 0; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 16px; }
+  th, td { border: 1px solid var(--ink); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #eef2f8; }
+  .page { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 10px; margin: 8px 0 14px; font-size: 16px; }
+  .page div { border: 2px solid var(--ink); border-radius: 4px; padding: 10px 12px; background: #fbfcfe; }
+  .page div > b:first-child, .page b[style] { display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; }
+  td:first-child code { white-space: nowrap; }
+  .task { border: 2px solid var(--grid); border-radius: 4px; padding: 12px 14px; margin: 0 0 10px; }
+  details summary { cursor: pointer; font-weight: 700; color: var(--blue); margin-top: 6px; }
+  details p { margin: 6px 0 0; }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (max-width: 760px) {
+    main { padding: 24px 16px 60px; } section { padding: 18px 16px; }
+    .page { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../../">← Lectures</a>
+  <p class="tag">Docs guide · Tailwind CSS</p>
+  <h1>How to use the Tailwind docs</h1>
+  <p class="lede">Nobody remembers every class. Tailwind developers keep the docs open and look things up. This page shows how to find a class fast, how to read a docs page, and where every class from the lecture lives.</p>
+
+  <section id="where">
+    <h2><span class="n">1</span>Where the docs are</h2>
+    <ul class="points">
+      <li><b><a href="https://tailwindcss.com/docs" target="_blank" rel="noopener">tailwindcss.com/docs</a></b>: the official docs</li>
+      <li>Check the version badge next to the logo: it should say <b>v4</b>. Our app uses Tailwind <b>v4</b>.</li>
+      <li><b>Play</b> (top menu) opens the <a href="https://play.tailwindcss.com" target="_blank" rel="noopener">Tailwind Playground</a>: try classes in the browser, no install needed</li>
+    </ul>
+    <p class="warn"><b>Watch out for old answers.</b> Blog posts, videos and AI answers often show <b>v3</b> setup: a <code>tailwind.config.js</code> file and <code>@tailwind base;</code>. In v4 you use the Vite plugin and <code>@import "tailwindcss";</code>, like we did in class.</p>
+  </section>
+
+  <section id="find">
+    <h2><span class="n">2</span>Find a class</h2>
+    <ol class="points">
+      <li>Press <b>Ctrl K</b> (Mac: <b>⌘ K</b>) on any docs page</li>
+      <li>Type the <b>CSS property</b> you want, in plain words: <code>padding</code>, <code>rounded</code>, <code>shadow</code>, <code>center</code></li>
+      <li>Pick the page. Each page is <b>one CSS property</b>.</li>
+    </ol>
+    <div class="scroll"><table>
+      <tr><th>I want to…</th><th>Search for</th><th>Page</th></tr>
+      <tr><td>add space inside a box</td><td><code>padding</code></td><td><a href="https://tailwindcss.com/docs/padding" target="_blank" rel="noopener">padding</a></td></tr>
+      <tr><td>add space outside a box</td><td><code>margin</code></td><td><a href="https://tailwindcss.com/docs/margin" target="_blank" rel="noopener">margin</a></td></tr>
+      <tr><td>put things in a row</td><td><code>flex</code></td><td><a href="https://tailwindcss.com/docs/display" target="_blank" rel="noopener">display</a></td></tr>
+      <tr><td>round the corners</td><td><code>rounded</code></td><td><a href="https://tailwindcss.com/docs/border-radius" target="_blank" rel="noopener">border-radius</a></td></tr>
+      <tr><td>change the text colour</td><td><code>text color</code></td><td><a href="https://tailwindcss.com/docs/color" target="_blank" rel="noopener">color</a></td></tr>
+      <tr><td>see every colour name</td><td><code>colors</code></td><td><a href="https://tailwindcss.com/docs/colors" target="_blank" rel="noopener">colors</a></td></tr>
+    </table></div>
+    <p class="bottom">Know the CSS word? Search for it. The page tells you the class.</p>
+  </section>
+
+  <section id="read">
+    <h2><span class="n">3</span>Read a docs page</h2>
+    <p>Every Tailwind page has the same three parts. Open <a href="https://tailwindcss.com/docs/padding" target="_blank" rel="noopener">padding</a> next to this guide and find each one:</p>
+    <div class="page">
+      <div><b>Left: the menu</b>Every page, grouped: Layout, Spacing, Typography, Borders…</div>
+      <div><b>Middle: the page</b><b style="font-size:16px;margin-top:6px">① The quick reference table</b><b>Class</b> on the left, the <b>Styles</b> (the real CSS) on the right. Press <b>Show more</b> to see all of it.<b style="font-size:16px;margin-top:8px">② Examples</b>A small demo and the HTML for each way to use it.</div>
+      <div><b>Right: On this page</b>Jump straight to an example, or to <b>Responsive design</b>.</div>
+    </div>
+    <h3 style="font:800 21px 'Bricolage Grotesque',sans-serif;margin:16px 0 6px">Reading the table</h3>
+    <div class="scroll"><table>
+      <tr><th>The table says</th><th>It means</th></tr>
+      <tr><td><code>p-&lt;number&gt;</code> · <code>padding: calc(var(--spacing) * &lt;number&gt;)</code></td><td>Put any number after <code>p-</code>. <code>--spacing</code> is <b>0.25rem</b>, so <code>p-4</code> = 4 × 0.25rem = <b>1rem</b>.</td></tr>
+      <tr><td><code>px-&lt;number&gt;</code> · <code>padding-inline</code></td><td><b>x</b> = left and right</td></tr>
+      <tr><td><code>py-&lt;number&gt;</code> · <code>padding-block</code></td><td><b>y</b> = top and bottom</td></tr>
+      <tr><td><code>p-[&lt;value&gt;]</code></td><td>Square brackets = your own value, like <code>p-[13px]</code>. Use it rarely.</td></tr>
+    </table></div>
+    <p class="bottom">Class on the left, real CSS on the right. That table is the whole answer most of the time.</p>
+  </section>
+
+  <section id="ours">
+    <h2><span class="n">4</span>Every class from the lecture, and its page</h2>
+    <p>These are all the classes in our finished Pokemon app. Click a page to see the rest of that family.</p>
+    <div class="scroll"><table>
+      <tr><th>Class in our app</th><th>What it does</th><th>Docs page</th></tr>
+      <tr><td><code>p-4</code> <code>p-6</code> <code>px-3</code> <code>py-1.5</code></td><td>padding</td><td><a href="https://tailwindcss.com/docs/padding" target="_blank" rel="noopener">padding</a></td></tr>
+      <tr><td><code>mt-3</code> <code>mx-auto</code> <code>space-y-6</code></td><td>margin; <code>mx-auto</code> centres a box; <code>space-y-6</code> puts space between children</td><td><a href="https://tailwindcss.com/docs/margin" target="_blank" rel="noopener">margin</a> (see "Adding space between children")</td></tr>
+      <tr><td><code>flex</code> <code>block</code></td><td>display</td><td><a href="https://tailwindcss.com/docs/display" target="_blank" rel="noopener">display</a></td></tr>
+      <tr><td><code>flex-wrap</code></td><td>cards move to a new row when there's no room</td><td><a href="https://tailwindcss.com/docs/flex-wrap" target="_blank" rel="noopener">flex-wrap</a></td></tr>
+      <tr><td><code>gap-2</code> … <code>gap-5</code></td><td>space between flex items</td><td><a href="https://tailwindcss.com/docs/gap" target="_blank" rel="noopener">gap</a></td></tr>
+      <tr><td><code>items-center</code> <code>items-end</code></td><td>line items up (cross axis)</td><td><a href="https://tailwindcss.com/docs/align-items" target="_blank" rel="noopener">align-items</a></td></tr>
+      <tr><td><code>justify-between</code> <code>justify-center</code></td><td>spread items out (main axis)</td><td><a href="https://tailwindcss.com/docs/justify-content" target="_blank" rel="noopener">justify-content</a></td></tr>
+      <tr><td><code>max-w-5xl</code> <code>w-60</code> <code>h-32</code></td><td>sizes</td><td><a href="https://tailwindcss.com/docs/max-width" target="_blank" rel="noopener">max-width</a> · <a href="https://tailwindcss.com/docs/width" target="_blank" rel="noopener">width</a> · <a href="https://tailwindcss.com/docs/height" target="_blank" rel="noopener">height</a></td></tr>
+      <tr><td><code>bg-white</code> <code>bg-slate-800</code> <code>bg-emerald-600</code></td><td>background colour</td><td><a href="https://tailwindcss.com/docs/background-color" target="_blank" rel="noopener">background-color</a></td></tr>
+      <tr><td><code>text-white</code> <code>text-slate-500</code></td><td>text colour</td><td><a href="https://tailwindcss.com/docs/color" target="_blank" rel="noopener">color</a></td></tr>
+      <tr><td><code>text-sm</code> <code>text-lg</code> <code>text-xl</code> <code>text-3xl</code></td><td>text size</td><td><a href="https://tailwindcss.com/docs/font-size" target="_blank" rel="noopener">font-size</a></td></tr>
+      <tr><td><code>font-semibold</code> <code>font-bold</code></td><td>text weight</td><td><a href="https://tailwindcss.com/docs/font-weight" target="_blank" rel="noopener">font-weight</a></td></tr>
+      <tr><td><code>text-center</code></td><td>centre the text</td><td><a href="https://tailwindcss.com/docs/text-align" target="_blank" rel="noopener">text-align</a></td></tr>
+      <tr><td><code>capitalize</code></td><td>pikachu → Pikachu</td><td><a href="https://tailwindcss.com/docs/text-transform" target="_blank" rel="noopener">text-transform</a></td></tr>
+      <tr><td><code>border</code> <code>border-slate-200</code></td><td>a 1px border, and its colour</td><td><a href="https://tailwindcss.com/docs/border-width" target="_blank" rel="noopener">border-width</a> · <a href="https://tailwindcss.com/docs/border-color" target="_blank" rel="noopener">border-color</a></td></tr>
+      <tr><td><code>rounded-md</code> <code>rounded-xl</code></td><td>round corners</td><td><a href="https://tailwindcss.com/docs/border-radius" target="_blank" rel="noopener">border-radius</a></td></tr>
+      <tr><td><code>shadow</code> <code>shadow-md</code></td><td>drop shadow</td><td><a href="https://tailwindcss.com/docs/box-shadow" target="_blank" rel="noopener">box-shadow</a></td></tr>
+      <tr><td><code>hover:bg-emerald-700</code></td><td>a darker green when the mouse is over it</td><td><a href="https://tailwindcss.com/docs/hover-focus-and-other-states" target="_blank" rel="noopener">hover, focus, and other states</a></td></tr>
+      <tr><td><code>focus:outline-2</code> <code>focus:outline-blue-600</code></td><td>a blue outline when you tab to the input</td><td><a href="https://tailwindcss.com/docs/outline-width" target="_blank" rel="noopener">outline-width</a> · <a href="https://tailwindcss.com/docs/outline-color" target="_blank" rel="noopener">outline-color</a></td></tr>
+    </table></div>
+  </section>
+
+  <section id="variants">
+    <h2><span class="n">5</span>Variants: hover:, focus:, md:, dark:</h2>
+    <p>A variant goes in front of any class and adds a condition. Each one has its own page:</p>
+    <div class="scroll"><table>
+      <tr><th>Variant</th><th>Means</th><th>Docs page</th></tr>
+      <tr><td><code>hover:</code> <code>focus:</code></td><td>only while the mouse is over it / while it has focus</td><td><a href="https://tailwindcss.com/docs/hover-focus-and-other-states" target="_blank" rel="noopener">hover, focus, and other states</a></td></tr>
+      <tr><td><code>sm:</code> <code>md:</code> <code>lg:</code></td><td>only from that screen width <b>up</b> (<code>sm</code> = 40rem, <code>md</code> = 48rem)</td><td><a href="https://tailwindcss.com/docs/responsive-design" target="_blank" rel="noopener">responsive design</a></td></tr>
+      <tr><td><code>dark:</code></td><td>only in dark mode</td><td><a href="https://tailwindcss.com/docs/dark-mode" target="_blank" rel="noopener">dark mode</a></td></tr>
+    </table></div>
+    <p class="bottom">Mobile first: a class with no prefix works on every screen. <code>md:</code> changes it on bigger screens.</p>
+  </section>
+
+  <section id="try">
+    <h2><span class="n">6</span>Try it: look these up</h2>
+    <p>Use <b>Ctrl K</b> for each one. Write your answer down, then check.</p>
+    <div class="task"><b>1.</b> Make the card corners rounder than <code>rounded-xl</code>.
+      <details><summary>Answer</summary><p><code>rounded-2xl</code> (or <code>rounded-3xl</code>). Page: <a href="https://tailwindcss.com/docs/border-radius" target="_blank" rel="noopener">border-radius</a>.</p></details></div>
+    <div class="task"><b>2.</b> Add padding to the <b>top only</b>.
+      <details><summary>Answer</summary><p><code>pt-4</code>. <b>t</b> = top. Page: <a href="https://tailwindcss.com/docs/padding" target="_blank" rel="noopener">padding</a> → "Adding padding to one side".</p></details></div>
+    <div class="task"><b>3.</b> Give the header a purple background.
+      <details><summary>Answer</summary><p><code>bg-purple-700</code> (any shade, 50 to 950). Pages: <a href="https://tailwindcss.com/docs/background-color" target="_blank" rel="noopener">background-color</a>, every colour on <a href="https://tailwindcss.com/docs/colors" target="_blank" rel="noopener">colors</a>.</p></details></div>
+    <div class="task"><b>4.</b> Make the Pokemon's name italic.
+      <details><summary>Answer</summary><p><code>italic</code>. Page: <a href="https://tailwindcss.com/docs/font-style" target="_blank" rel="noopener">font-style</a>.</p></details></div>
+    <div class="task"><b>5.</b> Underline a link only when the mouse is over it.
+      <details><summary>Answer</summary><p><code>hover:underline</code>. Page: <a href="https://tailwindcss.com/docs/text-decoration-line" target="_blank" rel="noopener">text-decoration-line</a>.</p></details></div>
+    <div class="task"><b>6.</b> Hide something on phones, and show it from <code>md</code> up.
+      <details><summary>Answer</summary><p><code>hidden md:block</code>. Pages: <a href="https://tailwindcss.com/docs/display" target="_blank" rel="noopener">display</a> and <a href="https://tailwindcss.com/docs/responsive-design" target="_blank" rel="noopener">responsive design</a>.</p></details></div>
+  </section>
+
+  <section id="stuck">
+    <h2><span class="n">7</span>The class is right, but nothing changes?</h2>
+    <ul class="points">
+      <li><b>Spelling:</b> a misspelt class does nothing, with no error. Compare it with the docs table.</li>
+      <li><b>React:</b> <code>className</code>, not <code>class</code></li>
+      <li><b>Setup:</b> the Vite plugin in <code>vite.config.js</code>, and <code>@import "tailwindcss";</code> in <code>index.css</code></li>
+      <li><b>VS Code:</b> install <b>Tailwind CSS IntelliSense</b>. Hover a class to see its CSS.</li>
+      <li><b>The browser:</b> DevTools → Elements → <b>Computed</b> shows what the page really used</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

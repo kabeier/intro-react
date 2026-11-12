@@ -16,6 +16,13 @@
   .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
   .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
   .loop span { color: var(--muted); }
+  .docs { display: flex; flex-direction: column; gap: 10px; }
+  .docs-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .docs-tabs button { font: 600 19px/1 Inter, system-ui, sans-serif; padding: 9px 14px; border-radius: 8px; border: 2px solid #1b2230; background: #fff; color: #1b2230; cursor: pointer; }
+  .docs-tabs button.on { background: #1b2230; color: #fff; }
+  .docs-tabs a { margin-left: auto; font: 600 18px Inter, system-ui, sans-serif; color: #2552c9; }
+  .docs iframe { width: 100%; height: 560px; border: 2px solid #1b2230; border-radius: 10px; background: #fff; }
+  .docs .url { font: 500 17px 'JetBrains Mono', monospace; color: #5b6577; }
 </style>
 </head>
 <body data-minutes="40">
@@ -211,6 +218,36 @@
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>The docs have the rest</h2>
+  <div class="cols" style="grid-template-columns: 0.75fr 1.5fr; gap:32px">
+    <div>
+      <ul class="small">
+        <li><b>Ctrl K</b>: search by the CSS word (<code>padding</code>, <code>rounded</code>)</li>
+        <li>One page = one CSS property</li>
+        <li>The table: <b>Class</b> on the left, the real <b>CSS</b> on the right</li>
+        <li>Check the badge says <b>v4</b></li>
+      </ul>
+      <div class="card green" style="margin-top:18px; padding:16px 20px"><p style="font-size:24px; margin:0"><b>Docs guide</b> on the class site: every class from today, and its page.</p></div>
+    </div>
+    <div class="docs">
+      <div class="docs-tabs"><button type="button" data-src="https://tailwindcss.com/docs/padding" class="on">padding</button><button type="button" data-src="https://tailwindcss.com/docs/hover-focus-and-other-states">hover and focus</button><button type="button" data-src="https://tailwindcss.com/docs/colors">colors</button><a href="https://tailwindcss.com/docs/padding" target="_blank" rel="noopener">Open ↗</a></div>
+      <iframe src="https://tailwindcss.com/docs/padding" loading="lazy" title="Tailwind docs: padding"></iframe>
+      <div class="url">https://tailwindcss.com/docs/padding</div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to look up any class in the Tailwind docs, so they can do the homework without memorizing.</p>
+    <p><b>About 1 minute.</b> On <b>padding</b>: point at the table. Left column <code>p-&lt;number&gt;</code>, right column <code>padding: calc(var(--spacing) * &lt;number&gt;)</code>. Say: "spacing is 0.25rem, so p-4 is 1rem. Same rule as slide 3."</p>
+    <p>Point at <b>On this page</b> (right side): the examples, and <b>Responsive design</b> at the end.</p>
+    <p>Click <b>hover and focus</b>: "every variant has a page like this." Click <b>colors</b>: "every colour name and shade, 50 to 950."</p>
+    <p>Show search: click inside the docs, press <b>Ctrl K</b>, type <code>rounded</code>.</p>
+    <p>Say: "Old blog posts and AI answers show v3 with a tailwind.config.js. We use v4: the badge by the logo says v4."</p>
+    <p>The <b>Docs guide</b> page is on the class site under this lecture: every class from today with its docs page, and 6 look-up practice questions.</p>
+    <p><b>Arrow keys:</b> after you click inside the docs, the arrows scroll the docs. Click the slide <b>outside</b> the docs (or use the presenter's Next) to move on.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="39">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Tailwind and Bootstrap Project</b></li>
@@ -222,6 +259,17 @@
 
 </div>
 
+<script>
+  // "The docs have the rest": the tab buttons switch the embedded page
+  document.querySelectorAll('.docs').forEach((d) => {
+    const frame = d.querySelector('iframe'), open = d.querySelector('.docs-tabs a'), url = d.querySelector('.url')
+    d.querySelectorAll('.docs-tabs button').forEach((b) => b.onclick = () => {
+      d.querySelectorAll('.docs-tabs button').forEach((x) => x.classList.toggle('on', x === b))
+      frame.src = open.href = url.textContent = b.dataset.src
+      b.blur()
+    })
+  })
+</script>
 <script src="../shared/deck.js?v=3"></script>
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>

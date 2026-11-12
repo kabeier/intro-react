@@ -16,6 +16,13 @@
   .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
   .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
   .loop span { color: var(--muted); }
+  .docs { display: flex; flex-direction: column; gap: 10px; }
+  .docs-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .docs-tabs button { font: 600 19px/1 Inter, system-ui, sans-serif; padding: 9px 14px; border-radius: 8px; border: 2px solid #1b2230; background: #fff; color: #1b2230; cursor: pointer; }
+  .docs-tabs button.on { background: #1b2230; color: #fff; }
+  .docs-tabs a { margin-left: auto; font: 600 18px Inter, system-ui, sans-serif; color: #2552c9; }
+  .docs iframe { width: 100%; height: 560px; border: 2px solid #1b2230; border-radius: 10px; background: #fff; }
+  .docs .url { font: 500 17px 'JetBrains Mono', monospace; color: #5b6577; }
 </style>
 </head>
 <body data-minutes="40">
@@ -214,6 +221,35 @@
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>The docs have the rest</h2>
+  <div class="cols" style="grid-template-columns: 0.75fr 1.5fr; gap:32px">
+    <div>
+      <ul class="small">
+        <li><b>React Bootstrap</b>: components and props</li>
+        <li><b>Bootstrap</b>: classes like <code>mb-0</code>, colour names</li>
+        <li><b>Examples</b> at the top, each with a live editor</li>
+        <li><b>API</b> at the bottom: the import, then every prop</li>
+      </ul>
+      <div class="card green" style="margin-top:18px; padding:16px 20px"><p style="font-size:24px; margin:0"><b>Docs guide</b> on the class site: every component from today, and its page.</p></div>
+    </div>
+    <div class="docs">
+      <div class="docs-tabs"><button type="button" data-src="https://react-bootstrap.github.io/docs/components/cards/" class="on">Cards</button><button type="button" data-src="https://react-bootstrap.github.io/docs/components/badge/">Badges</button><button type="button" data-src="https://getbootstrap.com/docs/5.3/utilities/spacing/">Bootstrap spacing</button><a href="https://react-bootstrap.github.io/docs/components/cards/" target="_blank" rel="noopener">Open ↗</a></div>
+      <iframe src="https://react-bootstrap.github.io/docs/components/cards/" loading="lazy" title="React Bootstrap docs: Cards"></iframe>
+      <div class="url">https://react-bootstrap.github.io/docs/components/cards/</div>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> How to read a React Bootstrap page: examples first, then the API table of props. And which site has the classes.</p>
+    <p><b>About 1 minute.</b> On <b>Cards</b>: point at the first example's <b>Result</b> and the <b>Live Editor</b> under it. Change a word in the editor: "the result changes, you can try things here."</p>
+    <p>Click <b>Badges</b>: our Pokedex number. Click inside the docs, press <b>End</b> (the footer), then scroll up a little: the <b>API</b> table sits just above the footer. Point at the import line, then the table: <b>Name</b> is the prop, <b>Type</b> lists the values you may use (the <code>|</code> means "or"), <b>Default</b> is what you get without it. Point at <code>bg</code> (we used <code>bg="secondary"</code>) and <code>pill</code>.</p>
+    <p>Click <b>Bootstrap spacing</b>: "classes like mb-0 live on Bootstrap's own site, not React Bootstrap's."</p>
+    <p>Say: "Capital letter tag, like Card? React Bootstrap. A word in className? Bootstrap."</p>
+    <p>The <b>Docs guide</b> page is on the class site under this lecture: every component and class from today with its docs page, and 6 look-up practice questions.</p>
+    <p><b>Arrow keys:</b> after you click inside the docs, the arrows scroll the docs. Click the slide <b>outside</b> the docs (or use the presenter's Next) to move on.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
     <li><b>Reading Assignment - Beginning React</b> (Chapter 20: Testing Section)</li>
@@ -225,6 +261,17 @@
 
 </div>
 
+<script>
+  // "The docs have the rest": the tab buttons switch the embedded page
+  document.querySelectorAll('.docs').forEach((d) => {
+    const frame = d.querySelector('iframe'), open = d.querySelector('.docs-tabs a'), url = d.querySelector('.url')
+    d.querySelectorAll('.docs-tabs button').forEach((b) => b.onclick = () => {
+      d.querySelectorAll('.docs-tabs button').forEach((x) => x.classList.toggle('on', x === b))
+      frame.src = open.href = url.textContent = b.dataset.src
+      b.blur()
+    })
+  })
+</script>
 <script src="../shared/deck.js?v=3"></script>
 <script src="../shared/course.js?v=7"></script>
 <script src="../shared/course/create-vite-react.js?v=1"></script>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docs Guide: React Bootstrap</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; --warn:#fff4d6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.55;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 40px 28px 80px; }
+  .back { color: var(--blue); font-weight: 700; }
+  .tag { display: inline-block; margin: 18px 0 8px; padding: 3px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-weight: 700; font-size: 15px; }
+  h1 { font: 800 clamp(36px, 6vw, 64px)/1 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 0 0 14px; }
+  .lede { max-width: 64ch; color: var(--muted); font-size: 20px; margin: 0 0 24px; }
+  section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 26px 28px; margin: 0 0 28px; }
+  h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 0 0 12px; }
+  h2 .n { color: var(--blue); margin-right: 8px; }
+  ul.points, ol.points { margin: 0 0 14px; padding-left: 1.3em; } .points li { margin-bottom: 6px; }
+  code { font-size: 0.92em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+  a { color: var(--blue); }
+  .bottom { border-left: 6px solid var(--blue); padding: 6px 12px; font-weight: 700; margin: 14px 0 0; }
+  .warn { background: var(--warn); border-left: 4px solid #d97706; padding: 8px 12px; border-radius: 4px; margin: 12px 0; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; background: #fff; font-size: 16px; }
+  th, td { border: 1px solid var(--ink); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #eef2f8; }
+  .page { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 10px; margin: 8px 0 14px; font-size: 16px; }
+  .page div { border: 2px solid var(--ink); border-radius: 4px; padding: 10px 12px; background: #fbfcfe; }
+  .page div > b:first-child, .page b[style] { display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; }
+  td:first-child code { white-space: nowrap; }
+  .task { border: 2px solid var(--grid); border-radius: 4px; padding: 12px 14px; margin: 0 0 10px; }
+  details summary { cursor: pointer; font-weight: 700; color: var(--blue); margin-top: 6px; }
+  details p { margin: 6px 0 0; }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (max-width: 760px) {
+    main { padding: 24px 16px 60px; } section { padding: 18px 16px; }
+    .page { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="../../">← Lectures</a>
+  <p class="tag">Docs guide · React Bootstrap</p>
+  <h1>How to use the React Bootstrap docs</h1>
+  <p class="lede">A component library is only as good as your ability to look things up. This page shows which of the two docs sites to open, how to read a component page, and where every part of our app lives.</p>
+
+  <section id="where">
+    <h2><span class="n">1</span>Two docs sites, two jobs</h2>
+    <div class="scroll"><table>
+      <tr><th>Site</th><th>Open it for</th><th>Example from our app</th></tr>
+      <tr><td><b><a href="https://react-bootstrap.github.io/docs/getting-started/introduction/" target="_blank" rel="noopener">React Bootstrap</a></b><br>react-bootstrap.github.io</td><td><b>Components</b> and their <b>props</b></td><td><code>&lt;Card bg="dark"&gt;</code>, <code>&lt;Button variant="danger"&gt;</code></td></tr>
+      <tr><td><b><a href="https://getbootstrap.com/docs/5.3/getting-started/introduction/" target="_blank" rel="noopener">Bootstrap</a></b><br>getbootstrap.com/docs/5.3</td><td><b>CSS classes</b> (utilities) and the <b>colour names</b></td><td><code>className="mb-0"</code>, <code>text-capitalize</code></td></tr>
+    </table></div>
+    <p class="bottom">A tag with a capital letter (<code>&lt;Card&gt;</code>)? React Bootstrap. A word in <code>className</code>? Bootstrap.</p>
+    <p class="warn"><b>Watch out:</b> Bootstrap's own pages show plain HTML like <code>&lt;div class="card"&gt;</code>. In React, use the component (<code>&lt;Card&gt;</code>) instead.</p>
+  </section>
+
+  <section id="read">
+    <h2><span class="n">2</span>Read a component page</h2>
+    <p>Open <a href="https://react-bootstrap.github.io/docs/components/cards/" target="_blank" rel="noopener">Cards</a> next to this guide and find each part:</p>
+    <div class="page">
+      <div><b>Left: the menu</b>Layout, Forms, Components. Every component has one page.</div>
+      <div><b>Middle: the page</b><b style="font-size:16px;margin-top:6px">① Examples</b>Each example has a <b>Result</b> (what it looks like) and a <b>Live Editor</b>: change the code and the result changes.<b style="font-size:16px;margin-top:8px">② API (at the bottom)</b>The <b>import</b> line, then a table of every <b>prop</b>.</div>
+      <div><b>Right: the page list</b>Jump to an example, or straight to <b>API</b>.</div>
+    </div>
+    <h3 style="font:800 21px 'Bricolage Grotesque',sans-serif;margin:16px 0 6px">Reading the API table</h3>
+    <p>This is part of the real table for <code>Card</code>:</p>
+    <div class="scroll"><table>
+      <tr><th>Name</th><th>Type</th><th>Default</th><th>Description</th></tr>
+      <tr><td><code>as</code></td><td><code>React.ElementType</code></td><td><code>'div'</code></td><td>Element used to render the component.</td></tr>
+      <tr><td><code>bg</code></td><td><code>'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light'</code></td><td></td><td>Sets card background</td></tr>
+      <tr><td><code>text</code></td><td><code>'primary' | … | 'white' | 'muted'</code></td><td></td><td>Sets card text color</td></tr>
+      <tr><td><code>body</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Creates a Card with a Card.Body inside</td></tr>
+    </table></div>
+    <ul class="points" style="margin-top:12px">
+      <li><b>Name</b> = the prop you write: <code>&lt;Card bg="dark"&gt;</code></li>
+      <li><b>Type</b> = the values it takes. <code>|</code> means "or": pick one.</li>
+      <li><b>Default</b> = what you get if you leave it out</li>
+      <li><code>boolean</code> = write the prop alone to turn it on: <code>&lt;Card body&gt;</code></li>
+    </ul>
+    <p class="bottom">Examples show you what it looks like. The API table tells you every prop it takes.</p>
+  </section>
+
+  <section id="ours">
+    <h2><span class="n">3</span>Every part of our app, and its page</h2>
+    <h3 style="font:800 21px 'Bricolage Grotesque',sans-serif;margin:4px 0 6px">Components (React Bootstrap)</h3>
+    <div class="scroll"><table>
+      <tr><th>In our app</th><th>Where</th><th>Docs page</th></tr>
+      <tr><td><code>&lt;Card as="header" bg="dark" text="white" body&gt;</code></td><td>Heading</td><td><a href="https://react-bootstrap.github.io/docs/components/cards/" target="_blank" rel="noopener">Cards</a> → "Background Color", API</td></tr>
+      <tr><td><code>&lt;Card.Img variant="top"&gt;</code> <code>&lt;Card.Body&gt;</code> <code>&lt;Card.Title&gt;</code></td><td>PokeCard</td><td><a href="https://react-bootstrap.github.io/docs/components/cards/" target="_blank" rel="noopener">Cards</a> → "Basic Example", "Image caps"</td></tr>
+      <tr><td><code>&lt;Button variant="danger"&gt;</code> (we import it as <code>BsButton</code>)</td><td>Button, PokeCard, PokeForm</td><td><a href="https://react-bootstrap.github.io/docs/components/buttons/" target="_blank" rel="noopener">Buttons</a></td></tr>
+      <tr><td><code>&lt;Badge bg="secondary"&gt;</code></td><td>PokeCard (the Pokedex number)</td><td><a href="https://react-bootstrap.github.io/docs/components/badge/" target="_blank" rel="noopener">Badges</a></td></tr>
+      <tr><td><code>&lt;Form.Group controlId&gt;</code> <code>&lt;Form.Label&gt;</code> <code>&lt;Form.Control&gt;</code></td><td>PokeForm</td><td><a href="https://react-bootstrap.github.io/docs/forms/overview/" target="_blank" rel="noopener">Forms overview</a> · <a href="https://react-bootstrap.github.io/docs/forms/form-control/" target="_blank" rel="noopener">Form controls</a></td></tr>
+      <tr><td><code>&lt;Stack direction="horizontal" gap={3}&gt;</code></td><td>Counter, Heading, PokeCard, PokeForm</td><td><a href="https://react-bootstrap.github.io/docs/layout/stack/" target="_blank" rel="noopener">Stacks</a></td></tr>
+    </table></div>
+    <h3 style="font:800 21px 'Bricolage Grotesque',sans-serif;margin:18px 0 6px">Classes (Bootstrap)</h3>
+    <div class="scroll"><table>
+      <tr><th>In our app</th><th>What it does</th><th>Docs page</th></tr>
+      <tr><td><code>mb-0</code></td><td>margin-bottom 0 (takes the heading's gap away)</td><td><a href="https://getbootstrap.com/docs/5.3/utilities/spacing/" target="_blank" rel="noopener">Spacing</a></td></tr>
+      <tr><td><code>justify-content-between</code> <code>align-items-end</code></td><td>spread items out / line them up at the bottom</td><td><a href="https://getbootstrap.com/docs/5.3/utilities/flex/" target="_blank" rel="noopener">Flex</a></td></tr>
+      <tr><td><code>text-capitalize</code></td><td>pikachu → Pikachu</td><td><a href="https://getbootstrap.com/docs/5.3/utilities/text/" target="_blank" rel="noopener">Text</a></td></tr>
+      <tr><td><code>primary</code> <code>danger</code> <code>warning</code> …</td><td>the colour names every <code>variant</code> and <code>bg</code> uses</td><td><a href="https://getbootstrap.com/docs/5.3/customize/color/" target="_blank" rel="noopener">Color</a></td></tr>
+    </table></div>
+  </section>
+
+  <section id="every-time">
+    <h2><span class="n">4</span>Every new component: three steps</h2>
+    <ol class="points">
+      <li><b>Find it</b> in the left menu (or search). Pick the example that looks closest to what you want.</li>
+      <li><b>Copy the import</b> from the API section: <code>import Alert from 'react-bootstrap/Alert'</code></li>
+      <li><b>Change it with props</b> from the API table, not with your own classes</li>
+    </ol>
+    <p class="warn"><b>In our app:</b> Bootstrap's CSS is imported once, in <code>main.jsx</code> (<code>import 'bootstrap/dist/css/bootstrap.min.css'</code>). Forget it and the components show up unstyled.</p>
+  </section>
+
+  <section id="try">
+    <h2><span class="n">5</span>Try it: look these up</h2>
+    <p>Find the page, then the prop in its API table. Write your answer down, then check.</p>
+    <div class="task"><b>1.</b> Make the Remove button an <b>outline</b> button: red border, no fill.
+      <details><summary>Answer</summary><p><code>variant="outline-danger"</code>. Page: <a href="https://react-bootstrap.github.io/docs/components/buttons/" target="_blank" rel="noopener">Buttons</a> → "Outline buttons".</p></details></div>
+    <div class="task"><b>2.</b> Make the Shiny button <b>smaller</b>.
+      <details><summary>Answer</summary><p><code>size="sm"</code>. Page: <a href="https://react-bootstrap.github.io/docs/components/buttons/" target="_blank" rel="noopener">Buttons</a> → "Sizes".</p></details></div>
+    <div class="task"><b>3.</b> Make the Pokedex badge <b>round</b> (a pill).
+      <details><summary>Answer</summary><p>Add <code>pill</code>: <code>&lt;Badge pill bg="secondary"&gt;</code>. Page: <a href="https://react-bootstrap.github.io/docs/components/badge/" target="_blank" rel="noopener">Badges</a> → "Pill badges".</p></details></div>
+    <div class="task"><b>4.</b> Give each Pokemon card a <b>coloured border</b>.
+      <details><summary>Answer</summary><p><code>&lt;Card border="primary"&gt;</code>. Page: <a href="https://react-bootstrap.github.io/docs/components/cards/" target="_blank" rel="noopener">Cards</a> → "Border Color".</p></details></div>
+    <div class="task"><b>5.</b> Stack the card's buttons <b>on top of each other</b> instead of side by side.
+      <details><summary>Answer</summary><p>Remove <code>direction="horizontal"</code>: a Stack is vertical by default. Page: <a href="https://react-bootstrap.github.io/docs/layout/stack/" target="_blank" rel="noopener">Stacks</a>.</p></details></div>
+    <div class="task"><b>6.</b> Show a yellow warning box when the search finds nothing.
+      <details><summary>Answer</summary><p><code>import Alert from 'react-bootstrap/Alert'</code>, then <code>&lt;Alert variant="warning"&gt;No Pokemon found&lt;/Alert&gt;</code>. Page: <a href="https://react-bootstrap.github.io/docs/components/alerts/" target="_blank" rel="noopener">Alerts</a>.</p></details></div>
+  </section>
+
+  <section id="stuck">
+    <h2><span class="n">6</span>It looks wrong?</h2>
+    <ul class="points">
+      <li><b>No styles at all:</b> the CSS import is missing from <code>main.jsx</code></li>
+      <li><b>"does not provide an export named…":</b> import each component from its own path: <code>import Card from 'react-bootstrap/Card'</code></li>
+      <li><b>A prop does nothing:</b> check the API table. The value must be one from the <b>Type</b> list, spelt the same.</li>
+      <li><b>Tailwind and Bootstrap fight:</b> keep <code>@import "tailwindcss" important;</code>, and use one library per component</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

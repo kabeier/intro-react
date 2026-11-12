@@ -189,7 +189,9 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | 10 | 22 | **N ×13**, ▶ 16 green; click "Click me!" | the rest; no background on main |
 | 11 | 28 | — | components are the reuse; whole class names |
 | 12 | 30 | timer | Fix It (Tailwind) 1–6 |
-| 13–14 | 37–38 | — | mental model; homework I |
+| 13 | 37 | — | mental model |
+| 14 | 38 | click the 3 docs tabs; Ctrl K in the docs | the table: class left, CSS right; v4 badge; Docs guide on the class site |
+| 15 | 39 | — | homework I |
 
 ## Lecture 2 · React Bootstrap
 | # | Min | Do | Say |
@@ -203,7 +205,9 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 | 10–11 | 26–27 | — | BsButton; when to use which |
 | 12 | 28 | — | the 17 tests |
 | 13 | 29 | timer | Fix It (React Bootstrap) 1–6 |
-| 14–15 | 36–37 | — | mental model; homework II |
+| 14 | 36 | — | mental model |
+| 15 | 37 | click the 3 docs tabs; edit the Live Editor; on Badges: End, scroll up a little to API | Examples on top, API props table at the bottom; classes on getbootstrap.com |
+| 16 | 38 | — | homework II |
 
 Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); the cards drifting apart after Bootstrap loads (forgot `important`); search tests failing because `controlId` is missing.
 
@@ -280,7 +284,9 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 9–10 | 18–21 | **N ×2**; `npm run deploy` live; Settings → Pages | gh-pages |
 | 11 | 25 | — | blank page checklist |
 | 12 | 28 | timer (8 min) | students deploy their own copy |
-| 13–14 | 37–38 | — | mental model; homework I |
+| 13 | 37 | — | mental model |
+| 14 | 38 | click the 3 docs tabs; Ctrl K in the docs | the table: class left, CSS right; v4 badge; Docs guide on the class site |
+| 15 | 39 | — | homework I |
 
 ## Lecture 2 · GitHub Actions
 | # | Min | Do | Say |
