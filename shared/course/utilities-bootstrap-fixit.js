@@ -78,8 +78,8 @@
       symptom: 'The Pokédex number is white on white. No error, all tests pass.',
       breaks: [{ file: CARD, mode: 'replace', find: '<Badge bg="secondary">', code: '<Badge bg="grey">' }],
       checks: [allPass, styled('the badge has a grey background', '#pikachu-card .badge', 'backgroundColor', 'rgb(108, 117, 125)')],
-      hint: 'bg takes one of Bootstrap\'s colour names. Is grey one of them?',
-      why: 'bg="grey" makes the class bg-grey, which doesn\'t exist. Use a theme colour: primary, secondary, success, danger, warning, info, light, dark.',
+      hint: 'bg takes one of Bootstrap\'s color names. Is grey one of them?',
+      why: 'bg="grey" makes the class bg-grey, which doesn\'t exist. Use a theme color: primary, secondary, success, danger, warning, info, light, dark.',
     },
     {
       id: 'controlid', title: 'Bonus: every search test fails', base: 'f3', tabs: ['src/components/PokeSearch/PokeForm.jsx'],

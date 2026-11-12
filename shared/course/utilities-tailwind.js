@@ -92,7 +92,7 @@ Course.register({
           id: 'f4s4', file: 'src/components/Counter/Counter.jsx', mode: 'replace',
           find: '    <>\n      <h3>Total Clicks: {count}</h3>\n      <Button onClick={() => setCount((count) => count + 1)}>Click me!</Button>\n    </>',
           code: '    <section className="flex items-center gap-4 rounded-xl bg-white p-4 shadow">\n      <h3 className="text-lg font-semibold">Total Clicks: {count}</h3>\n      <Button onClick={() => setCount((count) => count + 1)}>Click me!</Button>\n    </section>',
-          say: 'A white box. The page behind it still changes colour.',
+          say: 'A white box. The page behind it still changes color.',
         },
         {
           id: 'f4s5', file: 'src/components/PokeSearch/PokeForm.jsx', mode: 'set',
@@ -102,7 +102,7 @@ Course.register({
         {
           id: 'f4s6', file: 'src/App.jsx', mode: 'replace', find: '    <>\n      <Heading />\n      <Counter />\n      <PokeSearch />\n    </>',
           code: '    <main className="mx-auto max-w-5xl space-y-6 p-6">\n      <Heading />\n      <Counter />\n      <PokeSearch />\n    </main>',
-          say: 'A centred column with space between the parts. No background on main, so the counter\'s colour still shows. Run the tests: all green.',
+          say: 'A centred column with space between the parts. No background on main, so the counter\'s color still shows. Run the tests: all green.',
           notes: [{ match: 'mx-auto max-w-5xl space-y-6 p-6', what: 'Centre a column up to 64rem wide, with 1.5rem between the children and padding around.', why: 'Layout for the whole page in one line.' }],
         },
         {

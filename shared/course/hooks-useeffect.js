@@ -48,15 +48,15 @@ Course.register({
           id: 'f3s1', file: 'cypress/e2e/home.cy.js', mode: 'append',
           code: "it('changes the background when you click', () => {\n  cy.contains('button', 'Click me!').click()\n  cy.get('body').should('have.css', 'background-color', 'rgb(144, 238, 144)')\n})",
           say: 'Test first: one click → light green. Red for now.',
-          notes: [{ match: "should('have.css'", what: 'Checks a computed CSS value.', why: 'Colours come back as rgb(): lightgreen is rgb(144, 238, 144).' }],
+          notes: [{ match: "should('have.css'", what: 'Checks a computed CSS value.', why: 'Colors come back as rgb(): lightgreen is rgb(144, 238, 144).' }],
         },
         {
           id: 'f3s2', file: 'src/App.jsx', mode: 'insertAfter', find: '  }, [pokemonList])',
           code: "\n  useEffect(() => {\n    const colors = ['lightblue', 'lightgreen', 'lightpink', 'lightyellow', 'lightsalmon']\n    document.body.style.backgroundColor = colors[count % colors.length]\n  }, [count])",
-          say: 'Every click changes count; the effect picks the next colour. % wraps around after the last colour.',
+          say: 'Every click changes count; the effect picks the next color. % wraps around after the last color.',
           notes: [
             { match: 'document.body.style.backgroundColor', what: 'Changes the page outside our component.', why: 'React does not draw <body>, so we change it ourselves, after render.' },
-            { match: 'count % colors.length', what: 'The remainder: 0, 1, 2, 3, 4, 0, 1…', why: 'Cycles through the colours forever.' },
+            { match: 'count % colors.length', what: 'The remainder: 0, 1, 2, 3, 4, 0, 1…', why: 'Cycles through the colors forever.' },
           ],
         },
       ],

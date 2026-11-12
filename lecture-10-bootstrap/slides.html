@@ -80,6 +80,16 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/index.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import "tailwindcss" important;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">important: every Tailwind utility becomes !important, so it beats Bootstrap. Run the tests: green.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>Classes on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap-5 (Tailwind)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeContainer</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap: 1.25rem</code> (20px), inside Tailwind's <code>@layer utilities</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap-5 (Bootstrap)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">same element</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap has the <b>same class name</b>: <code>gap: 3rem !important</code> (48px). After the CSS import it wins: the red test.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>@import &quot;tailwindcss&quot; important;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">index.css</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">not a class: makes every Tailwind utility <code>!important</code>, so Tailwind's gap-5 wins again (green)</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import &#x27;bootstrap/dist/css/bootstrap.min.css&#x27;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">main.jsx</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">loads Bootstrap's CSS. Without it the components have no styles.</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -120,6 +130,21 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same card from Bootstrap's parts. Keep the id on &lt;Card&gt;: the tests find cards by it. Run the tests: all 17 green.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>React Bootstrap components on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the card box: border, round corners, white background. <code>style={{ width: '15rem' }}</code> is plain React, not Bootstrap.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card.Img variant=&quot;top&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">an image at the top of the card; <code>variant="top"</code> rounds its top corners to match</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card.Body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the padded area under the image</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Badge bg=&quot;secondary&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a small grey label: the Pokedex number</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card.Title&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the card's title, styled like an h5 heading</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-capitalize</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (Card.Title)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap class: pikachu → Pikachu</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Stack direction=&quot;horizontal&quot; gap={2}&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a flex row; <code>gap={2}</code> = Bootstrap's gap-2, 0.5rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant=&quot;danger&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's Button, red</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant={shiny ? &#x27;secondary&#x27; : &#x27;warning&#x27;}&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">yellow ("Make Shiny"), grey once shiny ("Make Normal")</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -148,10 +173,30 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Button/Button.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import BsButton from 'react-bootstrap/Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Our Button wraps Bootstrap's. Change Title, Click me! and every later Button get the Bootstrap look from here.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A dark Card. as="header" keeps the &lt;header&gt; tag: the tests find header h1 and header button.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Button from '../Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The Counter becomes a Card…</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…a white card. The page behind it still changes colour.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…a white card. The page behind it still changes color.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeForm.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import Card from 'react-bootstrap/Card'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The form from Bootstrap's parts. controlId gives the input its id, so input[id=pokemon-name] still finds it. Run the tests: 17 green.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>React Bootstrap components and classes on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant=&quot;primary&quot; {...props}&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">our Button now renders Bootstrap's blue Button and passes every prop on</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card as=&quot;header&quot; bg=&quot;dark&quot; text=&quot;white&quot; body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a dark card with white text, rendered as a <code>&lt;header&gt;</code> tag; <code>body</code> adds the padded body for you</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Stack direction=&quot;horizontal&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading, Counter, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a flex row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>justify-content-between</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading (Stack)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap class: title left, button right</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>mb-0</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading (h1), Counter (h3)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap class: margin-bottom 0. Bootstrap gives headings a bottom margin; this removes it so they line up.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Card body&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a white card with a padded body: the box around the counter and the form</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap={3}</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, PokeForm (Stack)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's gap-3, 1rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Form&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a <code>&lt;form&gt;</code>; <code>onSubmit</code> works the same</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>align-items-end</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (Stack)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap class: the button lines up with the bottom of the input</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Form.Group controlId=&quot;pokemon-name&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">groups a label and input; <code>controlId</code> sets the input's <code>id</code> and the label's <code>htmlFor</code>. The tests find the input by this.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Form.Label&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a styled <code>&lt;label&gt;</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Form.Control&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a styled, full-width <code>&lt;input&gt;</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant=&quot;success&quot; type=&quot;submit&quot;&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a green submit button</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>mx-auto max-w-5xl space-y-6 p-6 · flex flex-wrap gap-5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App, PokeSearch, PokeContainer</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">still <b>Tailwind</b>: the page column and the card row (layout stays Tailwind)</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -226,7 +271,7 @@
     <div>
       <ul class="small">
         <li><b>React Bootstrap</b>: components and props</li>
-        <li><b>Bootstrap</b>: classes like <code>mb-0</code>, colour names</li>
+        <li><b>Bootstrap</b>: classes like <code>mb-0</code>, color names</li>
         <li><b>Examples</b> at the top, each with a live editor</li>
         <li><b>API</b> at the bottom: the import, then every prop</li>
       </ul>
@@ -280,11 +325,11 @@
 <script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/course/cypress-assertions.js?v=2"></script>
 <script src="../shared/course/hooks-usestate.js?v=2"></script>
-<script src="../shared/course/hooks-useeffect.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=3"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
-<script src="../shared/course/utilities-tailwind.js?v=2"></script>
-<script src="../shared/course/utilities-bootstrap.js?v=3"></script>
+<script src="../shared/course/utilities-tailwind.js?v=3"></script>
+<script src="../shared/course/utilities-bootstrap.js?v=4"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=14"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

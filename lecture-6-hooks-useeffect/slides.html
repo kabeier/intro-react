@@ -31,7 +31,7 @@
   <h2>Rendering vs effects</h2>
   <div class="cols">
     <div class="card blue"><h3>Rendering · <code>App()</code></h3><p>React calls your component to work out what the page should show, from its props and state.</p><p>Rendering must be <b>pure</b>: no requests, no timers, no changing the page yourself.</p></div>
-    <div class="card green"><h3>Effects · <code>useEffect()</code></h3><p>Code that runs <b>after</b> React has updated the page, to work with things outside React. Today:</p><ul><li>logging when the page mounts, and cleaning up</li><li>changing the page's background colour (<code>document.body</code>)</li><li>fetching Pikachu from the PokeAPI</li></ul></div>
+    <div class="card green"><h3>Effects · <code>useEffect()</code></h3><p>Code that runs <b>after</b> React has updated the page, to work with things outside React. Today:</p><ul><li>logging when the page mounts, and cleaning up</li><li>changing the page's background color (<code>document.body</code>)</li><li>fetching Pikachu from the PokeAPI</li></ul></div>
   </div>
   <p class="bottomline">Rendering decides what to show. Effects let your component talk to the outside world.</p>
   <aside class="notes">
@@ -39,7 +39,7 @@
     <p>Point at the blue card: "React calls App() whenever props or state change. Its only job is to return what the page should look like. Same state in, same JSX out."</p>
     <p>Point at "pure": "So no API calls, no timers and no changing the page by hand in here. React may call App() many times."</p>
     <p>Point at the green card: "Anything that reaches outside React goes in useEffect. It runs after React has updated the page."</p>
-    <p>Point at the three examples: "These are today's code-alongs, in order: a mount log with its cleanup, the background colour, then loading Pikachu."</p>
+    <p>Point at the three examples: "These are today's code-alongs, in order: a mount log with its cleanup, the background color, then loading Pikachu."</p>
     <p>Say: "If it isn't drawing, and it isn't a reaction to a click, it's probably an effect."</p>
   </aside>
 </section>
@@ -110,11 +110,11 @@
   <div class="livepad" data-lesson="hooks-useeffect" data-start="f2s1" data-steps="f3s1 f3s2" data-files="cypress/e2e/home.cy.js src/App.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We change the page background on every click, test first: a real side effect.</p>
-    <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 2. Click "Click me!" in the live app: the colours cycle.</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Red after N 1, green after N 2. Click "Click me!" in the live app: the colors cycle.</p>
 <!-- steps:hooks-useeffect:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/home.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('changes the background when you click', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: one click → light green. Red for now.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Every click changes count; the effect picks the next colour. % wraps around after the last colour.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>useEffect(() =&gt; {</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Every click changes count; the effect picks the next color. % wraps around after the last color.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -187,11 +187,11 @@
     <tr><th>Situation</th><th>Use</th></tr>
     <tr><td>Something happens because the user clicked</td><td>the click handler</td></tr>
     <tr><td>A value you can compute from state</td><td>compute it while rendering (no state, no effect)</td></tr>
-    <tr><td>Keep something <b>outside</b> React in sync (body colour, title, a timer), or load data</td><td class="pk">useEffect</td></tr>
+    <tr><td>Keep something <b>outside</b> React in sync (body color, title, a timer), or load data</td><td class="pk">useEffect</td></tr>
   </table>
   <p class="bottomline">Effects are for the outside world.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> When NOT to use an effect.</p><p>The background colour could also be set in the click handler; we use an effect because it follows count wherever it changes.</p></aside>
+    <p class="plan"><b>The plan:</b> When NOT to use an effect.</p><p>The background color could also be set in the click handler; we use an effect because it follows count wherever it changes.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="28">
@@ -241,7 +241,7 @@
 <script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/course/cypress-assertions.js?v=2"></script>
 <script src="../shared/course/hooks-usestate.js?v=2"></script>
-<script src="../shared/course/hooks-useeffect.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=14"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

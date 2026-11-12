@@ -52,7 +52,7 @@ Course.register({
           notes: [
             { match: "import BsButton from 'react-bootstrap/Button'", what: 'Bootstrap\'s Button, renamed.', why: 'We already have our own Button; two components can\'t share a name in one file.' },
             { match: '<Card id={`${pokemon.name}-card`}', what: 'Props you don\'t know (id, style) go to the outer div.', why: 'So the tests\' #pikachu-card still works.' },
-            { match: "variant={shiny ? 'secondary' : 'warning'}", what: 'variant picks Bootstrap\'s colour.', why: 'Props, not classes: the library writes the CSS.' },
+            { match: "variant={shiny ? 'secondary' : 'warning'}", what: 'variant picks Bootstrap\'s color.', why: 'Props, not classes: the library writes the CSS.' },
           ],
         },
       ],
@@ -72,7 +72,7 @@ Course.register({
           code: "import { useState } from 'react'\nimport Card from 'react-bootstrap/Card'\nimport Stack from 'react-bootstrap/Stack'\nimport Button from '../Button'\n\nfunction Heading() {\n  const [heading, setHeading] = useState('Pokemon Project')\n\n  return (\n    <Card as=\"header\" bg=\"dark\" text=\"white\" body>\n      <Stack direction=\"horizontal\" className=\"justify-content-between\">\n        <h1 className=\"mb-0\">{heading}</h1>\n        <Button onClick={() => setHeading('Pokemon Project: Day 2')}>Change Title</Button>\n      </Stack>\n    </Card>\n  )\n}\n\nexport default Heading",
           say: 'A dark Card. as="header" keeps the <header> tag: the tests find header h1 and header button.',
           notes: [
-            { match: '<Card as="header" bg="dark" text="white" body>', what: 'as picks the tag; bg and text pick the colours; body wraps the content in Card.Body.', why: 'Props, not classes.' },
+            { match: '<Card as="header" bg="dark" text="white" body>', what: 'as picks the tag; bg and text pick the colors; body wraps the content in Card.Body.', why: 'Props, not classes.' },
             { match: 'className="justify-content-between"', what: 'Bootstrap\'s class: the title left, the button right.', why: 'Inside a Bootstrap component we use Bootstrap\'s names (Tailwind\'s is justify-between).' },
           ],
         },
@@ -84,7 +84,7 @@ Course.register({
         {
           id: 'f3s4', file: 'src/components/Counter/Counter.jsx', mode: 'replace', find: "    <section className=\"flex items-center gap-4 rounded-xl bg-white p-4 shadow\">\n      <h3 className=\"text-lg font-semibold\">Total Clicks: {count}</h3>\n      <Button onClick={() => setCount((count) => count + 1)}>Click me!</Button>\n    </section>",
           code: "    <Card body>\n      <Stack direction=\"horizontal\" gap={3}>\n        <h3 className=\"mb-0\">Total Clicks: {count}</h3>\n        <Button onClick={() => setCount((count) => count + 1)}>Click me!</Button>\n      </Stack>\n    </Card>",
-          say: '…a white card. The page behind it still changes colour.',
+          say: '…a white card. The page behind it still changes color.',
         },
         {
           id: 'f3s5', file: 'src/components/PokeSearch/PokeForm.jsx', mode: 'set',

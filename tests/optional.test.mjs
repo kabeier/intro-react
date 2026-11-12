@@ -12,9 +12,9 @@ test('optional CSS Modules page: the clash, the fix, and the exercise check', as
   page.on('pageerror', (e) => errs.push(e.message))
   await page.goto(srv.url + '/optional-css-modules/index.html')
   await until(page, () => [...document.querySelectorAll('.op-pad iframe')].filter((f) => f.contentDocument && f.contentDocument.querySelectorAll('h2').length === 2).length === 4, null, 40000)
-  const colours = await page.evaluate(() => [...document.querySelectorAll('.op-pad iframe')].map((f) => [...f.contentDocument.querySelectorAll('h2')].map((h) => getComputedStyle(h).color)))
+  const colors = await page.evaluate(() => [...document.querySelectorAll('.op-pad iframe')].map((f) => [...f.contentDocument.querySelectorAll('h2')].map((h) => getComputedStyle(h).color)))
   const blue = 'rgb(65, 105, 225)', red = 'rgb(220, 20, 60)'
-  assert.deepEqual(colours, [[blue, blue], [blue, blue], [red, blue], [red, blue]], 'plain CSS clashes (1, 2); the module fixes Card (3, exercise start)')
+  assert.deepEqual(colors, [[blue, blue], [blue, blue], [red, blue], [red, blue]], 'plain CSS clashes (1, 2); the module fixes Card (3, exercise start)')
   await page.click('#check')
   assert.match(await page.textContent('#result'), /✗ Banner still uses a plain class name/)
   await page.evaluate(() => {

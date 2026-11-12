@@ -25,8 +25,8 @@
   }
   const LIB = {
     'Card': ['React Bootstrap', 'a card: a bordered box for one item'], 'Card.Body': ['React Bootstrap', 'the padded inside of a card'], 'Card.Img': ['React Bootstrap', 'the card\'s picture'],
-    'Card.Title': ['React Bootstrap', 'the card\'s title'], 'Badge': ['React Bootstrap', 'a small coloured label'], 'Stack': ['React Bootstrap', 'lays its children out in a row or column with a gap'],
-    'BsButton': ['React Bootstrap (imported as BsButton)', 'a styled button; variant picks the colour'], 'Spinner': ['React Bootstrap', 'a loading spinner'],
+    'Card.Title': ['React Bootstrap', 'the card\'s title'], 'Badge': ['React Bootstrap', 'a small colored label'], 'Stack': ['React Bootstrap', 'lays its children out in a row or column with a gap'],
+    'BsButton': ['React Bootstrap (imported as BsButton)', 'a styled button; variant picks the color'], 'Spinner': ['React Bootstrap', 'a loading spinner'],
     'Navbar': ['React Bootstrap', 'the navigation bar across the top'], 'Navbar.Brand': ['React Bootstrap', 'the app name on the left of the navbar'], 'Nav': ['React Bootstrap', 'a group of navbar links'],
     'Nav.Link': ['React Bootstrap', 'one navbar link'], 'Form': ['React Bootstrap', 'a styled <form>'], 'Form.Group': ['React Bootstrap', 'one field of the form (label + input)'],
     'Form.Label': ['React Bootstrap', 'the field\'s label'], 'Form.Control': ['React Bootstrap', 'the field\'s input box'],
@@ -41,15 +41,15 @@
     name: 'the field\'s name (used when a form is submitted)', htmlFor: 'connects the label to the input with that id (the for attribute)', key: 'tells React which list item is which',
     role: 'tells screen readers what the element is', 'aria-hidden': 'hides the element from screen readers (decoration only)', 'aria-label': 'a name for screen readers',
     width: 'the width in pixels', height: 'the height in pixels', style: 'inline CSS, written as a JavaScript object', to: 'the path the router link goes to',
-    as: 'renders the library component as another component (here a router Link)', variant: 'the Bootstrap colour/style', bg: 'the Bootstrap background colour', gap: 'the space between items',
+    as: 'renders the library component as another component (here a router Link)', variant: 'the Bootstrap color/style', bg: 'the Bootstrap background color', gap: 'the space between items',
     direction: 'row (horizontal) or column', controlId: 'gives the input this id and links the label to it', size: 'the size (sm = small)', context: 'a value passed to the page the Outlet draws',
-    router: 'the router to run', 'data-bs-theme': 'Bootstrap colour mode (dark = light text)',
+    router: 'the router to run', 'data-bs-theme': 'Bootstrap color mode (dark = light text)',
   }
   const CSS = {
-    color: 'text colour', background: 'background colour or image', 'background-color': 'background colour', padding: 'space inside the border', margin: 'space outside the border',
-    'margin-top': 'space above', 'margin-bottom': 'space below', border: 'the border (width, style, colour)', 'border-radius': 'rounded corners', 'border-top': 'the top border',
-    'border-bottom': 'the bottom border', 'border-right': 'the right border', 'border-color': 'border colour', 'border-inline': 'left and right borders', 'border-left-color': 'left border colour',
-    'border-right-color': 'right border colour', width: 'the width', height: 'the height', 'max-width': 'the widest it may get', 'min-height': 'the shortest it may get',
+    color: 'text color', background: 'background color or image', 'background-color': 'background color', padding: 'space inside the border', margin: 'space outside the border',
+    'margin-top': 'space above', 'margin-bottom': 'space below', border: 'the border (width, style, color)', 'border-radius': 'rounded corners', 'border-top': 'the top border',
+    'border-bottom': 'the bottom border', 'border-right': 'the right border', 'border-color': 'border color', 'border-inline': 'left and right borders', 'border-left-color': 'left border color',
+    'border-right-color': 'right border color', width: 'the width', height: 'the height', 'max-width': 'the widest it may get', 'min-height': 'the shortest it may get',
     display: 'how the element is laid out (block, flex, grid, none…)', 'flex-direction': 'row or column for flex children', 'flex-wrap': 'whether flex children wrap to a new line',
     flex: 'how a flex child grows and shrinks', 'flex-grow': 'how much a flex child grows', gap: 'space between flex/grid children', 'align-items': 'vertical alignment of flex children',
     'justify-content': 'horizontal spacing of flex children', 'place-items': 'centres grid/flex items (both directions)', 'place-content': 'centres the content block (both directions)',
@@ -90,7 +90,7 @@
   const register = (rules) => C.registerGlossary(rules.map((r) => (r.boilerplate === undefined ? { ...r, boilerplate: boiler } : r)))
   register([
     // SVG files and inline SVG data
-    { file: /\.svg$/, line: /./, boilerplate: true, note: () => n('SVG drawing data: the shapes and colours of this image, written as XML.', 'Images can be code. The browser draws it at any size without getting blurry. Nobody writes this by hand.') },
+    { file: /\.svg$/, line: /./, boilerplate: true, note: () => n('SVG drawing data: the shapes and colors of this image, written as XML.', 'Images can be code. The browser draws it at any size without getting blurry. Nobody writes this by hand.') },
 
     // ----- comments, any language -----
     { file: /\.(jsx?|mjs|css)$/, line: /^\/\/\s?(.*)$|^\/\*(.*?)\*?\/?$/, boilerplate: boiler, note: (m) => n(`A comment: "${(m[1] || m[2] || '').trim()}"`, 'Comments are notes for people. The computer skips them.') },

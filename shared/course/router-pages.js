@@ -139,7 +139,7 @@ Course.register({
           say: 'Bootstrap\'s Navbar. as={Link}: look like a Nav.Link, work like a router Link. Run the tests: 22 green.',
           notes: [
             { match: '<Nav.Link as={Link} to="/about">About</Nav.Link>', what: 'Bootstrap\'s look, the router\'s behaviour.', why: 'Without as={Link}, Nav.Link renders a plain <a href> and every click reloads.' },
-            { match: 'data-bs-theme="dark"', what: 'Light text for a dark background.', why: 'Bootstrap 5.3\'s colour modes.' },
+            { match: 'data-bs-theme="dark"', what: 'Light text for a dark background.', why: 'Bootstrap 5.3\'s color modes.' },
           ],
         },
       ],

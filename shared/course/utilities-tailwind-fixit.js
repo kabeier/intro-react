@@ -15,7 +15,7 @@
   const problems = [
     {
       id: 'plugin', title: 'No styles at all', base: 'f4', tabs: ['vite.config.js', 'src/index.css'],
-      symptom: 'The page looks like plain HTML: no colours, no rounded corners, the cards in one column. "lays the cards out in a wrapping row" fails. No error.',
+      symptom: 'The page looks like plain HTML: no colors, no rounded corners, the cards in one column. "lays the cards out in a wrapping row" fails. No error.',
       breaks: [
         { file: 'vite.config.js', mode: 'replace', find: "import tailwindcss from '@tailwindcss/vite'\n", code: '' },
         { file: 'vite.config.js', mode: 'replace', find: 'plugins: [react(), tailwindcss()]', code: 'plugins: [react()]' },
@@ -65,12 +65,12 @@
       why: 'The feature (and its test) is "#25": Pokédex #{pokemon.id}.',
     },
     {
-      id: 'shell', testsPass: true, title: 'Bonus: the counter no longer changes the page colour', base: 'f4', tabs: ['src/App.jsx', DIR + 'Counter/Counter.jsx'],
+      id: 'shell', testsPass: true, title: 'Bonus: the counter no longer changes the page color', base: 'f4', tabs: ['src/App.jsx', DIR + 'Counter/Counter.jsx'],
       symptom: 'Click "Click me!": the count goes up, the page stays grey. The tests still pass (they check body, not what you see).',
       breaks: [{ file: 'src/App.jsx', mode: 'replace', find: '<main className="mx-auto max-w-5xl space-y-6 p-6">', code: '<main className="mx-auto min-h-screen max-w-5xl space-y-6 bg-slate-100 p-6">' }],
       checks: [allPass, styled('main has no background of its own', 'main', 'backgroundColor', 'rgba(0, 0, 0, 0)')],
-      hint: 'The counter colours body. What is painted on top of body?',
-      why: 'A background on main covers body\'s colour. Remove bg-slate-100 (and min-h-screen) from main.',
+      hint: 'The counter colors body. What is painted on top of body?',
+      why: 'A background on main covers body\'s color. Remove bg-slate-100 (and min-h-screen) from main.',
     },
     {
       id: 'gap', testsPass: true, title: 'Bonus: the cards touch each other', base: 'f4', tabs: [CONTAINER],

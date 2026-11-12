@@ -16,7 +16,7 @@ const lesson = {
         { id: 'f1s1', file: 'index.html', mode: 'append', code: '<ul>\n  <li>one</li>\n</ul>',
           notes: [{ match: '<ul>', what: 'an unordered list', why: 'bullets' }, { match: '<li>', what: 'a list item', why: 'one row' }] },
         { id: 'f1s2', file: 'styles.css', mode: 'append', code: 'ul {\n  color: red;\n}',
-          notes: [{ match: 'color', what: 'text colour', why: 'see it', api: { name: 'color', does: 'sets text colour', params: [['red', 'a colour', 'any named colour']] } }] },
+          notes: [{ match: 'color', what: 'text color', why: 'see it', api: { name: 'color', does: 'sets text color', params: [['red', 'a color', 'any named color']] } }] },
       ],
     },
     {
@@ -89,7 +89,7 @@ test('origins: replace re-tags only the changed line', () => {
 
 test('noteFor returns the matching note and the introducing step', () => {
   const r = Course.noteFor(lesson, 'f1s2', 'styles.css', 2)
-  assert.equal(r.note.what, 'text colour')
+  assert.equal(r.note.what, 'text color')
   assert.equal(r.stepId, 'f1s2')
   assert.equal(r.featureId, 'f1')
 })

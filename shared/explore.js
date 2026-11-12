@@ -37,14 +37,14 @@
     return null
   }
 
-  // Light syntax colouring for HTML and CSS.
+  // Light syntax coloring for HTML and CSS.
   function paint(line, file) {
     let h = esc(line)
     if (file.endsWith('.css')) {
       return h.replace(/^(\s*)([a-z-]+)(\s*:)/, '$1<span class="t-prop">$2</span>$3')
         .replace(/^(\s*)([^\s{][^{]*)(\{)/, '$1<span class="t-sel">$2</span>$3')
     }
-    // One pass, so the spans we add are never coloured again.
+    // One pass, so the spans we add are never colored again.
     return h.replace(/(&lt;\/?)([a-zA-Z][\w-]*)|([\w-]+)=("[^"]*")/g, (m, lt, tag, attr, str) =>
       lt ? `${lt}<span class="t-tag">${tag}</span>` : `<span class="t-attr">${attr}</span>=<span class="t-str">${str}</span>`)
   }

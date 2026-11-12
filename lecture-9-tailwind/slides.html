@@ -58,7 +58,7 @@
     <tr><th>Class</th><th>CSS</th></tr>
     <tr><td><code>p-4</code> · <code>px-3</code> · <code>mt-2</code></td><td>padding 1rem · left/right 0.75rem · margin-top 0.5rem</td></tr>
     <tr><td><code>flex</code> · <code>flex-wrap</code> · <code>gap-5</code></td><td>display:flex · flex-wrap:wrap · gap 1.25rem</td></tr>
-    <tr><td><code>bg-slate-800</code> · <code>text-white</code></td><td>background · text colour (from the theme)</td></tr>
+    <tr><td><code>bg-slate-800</code> · <code>text-white</code></td><td>background · text color (from the theme)</td></tr>
     <tr><td><code>rounded-md</code> · <code>shadow</code> · <code>font-bold</code></td><td>border-radius 6px · box-shadow · font-weight 700</td></tr>
   </table>
   <p class="bottomline">Number × 0.25rem = the size: p-4 = 1rem.</p>
@@ -109,6 +109,15 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeContainer.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div id="poke-container" className="flex fle…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Three utilities. Run the test: green again. Keep the id: the tests use it.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>Tailwind classes on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>flex</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeContainer</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>display: flex</code>: the cards sit in a row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>flex-wrap</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeContainer</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>flex-wrap: wrap</code>: a card that doesn't fit moves to the next row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap-5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeContainer</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap: 1.25rem</code> (5 × 0.25rem) between the cards. The layout test checks this 20px.</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -118,7 +127,7 @@
     <tr><th>Test</th><th>Good?</th><th>Why</th></tr>
     <tr><td><code>should('have.class', 'flex')</code></td><td>no</td><td>breaks on any rename; passes even if the CSS never loads</td></tr>
     <tr><td><code>should('have.css', 'display', 'flex')</code></td><td class="pk">yes, for layout</td><td>checks what the browser really did</td></tr>
-    <tr><td>colours, shadows, rounding</td><td>usually not</td><td>look at the page; tests guard behaviour</td></tr>
+    <tr><td>colors, shadows, rounding</td><td>usually not</td><td>look at the page; tests guard behaviour</td></tr>
   </table>
   <p class="bottomline">Test the result, not the class name.</p>
   <aside class="notes">
@@ -137,6 +146,31 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div id={`${pokemon.name}-card`} className="…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same card, styled with utilities, and the number. Run the tests: green.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>Tailwind classes on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>w-60</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">width 15rem (60 × 0.25rem)</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>rounded-xl</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">round corners, 0.75rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>border</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a 1px solid border</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>border-slate-200</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the border color: light grey</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>bg-white</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">white background</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>p-4</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">padding 1rem on all sides</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-center</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">centres the text</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>shadow-md</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (card)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a medium drop shadow</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>mx-auto</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (img)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">margin left and right auto: centres the image</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>h-32</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (img)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">height 8rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-sm</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (Pokedex #)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">small text, 0.875rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-slate-500</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (Pokedex #)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">mid-grey text</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-xl</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (name)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">bigger text, 1.25rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>font-bold</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (name)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">font-weight 700</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>capitalize</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (name)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">first letter upper case: pikachu → Pikachu</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>mt-3</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (buttons row)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">margin-top 0.75rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>flex</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (buttons row)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the two buttons sit in a row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>justify-center</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (buttons row)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">centres the row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap-2</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeCard (buttons row)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">0.5rem between the buttons</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -162,19 +196,57 @@
   <div class="livepad" data-lesson="utilities-tailwind" data-start="f3s2" data-steps="f4s1 f4s2 f4s3 f4s4 f4s5 f4s6 f4s7 f4s8" data-files="src/components/Button/Button.jsx src/components/Heading/Heading.jsx src/components/PokeSearch/PokeForm.jsx src/App.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We style everything else: Button, header, counter, form and page layout, and the CSS Module goes.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 16 green. Click "Click me!": the page colour still changes behind main.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> ▶ Run tests at the end: 16 green. Click "Click me!": the page color still changes behind main.</p>
 <!-- steps:utilities-tailwind:f4 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Button/Button.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function Button({ children, className = '', …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Every Button gets the same look. hover: is a state variant: it applies only while the mouse is over it.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/Heading.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { useState } from 'react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A dark header bar. The CSS Module import goes.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Heading/heading.module.css</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete the module file.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;section className="flex items-center gap-4 …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A white box. The page behind it still changes colour.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/Counter/Counter.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;section className="flex items-center gap-4 …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A white box. The page behind it still changes color.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeForm.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>function PokeForm({ handleSubmit, pokemonNam…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">focus: is another state variant: the outline shows while you type.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;main className="mx-auto max-w-5xl space-y-6…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A centred column with space between the parts. No background on main, so the counter's colour still shows. Run the tests: all green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 6</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/App.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;main className="mx-auto max-w-5xl space-y-6…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A centred column with space between the parts. No background on main, so the counter's color still shows. Run the tests: all green.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 7</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;div className="space-y-6"&gt;</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeSearch keeps its two parts apart too…</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 8</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeSearch.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;PokeContainer pokemonList={pokemonList} rmD…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…closing the div. Run the tests: 16 green.</td></tr>
 </table>
 <!-- /steps -->
+  <!-- classes -->
+<p><b>Tailwind classes on this slide, and what each does</b></p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Class / component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">What it does</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>mx-auto</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App (main)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">centres the page column</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>max-w-5xl</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App (main)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the column is at most 64rem wide</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>space-y-6</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App (main), PokeSearch</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">1.5rem of space between the children, top to bottom</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>p-6</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">App (main)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">padding 1.5rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>flex</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, Heading, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">children sit in a row</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>items-center</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, Heading</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">lines the children up in the middle (vertically)</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>items-end</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">lines them up at the bottom: the button sits level with the input, not the label</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>justify-between</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">pushes the title left and the button right</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>gap-4 / gap-3</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter / PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">space between the items: 1rem / 0.75rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>rounded-xl</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, Heading, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">round corners, 0.75rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>bg-white</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">white background</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>p-4</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, Heading, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">padding 1rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>shadow</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, PokeForm</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a small drop shadow</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-lg</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter (h3)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">text 1.125rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>font-semibold</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Counter, label, buttons</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">font-weight 600</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>bg-slate-800</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">dark slate background</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-white</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading, buttons</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">white text</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-3xl</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading (h1)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">big text, 1.875rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>font-bold</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Heading (h1)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">font-weight 700</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>rounded-md</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button, input, Search</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">smaller round corners, 0.375rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>bg-blue-600</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">blue background</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>hover:bg-blue-700</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a darker blue while the mouse is over it</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>px-3 py-1.5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button, input, Search</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">padding: 0.75rem left/right, 0.375rem top/bottom</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>${className}</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Button</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">not Tailwind: lets whoever uses &lt;Button&gt; add more classes</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>block</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (label)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>display: block</code>: the label sits on its own line above the input</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>text-sm</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (label)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">small text, 0.875rem</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>border</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (input)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a 1px border</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>border-slate-300</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (input)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">the border color: grey</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>focus:outline-2</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (input)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a 2px outline while you are typing in it</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>focus:outline-blue-600</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (input)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">that outline is blue</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>bg-emerald-600</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (Search)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">green background</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>hover:bg-emerald-700</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">PokeForm (Search)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">a darker green on hover</td></tr>
+</table>
+<!-- /classes -->
   </aside>
 </section>
 
@@ -185,9 +257,17 @@
     <li><b>Conditional classes</b>: <code>className={shiny ? 'ring-4 ring-yellow-400' : ''}</code></li>
     <li>Write class names <b>whole</b>: Tailwind finds them by reading your files, so <code>{`bg-${color}-500`}</code> is never generated</li>
   </ul>
-  <p class="bottomline">Long class lists are fine; repeated ones become components.</p>
+  <p class="bottomline">Long class lists are fine. Pasting the same list twice? Make a component, like our Button.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> How Tailwind works with React: components are the reuse, and class names must be written whole.</p><p>The whole-names rule surprises everyone once.</p></aside>
+    <p class="plan"><b>The plan:</b> How Tailwind works with React: components are the reuse, and class names must be written whole.</p><p>The whole-names rule surprises everyone once.</p>
+    <p><b>The bottom line:</b> open <code>Button.jsx</code>: the 7 classes (<code>rounded-md bg-blue-600 px-3 py-1.5 font-semibold text-white hover:bg-blue-700</code>) are written <b>once</b>. Counter and Heading just write <code>&lt;Button&gt;Click me!&lt;/Button&gt;</code>.</p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Without a component</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">With a component</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The same 7 classes pasted on every button</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">7 classes once, in <code>Button.jsx</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Change the blue: edit every copy, and miss one</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Change the blue: edit one file</td></tr>
+</table>
+    <p>Why it is on a Tailwind slide: in plain CSS you reuse styles with a class like <code>.btn</code>. Tailwind has no such classes; in React the <b>component</b> is the reusable piece.</p>
+    <p>Say: "A long class list is fine once. The second time you paste it, make a component."</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="30">
@@ -239,7 +319,7 @@
     <p class="plan"><b>The plan:</b> How to look up any class in the Tailwind docs, so they can do the homework without memorizing.</p>
     <p><b>About 1 minute.</b> On <b>padding</b>: point at the table. Left column <code>p-&lt;number&gt;</code>, right column <code>padding: calc(var(--spacing) * &lt;number&gt;)</code>. Say: "spacing is 0.25rem, so p-4 is 1rem. Same rule as slide 3."</p>
     <p>Point at <b>On this page</b> (right side): the examples, and <b>Responsive design</b> at the end.</p>
-    <p>Click <b>hover and focus</b>: "every variant has a page like this." Click <b>colors</b>: "every colour name and shade, 50 to 950."</p>
+    <p>Click <b>hover and focus</b>: "every variant has a page like this." Click <b>colors</b>: "every color name and shade, 50 to 950."</p>
     <p>Show search: click inside the docs, press <b>Ctrl K</b>, type <code>rounded</code>.</p>
     <p>Say: "Old blog posts and AI answers show v3 with a tailwind.config.js. We use v4: the badge by the logo says v4."</p>
     <p>The <b>Docs guide</b> page is on the class site under this lecture: every class from today with its docs page, and 6 look-up practice questions.</p>
@@ -278,10 +358,10 @@
 <script src="../shared/course/cypress-react.js?v=2"></script>
 <script src="../shared/course/cypress-assertions.js?v=2"></script>
 <script src="../shared/course/hooks-usestate.js?v=2"></script>
-<script src="../shared/course/hooks-useeffect.js?v=2"></script>
+<script src="../shared/course/hooks-useeffect.js?v=3"></script>
 <script src="../shared/course/components-props.js?v=1"></script>
 <script src="../shared/course/component-state.js?v=1"></script>
-<script src="../shared/course/utilities-tailwind.js?v=2"></script>
+<script src="../shared/course/utilities-tailwind.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=14"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
