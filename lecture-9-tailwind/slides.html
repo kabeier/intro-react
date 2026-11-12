@@ -57,13 +57,16 @@
   <table class="dbt small">
     <tr><th>Class</th><th>CSS</th></tr>
     <tr><td><code>p-4</code> · <code>px-3</code> · <code>mt-2</code></td><td>padding 1rem · left/right 0.75rem · margin-top 0.5rem</td></tr>
+    <tr><td><code>w-60</code> · <code>h-32</code></td><td>width 15rem (60 ÷ 4) · height 8rem (32 ÷ 4)</td></tr>
     <tr><td><code>flex</code> · <code>flex-wrap</code> · <code>gap-5</code></td><td>display:flex · flex-wrap:wrap · gap 1.25rem</td></tr>
     <tr><td><code>bg-slate-800</code> · <code>text-white</code></td><td>background · text color (from the theme)</td></tr>
     <tr><td><code>rounded-md</code> · <code>shadow</code> · <code>font-bold</code></td><td>border-radius 6px · box-shadow · font-weight 700</td></tr>
   </table>
-  <p class="bottomline">Number × 0.25rem = the size: p-4 = 1rem.</p>
+  <p class="bottomline">Each number is ¼ rem: p-4 = 1rem, h-32 = 8rem.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> How to read utility classes like p-4 and bg-slate-800.</p><p>The Tailwind CSS IntelliSense extension shows the CSS on hover.</p></aside>
+    <p class="plan"><b>The plan:</b> How to read utility classes like p-4 and bg-slate-800.</p><p>The Tailwind CSS IntelliSense extension shows the CSS on hover.</p>
+    <p><b>The ÷ 4 rule:</b> each number is a quarter of a rem (0.25rem, about 4px). So divide by 4 to get rems: <code>p-4</code> = 1rem, <code>h-32</code> = 8rem (our card image), <code>w-60</code> = 15rem (our card). Say: "h-32 is 32 quarters: 8rem."</p>
+    <p><b>Only for spacing and sizes</b> (<code>p</code>, <code>m</code>, <code>gap</code>, <code>w</code>, <code>h</code>). In <code>bg-slate-500</code> the number is a color shade (50 to 950), and <code>text-xl</code>, <code>rounded-xl</code> use named sizes.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: install" data-at="5">
