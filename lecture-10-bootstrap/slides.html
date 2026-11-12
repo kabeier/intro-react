@@ -54,6 +54,32 @@
   </aside>
 </section>
 
+<section class="slide" data-seg="Why" data-at="2">
+  <h2>In a real project: pick one</h2>
+  <table class="dbt small">
+    <tr><th>Both in one app means…</th><th>Why it hurts</th></tr>
+    <tr><td><b>Same class names</b>, different CSS</td><td><code>gap-5</code> is 20px in Tailwind, 48px in Bootstrap: one silently wins</td></tr>
+    <tr><td><b>Two resets</b> (Preflight + Reboot)</td><td>both restyle <code>h1</code>, <code>p</code>, <code>button</code>: margins come back</td></tr>
+    <tr><td><b>Two sets of CSS</b> to download</td><td>a slower page</td></tr>
+    <tr><td><b>Two ways</b> to style everything</td><td>the team must know both; the design drifts</td></tr>
+  </table>
+  <p class="bottomline">Today we use both, only to compare them. In your own projects, pick one.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Before we add Bootstrap next to Tailwind: in a real project you pick one, and here is why. We mix them today only to compare them.</p>
+    <p><b>About 1 minute.</b> Point at each row, top to bottom. Say: "We will hit rows 1 and 2 ourselves in a few minutes."</p>
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+<tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Row</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Where they will see it today</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same class names</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Slide 5: the cards jump from 20px to 48px apart when Bootstrap's CSS loads (the red test). We fix it with <code>@import "tailwindcss" important;</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two resets</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Slide 10: Bootstrap gives headings a bottom margin, so we add <code>mb-0</code></td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two sets of CSS</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Bootstrap's whole stylesheet loads, even the parts we never use</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Two ways to style</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Why we need the rule "one library per component" (slide 7)</td></tr>
+</table>
+    <p><b>Why we do it anyway:</b> the curriculum teaches both in this unit, and the homework is one Tailwind and Bootstrap project. One app makes the comparison fair: the same card, built both ways.</p>
+    <p><b>When you do see both in real life:</b> during a move from one to the other, page by page, for a while. Teams that want Tailwind <b>and</b> finished parts usually pick a Tailwind-based component library (shadcn/ui, daisyUI, Headless UI) instead of Bootstrap.</p>
+    <p>Say: "We put both in one app to compare them. In your own projects, pick one."</p>
+  </aside>
+</section>
+
 <section class="slide" data-seg="Concept" data-at="3">
   <h2>What is React Bootstrap?</h2>
   <ul>
@@ -220,7 +246,7 @@
     <tr><td>you need modals, dropdowns, tooltips that just work</td><td>you want small CSS and full control</td></tr>
     <tr><td>the team knows Bootstrap</td><td>the team knows Tailwind</td></tr>
   </table>
-  <p class="bottomline">Both are fine. Mixing them costs a guard test and a rule: Bootstrap for parts, Tailwind for layout.</p>
+  <p class="bottomline">Both are fine. Pick one per project; we mix them today only to compare.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> When to pick a component library, and when to pick utilities.</p><p>Ask: "Which one would you pick for the final project, and why?"</p></aside>
 </section>

@@ -196,18 +196,20 @@ Before class: as unit 5. The live preview compiles Tailwind and loads Bootstrap 
 ## Lecture 2 · React Bootstrap
 | # | Min | Do | Say |
 |---|---|---|---|
-| 1–3 | 0–3 | — | component vs utility libraries; two packages |
-| 4 | 5 | **N** 1 ▶ green; **N** 2 runs `npm install react-bootstrap@2 bootstrap@5` in the slide's terminal; **N** 3 ▶ red (cards 48px apart), **A**; **N** 4 ▶ green | the clash (`gap-5` in both libraries) and `important` |
-| 5–6 | 11–13 | — | cascade layers; Bootstrap for components, Tailwind for layout |
-| 7 | 14 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
-| 8 | 19 | — | props not classes |
-| 9 | 20 | **N ×9**, **A** after each, ▶ 17 green | Button wraps BsButton; Heading, Counter, PokeForm (controlId) |
-| 10–11 | 26–27 | — | BsButton; when to use which |
-| 12 | 28 | — | the 17 tests |
-| 13 | 29 | timer | Fix It (React Bootstrap) 1–6 |
-| 14 | 36 | — | mental model |
-| 15 | 37 | click the 3 docs tabs; edit the Live Editor; on Badges: End, scroll up a little to API | Examples on top, API props table at the bottom; classes on getbootstrap.com |
-| 16 | 38 | — | homework II |
+| 1–2 | 0–1 | — | component vs utility libraries |
+| 3 | 2 | point at each row | in a real project pick one; we mix only to compare |
+| 4 | 3 | — | two packages: components + CSS |
+| 5 | 5 | **N** 1 ▶ green; **N** 2 runs `npm install react-bootstrap@2 bootstrap@5` in the slide's terminal; **N** 3 ▶ red (cards 48px apart), **A**; **N** 4 ▶ green | the clash (`gap-5` in both libraries) and `important` |
+| 6–7 | 11–13 | — | cascade layers; Bootstrap for components, Tailwind for layout |
+| 8 | 14 | **N**, ▶ 17 green | PokeCard as a Bootstrap Card |
+| 9 | 19 | — | props not classes |
+| 10 | 20 | **N ×9**, **A** after each, ▶ 17 green | Button wraps BsButton; Heading, Counter, PokeForm (controlId) |
+| 11–12 | 26–27 | — | BsButton; when to use which |
+| 13 | 28 | — | the 17 tests |
+| 14 | 29 | timer | Fix It (React Bootstrap) 1–6 |
+| 15 | 36 | — | mental model |
+| 16 | 37 | click the 3 docs tabs; edit the Live Editor; on Badges: End, scroll up a little to API | Examples on top, API props table at the bottom; classes on getbootstrap.com |
+| 17 | 38 | — | homework II |
 
 Things to expect: no styles after `npm install` (Docker image not rebuilt); `class=` copied from tailwindcss.com; `import { Card } from 'react-bootstrap/Card'` (it's a default export); the cards drifting apart after Bootstrap loads (forgot `important`); search tests failing because `controlId` is missing.
 
