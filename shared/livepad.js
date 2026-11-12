@@ -129,6 +129,7 @@
       // Show only pad.windows for this file: { 'src/App.jsx': [[first, last], …] }, 1-based lines.
       fold,
       show(file) { ed.setModel(models[file]); fold() },
+      focus() { ed.focus() },
       flash(lines) {
         if (deco) deco.clear()
         deco = ed.createDecorationsCollection(lines.map((l) => ({ range: new m.Range(l, 1, l, 1), options: { isWholeLine: true, className: 'lp-new-m' } })))
@@ -192,7 +193,7 @@
       files: { ...opts.files }, assets: opts.assets || {}, tabs: opts.tabs, tab: opts.tabs[0], editable: opts.editable !== false,
       fontSize: opts.fontSize || 18, onChange: opts.onChange || null, typeable: !!opts.typeable,
       windows: opts.windows || null, snippet: !!opts.windows, wrap: !!opts.wrap, tree: opts.tree !== false,
-      busy: false, gen: 0, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
+      dirs: new Set(), busy: false, gen: 0, ready: false, applying: false, status: '', err: null, editor: null, timer: null,
     }
     el.classList.add('livepad')
     el.innerHTML = `<div class="lp-bar"><button type="button" class="lp-btn lp-files" title="Show or hide the project files (E)">📁 Files</button><div class="lp-tabs">${pad.tabs.map((f) => `<button type="button" class="lp-tab" data-file="${esc(f)}">${esc(f)}</button>`).join('')}</div>` +
@@ -291,6 +292,7 @@
       FileTree.draw(treeEl, {
         files, images: Object.keys(pad.assets).filter((f) => !files.includes(f)), active: pad.tab, closed: closedDirs,
         fresh: new Set(files.filter((f) => !startNames.has(f))), onPick: pad.openFile,
+        dirs: [...pad.dirs], onNew: pad.editable ? pad.newFile : null,
       })
     }
     pad.showTree = () => {
@@ -315,6 +317,17 @@
       }
       pad.showTab(f)
     }
+    // ＋ File / ＋ Folder in the tree. A file starts empty and opens in its own tab (its folders come with the path).
+    pad.newFile = (f, folder) => {
+      if (folder) { pad.dirs.add(f); return pad.drawTree() }
+      if (!(f in pad.files)) {
+        pad.files[f] = ''
+        if (pad.editor && pad.editor.add && pad.tabs.includes(f)) pad.editor.set(f, '')
+      }
+      el.querySelectorAll('.lp-tab').forEach((b) => { if (b.dataset.file === f) b.hidden = false })
+      pad.openFile(f)
+      if (pad.editor && pad.editor.focus) pad.editor.focus()
+    }
     const tabClick = (b) => (b.onclick = () => { b.blur(); pad.showTab(b.dataset.file) })
     pad.showTab = (f) => {
       pad.tab = f
@@ -335,6 +348,7 @@
     }
     pad.setFiles = (files) => {
       pad.files = { ...files }
+      pad.dirs.clear()
       startNames = new Set(Object.keys(files))
       pad.syncTabs()
       for (const f of pad.tabs) pad.setFile(f, pad.files[f] || '')

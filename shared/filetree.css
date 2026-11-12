@@ -9,3 +9,10 @@ button.ft-row:hover { background: var(--ft-hover); }
 .ft-file.new:not(.on) { color: var(--ft-new); font-weight: 700; }
 .ft-off { color: var(--ft-dim); font-style: italic; }
 .livepad .ft { --ft-ink: #d4d4d4; --ft-dim: #8a8a8a; --ft-hover: #333; --ft-on: #094771; --ft-on-ink: #fff; --ft-new: #7ec97e; }
+.ft-head { display: flex; align-items: center; }
+.ft-head .ft-root { flex: 1; min-width: 0; }
+.ft-plus { flex: none; margin-right: 4px; padding: 1px 5px; border: 1px solid var(--ft-dim); border-radius: 4px; background: none; color: inherit; font: 600 12px/1.3 'JetBrains Mono', ui-monospace, monospace; text-transform: none; letter-spacing: 0; cursor: pointer; }
+.ft-plus:hover { background: var(--ft-hover); }
+.ft-name { display: block; width: calc(100% - 16px); margin: 2px 8px 4px; padding: 3px 6px; border: 1px solid #007fd4; border-radius: 2px; background: #3c3c3c; color: #fff; font: 500 15px/1.3 'JetBrains Mono', ui-monospace, monospace; outline: none; }
+.ft-name.bad { border-color: #f44747; }
+.ft-dir.at { outline: 1px solid #007fd4; outline-offset: -1px; }

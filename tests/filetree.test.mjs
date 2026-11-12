@@ -111,3 +111,56 @@ test('Code Explorer: nested folders match the lesson, and files new in a feature
   await page.close()
 })
 
+
+test('slides: ＋ File and ＋ Folder make new files and folders, and the app sees them', async () => {
+  const page = await browser.newPage({ viewport: { width: 1600, height: 900 } })
+  const errs = []
+  page.on('pageerror', (e) => errs.push(e.message))
+  await page.goto(srv.url + '/lecture-7-components-props/slides.html#8')
+  await page.reload()
+  await page.waitForSelector('.slide.active .ft-plus')
+  await until(page, () => Livepad.pads.find((p) => p.el.closest('.slide.active')).editor)
+  const pad = (fn, arg) => page.evaluate(([f, a]) => new Function('pad', 'a', 'return ' + f)(Livepad.pads.find((p) => p.el.closest('.slide.active')), a), [fn, arg])
+  const box = '.slide.active .ft-name', FILE = '.slide.active .ft-plus[data-kind=file]', FOLDER = '.slide.active .ft-plus[data-kind=folder]'
+
+  // ＋ Folder: an empty folder shows in the tree, and ＋ File then starts inside it
+  await page.click(FOLDER)
+  await page.fill(box, 'src/components/Button/')
+  await page.keyboard.press('n')
+  assert.equal(await pad('pad.idx'), 0, 'typing a path does not press N')
+  await page.fill(box, 'src/components/Button/')
+  await page.keyboard.press('Enter')
+  assert.equal(await page.isVisible(box), false)
+  assert.ok((await rows(page)).includes('Button'), 'the empty Button folder appears')
+  await page.click(FILE)
+  assert.equal(await page.inputValue(box), 'src/components/Button/', 'starts in the new folder')
+
+  // A folder alone is not a file
+  await page.keyboard.press('Enter')
+  assert.equal(await page.isVisible(box), true)
+  await page.fill(box, 'src/components/Button/Button.jsx')
+  await page.keyboard.press('Enter')
+  const NEW = 'src/components/Button/Button.jsx'
+  assert.equal(await page.textContent('.slide.active .lp-tab.on'), NEW, 'opened in its own tab')
+  assert.equal(await page.textContent('.slide.active .ft-file.on'), 'Button.jsx')
+  await page.keyboard.type('export default function Button() {}')
+  await until(page, (f) => (Livepad.pads.find((p) => p.el.closest('.slide.active')).files[f] || '').includes('Button()'), NEW)
+
+  // Esc cancels without making anything
+  const count = await pad('Object.keys(pad.files).length')
+  await page.click(FILE)
+  await page.keyboard.press('Escape')
+  assert.equal(await page.isVisible(box), false)
+  assert.equal(await pad('Object.keys(pad.files).length'), count)
+
+  // Reset takes the new folder and file away
+  await page.click('.slide.active .ft-plus[data-kind=folder]')
+  await page.fill(box, 'src/hooks')
+  await page.keyboard.press('Enter')
+  assert.ok((await rows(page)).includes('hooks'))
+  await pad('pad.reset ? pad.reset() : null')
+  await page.waitForTimeout(300)
+  assert.ok(!(await rows(page)).includes('hooks'), 'reset clears empty folders')
+  assert.deepEqual(errs, [])
+  await page.close()
+})
