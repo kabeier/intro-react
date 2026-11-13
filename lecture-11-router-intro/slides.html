@@ -175,16 +175,22 @@
 
 <section class="slide" data-seg="Concept" data-at="27">
   <h2>When only the heading shows</h2>
+  <p style="font-size:28px;margin:0 0 14px">App shows, but its <b>&lt;Outlet /&gt; is empty</b>. Check these four:</p>
   <table class="dbt small">
-    <tr><th>Check</th><th>Fix</th></tr>
-    <tr><td>main.jsx renders &lt;App /&gt;</td><td>render &lt;RouterProvider router={router} /&gt;</td></tr>
-    <tr><td>App has no &lt;Outlet /&gt;</td><td>add it where pages go</td></tr>
-    <tr><td>no route matches /</td><td><code>{ index: true, element: &lt;HomePage /&gt; }</code></td></tr>
-    <tr><td>a typo in a key (chidren)</td><td>the router ignores unknown keys: spell them</td></tr>
+    <tr><th>What's wrong</th><th>What happens</th><th>Fix</th><th style="white-space:nowrap">Fix It</th></tr>
+    <tr><td>main.jsx renders <code>&lt;App /&gt;</code></td><td>the router never runs</td><td>render <code>&lt;RouterProvider router={router} /&gt;</code></td><td>1</td></tr>
+    <tr><td>App has no <code>&lt;Outlet /&gt;</code></td><td>the page has nowhere to go</td><td>add <code>&lt;Outlet /&gt;</code> where the page goes</td><td>2</td></tr>
+    <tr><td>no index route</td><td>at / there is no child</td><td><code>{ index: true, element: &lt;HomePage /&gt; }</code></td><td>3</td></tr>
+    <tr><td>a typo in a key (<code>chidren</code>)</td><td>unknown keys are ignored, no error</td><td>spell it <code>children</code></td><td>6</td></tr>
   </table>
   <p class="bottomline">Heading only = the router is half wired.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> What to check when only the heading shows.</p><p>These are Fix It problems 1, 2, 3 and 6.</p></aside>
+    <p class="plan"><b>The plan:</b> A checklist for the most common router bug: the heading shows, the page doesn't.</p>
+    <p><b>Why only the heading:</b> App is the layout, so it always draws its heading. The page goes in App's &lt;Outlet /&gt;. When the router setup is wrong, the Outlet stays empty.</p>
+    <p>Point at each row, top to bottom. All four look <b>the same on screen</b>, so students go down the list. They are Fix It problems 1, 2, 3 and 6.</p>
+    <p>"Half wired": some pieces are connected, one is not.</p>
+    <p><b>Say:</b> "Heading but no page? App is fine; the Outlet is empty. Check these four."</p>
+  </aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: Fix it" data-at="28">
