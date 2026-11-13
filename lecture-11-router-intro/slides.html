@@ -97,11 +97,24 @@
     <tr><td><code>path</code></td><td>the URL this route matches</td></tr>
     <tr><td><code>element</code></td><td>the JSX to show (with &lt; /&gt;)</td></tr>
     <tr><td><code>children</code></td><td>routes shown <b>inside</b> this one's &lt;Outlet /&gt;</td></tr>
-    <tr><td><code>index: true</code></td><td>the child for the parent's own path</td></tr>
+    <tr><td><code>index: true</code></td><td>the default child: shows at the parent's path (/)</td></tr>
   </table>
   <p class="bottomline">A route is an object: URL → element.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We read one route object: path, element, children.</p><p>Unknown keys (a typo like chidren) are silently ignored: Fix It problem 6.</p></aside>
+    <p class="plan"><b>The plan:</b> We read one route object: path, element, children.</p><p>Unknown keys (a typo like chidren) are silently ignored: Fix It problem 6.</p>
+    <p><b>What index: true means.</b> App has an &lt;Outlet /&gt;: a hole one child page fills. The router picks the child by the URL:</p>
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">URL</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Fills App's Outlet</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">Why</th></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a"><code>/</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a"><b>HomePage</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a">it is the <code>index: true</code> child</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a"><code>/about</code> (next lecture)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">AboutPage</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">it has <code>path: 'about'</code></td></tr>
+    </table>
+    <ul>
+      <li>Most children <b>add</b> to the parent's path: <code>about</code> → /about.</li>
+      <li>Home adds nothing: it lives at the parent's own path (/). So no path, just <code>index: true</code>.</li>
+      <li>The name comes from <code>index.html</code>: the page you get at a folder's own address.</li>
+      <li>No index child? At / you see App's heading and an <b>empty Outlet</b>. Fix It problem 3: <code>path: 'home'</code> makes Home show only at /home.</li>
+    </ul>
+    <p><b>Say:</b> "index means default page: what goes in the Outlet when the URL is just the parent's path."</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="15">
