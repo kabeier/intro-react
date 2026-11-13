@@ -38,9 +38,42 @@
   .opts.text .opt { flex-direction: row; align-items: baseline; }
   .opts.text .opt .top { order: 2; margin-left: auto; padding-left: 10px; }
   .opt code { font: 500 15px 'JetBrains Mono', monospace; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; }
-  .opt.right { border-color: var(--green); background: #e7f5ee; }
-  .opt.wrong { border-color: var(--red); background: #fdecea; }
+  .opt.sel { border-color: var(--blue); background: #eef2fb; box-shadow: 0 0 0 2px var(--blue); }
+  .opt.right { border-color: var(--green); background: #e7f5ee; box-shadow: none; }
+  .opt.wrong { border-color: var(--red); background: #fdecea; box-shadow: none; }
+  .act { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .act .tip { color: var(--muted); font-size: 16px; }
+  .q.done .act { display: none; }
+  .submit, .tools button, .modes button { font: 700 16px 'Atkinson Hyperlegible'; padding: 8px 16px; border-radius: 4px; border: 2px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; }
+  .submit:disabled { background: #fff; color: var(--muted); border-color: var(--grid); cursor: not-allowed; }
+  /* Part 4: build it */
+  .say { margin: 0 0 10px; }
+  .hints { background: var(--sticky); padding: 10px 16px; margin: 0 0 14px; font-size: 16px; }
+  .hints ul { margin: 4px 0 0; padding-left: 20px; }
+  .hints code, .say code, .build-intro code { font: 500 0.9em 'JetBrains Mono', monospace; background: rgba(27,34,48,.08); padding: 1px 5px; border-radius: 3px; }
+  .modes { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0 0 6px; }
+  .modes button, .tools button { background: #fff; color: var(--ink); }
+  .modes button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .modes .fade { display: none; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; }
+  .build.over .modes .fade { display: flex; }
+  .modehelp { color: var(--muted); font-size: 16px; margin: 0 0 10px; }
+  .compare { overflow-x: auto; }
+  .build.side .compare { display: flex; flex-wrap: wrap; gap: 16px; }
+  .build:not(.side) .compare { display: grid; width: 304px; isolation: isolate; background: #fff; }
+  .build:not(.side) .compare .col { grid-area: 1 / 1; display: flex; flex-direction: column; }
+  .build:not(.side) .compare .lbl { display: none; }
+  .build:not(.side) .compare .frame { flex: 1; }
+  .build.over .compare .col.mine { opacity: var(--fade, .5); }
+  .build.diff .compare .col.mine { mix-blend-mode: difference; }
+  .frame { width: 304px; min-height: 140px; border: 2px dashed var(--muted); }
+  .editors { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 16px 0 10px; }
+  .editors label { display: block; }
+  .ed { display: block; width: 100%; min-height: 230px; resize: vertical; background: var(--ink); color: #f4f6f9; caret-color: var(--sticky); border: 0; border-radius: 4px; padding: 12px 14px; font: 500 15px/1.5 'JetBrains Mono', monospace; tab-size: 2; }
+  .ed:focus { outline: 3px solid var(--blue); }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; }
+  .answer { margin-top: 14px; }
   .opt .mark { font-weight: 700; }
+  .opt.sel .mark { color: var(--blue); }
   .opt.right .mark { color: var(--green); } .opt.wrong .mark { color: var(--red); }
   .why { display: none; margin: 14px 0 0; padding: 12px 16px; border-left: 5px solid var(--blue); background: #eef2fb; }
   .why b.res { display: block; }
@@ -61,19 +94,23 @@
 <main>
   <h1>HTML and CSS Quiz</h1>
   <p class="lede">Check the HTML and CSS you use every day in this course: flexbox, grid, the box model, selectors, forms, lists, and how JSX writes them.</p>
-  <p class="how"><b>How it works:</b> click an answer. You see right away if it's right, and why. Your first click counts. Your grade is at the bottom. Nothing is saved: refresh to start over.</p>
+  <p class="how"><b>How it works:</b> pick an answer, then press <b>Submit</b>. You see right away if it's right, and why. Your grade counts only the questions you submit, so you can stop any time. <b>Part 4</b> at the end has you build small pages yourself and compare them to a target. Nothing is saved: refresh to start over.</p>
 
   <div id="quiz"></div>
 
   <section class="end" id="end">
     <div class="lbl">Your grade</div>
     <div class="grade" id="grade">0 / 0</div>
-    <p id="msg">Answer the questions above. Your grade updates as you go.</p>
+    <p id="msg">Submit a question above. Your grade updates as you go.</p>
     <div id="review"></div>
     <div class="btns"><button type="button" id="showall">Show all answers</button><button type="button" id="restart">Start over</button></div>
   </section>
+
+  <h2 id="build">4. Build it yourself</h2>
+  <p class="sec-intro build-intro">Each box shows a <b>target</b>. Write HTML and CSS to make the same thing. <b>Yours</b> redraws as you type, so you can compare them. Not graded: use the buttons to compare, get the HTML if you're stuck, or see the answer. Tip: style your own classes and tags (there's no <code>body</code> here).</p>
+  <div id="builds"></div>
 </main>
-<div class="bar" aria-live="polite"><span>Answered <b id="answered">0</b> / <span class="total"></span></span><span>Correct <b id="correct">0</b></span><button type="button" id="jump">See my grade ↓</button></div>
+<div class="bar" aria-live="polite"><span>Answered <b id="answered">0</b> / <span class="total"></span></span><span>Right <b id="correct">0</b></span><span>Grade <b id="pct">–</b></span><button type="button" id="jump">See my grade ↓</button><button type="button" id="jumpbuild">Build it ↓</button></div>
 
 <script>
 // Every picture on this page is the real browser drawing the real code (in a shadow root, so the page's own styles can't leak in).
@@ -342,13 +379,236 @@ const SECTIONS = [
 },
 ]
 
+// Part 4: targets to rebuild. Each one is drawn from this exact code.
+const BUILDS = [
+{ title: 'A navbar',
+  say: 'A dark bar: the name on the left, two links on the right, all lined up in the middle.',
+  hints: ['Use a <code>&lt;nav&gt;</code>. Background <code>#1e293b</code>, padding <code>12px 16px</code>, round corners <code>8px</code>',
+    'The name: white, <code>22px</code>, bold',
+    'The links: white, no underline, <code>16px</code> apart',
+    'Push them apart with flexbox: <code>justify-content</code> and <code>align-items</code>'],
+  html: `<nav class="nav">
+  <span class="logo">Pokedex</span>
+  <div class="links">
+    <a href="#">Home</a>
+    <a href="#">Search</a>
+  </div>
+</nav>`,
+  css: `.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e293b;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+.logo {
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+}
+.links {
+  display: flex;
+  gap: 16px;
+}
+.links a {
+  color: white;
+  text-decoration: none;
+}` },
+
+{ title: 'A to-do list',
+  say: 'A heading, an input and an Add button in one row, and a list where the first item is done.',
+  hints: ['The whole thing is <code>260px</code> wide',
+    'The heading has no top margin and <code>10px</code> under it',
+    'Input and button sit in a row, <code>8px</code> apart. The input stretches (<code>flex: 1</code>)',
+    'Each list item has <code>6px</code> margin top and bottom',
+    'The done item: a line through it, color <code>gray</code>'],
+  html: `<div class="todo">
+  <h2>My To-Dos</h2>
+  <form class="add">
+    <input placeholder="New task">
+    <button>Add</button>
+  </form>
+  <ul>
+    <li class="done">Learn flexbox</li>
+    <li>Learn grid</li>
+    <li>Build the Pokedex</li>
+  </ul>
+</div>`,
+  css: `.todo {
+  width: 260px;
+}
+h2 {
+  margin: 0 0 10px;
+}
+.add {
+  display: flex;
+  gap: 8px;
+}
+.add input {
+  flex: 1;
+}
+li {
+  margin: 6px 0;
+}
+.done {
+  text-decoration: line-through;
+  color: gray;
+}` },
+
+{ title: 'A Pokemon card',
+  say: 'A centered card with a round picture, a small number, a capitalized name and two buttons in a row.',
+  hints: ['The card: <code>220px</code> wide, centered, padding <code>16px</code>, border <code>1px solid #cbd5e1</code>, round corners <code>12px</code>, text centered',
+    'The picture is a circle: <code>96px</code> by <code>96px</code>, color <code>gold</code>, centered',
+    'The number: <code>gray</code>, <code>14px</code>, margin <code>8px 0 0</code>',
+    'The name is written <code>pikachu</code> in the HTML. Margin <code>4px 0 12px</code>',
+    'Buttons: a centered flex row, <code>8px</code> apart, no border, round corners <code>6px</code>, padding <code>6px 12px</code>. Colors <code>crimson</code> (white text) and <code>gold</code>'],
+  html: `<div class="card">
+  <div class="pic"></div>
+  <p class="num">#25</p>
+  <h2 class="name">pikachu</h2>
+  <div class="btns">
+    <button class="del">Delete</button>
+    <button class="shiny">Make Shiny</button>
+  </div>
+</div>`,
+  css: `.card {
+  width: 220px;
+  margin: 0 auto;
+  padding: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+}
+.pic {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: gold;
+}
+.num {
+  margin: 8px 0 0;
+  color: gray;
+  font-size: 14px;
+}
+.name {
+  margin: 4px 0 12px;
+  text-transform: capitalize;
+}
+.btns {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.btns button {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+.del {
+  background: crimson;
+  color: white;
+}
+.shiny {
+  background: gold;
+}` },
+
+{ title: 'A login form',
+  say: 'A boxed form. Each label sits on its own line above a full-width input. The button is full width too.',
+  hints: ['The form: <code>220px</code> wide, padding <code>16px</code>, border <code>2px solid #1e293b</code>, round corners <code>8px</code>',
+    'The heading: margin <code>0</code>',
+    'Labels: on their own line (<code>display: block</code>), bold, <code>10px</code> above',
+    'Inputs: on their own line, <code>100%</code> wide with <code>box-sizing: border-box</code>, <code>4px</code> above',
+    'Button: <code>100%</code> wide, <code>16px</code> above, padding <code>8px</code>, background <code>#2563eb</code>, white text, no border, round corners <code>6px</code>'],
+  html: `<form class="login">
+  <h2>Log in</h2>
+  <label for="email">Email</label>
+  <input id="email" type="email">
+  <label for="pw">Password</label>
+  <input id="pw" type="password">
+  <button type="submit">Log in</button>
+</form>`,
+  css: `.login {
+  width: 220px;
+  padding: 16px;
+  border: 2px solid #1e293b;
+  border-radius: 8px;
+}
+.login h2 {
+  margin: 0;
+}
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 10px;
+}
+input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 8px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}` },
+
+{ title: 'A Whack-a-Mole board',
+  say: 'A score, then a 3 by 3 grid of holes. One hole has a mole in its center.',
+  hints: ['The score is an <code>&lt;h2&gt;</code>: margin <code>0 0 10px</code>',
+    'The board is a grid: 3 columns, each <code>70px</code>, <code>10px</code> gap',
+    'Each hole: <code>70px</code> tall, color <code>#86efac</code>, round corners <code>8px</code>',
+    'The mole: a <code>44px</code> circle, color <code>#78350f</code>, centered in its hole (flexbox on the hole)',
+    'The mole is in the middle hole (the 5th)'],
+  html: `<h2 class="score">Score: 3</h2>
+<div class="board">
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"><div class="mole"></div></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+  <div class="hole"></div>
+</div>`,
+  css: `.score {
+  margin: 0 0 10px;
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 70px);
+  gap: 10px;
+}
+.hole {
+  height: 70px;
+  background: #86efac;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mole {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #78350f;
+}` },
+]
+
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const LETTERS = 'ABCD'
 
-function draw(host, html, css) {
-  const root = host.attachShadow({ mode: 'open' })
+function draw(host, html, css, base = BASE) {
+  const root = host.shadowRoot || host.attachShadow({ mode: 'open' })
   root.innerHTML = `<style>:host { all: initial; display: block; background: #fff; color: #111; font: 16px/1.4 Arial, Helvetica, sans-serif; }
-.stage { padding: 12px; } ${BASE}\n${css || ''}</style><div class="stage">${html}</div>`
+.stage { padding: 12px; } ${base}\n${css || ''}</style><div class="stage">${html}</div>`
   root.querySelectorAll('form').forEach((f) => f.addEventListener('submit', (e) => e.preventDefault()))
   root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()))
 }
@@ -377,53 +637,72 @@ for (const sec of SECTIONS) {
     body += `<div class="opts${q.type === 'mc' ? ' text' : ''}">`
     q.options.forEach((o, i) => {
       body += q.type === 'mc'
-        ? `<button type="button" class="opt" data-i="${i}"><span class="letter">${LETTERS[i]}</span><span>${o}</span><span class="top"><span class="mark"></span></span>`
-        : `<button type="button" class="opt" data-i="${i}"><span class="top"><span class="letter">${LETTERS[i]}</span><span class="mark"></span></span>`
+        ? `<button type="button" class="opt" aria-pressed="false" data-i="${i}"><span class="letter">${LETTERS[i]}</span><span>${o}</span><span class="top"><span class="mark"></span></span>`
+        : `<button type="button" class="opt" aria-pressed="false" data-i="${i}"><span class="top"><span class="letter">${LETTERS[i]}</span><span class="mark"></span></span>`
       if (q.type === 'output') body += `<div class="shot"></div>`
       else if (q.type === 'code') body += `<pre>${esc(o.html || o.css)}</pre>`
       body += `</button>`
     })
-    body += `</div><div class="why" aria-live="polite"></div>`
+    body += `</div><div class="act"><button type="button" class="submit" disabled>Submit answer</button><span class="tip">Pick an answer, then submit.</span></div><div class="why" aria-live="polite"></div>`
     el.innerHTML = body
     if (q.type === 'output') el.querySelectorAll('.shot').forEach((s, i) => draw(s, q.options[i].html ?? q.html, q.options[i].css ?? q.css))
     if (q.type === 'code') { const t = q.options[q.answer]; draw(el.querySelector('.target'), t.html ?? q.html, t.css ?? q.css) }
-    el.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => pick(q, Number(b.dataset.i))))
+    el.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => choose(q, Number(b.dataset.i))))
+    el.querySelector('.submit').addEventListener('click', () => submit(q))
     quiz.appendChild(el)
-    q.el = el; q.n = n; q.picked = null
+    q.el = el; q.n = n; q.chosen = null; q.picked = null
     all.push(q)
   }
 }
 document.querySelectorAll('.total').forEach((t) => t.textContent = all.length)
+
+// Clicking an option only selects it. Submit locks it in and grades it.
+function choose(q, i) {
+  if (q.el.classList.contains('done')) return
+  q.chosen = i
+  q.el.querySelectorAll('.opt').forEach((b, j) => {
+    b.classList.toggle('sel', j === i)
+    b.setAttribute('aria-pressed', j === i)
+    b.querySelector('.mark').textContent = j === i ? '● picked' : ''
+  })
+  q.el.querySelector('.submit').disabled = false
+  q.el.querySelector('.tip').textContent = `You picked ${LETTERS[i]}. Change it, or submit.`
+}
+
+function submit(q) {
+  if (q.chosen === null || q.el.classList.contains('done')) return
+  q.picked = q.chosen
+  reveal(q)
+  score()
+}
 
 function reveal(q) {
   const right = q.picked === q.answer
   q.el.classList.add('done')
   q.el.querySelectorAll('.opt').forEach((b, i) => {
     b.disabled = true
+    b.classList.remove('sel')
+    b.querySelector('.mark').textContent = ''
     if (i === q.answer) { b.classList.add('right'); b.querySelector('.mark').textContent = '✓ answer' }
     else if (i === q.picked) { b.classList.add('wrong'); b.querySelector('.mark').textContent = '✗ your pick' }
   })
-  const res = q.picked === null ? 'The answer is ' + LETTERS[q.answer] + '.' : right ? '✓ Right!' : '✗ Not quite. The answer is ' + LETTERS[q.answer] + '.'
+  const res = q.picked === null ? 'Not graded. The answer is ' + LETTERS[q.answer] + '.' : right ? '✓ Right!' : '✗ Not quite. The answer is ' + LETTERS[q.answer] + '.'
   q.el.querySelector('.why').innerHTML = `<b class="res">${res}</b>${q.why}`
 }
 
-function pick(q, i) {
-  if (q.el.classList.contains('done')) return
-  q.picked = i
-  reveal(q)
-  score()
-}
-
+// The grade counts only submitted questions.
 function score() {
   const answered = all.filter((q) => q.picked !== null)
   const correct = answered.filter((q) => q.picked === q.answer)
+  const pct = answered.length ? Math.round(100 * correct.length / answered.length) : null
   document.getElementById('answered').textContent = answered.length
   document.getElementById('correct').textContent = correct.length
-  const pct = answered.length ? Math.round(100 * correct.length / all.length) : 0
-  document.getElementById('grade').textContent = `${correct.length} / ${all.length} · ${pct}%`
+  document.getElementById('pct').textContent = pct === null ? '–' : pct + '%'
+  document.getElementById('grade').textContent = pct === null ? '0 / 0' : `${correct.length} / ${answered.length} · ${pct}%`
   const left = all.length - answered.length
-  let msg = left ? `${left} question${left === 1 ? '' : 's'} left. Unanswered ones count as wrong.` :
+  let msg = pct === null ? 'Submit a question above. Your grade updates as you go.' :
     pct >= 90 ? 'Excellent: you know your HTML and CSS.' : pct >= 75 ? 'Good work. Read the ones you missed below.' : pct >= 50 ? 'A good start. Go over the misses below, then try again.' : 'Go over the answers below, then start over and try again.'
+  if (pct !== null && left) msg += ` (Graded on the ${answered.length} you submitted. ${left} not answered yet.)`
   document.getElementById('msg').textContent = msg
   const missed = answered.filter((q) => q.picked !== q.answer)
   document.getElementById('review').innerHTML = missed.length
@@ -434,7 +713,101 @@ all.forEach((q) => q.el.id = 'q' + q.n)
 document.getElementById('showall').onclick = () => { all.forEach((q) => { if (!q.el.classList.contains('done')) reveal(q) }); score() }
 document.getElementById('restart').onclick = () => location.reload()
 document.getElementById('jump').onclick = () => document.getElementById('end').scrollIntoView({ behavior: 'smooth' })
+document.getElementById('jumpbuild').onclick = () => document.getElementById('build').scrollIntoView({ behavior: 'smooth' })
 score()
+
+// Part 4: build it yourself. The target and "yours" are both drawn by the browser, with no BASE styles.
+const MODES = {
+  side: 'Next to each other.',
+  over: 'Yours sits on top of the target. Slide to fade between them.',
+  diff: 'Where yours matches the target, it turns black. Anything bright is different.',
+}
+const buildsEl = document.getElementById('builds')
+BUILDS.forEach((b, k) => {
+  const el = document.createElement('div')
+  el.className = 'q build side'
+  el.id = 'build' + (k + 1)
+  el.innerHTML = `<h3><span class="n">${'ABCDEFGH'[k]}.</span>${b.title}</h3>
+<p class="say">${b.say}</p>
+<div class="hints"><b>Numbers and colors you need:</b><ul>${b.hints.map((h) => `<li>${h}</li>`).join('')}</ul></div>
+<div class="modes" role="group" aria-label="How to compare">
+  <button type="button" data-m="side" aria-pressed="true">Side by side</button>
+  <button type="button" data-m="over" aria-pressed="false">Overlay</button>
+  <button type="button" data-m="diff" aria-pressed="false">Difference</button>
+  <label class="fade">Yours <input type="range" min="0" max="100" value="50" aria-label="How much of yours to show"></label>
+</div>
+<p class="modehelp">${MODES.side}</p>
+<div class="compare">
+  <div class="col"><div class="lbl">Target</div><div class="frame target-frame"></div></div>
+  <div class="col mine"><div class="lbl">Yours</div><div class="frame mine-frame"></div></div>
+</div>
+<div class="editors">
+  <label><span class="lbl">Your HTML</span><textarea class="ed ed-html" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Type your HTML here"></textarea></label>
+  <label><span class="lbl">Your CSS</span><textarea class="ed ed-css" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Type your CSS here"></textarea></label>
+</div>
+<div class="tools">
+  <button type="button" data-a="html">Stuck? Give me the HTML</button>
+  <button type="button" data-a="answer">Show the answer</button>
+  <button type="button" data-a="clear">Clear mine</button>
+</div>
+<div class="answer" hidden>${codeBlock(b.html, b.css)}</div>`
+  buildsEl.appendChild(el)
+
+  const mine = el.querySelector('.mine-frame')
+  const edHtml = el.querySelector('.ed-html')
+  const edCss = el.querySelector('.ed-css')
+  draw(el.querySelector('.target-frame'), b.html, b.css, '')
+  const redraw = () => draw(mine, edHtml.value, edCss.value, '')
+  redraw()
+
+  for (const ed of [edHtml, edCss]) {
+    ed.addEventListener('input', redraw)
+    // Tab types two spaces. Press Esc first to Tab out of the box.
+    let escaped = false
+    ed.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { escaped = true; return }
+      if (e.key === 'Tab' && !e.shiftKey && !escaped) {
+        e.preventDefault()
+        ed.setRangeText('  ', ed.selectionStart, ed.selectionEnd, 'end')
+        redraw()
+      }
+      escaped = false
+    })
+  }
+
+  el.querySelectorAll('.modes button').forEach((btn) => btn.addEventListener('click', () => {
+    const m = btn.dataset.m
+    el.classList.remove('side', 'over', 'diff')
+    el.classList.add(m)
+    el.querySelectorAll('.modes button').forEach((x) => x.setAttribute('aria-pressed', x === btn))
+    el.querySelector('.modehelp').textContent = MODES[m]
+  }))
+  const slider = el.querySelector('.fade input')
+  const fade = () => el.style.setProperty('--fade', slider.value / 100)
+  slider.addEventListener('input', fade)
+  fade()
+
+  el.querySelector('[data-a="html"]').onclick = () => {
+    if (edHtml.value.trim() && !confirmReplace(el)) return
+    edHtml.value = b.html
+    redraw()
+  }
+  el.querySelector('[data-a="answer"]').onclick = (e) => {
+    const box = el.querySelector('.answer')
+    box.hidden = !box.hidden
+    e.target.textContent = box.hidden ? 'Show the answer' : 'Hide the answer'
+  }
+  el.querySelector('[data-a="clear"]').onclick = () => { edHtml.value = ''; edCss.value = ''; redraw() }
+})
+
+// No browser pop-ups: the first click warns, the second click replaces.
+function confirmReplace(el) {
+  const btn = el.querySelector('[data-a="html"]')
+  if (btn.dataset.armed) { delete btn.dataset.armed; btn.textContent = 'Stuck? Give me the HTML'; return true }
+  btn.dataset.armed = '1'
+  btn.textContent = 'Click again to replace your HTML'
+  return false
+}
 </script>
 </body>
 </html>
