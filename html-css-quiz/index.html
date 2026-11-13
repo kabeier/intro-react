@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTML and CSS Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --red:#b42318; --sticky:#ffe76a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.5;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 980px; margin: 0 auto; padding: 56px 20px 120px; }
+  h1 { font: 800 clamp(40px, 6vw, 68px)/0.95 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 0 0 14px; }
+  h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 56px 0 6px; }
+  .lede { max-width: 62ch; color: var(--muted); font-size: 20px; margin: 0 0 12px; }
+  .how { background: var(--sticky); padding: 14px 18px; transform: rotate(-0.4deg); max-width: 62ch; margin: 18px 0 0; }
+  .sec-intro { color: var(--muted); margin: 0 0 18px; }
+  .q { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 22px; margin: 0 0 22px; }
+  .q h3 { font: 700 20px/1.35 'Atkinson Hyperlegible', sans-serif; margin: 0 0 12px; }
+  .q h3 .n { display: inline-block; min-width: 2.2em; color: var(--blue); }
+  .code { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 0 0 8px; }
+  .code figure { margin: 0; }
+  .code figcaption, .lbl { font: 700 14px 'Atkinson Hyperlegible'; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 4px; }
+  pre { background: var(--ink); color: #f4f6f9; padding: 12px 14px; border-radius: 4px; overflow-x: auto; margin: 0; font: 500 15px/1.5 'JetBrains Mono', monospace; }
+  .given { font-size: 15px; color: var(--muted); margin: 4px 0 14px; }
+  .target { border: 2px dashed var(--muted); border-radius: 4px; margin: 0 0 14px; max-width: 420px; }
+  .opts { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .opts.text { grid-template-columns: 1fr; gap: 8px; }
+  .opt { display: flex; flex-direction: column; justify-content: flex-start; width: 100%; text-align: left; font: inherit; color: inherit; background: #fff; border: 2px solid var(--grid); border-radius: 4px; padding: 10px; cursor: pointer; }
+  .opt:hover:not(:disabled), .opt:focus-visible { border-color: var(--blue); outline: none; }
+  .opt:disabled { cursor: default; }
+  .opt .letter { display: inline-block; font: 800 18px 'Bricolage Grotesque'; color: var(--blue); margin-right: 8px; }
+  .opt .shot { border: 1px solid var(--grid); margin-top: 6px; }
+  .opt pre { margin-top: 6px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .opt .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .opts.text .opt { flex-direction: row; align-items: baseline; }
+  .opts.text .opt .top { order: 2; margin-left: auto; padding-left: 10px; }
+  .opt code { font: 500 15px 'JetBrains Mono', monospace; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; }
+  .opt.right { border-color: var(--green); background: #e7f5ee; }
+  .opt.wrong { border-color: var(--red); background: #fdecea; }
+  .opt .mark { font-weight: 700; }
+  .opt.right .mark { color: var(--green); } .opt.wrong .mark { color: var(--red); }
+  .why { display: none; margin: 14px 0 0; padding: 12px 16px; border-left: 5px solid var(--blue); background: #eef2fb; }
+  .why b.res { display: block; }
+  .q.done .why { display: block; }
+  .why code, .q h3 code, .sec-intro code { font: 500 0.88em 'JetBrains Mono', monospace; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--ink); color: #fff; padding: 10px 20px; display: flex; gap: 16px; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 17px; z-index: 5; }
+  .bar b { color: var(--sticky); }
+  .bar button, .end button { font: 700 16px 'Atkinson Hyperlegible'; padding: 7px 14px; border-radius: 4px; border: 0; background: var(--sticky); color: var(--ink); cursor: pointer; }
+  .end { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 26px; margin-top: 48px; }
+  .end .grade { font: 800 54px/1 'Bricolage Grotesque', sans-serif; color: var(--blue); margin: 6px 0 10px; }
+  .end .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .end ul { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  a { color: var(--blue); }
+  @media (max-width: 600px) { .q { padding: 16px; } .bar { font-size: 15px; gap: 10px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>HTML and CSS Quiz</h1>
+  <p class="lede">Check the HTML and CSS you use every day in this course: flexbox, grid, the box model, selectors, forms, lists, and how JSX writes them.</p>
+  <p class="how"><b>How it works:</b> click an answer. You see right away if it's right, and why. Your first click counts. Your grade is at the bottom. Nothing is saved: refresh to start over.</p>
+
+  <div id="quiz"></div>
+
+  <section class="end" id="end">
+    <div class="lbl">Your grade</div>
+    <div class="grade" id="grade">0 / 0</div>
+    <p id="msg">Answer the questions above. Your grade updates as you go.</p>
+    <div id="review"></div>
+    <div class="btns"><button type="button" id="showall">Show all answers</button><button type="button" id="restart">Start over</button></div>
+  </section>
+</main>
+<div class="bar" aria-live="polite"><span>Answered <b id="answered">0</b> / <span class="total"></span></span><span>Correct <b id="correct">0</b></span><button type="button" id="jump">See my grade ↓</button></div>
+
+<script>
+// Every picture on this page is the real browser drawing the real code (in a shadow root, so the page's own styles can't leak in).
+const BASE = `.box { box-sizing: border-box; background: #cfe0ff; border: 2px solid #1b2230; padding: 6px 12px; font-weight: 700; }
+button, input { font: inherit; padding: 6px 12px; }`
+const GIVEN = 'Already styled for you: every <code>.box</code> has a light blue background, a border and some padding, and its width includes them (<code>box-sizing: border-box</code>). Buttons and inputs have a little padding.'
+
+const SECTIONS = [
+{
+  title: '1. Here is the code. What shows up?',
+  intro: 'Read the HTML and CSS, then pick the picture the browser draws.',
+  questions: [
+    { type: 'output', q: 'Three boxes inside a <code>.row</code>:',
+      html: `<div class="row">\n  <div class="box">1</div>\n  <div class="box">2</div>\n  <div class="box">3</div>\n</div>`,
+      css: `.row {\n  display: flex;\n  gap: 16px;\n}`,
+      options: [{ css: `` }, { css: `.row { display: flex; gap: 16px; }` }, { css: `.row { display: flex; }` }, { css: `.row { display: flex; flex-direction: column; gap: 16px; }` }],
+      answer: 1,
+      why: '<code>display: flex</code> puts the children side by side in a row. <code>gap: 16px</code> adds space <b>between</b> them. Without flex, each div takes its own full-width line.' },
+
+    { type: 'output', q: 'Five cards, each 100px wide, in a 240px container:',
+      html: `<div class="row">\n  <div class="box card">A</div>\n  <div class="box card">B</div>\n  <div class="box card">C</div>\n  <div class="box card">D</div>\n  <div class="box card">E</div>\n</div>`,
+      css: `.row {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n  width: 240px;\n  border: 2px dashed gray;\n}\n.card {\n  width: 100px;\n}`,
+      options: [
+        { css: `.row { display: flex; gap: 8px; width: 240px; border: 2px dashed gray; } .card { width: 100px; }` },
+        { css: `.row { width: 240px; border: 2px dashed gray; } .card { width: 100px; }` },
+        { css: `.row { display: flex; flex-wrap: wrap; gap: 8px; width: 240px; border: 2px dashed gray; } .card { width: 100px; }` },
+        { css: `.row { display: flex; flex-wrap: wrap; gap: 8px; width: 240px; border: 2px dashed gray; } .card { width: 70px; }` }],
+      answer: 2,
+      why: 'With <code>flex-wrap: wrap</code>, a card that doesn\'t fit moves to the next row. Two cards + the gap = 208px, which fits in 240px. A third would need 316px, so it wraps. <b>Without</b> wrap, flex squeezes all five into one row.' },
+
+    { type: 'output', q: 'A page header:',
+      html: `<header class="top">\n  <h1>Pokedex</h1>\n  <button>Log in</button>\n</header>`,
+      css: `.top {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}`,
+      options: [
+        { css: `.top { display: flex; justify-content: center; align-items: center; }` },
+        { css: `` },
+        { css: `.top { display: flex; justify-content: flex-end; align-items: center; }` },
+        { css: `.top { display: flex; justify-content: space-between; align-items: center; }` }],
+      answer: 3,
+      why: '<code>justify-content: space-between</code> pushes the first item to the left edge and the last item to the right edge. <code>align-items: center</code> lines them up in the middle, top to bottom.' },
+
+    { type: 'output', q: 'A box inside a dashed outer box:',
+      html: `<div class="outer">\n  <div class="box inner">Hi</div>\n</div>`,
+      css: `.outer {\n  border: 2px dashed gray;\n}\n.inner {\n  margin: 24px;\n}`,
+      options: [
+        { css: `.outer { border: 2px dashed gray; } .inner { padding: 24px; }` },
+        { css: `.outer { border: 2px dashed gray; } .inner { margin: 24px; }` },
+        { css: `.outer { border: 2px dashed gray; } .inner { border-width: 12px; }` },
+        { css: `.outer { border: 2px dashed gray; }` }],
+      answer: 1,
+      why: '<b>Margin</b> is space <b>outside</b> the border, so the blue box moves away from the dashed one. <b>Padding</b> is space <b>inside</b> the border: it would make the blue part bigger.' },
+
+    { type: 'output', q: 'Three spans:',
+      html: `<span class="box">A</span>\n<span class="box">B</span>\n<span class="box">C</span>`,
+      css: `span {\n  display: block;\n}`,
+      options: [{ css: `` }, { css: `span { display: block; width: 60px; }` }, { css: `span { display: block; }` }, { css: `span { display: none; }` }],
+      answer: 2,
+      why: 'A <code>&lt;span&gt;</code> is <b>inline</b>: it sits in the line of text, next to the others. <code>display: block</code> gives each one its own line, as wide as the page (like a div).' },
+
+    { type: 'output', q: 'A to-do list:',
+      html: `<ul>\n  <li class="done">Walk the dog</li>\n  <li>Feed the cat</li>\n  <li>Wash the dishes</li>\n</ul>`,
+      css: `.done {\n  text-decoration: line-through;\n  color: gray;\n}`,
+      options: [
+        { html: `<ul><li>Walk the dog</li><li class="done">Feed the cat</li><li>Wash the dishes</li></ul>` },
+        { html: `<ul class="done"><li>Walk the dog</li><li>Feed the cat</li><li>Wash the dishes</li></ul>` },
+        { html: `<ul><li class="done">Walk the dog</li><li>Feed the cat</li><li>Wash the dishes</li></ul>` },
+        { html: `<ul><li class="done">Walk the dog</li><li>Feed the cat</li><li>Wash the dishes</li></ul>`, css: `.done { color: gray; }` }],
+      answer: 2,
+      why: 'Only the <code>&lt;li&gt;</code> with <code>class="done"</code> gets the style. <code>text-decoration: line-through</code> draws the line through the text. In React you add the class when the task is done: <code>className={task.done ? \'done\' : \'\'}</code>.' },
+
+    { type: 'output', q: 'Two rules want to color the same paragraph:',
+      html: `<p class="note">Gotta catch 'em all</p>`,
+      css: `.note {\n  color: red;\n}\np {\n  color: blue;\n}`,
+      options: [{ css: `p { color: blue; }` }, { css: `p { color: red; }` }, { css: `` }],
+      answer: 1,
+      why: 'A <b>class</b> selector (<code>.note</code>) is more specific than a <b>tag</b> selector (<code>p</code>), so red wins, even though the <code>p</code> rule comes later. Strongest to weakest: id, class, tag.' },
+
+    { type: 'output', q: 'Two classes on one paragraph:',
+      html: `<p class="b a">Pikachu</p>`,
+      css: `.a {\n  color: red;\n}\n.b {\n  color: green;\n}`,
+      options: [{ css: `p { color: red; }` }, { css: `` }, { css: `p { color: green; }` }],
+      answer: 2,
+      why: 'Both are classes, so they are equally specific. Then the rule that comes <b>later in the CSS</b> wins: <code>.b</code>, green. The order of names inside <code>class="b a"</code> doesn\'t matter.' },
+
+    { type: 'output', q: 'Six boxes in a grid (think Whack-a-Mole):',
+      html: `<div class="grid">\n  <div class="box">1</div>\n  <div class="box">2</div>\n  <div class="box">3</div>\n  <div class="box">4</div>\n  <div class="box">5</div>\n  <div class="box">6</div>\n</div>`,
+      css: `.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 8px;\n}`,
+      options: [
+        { css: `.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }` },
+        { css: `.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }` },
+        { css: `.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }` },
+        { css: `.grid { display: grid; gap: 8px; }` }],
+      answer: 0,
+      why: '<code>repeat(3, 1fr)</code> makes 3 equal columns. Six boxes fill them in order: two rows of three. <code>1fr</code> means "one share of the space".' },
+
+    { type: 'output', q: 'Hiding the middle box:',
+      html: `<div class="row">\n  <div class="box">1</div>\n  <div class="box hide">2</div>\n  <div class="box">3</div>\n</div>`,
+      css: `.row {\n  display: flex;\n  gap: 8px;\n}\n.hide {\n  visibility: hidden;\n}`,
+      options: [
+        { css: `.row { display: flex; gap: 8px; } .hide { display: none; }` },
+        { css: `.row { display: flex; gap: 8px; }` },
+        { css: `.row { display: flex; gap: 8px; } .hide { visibility: hidden; }` }],
+      answer: 2,
+      why: '<code>visibility: hidden</code> hides the box but <b>keeps its space</b>. <code>display: none</code> removes it, so 3 slides over. In React we usually just don\'t render it: <code>{show &amp;&amp; &lt;Box /&gt;}</code>.' },
+
+    { type: 'output', q: 'A space inside a selector:',
+      html: `<p>Outside</p>\n<div class="card">\n  <p>Inside</p>\n</div>`,
+      css: `.card p {\n  color: red;\n}`,
+      options: [
+        { css: `p { color: red; }` },
+        { css: `.card p { color: red; }` },
+        { html: `<p style="color: red">Outside</p><div class="card"><p>Inside</p></div>`, css: `` },
+        { css: `` }],
+      answer: 1,
+      why: 'The space means "inside". <code>.card p</code> picks only <code>&lt;p&gt;</code> tags that are <b>inside</b> something with <code>class="card"</code>.' },
+
+    { type: 'output', q: 'Centering a card:',
+      html: `<div class="box center">Card</div>`,
+      css: `.center {\n  width: 120px;\n  margin: 0 auto;\n}`,
+      options: [
+        { css: `.center { text-align: center; }` },
+        { css: `.center { width: 120px; }` },
+        { css: `.center { width: 120px; margin: 0 auto; }` },
+        { css: `.center { width: 120px; margin-left: auto; }` }],
+      answer: 2,
+      why: '<code>margin: 0 auto</code> means 0 top and bottom, <b>auto</b> left and right. The leftover space is split evenly, so the 120px box sits in the middle. <code>text-align: center</code> centers the <b>text</b> inside, not the box.' },
+  ],
+},
+{
+  title: '2. Here is what the browser shows. Which code made it?',
+  intro: 'Look at the picture in the dashed frame, then pick the code that draws it.',
+  questions: [
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this?',
+      html: `<div class="row">\n  <div class="box">1</div>\n  <div class="box">2</div>\n  <div class="box">3</div>\n</div>`,
+      options: [
+        { css: `.row {\n  display: flex;\n  gap: 16px;\n}` },
+        { css: `.row {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 16px;\n}` },
+        { css: `.row {\n  display: flex;\n  flex-direction: column;\n  gap: 16px;\n}` },
+        { css: `.row {\n  margin: 16px;\n}` }],
+      answer: 2,
+      why: '<code>flex-direction: column</code> stacks the items top to bottom, and <code>gap</code> adds the space between them. Plain divs would also stack, but with no space between them.' },
+
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this navbar?',
+      html: `<nav>\n  <a href="#">Home</a>\n  <a href="#">Pokedex</a>\n  <a href="#">About</a>\n</nav>`,
+      options: [
+        { css: `nav {\n  display: flex;\n}` },
+        { css: `nav a {\n  padding: 8px;\n}` },
+        { css: `nav a {\n  text-decoration: none;\n}` },
+        { css: `nav a {\n  display: block;\n}` }],
+      answer: 3,
+      why: 'Links are <b>inline</b>, so by default they sit in one line. <code>display: block</code> puts each link on its own line. <code>text-decoration: none</code> removes the underline.' },
+
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this form?',
+      html: `<form>\n  <label for="name">Pokemon name</label>\n  <input id="name" />\n  <button>Search</button>\n</form>`,
+      options: [
+        { css: `/* no CSS */` },
+        { css: `label {\n  display: block;\n}` },
+        { css: `input {\n  display: block;\n}` },
+        { css: `button {\n  display: block;\n}` }],
+      answer: 1,
+      why: 'Labels, inputs and buttons are inline, so they all share one line. <code>label { display: block; }</code> moves the label onto its own line, above the input.' },
+
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this button?',
+      html: `<button>Make Shiny</button>`,
+      options: [
+        { css: `button {\n  background-color: white;\n  color: blue;\n  border-radius: 8px;\n}` },
+        { css: `button {\n  background-color: blue;\n  color: white;\n  border-radius: 8px;\n}` },
+        { css: `button {\n  background-color: blue;\n  color: white;\n}` },
+        { css: `button {\n  color: white;\n  border: 8px solid blue;\n}` }],
+      answer: 1,
+      why: '<code>background-color</code> fills the button, <code>color</code> is the <b>text</b> color, and <code>border-radius</code> rounds the corners.' },
+
+    { type: 'code', q: 'Same HTML for every choice. The name comes from the API as "pikachu". Which CSS draws this?',
+      html: `<h2 class="name">pikachu</h2>`,
+      options: [
+        { css: `.name {\n  text-transform: uppercase;\n}` },
+        { css: `.name {\n  font-style: italic;\n}` },
+        { css: `.name {\n  text-transform: capitalize;\n}` }],
+      answer: 2,
+      why: '<code>text-transform: capitalize</code> makes the first letter of each word upper case. The data stays "pikachu", only the look changes. (Tailwind: <code>capitalize</code>; Bootstrap: <code>text-capitalize</code>.)' },
+
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this?',
+      html: `<div class="cards">\n  <div class="box">Bulbasaur</div>\n  <div class="box">Charmander</div>\n  <div class="box">Squirtle</div>\n  <div class="box">Pikachu</div>\n</div>`,
+      options: [
+        { css: `.cards {\n  display: flex;\n  gap: 8px;\n}` },
+        { css: `.cards {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 8px;\n}` },
+        { css: `.cards {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 8px;\n}` },
+        { css: `.cards {\n  display: grid;\n  gap: 8px;\n}` }],
+      answer: 1,
+      why: '<code>grid-template-columns: 1fr 1fr</code> makes 2 equal columns, so 4 cards make 2 rows of 2. With no columns set, a grid has 1 column.' },
+
+    { type: 'code', q: 'Same CSS for every choice. Which HTML draws this?',
+      css: `.done {\n  text-decoration: line-through;\n  color: gray;\n}`,
+      options: [
+        { html: `<ul class="done">\n  <li>Walk the dog</li>\n  <li>Feed the cat</li>\n  <li>Wash the dishes</li>\n</ul>` },
+        { html: `<ul>\n  <li class="done">Walk the dog</li>\n  <li>Feed the cat</li>\n  <li>Wash the dishes</li>\n</ul>` },
+        { html: `<ul>\n  <li>Walk the dog</li>\n  <li class="done">Feed the cat</li>\n  <li>Wash the dishes</li>\n</ul>` },
+        { html: `<ol>\n  <li>Walk the dog</li>\n  <li class="done">Feed the cat</li>\n  <li>Wash the dishes</li>\n</ol>` }],
+      answer: 2,
+      why: 'Only "Feed the cat" is crossed out, and the list has <b>bullets</b>, so it\'s a <code>&lt;ul&gt;</code> with <code>class="done"</code> on the second item. <code>&lt;ol&gt;</code> would show numbers.' },
+
+    { type: 'code', q: 'Same HTML for every choice. Which CSS draws this?',
+      html: `<div class="box title">Pokedex</div>`,
+      options: [
+        { css: `.title {\n  width: 120px;\n  margin: 0 auto;\n}` },
+        { css: `.title {\n  text-align: center;\n}` },
+        { css: `.title {\n  padding-left: 50%;\n}` },
+        { css: `.title {\n  display: flex;\n  justify-content: flex-end;\n}` }],
+      answer: 1,
+      why: 'The box is still full width; only the <b>text</b> is in the middle. That is <code>text-align: center</code>. <code>margin: 0 auto</code> with a width would center the whole box.' },
+  ],
+},
+{
+  title: '3. HTML, CSS and JSX questions',
+  intro: 'Things you use in every React project in this course.',
+  questions: [
+    { type: 'mc', q: 'In JSX, how do you give an element a CSS class?',
+      options: ['<code>class="card"</code>', '<code>className="card"</code>', '<code>css="card"</code>', '<code>style="card"</code>'], answer: 1,
+      why: '<code>class</code> is a reserved word in JavaScript, so JSX uses <code>className</code>. In the browser it becomes a normal <code>class</code>.' },
+    { type: 'mc', q: 'In JSX, a <code>&lt;label&gt;</code> points at its input with…',
+      options: ['<code>for="name"</code>', '<code>htmlFor="name"</code>', '<code>labelFor="name"</code>', '<code>id="name"</code>'], answer: 1,
+      why: '<code>for</code> is also a JavaScript word (for loops), so JSX uses <code>htmlFor</code>. It must match the input\'s <code>id</code>.' },
+    { type: 'mc', q: 'Which inline style works in JSX?',
+      options: ['<code>style="background-color: red"</code>', '<code>style={{ background-color: \'red\' }}</code>', '<code>style={{ backgroundColor: \'red\' }}</code>', '<code>style={backgroundColor: \'red\'}</code>'], answer: 2,
+      why: 'In JSX, <code>style</code> takes an <b>object</b>: the outer <code>{ }</code> means "JavaScript here", the inner <code>{ }</code> is the object. Property names are camelCase: <code>backgroundColor</code>.' },
+    { type: 'mc', q: 'Which image tag works in JSX?',
+      options: ['<code>&lt;img src={url} alt="Pikachu"&gt;</code>', '<code>&lt;img src={url} alt="Pikachu" /&gt;</code>', '<code>&lt;img&gt;{url}&lt;/img&gt;</code>', '<code>&lt;image src={url} /&gt;</code>'], answer: 1,
+      why: 'JSX needs every tag closed. Tags with no inside, like <code>&lt;img&gt;</code> and <code>&lt;input&gt;</code>, close themselves with <code>/&gt;</code>.' },
+    { type: 'mc', q: 'What is the <code>alt</code> text on an image for?',
+      options: ['It makes the image load faster', 'Screen readers read it, and it shows if the image can\'t load', 'It is a caption shown under the image', 'It is needed for <code>src</code> to work'], answer: 1,
+      why: '<code>alt</code> describes the image for people who can\'t see it. Tests can find images by it too. Example: <code>alt={pokemon.name}</code>.' },
+    { type: 'mc', q: 'What is the difference between an <code>id</code> and a <code>class</code>?',
+      options: ['No difference', 'An id is for one element on the page; a class can be on many', 'A class is for one element; an id can be on many', 'An id only works in CSS'], answer: 1,
+      why: 'Use an <b>id</b> for one unique thing (like the input a label points at). Use a <b>class</b> for styles you reuse (every card).' },
+    { type: 'mc', q: 'Which CSS selector picks <code>&lt;button class="primary"&gt;</code>?',
+      options: ['<code>#primary</code>', '<code>primary</code>', '<code>.primary</code>', '<code>button#primary</code>'], answer: 2,
+      why: 'A dot means class: <code>.primary</code>. A hash means id: <code>#primary</code>. No symbol means a tag name.' },
+    { type: 'mc', q: 'In a test, <code>cy.get(\'#search\')</code> finds…',
+      options: ['the element with <code>id="search"</code>', 'every element with <code>class="search"</code>', 'the input with <code>name="search"</code>', 'any element with the word "search" in it'], answer: 0,
+      why: '<code>cy.get</code> takes a CSS selector, the same as in your CSS file. <code>#</code> means id.' },
+    { type: 'mc', q: 'The box model, from the inside out:',
+      options: ['content → padding → border → margin', 'content → margin → border → padding', 'padding → content → border → margin', 'margin → border → padding → content'], answer: 0,
+      why: 'Content in the middle, then padding (inside the border, gets the background), then the border, then margin (outside, always see-through).' },
+    { type: 'mc', q: 'What does <code>box-sizing: border-box</code> change?',
+      options: ['It adds a border', 'The width includes the padding and border', 'It removes the margin', 'It makes the box a flex container'], answer: 1,
+      why: 'Normally <code>width: 200px</code> is the content only, and padding and border are added on top. With <code>border-box</code>, the whole box is 200px. Tailwind and Bootstrap both turn it on for every element.' },
+    { type: 'mc', q: 'How big is <code>1rem</code>?',
+      options: ['Always 10px', 'The root (html) font size: 16px unless changed', 'The parent\'s font size', '1% of the screen width'], answer: 1,
+      why: '<b>rem</b> = "root em": the font size of the <code>&lt;html&gt;</code> element, 16px by default. Tailwind\'s <code>p-4</code> is 1rem = 16px.' },
+    { type: 'mc', q: 'In a flex row (the default), <code>justify-content</code> moves items…',
+      options: ['left and right (along the row)', 'up and down', 'only the first item', 'nothing: it only works in grid'], answer: 0,
+      why: '<code>justify-content</code> works along the row. <code>align-items</code> works across it: up and down. With <code>flex-direction: column</code> they swap.' },
+    { type: 'mc', q: 'A <code>&lt;button&gt;</code> inside a <code>&lt;form&gt;</code> is clicked. What happens by default?',
+      options: ['Nothing', 'The form submits and the page reloads', 'Only the onClick runs', 'The inputs are cleared, with no reload'], answer: 1,
+      why: 'A button in a form is a <b>submit</b> button by default. Submitting reloads the page, which wipes React state. That\'s why we write <code>e.preventDefault()</code> in <code>onSubmit</code>.' },
+    { type: 'mc', q: 'Which tag holds a group of navigation links?',
+      options: ['<code>&lt;navigation&gt;</code>', '<code>&lt;links&gt;</code>', '<code>&lt;nav&gt;</code>', '<code>&lt;a&gt;</code>'], answer: 2,
+      why: '<code>&lt;nav&gt;</code> wraps the links; each link is an <code>&lt;a&gt;</code> (or a <code>&lt;Link&gt;</code> with React Router). <code>&lt;navigation&gt;</code> and <code>&lt;links&gt;</code> are not HTML tags.' },
+    { type: 'mc', q: 'A list where the order doesn\'t matter (bullets) uses…',
+      options: ['<code>&lt;ol&gt;</code> with <code>&lt;li&gt;</code> inside', '<code>&lt;ul&gt;</code> with <code>&lt;li&gt;</code> inside', '<code>&lt;list&gt;</code> with <code>&lt;item&gt;</code> inside', '<code>&lt;li&gt;</code> on its own'], answer: 1,
+      why: '<code>&lt;ul&gt;</code> = unordered (bullets), <code>&lt;ol&gt;</code> = ordered (numbers). Both hold <code>&lt;li&gt;</code> items. In React: <code>{items.map((i) =&gt; &lt;li key={i.id}&gt;…&lt;/li&gt;)}</code>.' },
+    { type: 'mc', q: 'Which input attribute shows grey hint text that disappears when you type?',
+      options: ['<code>value</code>', '<code>placeholder</code>', '<code>title</code>', '<code>label</code>'], answer: 1,
+      why: '<code>placeholder="Search a Pokemon"</code> is a hint only. <code>value</code> is the real text in the box (in React, set from state).' },
+  ],
+},
+]
+
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const LETTERS = 'ABCD'
+
+function draw(host, html, css) {
+  const root = host.attachShadow({ mode: 'open' })
+  root.innerHTML = `<style>:host { all: initial; display: block; background: #fff; color: #111; font: 16px/1.4 Arial, Helvetica, sans-serif; }
+.stage { padding: 12px; } ${BASE}\n${css || ''}</style><div class="stage">${html}</div>`
+  root.querySelectorAll('form').forEach((f) => f.addEventListener('submit', (e) => e.preventDefault()))
+  root.querySelectorAll('a').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()))
+}
+
+function codeBlock(html, css) {
+  let out = '<div class="code">'
+  if (html) out += `<figure><figcaption>HTML</figcaption><pre>${esc(html)}</pre></figure>`
+  if (css) out += `<figure><figcaption>CSS</figcaption><pre>${esc(css)}</pre></figure>`
+  return out + '</div>'
+}
+
+const quiz = document.getElementById('quiz')
+const all = []
+let n = 0
+for (const sec of SECTIONS) {
+  quiz.insertAdjacentHTML('beforeend', `<h2>${sec.title}</h2><p class="sec-intro">${sec.intro}</p>`)
+  for (const q of sec.questions) {
+    n++
+    const el = document.createElement('div')
+    el.className = 'q'
+    let body = `<h3><span class="n">${n}.</span>${q.q}</h3>`
+    if (q.type === 'output') body += codeBlock(q.html, q.css) + `<p class="given">${GIVEN}</p>`
+    if (q.type === 'code') {
+      body += codeBlock(q.html, q.css) + `<div class="lbl">The browser shows</div><div class="target"></div>`
+    }
+    body += `<div class="opts${q.type === 'mc' ? ' text' : ''}">`
+    q.options.forEach((o, i) => {
+      body += q.type === 'mc'
+        ? `<button type="button" class="opt" data-i="${i}"><span class="letter">${LETTERS[i]}</span><span>${o}</span><span class="top"><span class="mark"></span></span>`
+        : `<button type="button" class="opt" data-i="${i}"><span class="top"><span class="letter">${LETTERS[i]}</span><span class="mark"></span></span>`
+      if (q.type === 'output') body += `<div class="shot"></div>`
+      else if (q.type === 'code') body += `<pre>${esc(o.html || o.css)}</pre>`
+      body += `</button>`
+    })
+    body += `</div><div class="why" aria-live="polite"></div>`
+    el.innerHTML = body
+    if (q.type === 'output') el.querySelectorAll('.shot').forEach((s, i) => draw(s, q.options[i].html ?? q.html, q.options[i].css ?? q.css))
+    if (q.type === 'code') { const t = q.options[q.answer]; draw(el.querySelector('.target'), t.html ?? q.html, t.css ?? q.css) }
+    el.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => pick(q, Number(b.dataset.i))))
+    quiz.appendChild(el)
+    q.el = el; q.n = n; q.picked = null
+    all.push(q)
+  }
+}
+document.querySelectorAll('.total').forEach((t) => t.textContent = all.length)
+
+function reveal(q) {
+  const right = q.picked === q.answer
+  q.el.classList.add('done')
+  q.el.querySelectorAll('.opt').forEach((b, i) => {
+    b.disabled = true
+    if (i === q.answer) { b.classList.add('right'); b.querySelector('.mark').textContent = '✓ answer' }
+    else if (i === q.picked) { b.classList.add('wrong'); b.querySelector('.mark').textContent = '✗ your pick' }
+  })
+  const res = q.picked === null ? 'The answer is ' + LETTERS[q.answer] + '.' : right ? '✓ Right!' : '✗ Not quite. The answer is ' + LETTERS[q.answer] + '.'
+  q.el.querySelector('.why').innerHTML = `<b class="res">${res}</b>${q.why}`
+}
+
+function pick(q, i) {
+  if (q.el.classList.contains('done')) return
+  q.picked = i
+  reveal(q)
+  score()
+}
+
+function score() {
+  const answered = all.filter((q) => q.picked !== null)
+  const correct = answered.filter((q) => q.picked === q.answer)
+  document.getElementById('answered').textContent = answered.length
+  document.getElementById('correct').textContent = correct.length
+  const pct = answered.length ? Math.round(100 * correct.length / all.length) : 0
+  document.getElementById('grade').textContent = `${correct.length} / ${all.length} · ${pct}%`
+  const left = all.length - answered.length
+  let msg = left ? `${left} question${left === 1 ? '' : 's'} left. Unanswered ones count as wrong.` :
+    pct >= 90 ? 'Excellent: you know your HTML and CSS.' : pct >= 75 ? 'Good work. Read the ones you missed below.' : pct >= 50 ? 'A good start. Go over the misses below, then try again.' : 'Go over the answers below, then start over and try again.'
+  document.getElementById('msg').textContent = msg
+  const missed = answered.filter((q) => q.picked !== q.answer)
+  document.getElementById('review').innerHTML = missed.length
+    ? '<b>Look again at:</b><ul>' + missed.map((q) => `<li><a href="#q${q.n}">Question ${q.n}</a></li>`).join('') + '</ul>' : ''
+}
+
+all.forEach((q) => q.el.id = 'q' + q.n)
+document.getElementById('showall').onclick = () => { all.forEach((q) => { if (!q.el.classList.contains('done')) reveal(q) }); score() }
+document.getElementById('restart').onclick = () => location.reload()
+document.getElementById('jump').onclick = () => document.getElementById('end').scrollIntoView({ behavior: 'smooth' })
+score()
+</script>
+</body>
+</html>
