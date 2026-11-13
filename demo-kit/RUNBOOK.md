@@ -236,12 +236,13 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 3 | 5 | same | 404 page (`*`) |
 | 4 | 8 | — | 404 vs error page |
 | 5 | 10 | **N ×6**; show errorElement on the root first (header gone) | error page inside the layout |
-| 6–7 | 15–16 | — | route tree; a vs Link |
-| 8 | 17 | **N** 1–5 ▶ red (reload); **N** 6 ▶ green | NavBar: a, then Link |
-| 9 | 23 | **N ×3**, ▶ 22 green | React Bootstrap Navbar (as={Link}) |
-| 10–11 | 27–28 | — | as=; the 22 tests |
-| 12 | 29 | timer | Fix It (pages and links) 1–6 |
-| 13–14 | 36–38 | — | mental model (show the list reset); homework II |
+| 6 | 15 | — | reading the error page: useRouteError, isRouteErrorResponse |
+| 7–8 | 16 | — | route tree; a vs Link |
+| 9 | 17 | **N** 1–5 ▶ red (reload); **N** 6 ▶ green | NavBar: a, then Link |
+| 10 | 23 | **N ×3**, ▶ 22 green | React Bootstrap Navbar (as={Link}) |
+| 11–12 | 27–28 | — | as=; the 22 tests |
+| 13 | 29 | timer | Fix It (pages and links) 1–6 |
+| 14–15 | 36–38 | — | mental model (show the list reset); homework II |
 
 # Runbook · Unit 8 (React Router Hooks)
 

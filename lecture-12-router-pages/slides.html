@@ -92,6 +92,38 @@
 </section>
 
 <section class="slide" data-seg="Concept" data-at="15">
+  <h2>Reading the error page</h2>
+  <pre style="font-size:21px">const error = useRouteError()
+const message = isRouteErrorResponse(error) ? `${error.status} ${error.statusText}` : error.message</pre>
+  <table class="dbt small" style="margin-top:12px">
+    <tr><th>Function</th><th>What it does</th><th>Returns</th></tr>
+    <tr><td><code>useRouteError()</code></td><td>gets the error the router caught</td><td>whatever was thrown</td></tr>
+    <tr><td><code>isRouteErrorResponse(error)</code></td><td>checks: is it an <b>error response</b>?</td><td><code>true</code> or <code>false</code></td></tr>
+  </table>
+  <table class="dbt small" style="margin-top:12px">
+    <tr><th>What went wrong</th><th>error is</th><th>The page shows</th></tr>
+    <tr><td>a page crashes (our button)</td><td>an <b>Error</b>: has <code>message</code></td><td>This page intentionally crashed</td></tr>
+    <tr><td>no route matches, or a loader throws a 404</td><td>an <b>error response</b>: has <code>status</code>, <code>statusText</code></td><td>404 Not Found</td></tr>
+  </table>
+  <p class="bottomline">Two kinds of error, one message line.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read the two lines at the top of ErrorPage: what useRouteError gives us, and why we check isRouteErrorResponse.</p>
+    <p><b>useRouteError()</b>: a hook. It only works inside an errorElement. It returns <b>whatever was thrown</b>: no wrapping, no copy.</p>
+    <p><b>isRouteErrorResponse(error)</b>: returns true or false. True when the error is an <b>error response</b>: an object the router makes with <code>status</code> (a number like 404) and <code>statusText</code> ("Not Found"). It has <b>no</b> <code>message</code>.</p>
+    <p><b>The second line is a ternary</b> (<code>? :</code>): "is it an error response? Then show status and statusText. Otherwise it's a normal Error: show its message."</p>
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a">Thrown by</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">error is</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">isRouteErrorResponse</th><th style="padding:4px 10px;border-bottom:1px solid #34405a">message</th></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a">AboutPage: <code>throw new Error('This page intentionally crashed')</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a">an Error</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">false</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">error.message</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a">a URL with no route (if there were no <code>*</code> route)</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">error response</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">true</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">404 Not Found</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a">a loader: <code>throw data('nope', { status: 404, statusText: 'Not Found' })</code> (leave out statusText and it says "Internal Server Error")</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">error response</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">true</td><td style="padding:4px 10px;border-bottom:1px solid #34405a">404 Not Found</td></tr>
+    </table>
+    <p><b>Why we use it today:</b> in our app only the first row happens: the <code>*</code> route catches unknown URLs, and we have no loaders yet. But an error response has no <code>message</code>, so <code>error.message</code> alone would show a <b>blank</b> line. The check makes the page work for both kinds. It is the standard React Router error page.</p>
+    <p>Checked in react-router 8.5.1: an unknown URL and a loader's 404 both give true, 404, "Not Found"; a thrown Error gives false and its message.</p>
+    <p><b>Say:</b> "useRouteError hands us what was thrown. isRouteErrorResponse asks: is it a 404-style error with a status? Then show the status. Otherwise show the message."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="16">
   <h2>The route tree now</h2>
   <pre style="font-size:22px">/                 App (navbar, heading, Outlet)
 └─ (no path)      errorElement: ErrorPage
