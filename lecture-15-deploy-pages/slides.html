@@ -24,9 +24,9 @@
 <section class="slide title" data-seg="Open" data-at="0">
   <div class="kicker">Front-End · Unit 9: CI/CD · Lecture 1 of 2</div>
   <h1>GitHub Pages: put the app on the internet.</h1>
-  <p class="sub">Build it, make it work under /&lt;repo&gt;/, and publish with gh-pages.</p>
+  <p class="sub">Build it, make it work under /&lt;repo&gt;/, and publish with a GitHub Actions workflow.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today we put the app on the internet: build it, make it work under the repo's address, and publish with gh-pages.</p>
+    <p class="plan"><b>The plan:</b> Today we put the app on the internet: build it, make it work under the repo's address, and let a workflow publish it on every push to main.</p>
     <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Have a repo with the Pokemon app pushed (a fork of your class repo works).</p>
     <p>The build and the deploy run on laptops, not in the slides: the slides show the files.</p>
   </aside>
@@ -54,7 +54,7 @@
   </ol>
   <p class="bottomline">The hash in the file name changes when the code changes (no stale caches).</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We run a real build, look at dist/, and serve it locally.</p><p>dist/ is in .gitignore: never commit it to main; gh-pages puts it on its own branch.</p></aside>
+    <p class="plan"><b>The plan:</b> We run a real build, look at dist/, and serve it locally.</p><p>dist/ is in .gitignore: never commit it. Later today a workflow builds it on GitHub instead.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="4">
@@ -105,7 +105,7 @@
   </table>
   <p class="bottomline">Hash router in the build; normal paths while developing.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Problem 2: refreshing /about on GitHub Pages gives a 404.</p><p>Hosts with a server (Netlify, Vercel, your own) can send every path to index.html instead.</p></aside>
+    <p class="plan"><b>The plan:</b> Problem 2: refreshing /about on GitHub Pages gives a 404.</p><p>Hosts with a server (Netlify, Vercel, your own nginx) can send every path to index.html instead.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: hash" data-at="13">
@@ -124,33 +124,37 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: gh-pages" data-at="18">
-  <h2>Publish with gh-pages <span class="say">package.json</span></h2>
-  <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1 f3s2" data-files="package.json"></div>
+<section class="slide code" data-seg="Code along: deploy.yml" data-at="18">
+  <h2>Publish with a workflow <span class="say">.github/workflows/deploy.yml</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We set up the gh-pages package, so npm run deploy publishes the app.</p>
-    <p><b>** CODE ALONG, about 3 minutes. **</b> Then live: <code>npm install --save-dev gh-pages</code>, <code>npm run deploy</code>.</p>
+    <p class="plan"><b>The plan:</b> We write one workflow file: on every push to main, GitHub builds the app and publishes dist/ to GitHub Pages.</p>
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
+    <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
+    <p><b>Different from the curriculum</b> (until merged): it publishes with the <code>gh-pages</code> npm package (<code>npm run deploy</code> pushes dist/ to a gh-pages branch). We use GitHub's own Pages actions, as the Vite docs do: nothing to install, no extra branch, and the deploy happens on GitHub.</p>
 <!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>package.json</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>"cy:run": "cypress run",</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm run deploy: predeploy builds first (npm runs pre&lt;name&gt; before &lt;name&gt;), then gh-pages pushes dist/.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">terminal</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>$ npm install gh-pages --save-dev</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">npm install --save-dev gh-pages. Then: npm run deploy, and in Settings → Pages pick the gh-pages branch. npm writes package.json by itself.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
 </section>
 
-<section class="slide" data-seg="Live" data-at="21">
+<section class="slide" data-seg="Live" data-at="22">
   <h2>Deploy, step by step</h2>
   <ol class="steps small">
-    <li><code>npm install --save-dev gh-pages</code></li>
-    <li><code>npm run deploy</code> (builds, then pushes dist/ to the gh-pages branch)</li>
-    <li>GitHub → Settings → Pages → Deploy from a branch → <b>gh-pages</b> / root</li>
-    <li>Wait for "pages build and deployment" in the Actions tab (GitHub's own run)</li>
-    <li>Open https://&lt;you&gt;.github.io/&lt;repo&gt;/#/about and refresh</li>
+    <li>GitHub → Settings → Pages → Source → <b>GitHub Actions</b></li>
+    <li>Commit <code>deploy.yml</code> (and the base + router changes); <code>git push origin main</code></li>
+    <li>Actions tab: the <b>Deploy to GitHub Pages</b> run turns green</li>
+    <li>Click the link in the run's summary</li>
+    <li>Go to About: <code>…/&lt;repo&gt;/#/about</code>, and refresh</li>
   </ol>
-  <p class="bottomline">Each deploy = npm run deploy again.</p>
+  <p class="bottomline">Each deploy = a push to main.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We deploy live, step by step, and turn on GitHub Pages.</p><p>The Actions tab run after a local deploy is GitHub's own, not a workflow you wrote (the curriculum's "check the Actions tab" means that one).</p></aside>
+    <p class="plan"><b>The plan:</b> We turn on GitHub Pages, push, and watch the workflow publish the site.</p>
+    <p><b>Do the Source setting first.</b> Without it, the run fails at the <code>deploy-pages</code> step (it says Pages is not set up for GitHub Actions). Fix: set the Source, then <b>Re-run jobs</b>.</p>
+    <p>The run takes about a minute. Open it while it runs: one job, <b>deploy</b>, with each step from the file. The summary shows the live link (from <code>environment: url</code>).</p>
+    <p>Backup, a real run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="25">
@@ -160,7 +164,8 @@
     <tr><td>blank page, 404s for assets in the Network tab</td><td>base matches the repo name, with both slashes</td></tr>
     <tr><td>works, refresh on a page gives 404</td><td>hash router in production</td></tr>
     <tr><td>old version still showing</td><td>wait a minute; hard refresh (Ctrl+Shift+R)</td></tr>
-    <tr><td>404 for the whole site</td><td>Settings → Pages → branch gh-pages</td></tr>
+    <tr><td>the run is red at the deploy step</td><td>Settings → Pages → Source: GitHub Actions; re-run</td></tr>
+    <tr><td>no run at all</td><td>deploy.yml is in <code>.github/workflows/</code>, pushed to main</td></tr>
   </table>
   <p class="bottomline">Network tab first.</p>
   <aside class="notes">
@@ -172,13 +177,13 @@
   <div class="countdown" data-sec="480"></div>
   <ol class="steps">
     <li>Set base to <b>your</b> repo name</li>
-    <li><code>npm run deploy</code>; pick the gh-pages branch in Settings → Pages</li>
+    <li>Settings → Pages → Source: <b>GitHub Actions</b>; add deploy.yml; push to main</li>
     <li>Open your URL, go to About, refresh</li>
     <li>Post your URL in the class chat</li>
   </ol>
   <p class="muted small" style="margin-top:24px">Stuck? Use the table on the previous slide.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages setting are 90% of the problems.</p></aside>
+    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
@@ -187,9 +192,9 @@
     <li>Build = plain files in dist/; GitHub Pages serves files</li>
     <li>base = the repo folder, only in production</li>
     <li>Hash router in the build, so refresh works</li>
-    <li>gh-pages pushes dist/ to a branch Pages serves</li>
+    <li>deploy.yml builds on GitHub and publishes dist/ on every push to main</li>
   </ul>
-  <p class="bottomline">Next: GitHub runs the tests and deploys for you.</p>
+  <p class="bottomline">Next: run the tests first, and deploy only when they pass.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> The mental model for deploying.</p><p>—</p></aside>
 </section>
@@ -201,7 +206,7 @@
   </ol>
   <p class="bottomline">Part II comes with lecture 2.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Suggest a checklist: live URL in the README, conditional base, hash router.</p></aside>
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Suggest a checklist: live URL in the README, conditional base, hash router, deploy.yml.</p></aside>
 </section>
 
 </div>
@@ -223,7 +228,7 @@
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=2"></script>
 <script src="../shared/course/outlet-context.js?v=2"></script>
-<script src="../shared/course/deploy-pages.js?v=3"></script>
+<script src="../shared/course/deploy-pages.js?v=4"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=14"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

@@ -309,25 +309,16 @@ Course.commands = {
           mistakes: ['A blank page at localhost:4173/: open /pokemon-app/ (the base).'],
         },
         {
-          cmd: 'npm install --save-dev gh-pages', track: 'both',
-          does: 'Installs gh-pages, the tool that pushes dist/ to a gh-pages branch.',
-          why: 'A dev dependency: used to publish, not inside the app. No rebuild needed for Docker (it never runs there).',
+          cmd: 'git push origin main', track: 'both',
+          does: 'Sends your commits to GitHub. The deploy.yml workflow then builds the app and publishes it to GitHub Pages.',
+          why: 'This is the deploy: every push to main goes live. First time only: Settings → Pages → Source → GitHub Actions.',
           parts: [
-            ['npm install', 'Install and save.', 'No.'],
-            ['--save-dev', 'Save under devDependencies.', 'Same as -D.'],
-            ['gh-pages', 'The package.', 'No.'],
+            ['git push', 'Send commits to GitHub.', 'No.'],
+            ['origin', 'Your GitHub repo (the remote\'s name).', 'No.'],
+            ['main', 'The branch to send. deploy.yml runs on pushes to main.', 'No.'],
           ],
-        },
-        {
-          cmd: 'npm run deploy', track: 'both',
-          does: 'Builds, then publishes dist/ to the gh-pages branch of your GitHub repo.',
-          why: 'npm runs "predeploy" (npm run build) first, then "deploy" (gh-pages -d dist). Then on GitHub: Settings → Pages → branch gh-pages.',
-          parts: [
-            ['npm run', 'Run a package.json script.', 'No.'],
-            ['deploy', 'Our script: gh-pages -d dist. -d dist = the folder to publish.', 'No. Set base in vite.config.js to your repo\'s name first.'],
-          ],
-          expect: '"Published". The site appears at https://<your-username>.github.io/<repo>/ a minute later.',
-          mistakes: ['A blank page on GitHub Pages: base in vite.config.js does not match the repo name.', 'No GitHub remote yet: push the repo to GitHub first.'],
+          expect: 'Actions tab: a "Deploy to GitHub Pages" run. When it is green, the site is at https://<your-username>.github.io/<repo>/.',
+          mistakes: ['A blank page on GitHub Pages: base in vite.config.js does not match the repo name.', 'The run fails at the deploy step: Settings → Pages → Source is not GitHub Actions yet.'],
         },
       ],
     },
@@ -335,6 +326,15 @@ Course.commands = {
       title: 'Continuous integration',
       when: 'Unit 9 · Lecture 2',
       commands: [
+        {
+          cmd: 'git rm .github/workflows/deploy.yml', track: 'both',
+          does: 'Deletes deploy.yml and stages the delete for the next commit.',
+          why: 'ci-cd.yml deploys now, only after green. Keeping deploy.yml would still deploy every push, red or not.',
+          parts: [
+            ['git rm', 'Delete a file and tell git, in one step.', 'Deleting it in the editor and running git add . does the same.'],
+            ['.github/workflows/deploy.yml', 'The file to delete.', 'No.'],
+          ],
+        },
         {
           cmd: 'git switch -c rename-shiny', track: 'both',
           does: 'Makes a new branch and moves to it.',

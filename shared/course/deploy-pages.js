@@ -1,6 +1,7 @@
 // Unit 9 · Lecture 1 · GitHub Pages: build the app, make it work under /<repo>/ (base only in
-// production, the hash router only in production), and publish dist/ with the gh-pages package.
-// Follows phase-II/04-Front-End/9-ci-cd/1-gh-pages.md (the gh-pages flow, as the curriculum does it).
+// production, the hash router only in production), and publish dist/ with a GitHub Actions workflow
+// (GitHub's Pages actions; Settings → Pages → Source: GitHub Actions). No gh-pages package or branch.
+// Follows phase-II/04-Front-End/9-ci-cd/1-gh-pages.md.
 Course.register({
   id: 'deploy-pages',
   label: 'Unit 9 · Lecture 1',
@@ -46,19 +47,21 @@ Course.register({
       ],
     },
     {
-      id: 'f3', title: 'Publish with gh-pages',
-      why: 'The gh-pages package copies dist/ to a branch called gh-pages; GitHub Pages serves that branch.',
+      id: 'f3', title: 'Publish with a workflow',
+      why: 'A GitHub Actions workflow builds the app on GitHub and hands dist/ straight to GitHub Pages, on every push to main. Settings → Pages → Source: GitHub Actions.',
       steps: [
         {
-          id: 'f3s1', file: 'package.json', mode: 'replace', find: '    "cy:run": "cypress run"',
-          code: '    "cy:run": "cypress run",\n    "predeploy": "npm run build",\n    "deploy": "gh-pages -d dist"',
-          say: 'npm run deploy: predeploy builds first (npm runs pre<name> before <name>), then gh-pages pushes dist/.',
-          notes: [{ match: '"deploy": "gh-pages -d dist"', what: 'Push the dist folder to the gh-pages branch.', why: 'Vite builds into dist (not build, as in create-react-app).' }],
-        },
-        {
-          id: 'f3s2', run: 'npm install gh-pages --save-dev', npm: { added: 45, audited: 307, secs: 3, funding: 75 }, file: 'package.json', mode: 'replace', find: '    "cypress": "^16.2.0",',
-          code: '    "cypress": "^16.2.0",\n    "gh-pages": "^6.3.0",',
-          say: 'npm install --save-dev gh-pages. Then: npm run deploy, and in Settings → Pages pick the gh-pages branch.',
+          id: 'f3s1', file: '.github/workflows/deploy.yml', mode: 'set',
+          code: "name: Deploy to GitHub Pages\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  pages: write\n  id-token: write\n\nconcurrency:\n  group: pages\n  cancel-in-progress: false\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 24\n          cache: npm\n      - run: npm ci\n      - run: npm run build\n      - uses: actions/upload-pages-artifact@v5\n        with:\n          path: dist\n      - id: deployment\n        uses: actions/deploy-pages@v5",
+          say: 'On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.',
+          notes: [
+            { match: '      - run: npm run build', what: 'Builds dist/ on GitHub, in production mode.', why: 'base and the hash router switch on here; dist/ never goes into git.' },
+            { match: '      - uses: actions/upload-pages-artifact@v5', what: 'Packs dist/ as the site for GitHub Pages.', why: 'Pages publishes exactly this folder.' },
+            { match: '        uses: actions/deploy-pages@v5', what: 'Publishes the packed site to GitHub Pages.', why: 'No extra branch, no token to copy anywhere.' },
+            { match: '  pages: write\n  id-token: write', what: 'May publish to Pages, and prove to Pages which workflow it is.', why: 'Read-only for the code: the workflow cannot push to any branch.' },
+            { match: '      name: github-pages', what: 'The environment GitHub makes for Pages.', why: 'The repo page lists each deploy and the live URL under Environments.' },
+            { match: '      cancel-in-progress: false', what: 'Two quick pushes deploy one after the other.', why: 'A running deploy is never cut off halfway.' },
+          ],
         },
       ],
     },

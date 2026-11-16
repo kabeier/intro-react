@@ -277,7 +277,7 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 
 # Runbook · Unit 9 (CI/CD)
 
-The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokemon-app/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); both workflows pass actionlint. The red/green runs on the slides are real runs in kabeier/demo-test and kabeier/demo_test2.
+The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokemon-app/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); deploy.yml and ci-cd.yml ran for real in kabeier/pokemon-app (Nov 16, 2026: deploy.yml deployed; ci-cd.yml green → deployed, red → skipped, PR → skipped, merge → deployed). The base story (lecture 1, slide 6) uses older runs in kabeier/demo-test and kabeier/demo_test2.
 
 ## Lecture 1 · GitHub Pages
 | # | Min | Do | Say |
@@ -286,12 +286,12 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 5 | 6 | **N** | base only in production (own repo name) |
 | 6 | 9 | open the run links | 8 red runs from an always-on base |
 | 7–8 | 11–13 | **N ×4** | refresh problem; hash router in the build; smoke test |
-| 9–10 | 18–21 | **N ×2**; `npm run deploy` live; Settings → Pages | gh-pages |
+| 9 | 18 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages |
+| 10 | 22 | Settings → Pages → Source → **GitHub Actions**; push; open the run and its link | each deploy = a push to main |
 | 11 | 25 | — | blank page checklist |
 | 12 | 28 | timer (8 min) | students deploy their own copy |
 | 13 | 37 | — | mental model |
-| 14 | 38 | click the 3 docs tabs; Ctrl K in the docs | the table: class left, CSS right; v4 badge; Docs guide on the class site |
-| 15 | 39 | — | homework I |
+| 14 | 38 | — | homework I |
 
 ## Lecture 2 · GitHub Actions
 | # | Min | Do | Say |
@@ -300,13 +300,13 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | 3–4 | 3–9 | **N**; walk the file | ci-cd.yml (one file, two jobs), each step |
 | 5 | 11 | **N** | also test the built site |
 | 6 | 14 | show Settings → Rules | block the merge |
-| 7 | 16 | **N**; then Settings → Pages → Source → GitHub Actions | the deploy job: needs, if: push, pages + id-token, deploy-pages |
-| 8 | 22 | — | two ways to publish: gh-pages branch (lecture 1) vs Pages actions (today) |
+| 7 | 16 | **N ×2** (the deploy job, then delete deploy.yml) | the deploy job: needs, if: push; deploy.yml goes |
+| 8 | 22 | — | deploy.yml → ci-cd.yml: same Pages actions, tests in front |
 | 9–11 | 23–25 | click the runs in kabeier/pokemon-app (red → deploy skipped; PR → skipped; merge → deployed) | the real chain; secrets; reading a failed run |
-| 12 | 26 | timer (7 min); backup red run: pokemon-app run 43882912763 | students make and read their own red ✗ |
+| 12 | 26 | timer (7 min); backup red run: pokemon-app run 43912868016 | students make and read their own red ✗ |
 | 13–15 | 34–38 | — | pipeline; mental model; homework II |
 
-Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected (lecture 1) or Source not switched to GitHub Actions (lecture 2: the deploy job fails at once).
+Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; Pages Source not switched to GitHub Actions (lecture 1: the run fails at the deploy step; set it, Re-run jobs); deploy.yml kept in lecture 2 (two deploys per push: git rm it).
 
 ## Code repo for students
 

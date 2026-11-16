@@ -1,5 +1,5 @@
 // Packages go in with npm install in a terminal on the slide, never by typing into package.json.
-// Scripts ("cy:open", "deploy") are still written by hand.
+// Scripts ("cy:open") are still written by hand.
 import { test, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
@@ -35,7 +35,7 @@ test('every step that adds a package is an npm install command, and names that p
       prev = now; prevRun = s.run || null
     }
   }
-  assert.ok(installs >= 6, 'axios, cypress, tailwind, bootstrap, router, gh-pages')
+  assert.ok(installs >= 5, 'axios, cypress, tailwind, bootstrap, router')
 })
 
 test('the presenter notes table shows the command in the terminal, one N for a two-package install', () => {

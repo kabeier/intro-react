@@ -45,8 +45,9 @@
   <h2>Run the tests on every push <span class="say">.github/workflows/ci-cd.yml</span></h2>
   <div class="livepad" data-lesson="ci-actions" data-start="null" data-steps="f1s1" data-files=".github/workflows/ci-cd.yml"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We write our first workflow: on every push, a clean machine installs, lints, builds and runs Cypress. One file, <code>ci-cd.yml</code>: today it tests, later today it also deploys.</p>
+    <p class="plan"><b>The plan:</b> We write a second workflow, ci-cd.yml: on every push and pull request, a clean machine installs, lints, builds and runs Cypress. Later today it also deploys.</p>
     <p><b>Different from the curriculum</b> (until merged): it uses two files, <code>e2e-tests.yml</code> and <code>deploy.yml</code>. We use one file with two jobs, so the deploy can simply wait for the tests (<code>needs:</code>).</p>
+    <p><b>Say:</b> "deploy.yml from lecture 1 is still there. For now both run on every push, and deploy.yml doesn't care if the tests are red. We fix that later today."</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Walk the file top to bottom. Checked with actionlint: no findings.</p>
 <!-- steps:ci-actions:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -98,37 +99,37 @@
 </section>
 
 <section class="slide code" data-seg="Code along: deploy" data-at="16">
-  <h2>Deploy only after green <span class="say">ci-cd.yml: a second job</span></h2>
-  <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1" data-files=".github/workflows/ci-cd.yml"></div>
+  <h2>Deploy only after green <span class="say">ci-cd.yml: a second job · deploy.yml goes</span></h2>
+  <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We add a deploy job to the same file: the test job saves the dist/ it tested, and the deploy job hands it to GitHub Pages, only after green and only for pushes to main.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job.</p>
-    <p><b>Then show the setting:</b> Settings → Pages → Build and deployment → Source: <b>GitHub Actions</b> (it was "Deploy from a branch: gh-pages" since lecture 1). Without it, the deploy job fails with a "Pages site not set up for GitHub Actions" kind of error.</p>
-    <p><b>Different from the curriculum</b> (until merged): it publishes with the <code>gh-pages</code> package from the workflow (a token in a git URL, <code>contents: write</code>, a <code>gh-pages</code> branch). We use GitHub's own Pages actions, as the Vite docs do: no branch, no token handling, and the job can only publish Pages.</p>
-    <p><code>npm run deploy</code> from lecture 1 still pushes the gh-pages branch, but once the source is GitHub Actions, Pages ignores that branch. From now on, deploy by pushing to main.</p>
+    <p class="plan"><b>The plan:</b> We move the deploy into ci-cd.yml, behind the tests: a deploy job publishes the tested dist/, only after green and only for pushes to main. Then we delete deploy.yml.</p>
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces in ci-cd.yml: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job. The Pages parts are the same as deploy.yml from lecture 1; new are <code>needs:</code> and <code>if:</code>.</p>
+    <p><b>Then delete deploy.yml</b> (<code>git rm .github/workflows/deploy.yml</code>). <b>Say:</b> "Two workflows that both deploy = the untested one wins the race. One file, one deploy, after green."</p>
+    <p>No setting to change: the Pages Source has been <b>GitHub Actions</b> since lecture 1.</p>
+    <p><b>Different from the curriculum</b> (until merged): it publishes with the <code>gh-pages</code> package from the workflow (a token in a git URL, <code>contents: write</code>, a <code>gh-pages</code> branch). We use GitHub's own Pages actions, as in lecture 1: no branch, no token handling, and the job can only publish Pages.</p>
 <!-- steps:ci-actions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Save dist/ for GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages. Settings → Pages → Source: GitHub Actions.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Save dist/ for GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete deploy.yml: it deploys every push, even a red one. ci-cd.yml deploys now, only after green.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="22">
-  <h2>Two ways to publish to GitHub Pages</h2>
+  <h2>deploy.yml → ci-cd.yml</h2>
   <table class="dbt small">
-    <tr><th></th><th>Lecture 1: <code>npm run deploy</code></th><th>Today: CI/CD</th></tr>
-    <tr><td>Who deploys</td><td>you, from your laptop</td><td>GitHub, after every green push to main</td></tr>
-    <tr><td>How</td><td><code>gh-pages</code> pushes dist/ to a <b>gh-pages branch</b></td><td><code>upload-pages-artifact</code> → <code>deploy-pages</code>: <b>no branch</b></td></tr>
-    <tr><td>Settings → Pages → Source</td><td>Deploy from a branch: gh-pages</td><td><b>GitHub Actions</b></td></tr>
-    <tr><td>Tested first?</td><td>only if you remember</td><td>always: <code>needs: cypress-run</code></td></tr>
+    <tr><th></th><th>Lecture 1: <code>deploy.yml</code></th><th>Today: <code>ci-cd.yml</code></th></tr>
+    <tr><td>Runs on</td><td>push to main</td><td>push to main <b>and</b> pull requests</td></tr>
+    <tr><td>Tests first?</td><td>no: a red push still goes live</td><td><b>yes</b>: <code>needs: cypress-run</code></td></tr>
+    <tr><td>Pull requests</td><td>—</td><td>tested, never deployed</td></tr>
+    <tr><td>Publishes with</td><td colspan="2" style="text-align:center"><code>upload-pages-artifact</code> → <code>deploy-pages</code> (the same)</td></tr>
   </table>
-  <p class="bottomline">Same dist/, same base, same hash router. Only who publishes changes.</p>
+  <p class="bottomline">Same Pages actions. New: the tests stand in front.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Compare lecture 1's deploy with today's, so students see that only the publishing step changed.</p>
-    <p>Point at the <b>Source</b> row and switch it live in the demo repo: Settings → Pages → Build and deployment → Source → GitHub Actions.</p>
-    <p>Why the Actions way is the normal one today: it's what the Vite docs and GitHub's own Pages starter use. The gh-pages branch comes from before Pages could deploy from Actions; it's still fine for a quick deploy from a laptop.</p>
-    <p><b>Say:</b> "Lecture 1, you published. Now GitHub publishes, and only what passed the tests."</p>
+    <p class="plan"><b>The plan:</b> Compare lecture 1's workflow with today's, so students see that the publishing stays the same and only the gate is new.</p>
+    <p>Point at the <b>Tests first?</b> row: that's the whole reason for today. Then the last row: the two Pages actions are copied over unchanged.</p>
+    <p><b>Say:</b> "Lecture 1, every push went live. Now only what passed the tests goes live."</p>
   </aside>
 </section>
 
@@ -136,16 +137,16 @@
   <h2>The chain, on a real repo</h2>
   <table class="dbt small">
     <tr><th>What happened</th><th>cypress-run</th><th>deploy</th><th>Live site</th></tr>
-    <tr><td>push: add <code>ci-cd.yml</code></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43882524185" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43882524185" target="_blank" rel="noopener">✓ deployed</a></td><td>updated</td></tr>
-    <tr><td>push: "Make Shiny" → "Shine"</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43882912763" target="_blank" rel="noopener">✗ 2 tests fail</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43882912763" target="_blank" rel="noopener">skipped</a></td><td>unchanged</td></tr>
-    <tr><td>pull request: the fix</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43883199534" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43883199534" target="_blank" rel="noopener">skipped (a PR)</a></td><td>unchanged</td></tr>
-    <tr><td>merge into main</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43883452024" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43883452024" target="_blank" rel="noopener">✓ deployed</a></td><td>updated</td></tr>
+    <tr><td>push: add <code>ci-cd.yml</code>, delete <code>deploy.yml</code></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43912603450" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43912603450" target="_blank" rel="noopener">✓ deployed</a></td><td>updated</td></tr>
+    <tr><td>push: "Make Shiny" → "Shine"</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">✗ 2 tests fail</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">skipped</a></td><td>unchanged</td></tr>
+    <tr><td>pull request: the fix</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43913199303" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43913199303" target="_blank" rel="noopener">skipped (a PR)</a></td><td>unchanged</td></tr>
+    <tr><td>merge into main</td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43913474607" target="_blank" rel="noopener">✓ success</a></td><td><a href="https://github.com/kabeier/pokemon-app/actions/runs/43913474607" target="_blank" rel="noopener">✓ deployed</a></td><td>updated</td></tr>
   </table>
   <p class="bottomline">Red tests or a pull request = no deploy. That's the point.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> The whole chain on a real repo: green, red, a pull request, and a merge.</p>
     <p>Click the red run: the graph shows <b>cypress-run ✗ → deploy (skipped)</b>. Open cypress-run → "Cypress (dev server)": "Expected to find content: 'Make Shiny'". Then click a green run: the summary has the live link from <code>environment: url</code>.</p>
-    <p>Repo: <a href="https://github.com/kabeier/pokemon-app" target="_blank" rel="noopener">kabeier/pokemon-app</a> (live at kabeier.github.io/pokemon-app). It has <b>no gh-pages branch</b>: point at the branch list. Runs recorded Nov 16, 2026; GitHub keeps the logs for 90 days (until about Feb 14, 2027).</p>
+    <p>Repo: <a href="https://github.com/kabeier/pokemon-app" target="_blank" rel="noopener">kabeier/pokemon-app</a> (live at kabeier.github.io/pokemon-app). Runs recorded Nov 16, 2026; GitHub keeps the logs for 90 days (until about Feb 14, 2027).</p>
   </aside>
 </section>
 
@@ -180,14 +181,14 @@
   <h2>Activity: make and read your own red ✗</h2>
   <div class="countdown" data-sec="420"></div>
   <ol class="steps">
-    <li>Add <b>ci-cd.yml</b> to the repo you deployed; Settings → Pages → Source: <b>GitHub Actions</b>; push: wait for green and a deploy</li>
+    <li>Add <b>ci-cd.yml</b> to the repo you deployed, delete <b>deploy.yml</b>; push: wait for green and a deploy</li>
     <li>On a branch, rename "Make Shiny" to "Shine"; push; open a pull request</li>
     <li>Open the red ✗ → the job → the first red step: which test, which error?</li>
     <li>Say the fix in one sentence; fix it; push: green</li>
   </ol>
   <p class="muted small">Compare with: <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app runs</a> (a red run, a skipped deploy, a pull request)</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students make their own red X on purpose, then read it.</p><p>7 minutes. Each student makes a fresh red run. Backup: the red run in kabeier/pokemon-app (<a href="https://github.com/kabeier/pokemon-app/actions/runs/43882912763" target="_blank" rel="noopener">run 43882912763</a>); its log is kept until about Feb 14, 2027.</p><p>If a student's deploy job fails right away, their Pages source is still "Deploy from a branch": Settings → Pages → Source → GitHub Actions, then re-run the job.</p></aside>
+    <p class="plan"><b>The plan:</b> Students make their own red X on purpose, then read it.</p><p>7 minutes. Each student makes a fresh red run. Backup: the red run in kabeier/pokemon-app (<a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">run 43912868016</a>); its log is kept until about Feb 14, 2027.</p><p>Two deploys in one push? The student kept deploy.yml: <code>git rm .github/workflows/deploy.yml</code>, push.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="34">
@@ -240,8 +241,8 @@
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=2"></script>
 <script src="../shared/course/outlet-context.js?v=2"></script>
-<script src="../shared/course/deploy-pages.js?v=3"></script>
-<script src="../shared/course/ci-actions.js?v=2"></script>
+<script src="../shared/course/deploy-pages.js?v=4"></script>
+<script src="../shared/course/ci-actions.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=14"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

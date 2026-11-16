@@ -1,7 +1,7 @@
 // Unit 9 · Lecture 2 · GitHub Actions for CI/CD: lint, build and run Cypress on every push and
 // pull request, check the built site too, and deploy only after the tests pass.
 // Follows phase-II/04-Front-End/9-ci-cd/2-gh-actions.md (action versions as of November 2026).
-// Deploys with GitHub's own Pages actions (Settings → Pages → Source: GitHub Actions), not the gh-pages branch.
+// Lecture 1's deploy.yml deploys every push; its deploy moves into ci-cd.yml behind the tests, and deploy.yml goes.
 Course.register({
   id: 'ci-actions',
   label: 'Unit 9 · Lecture 2',
@@ -40,12 +40,12 @@ Course.register({
     },
     {
       id: 'f3', title: 'Deploy only after green',
-      why: 'A second job, deploy, needs cypress-run: it starts only if the tests passed. It runs only for pushes to main, never for pull requests, and publishes the exact dist/ the tests checked.',
+      why: 'deploy.yml from lecture 1 deploys every push, even a red one. A deploy job in ci-cd.yml needs cypress-run: it starts only if the tests passed, only for pushes to main, and publishes the exact dist/ the tests checked. Then deploy.yml goes.',
       steps: [
         {
           id: 'f3s1', file: '.github/workflows/ci-cd.yml', mode: 'append',
           code: "      - name: Save dist/ for GitHub Pages\n        if: github.event_name == 'push'\n        uses: actions/upload-pages-artifact@v5\n        with:\n          path: dist\n\n  deploy:\n    needs: cypress-run\n    if: github.event_name == 'push'\n    runs-on: ubuntu-latest\n    permissions:\n      pages: write\n      id-token: write\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    concurrency:\n      group: pages\n      cancel-in-progress: false\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@v5",
-          say: 'The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages. Settings → Pages → Source: GitHub Actions.',
+          say: 'The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages.',
           notes: [
             { match: "        if: github.event_name == 'push'", what: 'Save dist/ only for a push to main.', why: 'A pull request is tested but never deployed.' },
             { match: '        uses: actions/upload-pages-artifact@v5', what: 'Packs dist/ as the site for GitHub Pages.', why: 'It deploys the exact build the tests just checked; nothing is built twice.' },
@@ -53,8 +53,12 @@ Course.register({
             { match: '      pages: write\n      id-token: write', what: 'May publish to Pages, and prove to Pages which workflow it is.', why: 'Only this job gets them; it cannot push code to any branch.' },
             { match: '      name: github-pages', what: 'The environment GitHub made for Pages.', why: 'The repo page shows each deploy and the live URL under Environments.' },
             { match: '      cancel-in-progress: false', what: 'Two quick pushes deploy one after the other.', why: 'A running deploy is never cut off halfway.' },
-            { match: '        uses: actions/deploy-pages@v5', what: 'Publishes the saved dist/ to GitHub Pages.', why: 'No gh-pages branch, no git push, no token in a URL.' },
+            { match: '        uses: actions/deploy-pages@v5', what: 'Publishes the saved dist/ to GitHub Pages.', why: 'Same action as deploy.yml; now it waits for the tests.' },
           ],
+        },
+        {
+          id: 'f3s2', file: '.github/workflows/deploy.yml', mode: 'delete', code: '',
+          say: 'Delete deploy.yml: it deploys every push, even a red one. ci-cd.yml deploys now, only after green.',
         },
       ],
     },
