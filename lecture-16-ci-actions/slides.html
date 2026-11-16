@@ -6,7 +6,7 @@
 <title>Unit 9 · Lecture 2 · GitHub Actions for CI/CD</title>
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=2">
-<link rel="stylesheet" href="../shared/livepad.css?v=8">
+<link rel="stylesheet" href="../shared/livepad.css?v=9">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -46,7 +46,6 @@
   <div class="livepad" data-lesson="ci-actions" data-start="null" data-steps="f1s1" data-files=".github/workflows/ci-cd.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We write a second workflow, ci-cd.yml: on every push and pull request, a clean machine installs, lints, builds and runs Cypress. Later today it also deploys.</p>
-    <p><b>Different from the curriculum</b> (until merged): it uses two files, <code>e2e-tests.yml</code> and <code>deploy.yml</code>. We use one file with two jobs, so the deploy can simply wait for the tests (<code>needs:</code>).</p>
     <p><b>Say:</b> "deploy.yml from lecture 1 is still there. For now both run on every push, and deploy.yml doesn't care if the tests are red. We fix that later today."</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Walk the file top to bottom. Checked with actionlint: no findings.</p>
 <!-- steps:ci-actions:f1 -->
@@ -69,7 +68,7 @@
   </table>
   <p class="bottomline">Cheap checks first, Cypress last.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> What each step of that workflow does, in one line.</p><p><b>Different from the curriculum</b> (until merged): it uses older action versions and never lints or builds.</p></aside>
+    <p class="plan"><b>The plan:</b> What each step of that workflow does, in one line.</p></aside>
 </section>
 
 <section class="slide code" data-seg="Code along: built site" data-at="11">
@@ -106,7 +105,6 @@
     <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces in ci-cd.yml: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job. The Pages parts are the same as deploy.yml from lecture 1; new are <code>needs:</code> and <code>if:</code>.</p>
     <p><b>Then delete deploy.yml</b> (<code>git rm .github/workflows/deploy.yml</code>). <b>Say:</b> "Two workflows that both deploy = the untested one wins the race. One file, one deploy, after green."</p>
     <p>No setting to change: the Pages Source has been <b>GitHub Actions</b> since lecture 1.</p>
-    <p><b>Different from the curriculum</b> (until merged): it publishes with the <code>gh-pages</code> package from the workflow (a token in a git URL, <code>contents: write</code>, a <code>gh-pages</code> branch). We use GitHub's own Pages actions, as in lecture 1: no branch, no token handling, and the job can only publish Pages.</p>
 <!-- steps:ci-actions:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Save dist/ for GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages.</td></tr>
@@ -244,7 +242,7 @@
 <script src="../shared/course/deploy-pages.js?v=4"></script>
 <script src="../shared/course/ci-actions.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
-<script src="../shared/livepad.js?v=14"></script>
+<script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>

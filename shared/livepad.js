@@ -11,7 +11,7 @@
 // On a page:  Livepad.mount(el, { files, editable: true, onChange(files) })
 (() => {
   const MONACO = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/'
-  const POPOUT = new URL('popout.html', document.currentScript.src).href
+  const POPOUT = new URL('popout.html?v=2', document.currentScript.src).href
   const channel = new BroadcastChannel('livepad')
   let splitOpen = false
   // The file tree stays open or closed for every editor on the page, and after a reload.
@@ -203,7 +203,7 @@
       `<button type="button" class="lp-btn lp-termb" title="Show or hide the terminal" hidden>&gt;_ Terminal</button>` +
       `<button type="button" class="lp-btn lp-app" title="Show the live app (A)">A · App</button>` +
       `<button type="button" class="lp-btn lp-run" title="Run the Cypress tests" hidden>▶ Run tests</button>` +
-      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-work"><div class="lp-tree"></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden></div><iframe title="Live app"></iframe></div></div></div>` +
+      `<button type="button" class="lp-btn lp-pop" title="Open the live app in its own window">↗ Pop out</button></div><div class="lp-later" hidden></div><div class="lp-work"><div class="lp-tree"></div><div class="lp-body"><div class="lp-editor"></div><div class="lp-preview"><div class="lp-addr" hidden><input class="lp-url" spellcheck="false" autocomplete="off" aria-label="Address" title="Type a path, like /pokemon/25, and press Enter"></div><iframe title="Live app"></iframe></div></div></div>` +
       `<div class="lp-term" hidden><div class="lp-term-head">Terminal</div><div class="lp-term-lines"></div>` +
       `<label class="lp-term-row"><span class="lp-term-ps">pokemon-app $</span><input class="lp-term-in" spellcheck="false" autocomplete="off" aria-label="Terminal: type a command, then Enter"></label></div>` +
       `<div class="lp-console" hidden><div class="lp-console-head">Console</div><div class="lp-console-lines"></div></div>`
@@ -249,12 +249,22 @@
     pad.setPath = (p) => {
       pad.path = p || '/'
       const bar = el.querySelector('.lp-addr')
-      if (bar) { bar.textContent = 'localhost:5173' + pad.path; bar.hidden = pad.path === '/' && !pad.routed }
+      if (!bar) return
+      const url = bar.querySelector('.lp-url')
+      if (document.activeElement !== url) url.value = 'localhost:5173' + pad.path
+      bar.hidden = pad.path === '/' && !pad.routed && !usesRouter(pad.files)
     }
+    // Type a path in the address bar + Enter: a full page load at that path, like a real browser.
+    const url = el.querySelector('.lp-url')
+    if (url) url.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); pad.setPath(toPath(url.value)); url.blur(); pad.refresh() }
+      else if (e.key === 'Escape') { url.blur(); pad.setPath(pad.path) }
+    })
     pad.refresh = () => {
       pad.err = null
       pad.clearLog()
       pad.setStatus('loading…')
+      pad.setPath(pad.path) // the code may have just started using the router: show the address bar
       pad.iframe.srcdoc = Course.buildDoc(pad.files, pad.assets, { routes: pad.routes, path: pad.path })
       if (pad === active()) broadcast()
     }
@@ -590,6 +600,15 @@
     else if (t === 'livepad-navigate') { pad.setPath(e.data.path); pad.refresh() } // a plain link: a full page load
   })
 
+  // 'localhost:5173/about', '/about' or 'about' → '/about'
+  function toPath(v) {
+    v = String(v || '').trim()
+    const m = v.match(/^(?:https?:\/\/)?(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)?$/i)
+    if (m) return m[1] || '/'
+    return v.startsWith('/') ? v : '/' + v
+  }
+  const usesRouter = (files) => Object.values(files || {}).some((c) => typeof c === 'string' && /from\s+['"]react-router(\/dom)?['"]/.test(c))
+
   const active = () => pads.find((p) => p.el.closest('.slide.active')) || pads.find((p) => !p.el.closest('.slide'))
 
   // ---------- Split (A) and pop-out window (↗) ----------
@@ -612,7 +631,7 @@
     const pad = active()
     if (!pad) return
     lastSent = Date.now()
-    channel.postMessage({ type: 'doc', lesson: pad.lesson && pad.lesson.id, slide: slideNo(pad), doc: Course.buildDoc(pad.files, pad.assets) })
+    channel.postMessage({ type: 'doc', lesson: pad.lesson && pad.lesson.id, slide: slideNo(pad), path: pad.path, addr: usesRouter(pad.files) || pad.path !== '/', doc: Course.buildDoc(pad.files, pad.assets, { routes: pad.routes, path: pad.path }) })
   }
   const setPop = (open) => { popOpen = open; paintAll() }
   function readGeom() {
@@ -629,6 +648,7 @@
     const t = e.data && e.data.type
     if (t === 'hello') { lastHello = Date.now(); if (!popOpen) setPop(true); if (document.hasFocus() || !lastSent || opening) broadcast(); opening = false }
     else if (t === 'bye') { popWin = null; setPop(false) }
+    else if (t === 'go') { const pad = active(); if (pad) { pad.setPath(toPath(e.data.path)); pad.refresh() } } // typed in the pop-out's address bar
   }
   // Is the pop-out still there? (Its "bye" can be lost, e.g. during a reload.)
   setInterval(() => {

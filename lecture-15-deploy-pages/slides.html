@@ -6,7 +6,7 @@
 <title>Unit 9 · Lecture 1 · GitHub Pages</title>
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=2">
-<link rel="stylesheet" href="../shared/livepad.css?v=8">
+<link rel="stylesheet" href="../shared/livepad.css?v=9">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -131,7 +131,6 @@
     <p class="plan"><b>The plan:</b> We write one workflow file: on every push to main, GitHub builds the app and publishes dist/ to GitHub Pages.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
     <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
-    <p><b>Different from the curriculum</b> (until merged): it publishes with the <code>gh-pages</code> npm package (<code>npm run deploy</code> pushes dist/ to a gh-pages branch). We use GitHub's own Pages actions, as the Vite docs do: nothing to install, no extra branch, and the deploy happens on GitHub.</p>
 <!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.</td></tr>
@@ -230,7 +229,7 @@
 <script src="../shared/course/outlet-context.js?v=2"></script>
 <script src="../shared/course/deploy-pages.js?v=4"></script>
 <script src="../shared/filetree.js?v=2"></script>
-<script src="../shared/livepad.js?v=14"></script>
+<script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
 </body>
 </html>
