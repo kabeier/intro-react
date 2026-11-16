@@ -297,15 +297,16 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 | # | Min | Do | Say |
 |---|---|---|---|
 | 2 | 1 | — | CI and CD |
-| 3–4 | 3–9 | **N**; walk the file | e2e-tests.yml, each step |
+| 3–4 | 3–9 | **N**; walk the file | ci-cd.yml (one file, two jobs), each step |
 | 5 | 11 | **N** | also test the built site |
 | 6 | 14 | show Settings → Rules | block the merge |
-| 7 | 16 | **N** | deploy.yml: workflow_run, if:, head_sha |
-| 8–10 | 22–25 | click the runs (summaries; logs expired) | the real chain; secrets; reading a failed run |
-| 11 | 26 | timer (7 min); have a red PR of your own ready | students make and read their own red ✗ (old demo logs have expired) |
-| 12–14 | 34–38 | — | pipeline; mental model; homework II |
+| 7 | 16 | **N**; then Settings → Pages → Source → GitHub Actions | the deploy job: needs, if: push, pages + id-token, deploy-pages |
+| 8 | 22 | — | two ways to publish: gh-pages branch (lecture 1) vs Pages actions (today) |
+| 9–11 | 23–25 | click the runs in kabeier/pokemon-app (red → deploy skipped; PR → skipped; merge → deployed) | the real chain; secrets; reading a failed run |
+| 12 | 26 | timer (7 min); backup red run: pokemon-app run 43882912763 | students make and read their own red ✗ |
+| 13–15 | 34–38 | — | pipeline; mental model; homework II |
 
-Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected.
+Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; GitHub Pages branch not selected (lecture 1) or Source not switched to GitHub Actions (lecture 2: the deploy job fails at once).
 
 ## Code repo for students
 

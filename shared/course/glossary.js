@@ -83,6 +83,8 @@
     config: 'Cypress settings for this run', workflow_run: 'start when another workflow finishes', workflows: 'which workflow to wait for', types: 'which kind of event (completed = finished)',
     concurrency: 'never run two of these at once', group: 'the name of the queue', 'cancel-in-progress': 'false = let a running deploy finish', if: 'only run when this condition is true',
     env: 'environment variables for this step', ref: 'which commit to check out', run: 'shell commands to run',
+    needs: 'wait for this job, and run only if it passed', environment: 'the deployment target this job deploys to', url: 'the link shown for this deploy',
+    pages: 'access to publish GitHub Pages', 'id-token': 'lets the job prove to GitHub Pages which workflow it is', path: 'the folder to use', id: 'a name for this step, so later lines can read its outputs',
   }
 
   // ---------- rules ----------
@@ -149,9 +151,10 @@
     { file: /\.oxlintrc\.json$/, line: /^"(overrides|ignorePatterns|env|globals)"/, boilerplate: true, note: (m) => n(`Linter setting "${m[1]}".`, 'Adjusts which files or names the rules apply to.') },
 
     // ----- workflow YAML -----
-    { file: /\.ya?ml$/, line: /^- uses: ([\w./-]+)@(v\d+)/, boilerplate: true, note: (m) => n(`Use the ready-made action ${m[1]}, version ${m[2]}.`, m[1].includes('checkout') ? 'The machine starts empty: this gets your code.' : m[1].includes('setup-node') ? 'Installs Node.js on the machine.' : m[1].includes('cypress') ? 'Starts the server, waits for it, and runs Cypress.' : 'Someone else wrote this step; we only configure it.') },
-    { file: /\.ya?ml$/, line: /^(?:- )?uses: ([\w./-]+)@(v\d+)/, boilerplate: true, note: (m) => n(`Use the ready-made action ${m[1]}, version ${m[2]}.`, 'Someone else wrote this step; with: configures it.') },
+    { file: /\.ya?ml$/, line: /^- uses: ([\w./-]+)@(v\d+)/, boilerplate: true, note: (m) => n(`Use the ready-made action ${m[1]}, version ${m[2]}.`, m[1].includes('checkout') ? 'The machine starts empty: this gets your code.' : m[1].includes('setup-node') ? 'Installs Node.js on the machine.' : m[1].includes('cypress') ? 'Starts the server, waits for it, and runs Cypress.' : m[1].includes('upload-pages-artifact') ? 'Packs dist/ as the site for GitHub Pages.' : m[1].includes('deploy-pages') ? 'Publishes the packed site to GitHub Pages.' : 'Someone else wrote this step; we only configure it.') },
+    { file: /\.ya?ml$/, line: /^(?:- )?uses: ([\w./-]+)@(v\d+)/, boilerplate: true, note: (m) => n(`Use the ready-made action ${m[1]}, version ${m[2]}.`, m[1].includes('upload-pages-artifact') ? 'Packs dist/ as the site for GitHub Pages.' : m[1].includes('deploy-pages') ? 'Publishes the packed site to GitHub Pages.' : 'Someone else wrote this step; with: configures it.') },
     { file: /\.ya?ml$/, line: /^- run: (.+)$/, boilerplate: true, note: (m) => n(`A step that runs the command: ${m[1]}`, m[1].includes('lint') ? 'Fails the run on lint errors.' : m[1].includes('build') ? 'Fails the run if the app does not build.' : 'Same command you run on your laptop.') },
+    { file: /\.ya?ml$/, line: /^- id: ([\w-]+)$/, boilerplate: true, note: (m) => n(`A step with the id "${m[1]}".`, 'Other lines read this step\'s outputs through it, like steps.' + m[1] + '.outputs.page_url.') },
     { file: /\.ya?ml$/, line: /^- name: (.+)$/, boilerplate: true, note: (m) => n(`A step named "${m[1]}".`, 'The name shows in the run\'s log.') },
     { file: /\.ya?ml$/, line: /^([\w-]+):\s*(.*)$/, boilerplate: true, note: (m) => YAML[m[1]] ? n(`${m[1]}${m[2] ? ': ' + m[2] : ''}: ${YAML[m[1]]}.`, 'Workflow files are YAML: keys, values, and indentation for nesting.') : n(`${m[1]}:${m[2] ? ' ' + m[2] : ''}: ${m[2] ? 'a setting' : 'the name of a job (or a group of settings below it)'}.`, 'Workflow files are YAML: keys, values, and indentation for nesting.') },
     { file: /\.ya?ml$/, line: /^git config user\.(name|email)/, boilerplate: true, note: (m) => n(`Sets the git ${m[1]} for the commit gh-pages makes.`, 'A bot identity, so no personal details are used.') },

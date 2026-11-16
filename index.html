@@ -272,11 +272,11 @@
     <section>
       <div class="num">2</div>
       <h2>GitHub Actions for CI/CD</h2>
-      <p>Lint, build and Cypress on every push and pull request; deploy only after green. Real red and green runs.</p>
+      <p>Lint, build and Cypress on every push and pull request; deploy with GitHub's Pages actions only after green. Real red and green runs.</p>
       <a class="slides" href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, N for the next step, ▶ Run tests to run the specs</a>
       <ol>
-        <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: make and read your own red ✗</b><span>Break a test on a branch of your deployed repo, open a pull request, read the failure. (Slide 11.)</span></a></li>
-        <li><a href="explore.html?lesson=ci-actions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>Both workflow files, every line explained.</span></a></li>
+        <li><a href="lecture-16-ci-actions/slides.html" target="_blank" rel="noopener"><b>Activity: make and read your own red ✗</b><span>Break a test on a branch of your deployed repo, open a pull request, read the failure. (Slide 12.)</span></a></li>
+        <li><a href="explore.html?lesson=ci-actions&amp;at=f1" target="_blank" rel="noopener"><b>Code Explorer</b><span>The workflow file, ci-cd.yml, every line explained.</span></a></li>
         <li><a href="https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/2-gh-actions/" target="_blank" rel="noopener"><b>Curriculum page</b><span>This lesson on the Code Platoon curriculum site</span></a></li>
       </ol>
     </section>
@@ -405,6 +405,7 @@ npm install react-bootstrap bootstrap</code></pre><button type="button" class="c
     <h4>Deploying</h4>
     <div class="cmdwrap"><pre class="cmd"><code>npm install --save-dev gh-pages
 npm run deploy</code></pre><button type="button" class="copy">Copy</button></div>
+    <p>With CI/CD (lecture 2): Settings → Pages → Source → <b>GitHub Actions</b>, then deploy by pushing to main. <b>Deploy job fails at once?</b> The source is still "Deploy from a branch".</p>
     <p class="fail"><b>Blank page on GitHub Pages?</b> base in vite.config.js must be <code>'/&lt;your repo name&gt;/'</code>, only in production: <code>defineConfig(({ mode }) =&gt; ({ base: mode === 'production' ? '/repo/' : '/', … }))</code>. <b>Refresh gives 404?</b> Use the hash router in production. The two workflow files are in the <a href="explore.html?lesson=ci-actions&amp;at=f3" target="_blank" rel="noopener">Code Explorer</a> to copy.</p>
   </section>
 

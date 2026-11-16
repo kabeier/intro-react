@@ -1,6 +1,7 @@
 // Unit 9 · Lecture 2 · GitHub Actions for CI/CD: lint, build and run Cypress on every push and
 // pull request, check the built site too, and deploy only after the tests pass.
-// Follows phase-II/04-Front-End/9-ci-cd/2-gh-actions.md (action versions as of October 2026).
+// Follows phase-II/04-Front-End/9-ci-cd/2-gh-actions.md (action versions as of November 2026).
+// Deploys with GitHub's own Pages actions (Settings → Pages → Source: GitHub Actions), not the gh-pages branch.
 Course.register({
   id: 'ci-actions',
   label: 'Unit 9 · Lecture 2',
@@ -13,8 +14,8 @@ Course.register({
       why: 'CI = a clean computer checks every change: install, lint, build, test. A red check on a pull request means "don\'t merge yet".',
       steps: [
         {
-          id: 'f1s1', file: '.github/workflows/e2e-tests.yml', mode: 'set',
-          code: "name: E2E Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  cypress-run:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 24\n          cache: npm\n      - run: npm ci\n      - run: npm run lint\n      - run: npm run build\n      - name: Cypress (dev server)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run dev\n          wait-on: 'http://localhost:5173/'",
+          id: 'f1s1', file: '.github/workflows/ci-cd.yml', mode: 'set',
+          code: "name: CI/CD\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\njobs:\n  cypress-run:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v7\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 24\n          cache: npm\n      - run: npm ci\n      - run: npm run lint\n      - run: npm run build\n      - name: Cypress (dev server)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run dev\n          wait-on: 'http://localhost:5173/'",
           say: 'One job: get the code, Node 24, install exactly the lockfile (npm ci), lint, build, then Cypress against the dev server.',
           notes: [
             { match: '      - run: npm ci', what: 'Installs exactly what package-lock.json says.', why: 'Same versions every run; fails if the lockfile and package.json disagree.' },
@@ -30,7 +31,7 @@ Course.register({
       why: 'The dev server is not what users get. A second Cypress step runs the production smoke test against npm run preview, under /pokemon-app/ with the hash router.',
       steps: [
         {
-          id: 'f2s1', file: '.github/workflows/e2e-tests.yml', mode: 'append',
+          id: 'f2s1', file: '.github/workflows/ci-cd.yml', mode: 'append',
           code: "      - name: Cypress (built site)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run preview\n          wait-on: 'http://localhost:4173/pokemon-app/'\n          config: baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js",
           say: 'Same action, different server: preview serves dist/ on port 4173, at the base path.',
           notes: [{ match: 'config: baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js', what: 'Points Cypress at the built site and the production specs.', why: 'Catches a wrong base or router before users do.' }],
@@ -39,17 +40,20 @@ Course.register({
     },
     {
       id: 'f3', title: 'Deploy only after green',
-      why: 'workflow_run starts this workflow when E2E Tests finishes. The if: deploys only when it passed, and only for pushes to main (not pull requests).',
+      why: 'A second job, deploy, needs cypress-run: it starts only if the tests passed. It runs only for pushes to main, never for pull requests, and publishes the exact dist/ the tests checked.',
       steps: [
         {
-          id: 'f3s1', file: '.github/workflows/deploy.yml', mode: 'set',
-          code: "name: Deploy\n\non:\n  workflow_run:\n    workflows: [E2E Tests]\n    branches: [main]\n    types: [completed]\n\nconcurrency:\n  group: pages\n  cancel-in-progress: false\n\njobs:\n  deploy:\n    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'\n    runs-on: ubuntu-latest\n    permissions:\n      contents: write\n    steps:\n      - uses: actions/checkout@v7\n        with:\n          ref: ${{ github.event.workflow_run.head_sha }}\n      - uses: actions/setup-node@v7\n        with:\n          node-version: 24\n          cache: npm\n      - run: npm ci\n      - run: npm run build\n      - name: Publish dist/ to the gh-pages branch\n        env:\n          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: |\n          git config user.name 'github-actions[bot]'\n          git config user.email 'github-actions[bot]@users.noreply.github.com'\n          npx gh-pages -d dist -r \"https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git\"",
-          say: 'Waits for E2E Tests; deploys the exact commit that was tested, with the same gh-pages command as npm run deploy.',
+          id: 'f3s1', file: '.github/workflows/ci-cd.yml', mode: 'append',
+          code: "      - name: Save dist/ for GitHub Pages\n        if: github.event_name == 'push'\n        uses: actions/upload-pages-artifact@v5\n        with:\n          path: dist\n\n  deploy:\n    needs: cypress-run\n    if: github.event_name == 'push'\n    runs-on: ubuntu-latest\n    permissions:\n      pages: write\n      id-token: write\n    environment:\n      name: github-pages\n      url: ${{ steps.deployment.outputs.page_url }}\n    concurrency:\n      group: pages\n      cancel-in-progress: false\n    steps:\n      - id: deployment\n        uses: actions/deploy-pages@v5",
+          say: 'The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages. Settings → Pages → Source: GitHub Actions.',
           notes: [
-            { match: "    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'", what: 'Only after a green run, and only for a push.', why: 'A red run shows this job as skipped; a pull request never deploys.' },
-            { match: '          ref: ${{ github.event.workflow_run.head_sha }}', what: 'Check out the commit the tests ran on.', why: 'Not whatever is newest on main by now.' },
-            { match: '      contents: write', what: 'This job may push (the gh-pages branch).', why: 'The test workflow only reads; only the deploy writes.' },
-            { match: '${{ secrets.GITHUB_TOKEN }}', what: 'A token GitHub creates for each run.', why: 'No password or personal token in the repo, ever.' },
+            { match: "        if: github.event_name == 'push'", what: 'Save dist/ only for a push to main.', why: 'A pull request is tested but never deployed.' },
+            { match: '        uses: actions/upload-pages-artifact@v5', what: 'Packs dist/ as the site for GitHub Pages.', why: 'It deploys the exact build the tests just checked; nothing is built twice.' },
+            { match: '    needs: cypress-run', what: 'Wait for the cypress-run job, and only start if it passed.', why: 'Red tests: this job shows as skipped, and the live site stays as it was.' },
+            { match: '      pages: write\n      id-token: write', what: 'May publish to Pages, and prove to Pages which workflow it is.', why: 'Only this job gets them; it cannot push code to any branch.' },
+            { match: '      name: github-pages', what: 'The environment GitHub made for Pages.', why: 'The repo page shows each deploy and the live URL under Environments.' },
+            { match: '      cancel-in-progress: false', what: 'Two quick pushes deploy one after the other.', why: 'A running deploy is never cut off halfway.' },
+            { match: '        uses: actions/deploy-pages@v5', what: 'Publishes the saved dist/ to GitHub Pages.', why: 'No gh-pages branch, no git push, no token in a URL.' },
           ],
         },
       ],
