@@ -271,10 +271,11 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 4 | 5 | **N ×6**, red → green | the list in App, Outlet context |
 | 5–6 | 11–13 | — | reading the hook; Pikachu comes back |
 | 7 | 15 | **N ×5**, red → green | Pikachu loads once (in App) |
-| 8 | 21 | **N ×7**, ▶ 33 green | the count too |
-| 9–11 | 25–28 | — | shiny (optional lift); where state lives; 33 tests |
-| 12 | 29 | timer | Fix It (outlet context) 1–6 |
-| 13–14 | 36–38 | — | mental model; homework II |
+| 8 | 21 | click the timer (10 min); walk around | Your turn: students move the count to App themselves |
+| 9 | 31 | **N ×5**, ▶ 33 green | the answer: the count in App too |
+| 10–12 | 35–38 | — | shiny (optional lift); where state lives; 33 tests |
+| 13 | 39 | timer | Fix It (outlet context) 1–6 |
+| 14–15 | 46–48 | — | mental model; homework II (about 48 min with Your turn) |
 
 # Runbook · Unit 9 (CI/CD)
 

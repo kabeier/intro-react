@@ -55,7 +55,7 @@ Course.register({
         },
         {
           id: 'f2s3', fixes: ["components-props:f4s1"], file: 'src/App.jsx', mode: 'replace', find: "    return () => console.log('page unmounted')\n  }, [])\n",
-          code: "    return () => console.log('page unmounted')\n  }, [])\n\n  useEffect(() => {\n    let ignore = false\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => {\n        if (ignore) return\n        setPokemonList((list) => (list.some((pokemon) => pokemon.id === response.data.id) ? list : [...list, response.data]))\n      })\n    return () => { ignore = true }\n  }, [])\n",
+          code: "    return () => console.log('page unmounted')\n  }, [])\n\n  useEffect(() => {\n    let ignore = false\n    axios.get('https://pokeapi.co/api/v2/pokemon/pikachu')\n      .then((response) => {\n        if (!ignore) setPokemonList((list) => (list.some((pokemon) => pokemon.id === response.data.id) ? list : [...list, response.data]))\n      })\n    return () => { ignore = true }\n  }, [])\n",
           say: '…and paste it into App. App never unmounts, so it runs once per visit.',
         },
         {

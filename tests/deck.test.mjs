@@ -28,7 +28,9 @@ test2('the deck has 14-17 slides, each with presenter notes and a start minute',
     assert.ok(at >= last, 'minutes go up at slide ' + (k + 1))
     last = at
   }
-  assert.ok(last <= 40, 'last slide starts by minute 40')
+  // A "Your turn" exercise (the instructor's call, e.g. outlet-context's count) adds its own minutes.
+  const extra = slides.some((s) => s.includes('data-seg="Your turn')) ? 10 : 0
+  assert.ok(last <= 40 + extra, 'last slide starts by minute ' + (40 + extra))
 })
 
 test2('every feature is coded along once, starting where the previous one ended', () => {
@@ -43,7 +45,8 @@ test2('every feature is coded along once, starting where the previous one ended'
 })
 
 test2('there is exactly one activity, and it opens the Fix it page', () => {
-  const acts = slides.filter((s) => s.startsWith(' activity'))
+  // A "Your turn" slide is a practice break inside the code-alongs, not the lecture's activity.
+  const acts = slides.filter((s) => s.startsWith(' activity') && !s.includes('data-seg="Your turn'))
   assert.equal(acts.length, 1)
   // Unit 9's activities happen on GitHub (deploy, read real runs), not in Fix it.
   // useState's activity is the State Hunt round; its Fix it set is practice on the homework slide.

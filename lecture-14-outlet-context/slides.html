@@ -113,7 +113,32 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: count" data-at="21">
+<section class="slide activity" data-seg="Your turn: count" data-at="21">
+  <h2>Your turn: make the count survive</h2>
+  <div class="countdown" data-sec="600"></div>
+  <ol class="steps">
+    <li>Click <b>Click me!</b> a few times, go to <b>About</b>, come back: the count is <b>0</b> again</li>
+    <li>Do what we just did for the list: move the count's <b>state up to App</b></li>
+    <li>Send it through the <b>same</b> <code>&lt;Outlet context&gt;</code></li>
+    <li>Read it in <b>Counter</b> with <code>useOutletContext()</code></li>
+  </ol>
+  <p class="bottomline">Done = click, About, Home: the count is still there.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Students move the click count to App on their own, the same way we moved the list. Then the next slide shows the answer.</p>
+    <p><b>10 minutes.</b> <b>Click the timer</b> to start it (click again to pause); <b>R</b> resets it.</p>
+    <p><b>Say:</b> "Same problem as the list, same fix. You have 10 minutes. Then I'll show my answer."</p>
+    <p><b>Walk around. If they're stuck:</b></p>
+    <ul>
+      <li>Where is <code>useState(0)</code> now? (in Counter) Where should it live? (App, which never unmounts)</li>
+      <li>The context is <b>one object</b>: add <code>count, setCount</code> next to <code>pokemonList, setPokemonList</code>.</li>
+      <li>In Counter: <code>const { count, setCount } = useOutletContext()</code>, and delete its own <code>useState</code>.</li>
+      <li>"setCount is not a function": they put <code>count</code> in the context but forgot <code>setCount</code>.</li>
+    </ul>
+    <p><b>After the timer:</b> next slide, press <b>N</b> through the steps as the answer. ▶ Run tests: 33 green.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: count" data-at="31">
   <h2>The count survives too <span class="say">navigation.cy.js · App.jsx · Counter.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="f2s4" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/Counter/Counter.jsx"></div>
   <aside class="notes">
@@ -131,7 +156,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Concept" data-at="35">
   <h2>What about shiny?</h2>
   <table class="dbt small">
     <tr><th>State</th><th>Lives in</th><th>Survives a page change?</th></tr>
@@ -143,7 +168,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> Why shiny still resets, and what it would take to keep it.</p><p>Optional extension (instructor's call): shinyIds in App, toggleShiny(id) in the context. The curriculum's "shiny survives navigation" test needs it.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="27">
+<section class="slide" data-seg="Concept" data-at="37">
   <h2>Where should this state live?</h2>
   <table class="dbt small">
     <tr><th>State</th><th>Where</th></tr>
@@ -157,7 +182,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> A review: where should each piece of state live?</p><p>Quick class discussion, 1 minute.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="28">
+<section class="slide" data-seg="Wrap up" data-at="38">
   <h2>The suite now: 33 tests</h2>
   <table class="dbt small">
     <tr><th>New today</th><th>Guards</th></tr>
@@ -170,7 +195,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> The test suite now: 33 tests, and what each new one guards.</p><p>Unit 9 runs all 33 on GitHub for every push.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: Fix it" data-at="29">
+<section class="slide activity" data-seg="Activity: Fix it" data-at="39">
   <h2>Activity: Fix it (outlet context)</h2>
   <div class="countdown" data-sec="360"></div>
   <ol class="steps">
@@ -184,7 +209,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> Students fix broken outlet context on their own. Problems 1 to 6.</p><p>6 minutes.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="36">
+<section class="slide" data-seg="Wrap up" data-at="46">
   <h2>Mental model</h2>
   <ul>
     <li>Leaving a page unmounts it and its state</li>
@@ -197,7 +222,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> The mental model: leaving a page unmounts it, and the layout never does.</p><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="48">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
     <li><b>Rick and Morty IV</b></li>
@@ -226,7 +251,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
 <script src="../shared/course/router-intro.js?v=3"></script>
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=3"></script>
-<script src="../shared/course/outlet-context.js?v=2"></script>
+<script src="../shared/course/outlet-context.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
