@@ -105,6 +105,12 @@ Course.register({
           say: 'A button that is really a Link: Bootstrap\'s look, the router\'s behaviour. Green.',
           notes: [{ match: 'to={`/pokemon/${pokemon.id}`}', what: 'Builds /pokemon/25 from the card\'s id.', why: 'A template string puts the value in the path.' }],
         },
+        {
+          id: 'f4s4', file: 'src/components/PokeSearch/PokeCard.jsx', mode: 'replace', find: '        <Stack direction="horizontal" gap={2}>',
+          code: '        <Stack direction="horizontal" gap={2} className="flex-wrap">',
+          say: 'Three buttons are too wide for the card. flex-wrap lets the last one move to the next line.',
+          notes: [{ match: 'className="flex-wrap"', what: 'Bootstrap\'s flex-wrap class: the row may wrap onto a second line.', why: 'Without it the Details button sticks out past the card\'s edge.' }],
+        },
       ],
     },
     {

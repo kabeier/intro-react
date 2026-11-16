@@ -255,13 +255,14 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 3 | 3 | **N ×4**, red → green | route with a parameter |
 | 4 | 6 | **N ×3**, red → green | fetch by id (effect on [id], ignore flag) |
 | 5 | 10 | **N ×5**, red → green | unknown Pokemon: catch + message |
-| 6 | 13 | **N ×3**, red → green | Details link (BsButton as={Link}) |
+| 6 | 13 | **N ×4**, red → green | Details link (BsButton as={Link}); N 4 = flex-wrap so Details stays inside the card |
 | 7 | 15 | — | Link or navigate |
 | 8 | 16 | **N ×5**, red → green | Back button: navigate(-1), home if opened directly |
-| 9 | 20 | **N ×5**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
-| 10–11 | 24–26 | — | the real API answers (25 = Pikachu, 99999 = 404); loaders preview (later, with protected routes) |
-| 12 | 28 | timer | Fix It (router hooks) 1–6 |
-| 13–14 | 35–37 | — | mental model; homework I |
+| 9 | 19 | Details → Back; then type `/pokemon/25` in the address bar → Back | reading goBack: location.key is 'default' on the first page of the visit |
+| 10 | 20 | **N ×5**, ▶ 30 green (short on time: copy from the Explorer) | Login: navigate after the check |
+| 11–12 | 24–26 | — | the real API answers (25 = Pikachu, 99999 = 404); loaders preview (later, with protected routes) |
+| 13 | 28 | timer | Fix It (router hooks) 1–6 |
+| 14–15 | 35–37 | — | mental model; homework I |
 
 ## Lecture 2 · useOutletContext
 | # | Min | Do | Say |
@@ -317,5 +318,6 @@ Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Li
 ## File tree and Fix It
 
 - **File tree:** every editor in the slides and the Code Explorer shows the project's folders and files. Click a file to open it, click a folder to fold it.
+- **Address bar:** apps with a router show `localhost:5173/…` above the live app, in the slides and the pop-out. Click it, type a path (`/pokemon/25`) and press Enter: a fresh page load at that path.
 - **Slides:** press **E** or the **Files** button to hide or show it (**F** is still fullscreen). It stays that way on every slide. New files show green.
 - **Fix It:** shows only the lines around the bug, with the live app beside it, all on one screen. **Show all the code** brings back the whole project if a student asks.

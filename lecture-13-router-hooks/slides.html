@@ -92,7 +92,7 @@
 
 <section class="slide code" data-seg="Code along: Details" data-at="13">
   <h2>A Details link on every card <span class="say">details.cy.js · PokeCard.jsx</span></h2>
-  <div class="livepad" data-lesson="router-hooks" data-start="f3s5" data-steps="f4s1 f4s2 f4s3" data-files="cypress/e2e/details.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
+  <div class="livepad" data-lesson="router-hooks" data-start="f3s5" data-steps="f4s1 f4s2 f4s3 f4s4" data-files="cypress/e2e/details.cy.js src/components/PokeSearch/PokeCard.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We add a Details link to every card.</p>
     <p><b>** CODE ALONG, about 2 minutes. **</b> Details is an &lt;a&gt; (a Link), so the test finds it with #pikachu-card a.</p>
@@ -101,6 +101,7 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e/details.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>it('opens the details page from a card', () …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Test first: Details on Pikachu's card goes to /pokemon/25. Red.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import BsButton from 'react-bootstrap/Button'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Link from the router.</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;BsButton variant="danger" onClick={() =&gt; rm…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A button that is really a Link: Bootstrap's look, the router's behaviour. Green.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 4</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/PokeSearch/PokeCard.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Stack direction="horizontal" gap={2} classN…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Three buttons are too wide for the card. flex-wrap lets the last one move to the next line.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -121,7 +122,7 @@
 
 <section class="slide code" data-seg="Code along: Back" data-at="16">
   <h2>A Back button <span class="say">details.cy.js · BackButton · NavBar</span></h2>
-  <div class="livepad" data-lesson="router-hooks" data-start="f4s3" data-steps="f5s1 f5s2 f5s3 f5s4 f5s5" data-files="cypress/e2e/details.cy.js src/components/BackButton/BackButton.jsx src/components/NavBar/NavBar.jsx"></div>
+  <div class="livepad" data-lesson="router-hooks" data-start="f4s4" data-steps="f5s1 f5s2 f5s3 f5s4 f5s5" data-files="cypress/e2e/details.cy.js src/components/BackButton/BackButton.jsx src/components/NavBar/NavBar.jsx"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We add a Back button with navigate(-1), and put it in the navbar.</p>
     <p><b>** CODE ALONG, about 4 minutes. **</b> Only "goes back with the Back button" is red after N 1; cy.go('back') already works.</p>
@@ -134,6 +135,36 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 5</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/components/NavBar/NavBar.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>&lt;Nav.Link as={Link} to="/about"&gt;About&lt;/Nav.L…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…outside the header. Green.</td></tr>
 </table>
 <!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="19">
+  <h2>Reading goBack</h2>
+  <pre style="font-size:22px">const goBack = () => (location.key === 'default' ? navigate('/') : navigate(-1))</pre>
+  <table class="dbt small" style="margin-top:12px">
+    <tr><th>Piece</th><th>What it means</th></tr>
+    <tr><td><code>location</code></td><td>the page we are on now (from <code>useLocation()</code>)</td></tr>
+    <tr><td><code>location.key</code></td><td>a name tag React Router gives <b>each page visit</b> in this tab, like <code>'k3x9ab'</code></td></tr>
+    <tr><td><code>'default'</code></td><td>the tag of the <b>first page</b> of the visit: nothing came before it in our app</td></tr>
+    <tr><td><code>? navigate('/') : navigate(-1)</code></td><td>first page → go home; otherwise → one step back</td></tr>
+  </table>
+  <table class="dbt small" style="margin-top:12px">
+    <tr><th>How you got to /pokemon/25</th><th>location.key</th><th>Back does</th></tr>
+    <tr><td>clicked <b>Details</b> on the home page</td><td><code>'k3x9ab'</code></td><td><code>navigate(-1)</code> → back home</td></tr>
+    <tr><td>typed the address, a bookmark, a link from Slack</td><td><code>'default'</code></td><td><code>navigate('/')</code> → home, <b>not</b> out of the app</td></tr>
+  </table>
+  <p class="bottomline">'default' = nothing to go back to inside our app.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We read the goBack line piece by piece, especially location.key and why it is sometimes 'default'.</p>
+    <p><b>Say:</b> "navigate(-1) is the browser's Back button. But if a friend sends you a link to /pokemon/25, the page before it is Slack, or nothing. Back would leave our app. So we ask: is this the first page of the visit? React Router answers with location.key."</p>
+    <p><b>Point at</b> the first table, top to bottom. <code>location</code> comes from <code>useLocation()</code>, the line above goBack. Every time the router moves to a page it gives that visit a random <b>key</b>, a short id like <code>'k3x9ab'</code>. The very first page of the tab gets no id from us, so its key is the word <code>'default'</code>.</p>
+    <p><b>Point at</b> the <code>? :</code>: it is the ternary from JavaScript week. Condition, then "if yes", then "if no".</p>
+    <p><b>Show it</b> in the live app (A or the pop-out):</p>
+    <ul>
+      <li>Click <b>Details</b> on Pikachu, then <b>Back</b>: home, with navigate(-1).</li>
+      <li>Click in the <b>address bar</b>, type <code>/pokemon/25</code>, press Enter (a fresh visit), then <b>Back</b>: still home, this time with navigate('/').</li>
+    </ul>
+    <p><b>If asked:</b> a refresh keeps the key (the browser remembers it), so Back still steps back. The key is only 'default' on the first page of the tab.</p>
   </aside>
 </section>
 
@@ -233,7 +264,7 @@
 <script src="../shared/course/utilities-bootstrap.js?v=4"></script>
 <script src="../shared/course/router-intro.js?v=3"></script>
 <script src="../shared/course/router-pages.js?v=3"></script>
-<script src="../shared/course/router-hooks.js?v=2"></script>
+<script src="../shared/course/router-hooks.js?v=3"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
