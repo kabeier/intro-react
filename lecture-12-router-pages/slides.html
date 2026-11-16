@@ -248,6 +248,28 @@ const message = isRouteErrorResponse(error) ? `${error.status} ${error.statusTex
     <p class="plan"><b>The plan:</b> Walk through Homework Part II.</p><p>The book's router chapter may use older APIs; the slides are the reference for version 8.</p></aside>
 </section>
 
+<section class="slide" data-seg="Wrap up" data-at="39">
+  <h2>Documentation</h2>
+  <p style="font-size:26px;margin:0 0 12px;max-width:none">Everything from today, in the official docs. Each link opens in a new tab.</p>
+  <table class="dbt small">
+    <tr><th>Taught today</th><th>Docs page</th></tr>
+    <tr><td>A 404 page: <code>path: '*'</code></td><td><a href="https://reactrouter.com/start/data/routing#splats" target="_blank" rel="noopener">Routing: splats</a></td></tr>
+    <tr><td><code>errorElement</code> on a route</td><td><a href="https://api.reactrouter.com/v8/types/react-router.BaseRouteObject.html" target="_blank" rel="noopener">Route object reference (errorElement)</a> · <a href="https://reactrouter.com/how-to/error-boundary" target="_blank" rel="noopener">Error boundaries</a></td></tr>
+    <tr><td><code>useRouteError()</code></td><td><a href="https://reactrouter.com/api/hooks/useRouteError" target="_blank" rel="noopener">useRouteError</a></td></tr>
+    <tr><td><code>isRouteErrorResponse()</code></td><td><a href="https://reactrouter.com/api/utils/isRouteErrorResponse" target="_blank" rel="noopener">isRouteErrorResponse</a></td></tr>
+    <tr><td><code>&lt;Link to&gt;</code> instead of <code>&lt;a href&gt;</code></td><td><a href="https://reactrouter.com/api/components/Link" target="_blank" rel="noopener">Link</a> · <a href="https://reactrouter.com/start/data/navigating" target="_blank" rel="noopener">Navigating</a></td></tr>
+    <tr><td>React Bootstrap <code>Navbar</code></td><td><a href="https://react-bootstrap.github.io/docs/components/navbar" target="_blank" rel="noopener">Navbar</a></td></tr>
+    <tr><td><code>as={Link}</code></td><td><a href="https://react-bootstrap.github.io/docs/getting-started/introduction#as-prop-api" target="_blank" rel="noopener">React Bootstrap: the as prop</a></td></tr>
+    <tr><td><code>cy.contains</code>, <code>cy.location</code></td><td><a href="https://docs.cypress.io/api/commands/contains" target="_blank" rel="noopener">contains</a> · <a href="https://docs.cypress.io/api/commands/location" target="_blank" rel="noopener">location</a></td></tr>
+  </table>
+  <p class="bottomline">Stuck on the homework? Start here.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Where each thing from today lives in the docs, so students can look it up on their own.</p>
+    <p>Click <b>Error boundaries</b> and scroll to <b>"In Data Mode"</b> (under step 1): it uses the same <code>useRouteError</code> and <code>isRouteErrorResponse</code> lines as our ErrorPage. Note: the docs write <code>ErrorBoundary: ErrorPage</code> and <code>Component: Root</code> (components); we write <code>errorElement: &lt;ErrorPage /&gt;</code> (an element). Both are route-object keys and do the same job; the reference link shows <code>errorElement</code>.</p>
+    <p>The React Router docs have three modes. We use <b>Data mode</b> (<code>createBrowserRouter</code> + <code>RouterProvider</code>). Tell students to pick the <b>Data</b> tab or section when a page shows more than one; Framework mode is a different setup.</p>
+    <p><b>Say:</b> "Everything from today is in the docs. The error page docs use the same two lines we wrote."</p>
+  </aside>
+</section>
 </div>
 
 <script src="../shared/deck.js?v=3"></script>

@@ -228,6 +228,7 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 11 | 27 | — | "heading only" checklist |
 | 12 | 28 | timer | Fix It (router setup) 1–6 |
 | 13–14 | 35–37 | — | mental model; homework I |
+| 15 | 39 | click **Routing: index routes**, show `index: true` | docs for each topic; docs write `Component:`, we write `element:` |
 
 ## Lecture 2 · Pages, links and errors
 | # | Min | Do | Say |
@@ -243,6 +244,7 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | 11–12 | 27–28 | — | as=; the 22 tests |
 | 13 | 29 | timer | Fix It (pages and links) 1–6 |
 | 14–15 | 36–38 | — | mental model (show the list reset); homework II |
+| 16 | 39 | click **Error boundaries**, scroll to "In Data Mode" | docs for each topic; same useRouteError lines as our ErrorPage |
 
 # Runbook · Unit 8 (React Router Hooks)
 
