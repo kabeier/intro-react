@@ -36,6 +36,18 @@
   <p class="sub">Make a repo, publish it with a workflow, then fix the two things that break on the way.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Today we put the app on the internet, live: a new repo, a workflow that publishes it, and two fixes when the first deploy breaks.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · before class, in <code>intro-react-code</code></p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">cd intro-react-code
+# where unit 8 ended:
+git checkout unit-8-lecture-2-outlet-context
+# a demo branch, so the taught branch stays clean:
+git switch -c pokesearch-demo
+npm install
+# check it runs, then Ctrl+C:
+npm run dev</pre><p style="margin:6px 0 0">Also: logged in to GitHub in the browser, and <b>no</b> <code>pokesearch</code> repo yet. Each slide below has its own red box.</p>
+    </div>
+
     <p><b>Before class:</b> <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <ul>
       <li>Code: <code>intro-react-code</code> on <code>unit-8-lecture-2-outlet-context</code> (where unit 8 ended). Logged in to GitHub in the browser.</li>
@@ -76,6 +88,12 @@
   <p class="bottomline">dist/ is the website. GitHub will build it for us.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> npm run dev vs npm run build, then a real build: dist/ is exactly what GitHub Pages will hand out.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 3</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">npm run build
+code dist/index.html        # point at src="/assets/index-….js"</pre>
+    </div>
+
     <p><b>Do, live:</b> <code>npm run build</code>, open the dist/ folder in VS Code, open dist/index.html. <b>Point at</b> <code>src="/assets/index-….js"</code>: it starts at the root of the site. That's Problem 1 later.</p>
     <p>The hash in the file name changes when the code changes, so browsers never use an old copy.</p>
     <p>dist/ is in .gitignore: never commit it. The workflow builds it on GitHub.</p>
@@ -100,6 +118,13 @@ git push pages HEAD:main</pre>
   </div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Create the pokesearch repo live on GitHub, then push our code to it.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 4, after Create repository</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git remote add pages https://github.com/kabeier/pokesearch.git
+git push pages HEAD:main
+git remote -v               # optional: shows origin (class repo) and pages</pre><p style="margin:6px 0 0">Refresh the repo page on GitHub: the code is there.</p>
+    </div>
+
     <p><b>Do, live</b> (the red numbers on the screenshot): + menu top right → New repository → name <code>pokesearch</code> → Public → leave README / .gitignore / license <b>off</b> → Create repository.</p>
     <p><b>Why empty:</b> our code already has a README and .gitignore; a README on GitHub would make the first push fail (the histories differ).</p>
     <p><b>The push:</b> GitHub's page says <code>git remote add origin …</code>, but our folder already has an <code>origin</code> (the class repo). So we name this one <code>pages</code>: <code>git remote add pages https://github.com/kabeier/pokesearch.git</code>, then <code>git push pages HEAD:main</code> (HEAD = the branch we're on, sent as main). Refresh the repo page: the code is there.</p>
@@ -137,8 +162,38 @@ git push pages HEAD:main</pre>
   <div class="livepad" data-lesson="deploy-pages" data-start="null" data-steps="f1s1" data-files=".github/workflows/deploy.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> One workflow file: on every push to main, GitHub builds the app and publishes dist/ to Pages.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 6, make the file</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">mkdir -p .github/workflows
+code .github/workflows/deploy.yml     # type it along with N
+# or, to skip typing:
+git checkout unit-9-lecture-1-deploy-pages -- .github/workflows/deploy.yml</pre>
+    </div>
+
     <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
     <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
+    <p><b>deploy.yml, line by line</b> (line numbers as in the editor):</p>
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Line</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Code</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">What it does</th></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">1</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">The name shown in the Actions tab.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">3–5</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>on: push: branches: [main]</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Run on every push to main. Pushes to other branches do nothing.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">6</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>workflow_dispatch:</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Adds a <b>Run workflow</b> button in the Actions tab: deploy again without a new commit.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">8–9</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>permissions: contents: read</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">The workflow may read the code, never change it.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">10</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>pages: write</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">May publish to GitHub Pages.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">11</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>id-token: write</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">May ask GitHub for a short-lived ID card ("I am this repo's workflow"). Pages checks it. No password or token to copy anywhere.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">13–15</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>concurrency: group: pages / cancel-in-progress: false</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Two quick pushes deploy one after the other; a running deploy is never cut off halfway.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">17–18</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>jobs: deploy:</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">One job, called <b>deploy</b>: the box you see on the run page.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">19</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>runs-on: ubuntu-latest</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">A fresh Linux machine from GitHub, empty every time.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">20–22</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>environment: name: github-pages / url: …page_url</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Ties the job to the Pages environment. <code>url</code> puts the live link under the job box on the run page.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">23</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>steps:</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">The commands, top to bottom. One red step stops the job.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">24</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>uses: actions/checkout@v7</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Get our code onto the empty machine.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">25–28</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>uses: actions/setup-node@v7 · node-version: 24 · cache: npm</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Install Node 24 (same as our Docker image) and reuse npm downloads between runs.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">29</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>run: npm ci</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Install exactly what package-lock.json says. Like npm install, but strict and clean.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">30</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>run: npm run build</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Build dist/ in <b>production</b> mode. Same command as on your laptop; dist/ never goes into git.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">31–33</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>uses: actions/upload-pages-artifact@v5 · path: dist</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Pack the dist/ folder as "the website" for Pages.</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">34</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>id: deployment</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">A name for the next step, so line 22 can read its output (the URL).</td></tr>
+      <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">35</td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left"><code>uses: actions/deploy-pages@v5</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top;text-align:left">Publish the packed website. Its output <code>page_url</code> is the live link.</td></tr>
+    </table>
 <!-- steps:deploy-pages:f1 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.</td></tr>
@@ -167,6 +222,13 @@ git push pages HEAD:main</pre>
   <p class="bottomline">… a blank white page. Why?</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Push the workflow, watch the run go green, open the site: it's blank. That's on purpose; next slide explains.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 7</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git add .github
+git commit -m "Deploy to GitHub Pages"
+git push pages HEAD:main</pre><p style="margin:6px 0 0">Then the browser: Actions tab → the run → wait for green → open the link → F12 → Console.</p>
+    </div>
+
     <p><b>Do, live:</b> the three git commands, then the Actions tab (red 1). Click the running workflow (2): one job, <b>deploy</b> (3), each step from the file. When it's green, the link is under the job box (4). The screenshots are the backup repo; GitHub shows the link only on the newest deploy.</p>
     <p><b>Open the site:</b> blank. <b>Ask:</b> "The run is green. So why is the page blank?" Open DevTools → <b>Console</b>: red 404s for <code>/assets/index-….js</code>. Click it: it asked <code>kabeier.github.io/assets/…</code>, without <code>/pokesearch/</code>.</p>
     <p>Backup, a real green run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p>
@@ -194,6 +256,13 @@ git push pages HEAD:main</pre>
   <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1" data-files="vite.config.js"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We fix Problem 1 with base in vite.config.js, only for production. Don't push yet: there's a second problem.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 9, edit vite.config.js (don't push)</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">code vite.config.js                   # type it along with N
+# or:
+git checkout unit-9-lecture-1-deploy-pages -- vite.config.js</pre>
+    </div>
+
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students type <b>their own</b> repo name.</p>
 <!-- steps:deploy-pages:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -261,6 +330,17 @@ git push pages HEAD:main</pre>
   <div class="livepad" data-lesson="deploy-pages" data-start="f2s1" data-steps="f3s1 f3s2 f3s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production, and add a small test for the built site.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 12 (don't push yet)</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">code src/router.jsx                   # type it along with N
+# or:
+git checkout unit-9-lecture-1-deploy-pages -- src/router.jsx cypress/e2e-prod/smoke.cy.js
+
+# optional, test the built site like the workflow will:
+npm run build && npm run preview      # terminal 1, leave it running
+npx cypress run --config "baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js"   # terminal 2</pre>
+    </div>
+
     <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
 <!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -285,6 +365,13 @@ git push pages HEAD:main</pre>
   <p class="bottomline">Every push to main = a new deploy. No extra steps.</p>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Push both fixes, watch the second run, and check the live site: home page, About, and a refresh.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 13</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git add .
+git commit -m "base and hash router for GitHub Pages"
+git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches <code>unit-9-lecture-1-deploy-pages</code> exactly (rehearsed).</p>
+    </div>
+
     <p><b>Do, live:</b> the three commands, Actions tab, wait for green (about a minute), open the link.</p>
     <p><b>Check out loud:</b> Network tab: <code>/pokesearch/assets/…</code> now 200. Search a Pokemon (the API works from a live site too). About → refresh → still About.</p>
     <p><b>Say:</b> "From now on we never deploy by hand. We push, the workflow builds and publishes."</p>
@@ -341,7 +428,13 @@ git push pages HEAD:main</pre>
   </ol>
   <p class="bottomline">Part II comes with lecture 2.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p><p>Suggest a checklist: live URL in the README, conditional base, hash router, deploy.yml.</p></aside>
+    <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · after class</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git status                  # clean: everything is pushed
+# keep pokesearch-demo and the pages remote: lecture 2 pushes ci-cd.yml from here</pre><p style="margin:6px 0 0">Back to the class code any time: <code>git checkout unit-8-lecture-2-outlet-context</code>.</p>
+    </div>
+<p>Suggest a checklist: live URL in the README, conditional base, hash router, deploy.yml.</p></aside>
 </section>
 
 </div>
