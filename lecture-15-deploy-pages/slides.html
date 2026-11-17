@@ -390,15 +390,51 @@ git push</pre>
 <section class="slide activity" data-seg="Activity: deploy" data-at="28">
   <h2>Activity: deploy your own copy</h2>
   <div class="countdown" data-sec="480"></div>
-  <ol class="steps">
-    <li>Your repo → Settings → Pages → Source: <b>GitHub Actions</b></li>
-    <li>Add deploy.yml, base with <b>your</b> repo name, the hash router</li>
-    <li>Push to main; watch the Actions tab</li>
-    <li>Open your URL, go to About, refresh. Post the URL in the class chat</li>
-  </ol>
-  <p class="muted small" style="margin-top:24px">Stuck? The previous slide. All three files: the code repo, branch <code>unit-9-lecture-1-deploy-pages</code>.</p>
+  <div class="cols" style="grid-template-columns:0.8fr 1.2fr;gap:32px;margin-top:6px">
+    <div>
+      <ol class="steps small" style="margin:0;font-size:26px">
+        <li>GitHub: <b>New repository</b>, any name (e.g. <code>my-pokesearch</code>), <b>Public</b>, empty</li>
+        <li>Its <b>Settings → Pages → Source: GitHub Actions</b></li>
+        <li>Clone the class code (box on the right)</li>
+        <li>Change <b>one line</b>: the base</li>
+        <li>Commit and push; watch the <b>Actions</b> tab</li>
+        <li>Open your URL, About, refresh. Post it in the chat</li>
+      </ol>
+    </div>
+    <div style="margin-top:84px">
+      <pre class="cmd" style="margin:0;font-size:16px;font-variant-ligatures:none">git clone -b unit-9-lecture-1-deploy-pages \
+  https://github.com/kabeier/intro-react-code.git my-pokesearch
+cd my-pokesearch
+git switch -c main</pre>
+      <p style="margin:14px 0 6px;font-size:22px"><b>vite.config.js</b>, the only change:</p>
+      <pre class="cmd" style="margin:0;font-size:16px;font-variant-ligatures:none"><span style="color:#ff8a80">- base: mode === 'production' ? '/pokesearch/' : '/',</span>
+<span style="color:#6fdc9b">+ base: mode === 'production' ? '/my-pokesearch/' : '/',</span></pre>
+      <p class="muted" style="margin:6px 0 14px;font-size:19px">your repo's name, exact spelling, both slashes</p>
+      <pre class="cmd" style="margin:0;font-size:16px;font-variant-ligatures:none">git commit -am "base for my repo"
+git remote set-url origin https://github.com/&lt;you&gt;/my-pokesearch.git
+git push -u origin main</pre>
+    </div>
+  </div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat. 8 minutes.</p><p>Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p><p>No repo of their own on GitHub yet? Same as slide 4: New repository, empty, Public, then push.</p></aside>
+    <p class="plan"><b>The plan:</b> Students deploy their own copy of the class code to a repo of their own and post the URL. 8 minutes.</p>
+    <p><b>Say:</b> "You get the code exactly as we have it now, from the class code repo. The only thing that's ours and not yours is the repo name in base."</p>
+    <p><b>What each command does:</b></p>
+    <ul>
+      <li><code>git clone -b unit-9-lecture-1-deploy-pages … my-pokesearch</code>: today's finished code (deploy.yml, base, hash router) into a folder named like the repo.</li>
+      <li><code>git switch -c main</code>: name the branch main, because deploy.yml runs on pushes to main.</li>
+      <li><code>git remote set-url origin …</code>: origin pointed at the class repo; now it points at <b>their</b> repo.</li>
+      <li><code>git push -u origin main</code>: the push the workflow listens for.</li>
+    </ul>
+    <p><b>Nothing else changes:</b> deploy.yml and router.jsx are the same for every repo. The base line is the only place the name appears (checked).</p>
+    <p><b>Walk the room</b>, the usual problems:</p>
+    <ul>
+      <li>Blank page: base doesn't match the repo name (spelling, dash vs underscore, a missing slash).</li>
+      <li>Run red at the deploy step: Pages Source not set to GitHub Actions. Set it, then <b>Re-run jobs</b>.</li>
+      <li>No run at all: they pushed a branch that isn't main (forgot <code>git switch -c main</code>).</li>
+      <li>Push asks for a password: GitHub login on their laptop; same as homework pushes.</li>
+      <li>The <code>\</code> at the end of the clone line continues it in bash (Mac, Linux, WSL, Git Bash). In Windows PowerShell: type it as one line.</li>
+    </ul>
+    <p>Rehearsed with a repo named <code>my-pokesearch</code>: clone, edit, commit and push all work.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="36">

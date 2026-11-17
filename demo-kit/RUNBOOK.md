@@ -300,7 +300,7 @@ Demo folder: `new_Lectures/intro-gh-pages-deploy` (a copy of intro-react-code; r
 | 12 | 21 | **N ×2** | hash router in the build (the smoke test comes in lecture 2) |
 | 13 | 25 | commit + push; Actions; open; About; refresh | it's live; every push = a deploy |
 | 14 | 27 | — | blank page checklist |
-| 15 | 28 | timer (8 min) | students deploy their own copy |
+| 15 | 28 | timer (8 min) | students: own repo (any name) + Pages Source, clone `unit-9-lecture-1-deploy-pages`, change only the base to their repo name, push |
 | 16–17 | 36–37 | — | mental model; homework I |
 
 ## Lecture 2 · GitHub Actions
