@@ -80,6 +80,7 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">defineConfig can take a function: Vite tells it the mode. Build = production. Use your own repo name between the slashes.</td></tr>
 </table>
 <!-- /steps -->
+    <p><b>Say:</b> "Why only in production? If base is always on, <code>npm run dev</code> moves to /pokemon-app/ too, and every Cypress test fails, because they visit /." Watch for <code>(mode) =&gt;</code> instead of <code>({ mode }) =&gt;</code>: base then silently never applies.</p>
     <p><b>What can <code>mode</code> be?</b> Vite picks it from the command you run:</p>
     <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
       <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left">You run</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>mode</code></th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>base</code> becomes</th></tr>
@@ -92,20 +93,8 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="9">
-  <h2>A real story: 8 red runs</h2>
-  <table class="dbt small">
-    <tr><th>Run</th><th>What happened</th></tr>
-    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29964339398" target="_blank" rel="noopener">✗ cypress base_url to hashrouter format</a></td><td>base set always: the dev server moved to /demo-test/, every test failed</td></tr>
-    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29964630256" target="_blank" rel="noopener">✗ trailing slash :(</a></td><td>still the same base problem</td></tr>
-    <tr><td><a href="https://github.com/kabeier/demo-test/actions/runs/29965548794" target="_blank" rel="noopener">✓ conditional base in viteconfig</a></td><td class="pk">base only in production: green, then deployed</td></tr>
-  </table>
-  <p class="bottomline">Real runs from the instructor's rehearsal repo.</p>
-  <aside class="notes">
-    <p class="plan"><b>The plan:</b> A real story: 8 red runs caused by getting base wrong.</p><p>And in the class repo: <code>defineConfig((mode) =&gt;</code> instead of <code>({ mode })</code> made the base silently never apply (fixed in <a href="https://github.com/kabeier/demo_test2/actions/runs/30006937353" target="_blank" rel="noopener">fix mode typo</a>).</p></aside>
-</section>
 
-<section class="slide" data-seg="Concept" data-at="11">
+<section class="slide" data-seg="Concept" data-at="9">
   <h2>Problem 2: refreshing /about</h2>
   <table class="dbt small">
     <tr><th>Router</th><th>Address</th><th>Refresh on GitHub Pages</th></tr>
@@ -117,7 +106,7 @@
     <p class="plan"><b>The plan:</b> Problem 2: refreshing /about on GitHub Pages gives a 404.</p><p>Hosts with a server (Netlify, Vercel, your own nginx) can send every path to index.html instead.</p></aside>
 </section>
 
-<section class="slide code" data-seg="Code along: hash" data-at="13">
+<section class="slide code" data-seg="Code along: hash" data-at="11">
   <h2>The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1 f2s2 f2s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
   <aside class="notes">
@@ -133,7 +122,7 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: deploy.yml" data-at="18">
+<section class="slide code" data-seg="Code along: deploy.yml" data-at="16">
   <h2>Publish with a workflow <span class="say">.github/workflows/deploy.yml</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
   <aside class="notes">
@@ -148,7 +137,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Live" data-at="22">
+<section class="slide" data-seg="Live" data-at="20">
   <h2>Deploy, step by step</h2>
   <ol class="steps small">
     <li>GitHub → Settings → Pages → Source → <b>GitHub Actions</b></li>
@@ -165,7 +154,7 @@
     <p>Backup, a real run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Concept" data-at="23">
   <h2>When the page is blank</h2>
   <table class="dbt small">
     <tr><th>Symptom</th><th>Check</th></tr>
@@ -180,7 +169,7 @@
     <p class="plan"><b>The plan:</b> What to check when the deployed page is blank.</p><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: deploy" data-at="28">
+<section class="slide activity" data-seg="Activity: deploy" data-at="26">
   <h2>Activity: deploy your own copy</h2>
   <div class="countdown" data-sec="480"></div>
   <ol class="steps">
@@ -194,7 +183,7 @@
     <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="37">
+<section class="slide" data-seg="Wrap up" data-at="35">
   <h2>Mental model</h2>
   <ul>
     <li>Build = plain files in dist/; GitHub Pages serves files</li>
@@ -207,7 +196,7 @@
     <p class="plan"><b>The plan:</b> The mental model for deploying.</p><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="36">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>

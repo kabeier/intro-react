@@ -280,21 +280,20 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 
 # Runbook · Unit 9 (CI/CD)
 
-The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokemon-app/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); deploy.yml and ci-cd.yml ran for real in kabeier/pokemon-app (Nov 16, 2026: deploy.yml deployed; ci-cd.yml green → deployed, red → skipped, PR → skipped, merge → deployed). The base story (lecture 1, slide 6) uses older runs in kabeier/demo-test and kabeier/demo_test2.
+The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokemon-app/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); deploy.yml and ci-cd.yml ran for real in kabeier/pokemon-app (Nov 16, 2026: deploy.yml deployed; ci-cd.yml green → deployed, red → skipped, PR → skipped, merge → deployed).
 
 ## Lecture 1 · GitHub Pages
 | # | Min | Do | Say |
 |---|---|---|---|
 | 2–4 | 1–4 | `npm run build`, `npm run preview` live | dev vs build; the folder problem |
-| 5 | 6 | **N** | base only in production (own repo name) |
-| 6 | 9 | open the run links | 8 red runs from an always-on base |
-| 7–8 | 11–13 | **N ×4** | refresh problem; hash router in the build; smoke test |
-| 9 | 18 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages |
-| 10 | 22 | Settings → Pages → Source → **GitHub Actions**; push; open the run and its link | each deploy = a push to main |
-| 11 | 25 | — | blank page checklist |
-| 12 | 28 | timer (8 min) | students deploy their own copy |
-| 13 | 37 | — | mental model |
-| 14 | 38 | — | homework I |
+| 5 | 6 | **N** | base only in production (own repo name); always-on base breaks every Cypress test |
+| 6–7 | 9–11 | **N ×4** | refresh problem; hash router in the build; smoke test |
+| 8 | 16 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages |
+| 9 | 20 | Settings → Pages → Source → **GitHub Actions**; push; open the run and its link | each deploy = a push to main |
+| 10 | 23 | — | blank page checklist |
+| 11 | 26 | timer (8 min) | students deploy their own copy |
+| 12 | 35 | — | mental model |
+| 13 | 36 | — | homework I |
 
 ## Lecture 2 · GitHub Actions
 | # | Min | Do | Say |
