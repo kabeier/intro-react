@@ -315,7 +315,7 @@ Same demo folder: `git reset --hard demo-l16-<n>-…` then `git push` (red boxes
 | 7 | 20 | — | deploy.yml → ci-cd.yml: same Pages actions, tests in front |
 | 8–10 | 21–23 | Settings → Rulesets → New ruleset → New branch ruleset; `protect main`, **Active**, Include default branch; Require status checks → `cypress-run`; Create | block the merge (cypress-run only listed after one CI run) |
 | 11–13 | 24–26 | click the runs in kabeier/pokemon-app (red → deploy skipped; PR → skipped; merge → deployed); open the red job | the real chain; secrets; reading a failed run |
-| 14 | 27 | timer (7 min); backup red run: pokemon-app run 43912868016 | students make and read their own red ✗ |
+| 14 | 27 | timer (7 min); backup red run: pokemon-app run 43912868016 | students, in their lecture 1 repo: copy ci-cd.yml + e2e-prod from the class code (`git checkout code/unit-9-lecture-2-ci-actions -- …`), delete deploy.yml, change ci-cd.yml lines 37–38 to their repo name, push; then a branch renaming 'Make Shiny', a PR, read the red ✗ |
 | 15–17 | 35–39 | — | pipeline; mental model; homework II |
 
 Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; Ruleset left on Disabled (lecture 2); Pages Source not switched to GitHub Actions (lecture 1: the run fails at the deploy step; set it, Re-run jobs); deploy.yml kept in lecture 2 (two deploys per push: git rm it).

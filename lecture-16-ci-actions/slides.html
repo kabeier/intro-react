@@ -22,6 +22,10 @@
   .shot-steps li { position: relative; padding-left: 52px; font-size: 25px; margin: 0 0 16px; }
   .shot-steps li b.n { position: absolute; left: 0; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #e03131; color: #fff; font: 700 22px/38px var(--display); text-align: center; }
   .shot-steps code { font-size: 21px; }
+  pre.cmd { font: 20px/1.5 var(--mono); background: #1b2230; color: #e6e9ef; padding: 10px 16px; border-radius: 8px; margin: 10px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  ol.act { margin: 0 0 12px; padding-left: 30px; font-size: 21px; }
+  ol.act li { margin: 0 0 6px; font-size: 21px; line-height: 1.35; }
+  ol.act li::marker { font-weight: 700; color: var(--green); }
 </style>
 </head>
 <body data-minutes="40">
@@ -332,17 +336,59 @@ git push</pre><p style="margin:6px 0 0">Push this <b>before</b> the ruleset (sli
 </section>
 
 <section class="slide activity" data-seg="Activity: your own red X" data-at="27">
-  <h2>Activity: make and read your own red ✗</h2>
+  <h2>Activity: CI/CD, then a red ✗</h2>
   <div class="countdown" data-sec="420"></div>
-  <ol class="steps">
-    <li>Add <b>ci-cd.yml</b> to the repo you deployed, delete <b>deploy.yml</b>; push: wait for green and a deploy</li>
-    <li>On a branch, rename "Make Shiny" to "Shine"; push; open a pull request</li>
-    <li>Open the red ✗ → the job → the first red step: which test, which error?</li>
-    <li>Say the fix in one sentence; fix it; push: green</li>
-  </ol>
-  <p class="muted small">Compare with: <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app runs</a> (a red run, a skipped deploy, a pull request)</p>
+  <div class="cols" style="grid-template-columns:0.82fr 1.18fr;gap:28px;margin-top:0">
+    <div style="font-size:21px;margin-top:8px">
+      <p style="margin:0 0 6px;font-weight:700;color:var(--green)">Part 1 · your repo from lecture 1</p>
+      <ol class="act">
+        <li>Get ci-cd.yml + the smoke test, delete deploy.yml <span class="muted">(box 1)</span></li>
+        <li>ci-cd.yml lines 37–38: <code>pokesearch</code> → <b>your</b> repo name</li>
+        <li>Commit, push. Actions: <b>CI/CD</b> green, deploy ✓</li>
+      </ol>
+      <p style="margin:0 0 6px;font-weight:700;color:var(--green)">Part 2 · your own red ✗</p>
+      <ol class="act" start="4">
+        <li>New branch; rename the button, push it <span class="muted">(box 2)</span></li>
+        <li>GitHub: <b>Compare &amp; pull request</b> → <b>Create</b></li>
+        <li>Red ✗ → <b>Details</b> → first red lines: which test? which error?</li>
+        <li>Rename it back, commit, push: green</li>
+      </ol>
+    </div>
+    <div style="margin-top:60px">
+      <p style="margin:0 0 4px;font-size:19px"><b>Box 1</b> · in your lecture 1 folder</p>
+      <pre class="cmd" style="margin:0;font-size:15px;line-height:1.45;font-variant-ligatures:none">cd my-pokesearch
+git remote add code https://github.com/kabeier/intro-react-code.git
+git fetch code
+git checkout code/unit-9-lecture-2-ci-actions -- \
+  .github/workflows/ci-cd.yml cypress/e2e-prod
+git rm .github/workflows/deploy.yml</pre>
+      <pre class="cmd" style="margin:8px 0 0;font-size:15px;line-height:1.45;font-variant-ligatures:none"><span style="color:#ff8a80">-  wait-on: 'http://localhost:4173/pokesearch/'</span>
+<span style="color:#6fdc9b">+  wait-on: 'http://localhost:4173/my-pokesearch/'</span>
+<span style="color:#ff8a80">-  config: baseUrl=http://localhost:4173/pokesearch/,specPattern=…</span>
+<span style="color:#6fdc9b">+  config: baseUrl=http://localhost:4173/my-pokesearch/,specPattern=…</span></pre>
+      <pre class="cmd" style="margin:8px 0 0;font-size:15px;line-height:1.45;font-variant-ligatures:none">git add .
+git commit -m "CI/CD: test, then deploy"
+git push</pre>
+      <p style="margin:10px 0 4px;font-size:19px"><b>Box 2</b> · PokeCard.jsx line 18: <code>'Make Shiny'</code> → <code>'Shine'</code></p>
+      <pre class="cmd" style="margin:0;font-size:15px;line-height:1.45;font-variant-ligatures:none">git switch -c rename-shiny
+git commit -am "Rename Make Shiny to Shine"
+git push -u origin rename-shiny</pre>
+    </div>
+  </div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students make their own red X on purpose, then read it.</p><p>7 minutes. Each student makes a fresh red run. Backup: the red run in kabeier/pokemon-app (<a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">run 43912868016</a>); its log is kept until about Feb 14, 2027.</p><p>Two deploys in one push? The student kept deploy.yml: <code>git rm .github/workflows/deploy.yml</code>, push.</p></aside>
+    <p class="plan"><b>The plan:</b> Students move their own repo to CI/CD, then make a red run on purpose in a pull request and read it. 7 minutes.</p>
+    <p><b>Start:</b> the repo they deployed in lecture 1's activity (e.g. <code>my-pokesearch</code>). Didn't finish it? Lecture 1, slide 15 first: clone <code>unit-9-lecture-1-deploy-pages</code>, change the base, push.</p>
+    <p><b>Box 1, what each command does:</b></p>
+    <ul>
+      <li><code>git remote add code …</code> + <code>git fetch code</code>: the class code repo, as a second remote named <code>code</code> (origin stays <b>their</b> repo).</li>
+      <li><code>git checkout code/unit-9-lecture-2-ci-actions -- …</code>: copies just ci-cd.yml and the cypress/e2e-prod folder (the smoke test) from today's finished code. Nothing else changes.</li>
+      <li><code>git rm …deploy.yml</code>: one workflow, one deploy, after green.</li>
+    </ul>
+    <p><b>What to change, and only this:</b> ci-cd.yml lines 37 and 38, <code>pokesearch</code> → their repo name (same name as their base from lecture 1). Forget it = the "Cypress (built site)" step waits for a page that isn't there and goes red. (The smoke test's comment line 2 also says pokesearch: only a comment, leave it.)</p>
+    <p><b>Box 2:</b> line 18 of src/components/PokeSearch/PokeCard.jsx, in <code>{shiny ? 'Make Normal' : 'Make Shiny'}</code>, change only <code>'Make Shiny'</code>. Then the three commands. GitHub shows a yellow <b>Compare &amp; pull request</b> banner: click it, then <b>Create pull request</b>.</p>
+    <p><b>What they should find:</b> 2 tests fail ("makes only one card shiny", "keeps a card shiny when another card is removed"): <i>Expected to find content: 'Make Shiny'</i>. The deploy job is skipped (it's a PR). The fix: rename it back (or update the tests), commit, <code>git push</code>: the check turns green. Merging it = a push to main = a deploy.</p>
+    <p>Rehearsed: from a lecture-1 repo, box 1 + the two line edits + box 2 all work, and the result matches <code>unit-9-lecture-2-ci-actions</code> except the repo name.</p>
+    <p>Backup: the red run in kabeier/pokemon-app (<a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">run 43912868016</a>); log kept until about Feb 14, 2027. Windows PowerShell: type the <code>\</code> line as one line.</p></aside>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="35">
