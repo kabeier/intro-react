@@ -23,23 +23,20 @@
       why: 'Without the colon, pokemon/id only matches the literal address /pokemon/id. Write pokemon/:id.',
     },
     {
-      id: 'deps', title: 'Details never change from the first Pokemon', base: 'f6', tabs: [DETAILS],
-      symptom: 'Open Pikachu\'s details, then change only the id in the URL (/pokemon/1) without a reload: still Pikachu. No link does this, so you won\'t see it by clicking: read the dependency array.',
-      breaks: [{ file: DETAILS, mode: 'replace', find: '  }, [id])', code: '  }, [])' }],
-      checks: [allPass, { name: 'the page follows the id in the URL', run: async (doc, win, ctx) => {
+      id: 'fixed', title: 'Every Details page shows Pikachu', base: 'f6', tabs: [DETAILS],
+      symptom: 'Search bulbasaur and click its Details: the address says /pokemon/1, but the card shows pikachu #25. The tests still pass: they only open Pikachu.',
+      breaks: [{ file: DETAILS, mode: 'replace', find: 'axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`)', code: 'axios.get(`https://pokeapi.co/api/v2/pokemon/25`)' }],
+      checks: [allPass, { name: 'Bulbasaur\'s page shows Bulbasaur', run: async (doc, win, ctx) => {
         await ctx.wait(800)
         const w = ctx.doc().defaultView
         if (!w.__ROUTER) return false
-        // Open Pikachu's page first, then change only the id (the page stays mounted).
-        w.__ROUTER.navigate('/pokemon/25')
-        for (let i = 0; i < 40; i++) { await ctx.wait(100); const h = ctx.doc().querySelector('h2'); if (h && /pikachu/.test(h.textContent)) break }
         w.__ROUTER.navigate('/pokemon/1')
         for (let i = 0; i < 40; i++) { await ctx.wait(100); const h = ctx.doc().querySelector('h2'); if (h && /bulbasaur/.test(h.textContent)) return true }
         return false
       } }],
       testsPass: true,
-      hint: 'When does the effect run again?',
-      why: 'The page stays mounted when only the id changes. The effect reads id, so it belongs in the array: [id].',
+      hint: 'The page reads id from the URL. Does the request use it?',
+      why: 'The request must use the id from useParams: pokemon/${id}. A fixed 25 asks for Pikachu every time.',
     },
     {
       id: 'loading', title: '"Cannot read properties of null (reading \'sprites\')"', base: 'f6', tabs: [DETAILS],
