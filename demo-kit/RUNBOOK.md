@@ -268,14 +268,15 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 | # | Min | Do | Say |
 |---|---|---|---|
 | 1–3 | 0–3 | show the bug (search, About, Home) | pages unmount; lift to App |
-| 4 | 5 | **N ×6**, red → green | the list in App, Outlet context |
-| 5–6 | 11–13 | — | reading the hook; Pikachu comes back |
-| 7 | 15 | **N ×5**, red → green | Pikachu loads once (in App) |
-| 8 | 21 | click the timer (10 min); walk around | Your turn: students move the count to App themselves |
-| 9 | 31 | **N ×5**, ▶ 33 green | the answer: the count in App too |
-| 10–12 | 35–38 | — | shiny (optional lift); where state lives; 33 tests |
-| 13 | 39 | timer | Fix It (outlet context) 1–6 |
-| 14–15 | 46–48 | — | mental model; homework II (about 48 min with Your turn) |
+| 4 | 5 | the diagram: Click me ×2, search Bulbasaur, Shiny, About → Home; ⬆ App on pokemonList, then count; About → Home (click-through in the notes; Reset diagram bottom right) | colors = one piece of state; tag = where it lives, pills = props; dots down = value, dots up = setter; unmount throws away state |
+| 5 | 8 | **N ×6**, red → green | the list in App, Outlet context |
+| 6–7 | 14–16 | — | reading the hook; Pikachu comes back |
+| 8 | 18 | **N ×5**, red → green | Pikachu loads once (in App) |
+| 9 | 24 | click the timer (10 min); walk around | Your turn: students move the count to App themselves |
+| 10 | 34 | **N ×5**, ▶ 33 green | the answer: the count in App too |
+| 11–13 | 38–41 | — | shiny (optional lift); where state lives; 33 tests |
+| 14 | 42 | timer | Fix It (outlet context) 1–6 |
+| 15–16 | 48–50 | — | mental model; homework II (about 50 min with Your turn) |
 
 # Runbook · Unit 9 (CI/CD)
 

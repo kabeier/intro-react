@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=2">
 <link rel="stylesheet" href="../shared/livepad.css?v=9">
+<link rel="stylesheet" href="../shared/state-map.css?v=1">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -16,6 +17,9 @@
   .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
   .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
   .loop span { color: var(--muted); }
+  .slide.sm-slide { padding: 56px 64px 32px; }
+  .slide.sm-slide h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
+  .slide.sm-slide h2 .say { font: 500 20px var(--mono); color: var(--muted); }
 </style>
 </head>
 <body data-minutes="40">
@@ -55,7 +59,31 @@
     <p class="plan"><b>The plan:</b> The fix: move the state up to App, which never leaves, and pass it down through the Outlet.</p><p><b>Different from the curriculum</b> (until merged): context is not "global state"; only pages under that Outlet can read it.</p></aside>
 </section>
 
-<section class="slide code" data-seg="Code along: list" data-at="5">
+<section class="slide sm-slide" data-seg="Concept" data-at="5">
+  <h2>Where state lives <span class="say">click the nav · change values · ⬆ App</span></h2>
+  <div class="sm"></div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> A clickable picture of our app: pages mount and unmount, their state is thrown away, then we move state up to App. Next slide we code it.</p>
+    <p><b>How to read it:</b> each color is one piece of state. The tag is where it <b>lives</b> (useState). Pills of the same color are the <b>props</b> carrying it down. Dots running down a wire = the value going to a child. Dots running up = a child calling the setter.</p>
+    <p><b>Click-through, about 3 minutes.</b> Ask them to predict before each nav click.</p>
+    <ol>
+      <li>Wait for Pikachu to appear. Point at the <b>mount log</b>: PokeSearch's effect fetched it.</li>
+      <li>Click <b>Click me!</b> twice: the orange <b>count</b> tag in Counter goes to 2. No wires: count never leaves Counter.</li>
+      <li>Type <b>bulbasaur</b> and press <b>Search</b>. Teal dots go up PokeForm → PokeSearch (handleSubmit), then purple dots go down PokeSearch → PokeContainer → each PokeCard.</li>
+      <li>Click <b>Shiny</b> on Bulbasaur (gold: state that lives in the card).</li>
+      <li><b>Ask:</b> "If I click About, what happens to count and the cards?" Click <b>About</b>. HomePage goes red and leaves; the log lists every component that unmounts and every value thrown away. The shelf on the right shows HomePage back on the shelf.</li>
+      <li>Click <b>Home</b>: count is 0, the list is just Pikachu again (the effect ran again).</li>
+      <li>Click <b>⬆ App</b> on <b>pokemonList</b>. The tag moves into App, the Outlet line now reads <code>context={{ pokemonList, setPokemonList }}</code>, and PokeSearch's tag says <b>useOutletContext()</b> (dashed = borrowed, not owned). Point at the wire: App → Outlet → PokeSearch → PokeContainer → cards. Inside the page it is the same prop drilling as before.</li>
+      <li>Search Bulbasaur again, go to <b>About</b> and back: the cards survive. The <b>shiny</b> resets: the card itself unmounted, and that is fine.</li>
+      <li><b>Ask:</b> "What about count?" Let them tell you to click <b>⬆ App</b> on count. Click it 3 times, About, Home: still 3.</li>
+      <li>Optional: <b>Log In</b>, type a name, Home, Log In again: the username resets. Not everything should move up: only state the app needs after you leave the page.</li>
+      <li>Optional teaser for slide 7: with the list in App, <b>Remove</b> Pikachu, About, Home. Pikachu comes back: PokeSearch's start-up effect ran again.</li>
+    </ol>
+    <p><b>Reset diagram</b> (bottom right) starts it over.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: list" data-at="8">
   <h2>The cards survive <span class="say">navigation.cy.js · App.jsx · PokeSearch.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="null" data-steps="f1s1 f1s2 f1s3 f1s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
@@ -72,7 +100,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="11">
+<section class="slide" data-seg="Concept" data-at="14">
   <h2>Reading useOutletContext</h2>
   <pre style="font-size:24px">// App.jsx
 &lt;Outlet context={{ pokemonList, setPokemonList }} /&gt;
@@ -84,7 +112,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> We read useOutletContext: how state gets from App down to a page.</p><p>Fix It: a renamed key, an array instead of an object, the hook used in App itself.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="13">
+<section class="slide" data-seg="Concept" data-at="16">
   <h2>A new bug: Pikachu comes back</h2>
   <table class="dbt small">
     <tr><th>Step</th><th>Happens</th></tr>
@@ -96,7 +124,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> That fix makes a new bug: remove Pikachu, come back, and Pikachu returns.</p><p>The instructor's version of this lesson had this bug; the test below catches it.</p></aside>
 </section>
 
-<section class="slide code" data-seg="Code along: Pikachu" data-at="15">
+<section class="slide code" data-seg="Code along: Pikachu" data-at="18">
   <h2>Pikachu loads once <span class="say">navigation.cy.js · PokeSearch.jsx · App.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="f1s4" data-steps="f2s1 f2s2 f2s3 f2s4" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/PokeSearch/PokeSearch.jsx"></div>
   <aside class="notes">
@@ -113,7 +141,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </aside>
 </section>
 
-<section class="slide activity" data-seg="Your turn: count" data-at="21">
+<section class="slide activity" data-seg="Your turn: count" data-at="24">
   <h2>Your turn: make the count survive</h2>
   <div class="countdown" data-sec="600"></div>
   <ol class="steps">
@@ -138,7 +166,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: count" data-at="31">
+<section class="slide code" data-seg="Code along: count" data-at="34">
   <h2>The count survives too <span class="say">navigation.cy.js · App.jsx · Counter.jsx</span></h2>
   <div class="livepad" data-lesson="outlet-context" data-start="f2s4" data-steps="f3s1 f3s2 f3s3 f3s4 f3s5" data-files="cypress/e2e/navigation.cy.js src/App.jsx src/components/Counter/Counter.jsx"></div>
   <aside class="notes">
@@ -156,7 +184,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="35">
+<section class="slide" data-seg="Concept" data-at="38">
   <h2>What about shiny?</h2>
   <table class="dbt small">
     <tr><th>State</th><th>Lives in</th><th>Survives a page change?</th></tr>
@@ -168,7 +196,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> Why shiny still resets, and what it would take to keep it.</p><p>Optional extension (instructor's call): shinyIds in App, toggleShiny(id) in the context. The curriculum's "shiny survives navigation" test needs it.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="37">
+<section class="slide" data-seg="Concept" data-at="40">
   <h2>Where should this state live?</h2>
   <table class="dbt small">
     <tr><th>State</th><th>Where</th></tr>
@@ -182,7 +210,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> A review: where should each piece of state live?</p><p>Quick class discussion, 1 minute.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="41">
   <h2>The suite now: 33 tests</h2>
   <table class="dbt small">
     <tr><th>New today</th><th>Guards</th></tr>
@@ -195,7 +223,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> The test suite now: 33 tests, and what each new one guards.</p><p>Unit 9 runs all 33 on GitHub for every push.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: Fix it" data-at="39">
+<section class="slide activity" data-seg="Activity: Fix it" data-at="42">
   <h2>Activity: Fix it (outlet context)</h2>
   <div class="countdown" data-sec="360"></div>
   <ol class="steps">
@@ -209,7 +237,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> Students fix broken outlet context on their own. Problems 1 to 6.</p><p>6 minutes.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="46">
+<section class="slide" data-seg="Wrap up" data-at="48">
   <h2>Mental model</h2>
   <ul>
     <li>Leaving a page unmounts it and its state</li>
@@ -222,7 +250,7 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
     <p class="plan"><b>The plan:</b> The mental model: leaving a page unmounts it, and the layout never does.</p><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="48">
+<section class="slide" data-seg="Wrap up" data-at="50">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
     <li><b>Rick and Morty IV</b></li>
@@ -255,5 +283,6 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
+<script src="../shared/state-map.js?v=1"></script>
 </body>
 </html>
