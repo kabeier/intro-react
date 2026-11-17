@@ -4,8 +4,9 @@
 // Usage: <div class="sm"></div> on a slide.
 ;(function () {
   const KEYS = ['count', 'pokemonList', 'pokemonName', 'username']
-  const INIT = { count: 0, pokemonList: [], pokemonName: '', username: '' }
-  const INIT_TEXT = { count: '0', pokemonList: '[]', pokemonName: "''", username: "''" }
+  // heading lives in Heading, which sits in App next to the Outlet: it never unmounts
+  const INIT = { count: 0, pokemonList: [], pokemonName: '', username: '', heading: 'Pokemon Project' }
+  const INIT_TEXT = { count: '0', pokemonList: '[]', pokemonName: "''", username: "''", heading: "'Pokemon Project'" }
   const SETTER = { count: 'setCount', pokemonList: 'setPokemonList', pokemonName: 'setPokemonName', username: 'setUsername' }
   const USER = { count: 'Counter', pokemonList: 'PokeSearch', pokemonName: 'PokeSearch', username: 'LoginPage' } // who uses it
   const PAGE_OF = { Counter: '/', PokeSearch: '/', LoginPage: '/login' }
@@ -35,7 +36,7 @@
     function tag(k, where) {
       const inApp = where === 'App', ctx = !inApp && st.owner[k] === 'App'
       const src = ctx ? 'useOutletContext()' : `useState(${INIT_TEXT[k]})`
-      const btn = inApp ? '<button class="sm-move" title="move it back down">⬇ back</button>' : ctx ? '' : '<button class="sm-move" title="move it up to App">⬆ App</button>'
+      const btn = k === 'heading' ? '' : inApp ? '<button class="sm-move" title="move it back down">⬇ back</button>' : ctx ? '' : '<button class="sm-move" title="move it up to App">⬆ App</button>'
       return `<span class="sm-tag k-${k}${ctx ? ' ctx' : ''}" data-key="${k}" data-where="${where}"><b>${k}</b> <span class="sm-val">${esc(show(k, st.v[k]))}</span> <small>${src}</small>${btn}</span>`
     }
     const pill = (k, name, fn) => `<span class="sm-pill k-${k}${fn ? ' fn' : ''}" data-prop="${name}">${name}</span>`
@@ -73,8 +74,8 @@
       const links = [['/', 'Home'], ['/about', 'About'], ['/login', 'Log In']]
         .map(([to, t]) => `<button data-go="${to}"${st.path === to ? ' class="cur"' : ''}>${t}</button>`).join('')
       tree.innerHTML = `<div class="sm-box sm-app" data-comp="App"><div class="sm-head"><span class="sm-name">App</span><span class="sm-tags stack">${appTags}</span></div>` +
-        `<div class="sm-row"><div class="sm-box sm-navbar sm-nav" data-comp="NavBar"><span class="sm-name">NavBar</span>${links}</div>` +
-        `<div class="sm-box sm-heading" data-comp="Heading"><span class="sm-name">Heading</span></div></div>` +
+        `<div class="sm-box sm-navbar sm-nav" data-comp="NavBar"><span class="sm-name">NavBar</span>${links}</div>` +
+        box('Heading', `<span class="sm-h1">${esc(st.v.heading)}</span><button class="sm-title-btn">Change Title</button><span class="sm-tags">${tag('heading', 'Heading')}</span>`, '', 'sm-heading') +
         `<div class="sm-outlet"><div class="sm-outlet-label">${outletLabel()}</div>${page()}</div></div>`
       shelf.innerHTML = PAGES.map(([p, name]) => `<div data-page="${name}"${PAGE[st.path] === name ? ' class="in-outlet"' : ''}>${name} <span>${PAGE[st.path] === name ? '→ in the Outlet' : p}</span></div>`).join('')
       root.dataset.path = st.path
@@ -240,6 +241,7 @@
         const t = userTag(k)
         if (t) t.classList.add('dying')
       }
+      if (st.v.heading !== INIT.heading) log(`  heading: ${show('heading', st.v.heading)} kept (Heading stays mounted)`, 'k k-heading')
       const shinies = Object.values(st.shiny).filter(Boolean).length
       if (shinies) log(`  shiny: true → false (×${shinies} card${shinies > 1 ? 's' : ''})`, 'k k-shiny')
       st.shiny = {}
@@ -282,6 +284,11 @@
         bump('count')
         if (!throttled.count) throttled.count = up('count', userTag('count')).then(() => down('count')).then(() => { throttled.count = null })
         return
+      }
+      if (b.classList.contains('sm-title-btn')) {
+        st.v.heading = 'Pokemon Project: Day 2'
+        q('.sm-h1').textContent = st.v.heading
+        return bump('heading')
       }
       if (b.classList.contains('sm-shiny')) {
         const c = b.closest('.sm-card'), name = c.dataset.name

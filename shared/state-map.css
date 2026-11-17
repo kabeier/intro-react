@@ -14,6 +14,7 @@
 .k-pokemonName { --k: #0c8599; --kb: #d5f3f6; }
 .k-username { --k: #c2255c; --kb: #ffe3ec; }
 .k-shiny { --k: #a37400; --kb: #fff3bf; }
+.k-heading { --k: #2b8a3e; --kb: #d3f9d8; }
 
 .sm-box { border: 3px solid var(--ink); border-radius: 10px; background: #fff; padding: 6px 12px 10px; margin-top: 12px; }
 .sm-head { display: flex; align-items: center; gap: 10px; min-height: 34px; }
@@ -37,7 +38,11 @@
 .sm-navbar .sm-name { color: #fff; margin-right: 8px; }
 .sm-navbar button { background: transparent; color: #fff; border-color: rgb(255 255 255 / .55); }
 .sm-navbar button.cur { background: #fff; color: var(--blue); }
-.sm-heading { display: flex; align-items: center; }
+.sm-heading { background: #212529; color: #fff; }
+.sm-heading .sm-name { color: #fff; }
+.sm-h1 { font: 700 20px var(--body); color: #fff; white-space: nowrap; }
+.sm-heading .sm-tag { color: var(--ink); font-size: 14px; }
+.sm-heading .sm-title-btn { padding: 0 8px; white-space: nowrap; }
 .sm-outlet { margin-top: 12px; border: 3px dashed var(--muted); border-radius: 10px; padding: 6px 12px 12px; background: #eef2f7; }
 .sm-outlet-label { font: 600 17px var(--mono); color: var(--muted); display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
 .sm-outlet-label .sm-pill { margin-left: 28px; }

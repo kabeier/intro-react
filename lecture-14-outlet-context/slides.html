@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="../shared/deck.css?v=2">
 <link rel="stylesheet" href="../shared/filetree.css?v=2">
 <link rel="stylesheet" href="../shared/livepad.css?v=9">
-<link rel="stylesheet" href="../shared/state-map.css?v=1">
+<link rel="stylesheet" href="../shared/state-map.css?v=2">
 <style>
   .slide.code { padding: 60px 64px 36px; }
   .slide.code h2 { font-size: 44px; margin: 0; display: flex; align-items: baseline; gap: 18px; }
@@ -68,10 +68,11 @@
     <p><b>Click-through, about 3 minutes.</b> Ask them to predict before each nav click.</p>
     <ol>
       <li>Wait for Pikachu to appear. Point at the <b>mount log</b>: PokeSearch's effect fetched it.</li>
+      <li>Click <b>Change Title</b> in the dark <b>Heading</b> box: the green <b>heading</b> tag becomes "Pokemon Project: Day 2". Heading sits in App, <b>next to</b> the Outlet, not in it.</li>
       <li>Click <b>Click me!</b> twice: the orange <b>count</b> tag in Counter goes to 2. No wires: count never leaves Counter.</li>
       <li>Type <b>bulbasaur</b> and press <b>Search</b>. Teal dots go up PokeForm → PokeSearch (handleSubmit), then purple dots go down PokeSearch → PokeContainer → each PokeCard.</li>
       <li>Click <b>Shiny</b> on Bulbasaur (gold: state that lives in the card).</li>
-      <li><b>Ask:</b> "If I click About, what happens to count and the cards?" Click <b>About</b>. HomePage goes red and leaves; the log lists every component that unmounts and every value thrown away. The shelf on the right shows HomePage back on the shelf.</li>
+      <li><b>Ask:</b> "If I click About, what happens to count and the cards?" Click <b>About</b>. HomePage goes red and leaves; the log lists every component that unmounts and every value thrown away. The green heading line says <b>kept</b>: Heading never unmounts, so its state stays. The shelf on the right shows HomePage back on the shelf.</li>
       <li>Click <b>Home</b>: count is 0, the list is just Pikachu again (the effect ran again).</li>
       <li>Click <b>⬆ App</b> on <b>pokemonList</b>. The tag moves into App, the Outlet line now reads <code>context={{ pokemonList, setPokemonList }}</code>, and PokeSearch's tag says <b>useOutletContext()</b> (dashed = borrowed, not owned). Point at the wire: App → Outlet → PokeSearch → PokeContainer → cards. Inside the page it is the same prop drilling as before.</li>
       <li>Search Bulbasaur again, go to <b>About</b> and back: the cards survive. The <b>shiny</b> resets: the card itself unmounted, and that is fine.</li>
@@ -283,6 +284,6 @@ const { pokemonList, setPokemonList } = useOutletContext()</pre>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
-<script src="../shared/state-map.js?v=1"></script>
+<script src="../shared/state-map.js?v=2"></script>
 </body>
 </html>

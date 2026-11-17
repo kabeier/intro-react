@@ -74,6 +74,21 @@ test('"move up" puts the state in App and passes it through the Outlet context',
   await context.close()
 })
 
+test('Heading sits in App beside the Outlet, so its state survives every page change', async () => {
+  const { context, page } = await open()
+  assert.equal((await val(page, 'heading', 'Heading')).trim(), '"Pokemon Project"')
+  await page.click(`${S}.sm-title-btn`)
+  assert.equal((await val(page, 'heading', 'Heading')).trim(), '"Pokemon Project: Day 2"')
+  assert.equal(await page.$(`${S}.sm-tag[data-key="heading"] .sm-move`), null, 'nothing to move: it is never unmounted')
+  await go(page, '/about')
+  await go(page, '/login')
+  assert.equal((await val(page, 'heading', 'Heading')).trim(), '"Pokemon Project: Day 2"')
+  assert.match(await page.textContent(`${S}.sm-log`), /heading.*kept/)
+  await page.click(`${S}.sm-reset`)
+  assert.equal((await val(page, 'heading', 'Heading')).trim(), '"Pokemon Project"')
+  await context.close()
+})
+
 test('state left in a page still resets: username on the login page', async () => {
   const { context, page } = await open()
   await page.click(`${S}.sm-tag[data-key="count"] .sm-move`)
