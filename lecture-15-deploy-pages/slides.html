@@ -16,6 +16,15 @@
   .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
   .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
   .loop span { color: var(--muted); }
+  .loop.road { font-size: 22px; gap: 10px; flex-wrap: wrap; }
+  .loop.road div { padding: 10px 14px; }
+  .shot-wrap { display: grid; grid-template-columns: 1fr 430px; gap: 34px; flex: 1; min-height: 0; margin-top: 18px; }
+  .shot-wrap img { max-width: 100%; max-height: 640px; object-fit: contain; object-position: top left; border: 2px solid var(--ink); border-radius: 8px; background: #fff; }
+  .shot-steps { list-style: none; padding: 0; margin: 0; }
+  .shot-steps li { position: relative; padding-left: 52px; font-size: 25px; margin: 0 0 16px; }
+  .shot-steps li b.n { position: absolute; left: 0; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #e03131; color: #fff; font: 700 22px/38px var(--display); text-align: center; }
+  .shot-steps code { font-size: 21px; }
+  pre.cmd { font: 20px/1.5 var(--mono); background: #1b2230; color: #e6e9ef; padding: 14px 18px; border-radius: 8px; margin: 10px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 </style>
 </head>
 <body data-minutes="40">
@@ -24,77 +33,188 @@
 <section class="slide title" data-seg="Open" data-at="0">
   <div class="kicker">Front-End · Unit 9: CI/CD · Lecture 1 of 2</div>
   <h1>GitHub Pages: put the app on the internet.</h1>
-  <p class="sub">Build it, make it work under /&lt;repo&gt;/, and publish with a GitHub Actions workflow.</p>
+  <p class="sub">Make a repo, publish it with a workflow, then fix the two things that break on the way.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today we put the app on the internet: build it, make it work under the repo's address, and let a workflow publish it on every push to main.</p>
-    <p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Have a repo with the Pokemon app pushed (a fork of your class repo works).</p>
-    <p>The build and the deploy run on laptops, not in the slides: the slides show the files.</p>
+    <p class="plan"><b>The plan:</b> Today we put the app on the internet, live: a new repo, a workflow that publishes it, and two fixes when the first deploy breaks.</p>
+    <p><b>Before class:</b> <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
+    <ul>
+      <li>Code: <code>intro-react-code</code> on <code>unit-8-lecture-2-outlet-context</code> (where unit 8 ended). Logged in to GitHub in the browser.</li>
+      <li>Check you have <b>no</b> repo called <code>pokesearch</code> yet: you create it live on slide 4.</li>
+    </ul>
+    <p>The build and the deploy run on your laptop and on GitHub. The slides show the files and screenshots of every GitHub screen.</p>
   </aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="1">
-  <h2>Development vs production</h2>
-  <table class="dbt small">
-    <tr><th></th><th><code>npm run dev</code></th><th><code>npm run build</code></th></tr>
-    <tr><td>What</td><td>a dev server, rebuilds on save</td><td class="pk">plain files in dist/</td></tr>
-    <tr><td>Where</td><td>localhost:5173/</td><td>any static host: GitHub Pages</td></tr>
-    <tr><td>Mode</td><td>development (StrictMode doubles, warnings)</td><td>production (small, fast)</td></tr>
-  </table>
-  <p class="bottomline">GitHub Pages serves files. It runs no server code.</p>
+  <h2>The goal: a real address</h2>
+  <p><b>GitHub Pages</b> = free hosting for a repo's files, at <code>https://&lt;you&gt;.github.io/&lt;repo&gt;/</code></p>
+  <p class="muted">It hands out <b>files</b>. It runs no server code: no Node, no Vite.</p>
+  <h3 style="margin-top:28px">Today, in order</h3>
+  <div class="loop road">
+    <div class="b">1 new repo</div><span>→</span><div class="b">2 Pages on</div><span>→</span><div class="b">3 deploy.yml</div><span>→</span><div class="r">4 push: blank page</div><span>→</span><div class="b">5 fix: base</div><span>→</span><div class="b">6 fix: refresh</div><span>→</span><div class="g">7 push: live</div>
+  </div>
+  <p class="bottomline">We deploy first, see what breaks, and fix it.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Development vs production: what npm run build really makes.</p><p>Show <code>npm run build</code> and <code>npm run preview</code> (localhost:4173): dist/index.html + assets/index-&lt;hash&gt;.js.</p></aside>
+    <p class="plan"><b>The plan:</b> What GitHub Pages is, and the road for today: deploy, watch it break, fix the two problems, deploy again.</p>
+    <p><b>Say:</b> "Your app runs on your laptop. Today it gets a real address you can put on your resume."</p>
+    <p><b>Point at</b> the road, left to right. The red box is on purpose: everybody's first deploy is a blank page, and we'll find out why.</p>
+  </aside>
 </section>
 
 <section class="slide" data-seg="Live" data-at="3">
-  <h2>Look at a build</h2>
-  <ol class="steps small">
-    <li><code>npm run build</code>: dist/index.html and dist/assets/index-&lt;hash&gt;.js</li>
-    <li><code>npm run preview</code>: serves dist/ at localhost:4173</li>
-    <li>Open dist/index.html in the editor: the script path starts with <code>/assets/</code></li>
+  <h2>What Pages will serve: the build</h2>
+  <table class="dbt small">
+    <tr><th></th><th><code>npm run dev</code></th><th><code>npm run build</code></th></tr>
+    <tr><td>Makes</td><td>a dev server, rebuilds on save</td><td class="pk">plain files in <b>dist/</b></td></tr>
+    <tr><td>Address</td><td>localhost:5173/</td><td>any file host: GitHub Pages</td></tr>
+    <tr><td>Mode</td><td>development (StrictMode doubles, warnings)</td><td>production (small, fast)</td></tr>
+  </table>
+  <ol class="steps small" style="margin-top:20px">
+    <li><code>npm run build</code> → dist/index.html + dist/assets/index-&lt;hash&gt;.js</li>
+    <li>Open dist/index.html: the script path starts with <code>/assets/</code> (remember this)</li>
   </ol>
-  <p class="bottomline">The hash in the file name changes when the code changes (no stale caches).</p>
+  <p class="bottomline">dist/ is the website. GitHub will build it for us.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We run a real build, look at dist/, and serve it locally.</p><p>dist/ is in .gitignore: never commit it. Later today a workflow builds it on GitHub instead.</p></aside>
+    <p class="plan"><b>The plan:</b> npm run dev vs npm run build, then a real build: dist/ is exactly what GitHub Pages will hand out.</p>
+    <p><b>Do, live:</b> <code>npm run build</code>, open the dist/ folder in VS Code, open dist/index.html. <b>Point at</b> <code>src="/assets/index-….js"</code>: it starts at the root of the site. That's Problem 1 later.</p>
+    <p>The hash in the file name changes when the code changes, so browsers never use an old copy.</p>
+    <p>dist/ is in .gitignore: never commit it. The workflow builds it on GitHub.</p>
+  </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="4">
+<section class="slide" data-seg="Live: GitHub" data-at="5">
+  <h2>1 · Make a new repo</h2>
+  <div class="shot-wrap">
+    <img src="img/new-repo.png" alt="GitHub's Create a new repository page with the name, visibility and Create repository button marked">
+    <div>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> github.com → <b>+</b> → <b>New repository</b></li>
+        <li><b class="n">2</b> Repository name: <code>pokesearch</code></li>
+        <li><b class="n">3</b> <b>Public</b> (free Pages needs it)</li>
+        <li><b class="n">4</b> No README, no .gitignore: our code has them</li>
+        <li><b class="n">5</b> <b>Create repository</b></li>
+      </ol>
+      <pre class="cmd">git remote add pages https://github.com/&lt;you&gt;/pokesearch.git
+git push pages HEAD:main</pre>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Create the pokesearch repo live on GitHub, then push our code to it.</p>
+    <p><b>Do, live</b> (the red numbers on the screenshot): + menu top right → New repository → name <code>pokesearch</code> → Public → leave README / .gitignore / license <b>off</b> → Create repository.</p>
+    <p><b>Why empty:</b> our code already has a README and .gitignore; a README on GitHub would make the first push fail (the histories differ).</p>
+    <p><b>The push:</b> GitHub's page says <code>git remote add origin …</code>, but our folder already has an <code>origin</code> (the class repo). So we name this one <code>pages</code>: <code>git remote add pages https://github.com/kabeier/pokesearch.git</code>, then <code>git push pages HEAD:main</code> (HEAD = the branch we're on, sent as main). Refresh the repo page: the code is there.</p>
+    <p><b>Students</b> in their own repo just use <code>origin</code> and <code>git push origin main</code>.</p>
+    <p><b>Repo name = the address:</b> it becomes <code>kabeier.github.io/pokesearch/</code>. The folder on your laptop can have any name.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live: GitHub" data-at="7">
+  <h2>2 · Turn on Pages</h2>
+  <div class="shot-wrap">
+    <img src="img/pages-source.png" alt="The repo's Settings, Pages screen with Source set to GitHub Actions">
+    <div>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> The repo's <b>Settings</b> tab</li>
+        <li><b class="n">2</b> <b>Pages</b> in the left menu</li>
+        <li><b class="n">3</b> Build and deployment → <b>Source</b> menu</li>
+        <li><b class="n">4</b> <b>GitHub Actions</b></li>
+      </ol>
+      <p class="muted small">Nothing else to fill in. It saves by itself.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> One setting: Pages publishes whatever our workflow sends it. Do it before the first push of the workflow.</p>
+    <p><b>Do, live:</b> Settings tab → Pages (left menu, under Code and automation) → Source dropdown → <b>GitHub Actions</b>.</p>
+    <p><b>Say:</b> "The other choice, Deploy from a branch, is the old way: it needs a branch full of built files. We let a workflow do it."</p>
+    <p><b>Ignore</b> the workflow suggestions GitHub shows (Static HTML, Jekyll): we write our own next.</p>
+    <p><b>The screenshot</b> is the backup repo (pokemon-app), already deployed: it shows "Your site is live". On the new pokesearch repo that box isn't there yet.</p>
+    <p><b>If you forget this:</b> the run fails at the deploy step ("Pages site not set up"). Set it, then <b>Re-run jobs</b>.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: deploy.yml" data-at="8">
+  <h2>3 · A workflow that publishes <span class="say">.github/workflows/deploy.yml</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="null" data-steps="f1s1" data-files=".github/workflows/deploy.yml"></div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> One workflow file: on every push to main, GitHub builds the app and publishes dist/ to Pages.</p>
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
+    <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
+<!-- steps:deploy-pages:f1 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live: GitHub" data-at="12">
+  <h2>4 · Push, and watch it run</h2>
+  <div class="shot-wrap">
+    <img src="img/actions-run.png" alt="The Actions tab: a green Deploy to GitHub Pages run with its deploy job and the site link">
+    <div>
+      <pre class="cmd" style="margin:0 0 18px">git add .github
+git commit -m "Deploy to GitHub Pages"
+git push pages HEAD:main</pre>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> The <b>Actions</b> tab</li>
+        <li><b class="n">2</b> The run: <b>Deploy to GitHub Pages</b></li>
+        <li><b class="n">3</b> The <b>deploy</b> job: green in about a minute</li>
+        <li><b class="n">4</b> The <b>link</b> to the site, under the job:</li>
+      </ol>
+      <img src="img/deploy-link.png" alt="The deploy job box with the site link under it" style="max-width:100%;border:2px solid var(--ink);border-radius:8px">
+    </div>
+  </div>
+  <p class="bottomline">… a blank white page. Why?</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Push the workflow, watch the run go green, open the site: it's blank. That's on purpose; next slide explains.</p>
+    <p><b>Do, live:</b> the three git commands, then the Actions tab (red 1). Click the running workflow (2): one job, <b>deploy</b> (3), each step from the file. When it's green, the link is under the job box (4). The screenshots are the backup repo; GitHub shows the link only on the newest deploy.</p>
+    <p><b>Open the site:</b> blank. <b>Ask:</b> "The run is green. So why is the page blank?" Open DevTools → <b>Console</b>: red 404s for <code>/assets/index-….js</code>. Click it: it asked <code>kabeier.github.io/assets/…</code>, without <code>/pokesearch/</code>.</p>
+    <p>Backup, a real green run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="14">
   <h2>Problem 1: the app lives in a folder</h2>
   <table class="dbt small">
-    <tr><th>Address</th><th>The page asks for</th><th>Result</th></tr>
-    <tr><td>you.github.io/pokemon-app/</td><td><code>/assets/index.js</code></td><td>404: that's you.github.io/assets/</td></tr>
-    <tr><td>you.github.io/pokemon-app/</td><td class="pk"><code>/pokemon-app/assets/index.js</code></td><td class="pk">works</td></tr>
+    <tr><th>The page is at</th><th>It asks for</th><th>Result</th></tr>
+    <tr><td>you.github.io/pokesearch/</td><td><code>/assets/index.js</code></td><td>404: that's you.github.io<b>/assets/</b>, outside the folder</td></tr>
+    <tr><td>you.github.io/pokesearch/</td><td class="pk"><code>/pokesearch/assets/index.js</code></td><td class="pk">works</td></tr>
   </table>
+  <p style="margin-top:22px">On your laptop the app is at the root (<code>localhost:5173/</code>), so <code>/assets/</code> was right.</p>
   <p class="bottomline">base tells Vite the folder. Only for the build.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Problem 1: on GitHub Pages the app lives in a folder, so its files can't be found.</p><p>A blank white page on GitHub Pages = wrong base, almost always.</p></aside>
+    <p class="plan"><b>The plan:</b> Problem 1: on GitHub Pages the app lives in a folder named after the repo, so the built page can't find its own files.</p>
+    <p><b>Point at</b> row 1: that's the red 404 from the Console. Row 2: the same file, with the folder in front. That's what <code>base</code> does.</p>
+    <p>A blank white page on GitHub Pages = wrong base, almost always.</p>
+  </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: base" data-at="6">
-  <h2>base, only in production <span class="say">vite.config.js</span></h2>
-  <div class="livepad" data-lesson="deploy-pages" data-start="null" data-steps="f1s1" data-files="vite.config.js"></div>
+<section class="slide code" data-seg="Code along: base" data-at="15">
+  <h2>5 · base, only in production <span class="say">vite.config.js</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1" data-files="vite.config.js"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We fix Problem 1 by setting base in vite.config.js, only for production.</p>
-    <p><b>** CODE ALONG, about 3 minutes. **</b> Students type their own repo name.</p>
-<!-- steps:deploy-pages:f1 -->
+    <p class="plan"><b>The plan:</b> We fix Problem 1 with base in vite.config.js, only for production. Don't push yet: there's a second problem.</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students type <b>their own</b> repo name.</p>
+<!-- steps:deploy-pages:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">defineConfig can take a function: Vite tells it the mode. Build = production. Use your own repo name between the slashes.</td></tr>
 </table>
 <!-- /steps -->
-    <p><b>Say:</b> "Why only in production? If base is always on, <code>npm run dev</code> moves to /pokemon-app/ too, and every Cypress test fails, because they visit /." Watch for <code>(mode) =&gt;</code> instead of <code>({ mode }) =&gt;</code>: base then silently never applies.</p>
+    <p><b>Say:</b> "Why only in production? If base is always on, <code>npm run dev</code> moves to /pokesearch/ too, and every Cypress test fails, because they visit /." Watch for <code>(mode) =&gt;</code> instead of <code>({ mode }) =&gt;</code>: base then silently never applies.</p>
+    <p><b>Don't push yet.</b> If someone does: the page loads now, but shows our own "404 - Page Not Found". The browser router reads <code>/pokesearch/</code> as the page name. The hash router (next) fixes that too.</p>
     <p><b>What can <code>mode</code> be?</b> Vite picks it from the command you run:</p>
     <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
       <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left">You run</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>mode</code></th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>base</code> becomes</th></tr>
       <tr><td style="padding:4px 10px"><code>npm run dev</code> (<code>vite</code>), and Cypress against it</td><td style="padding:4px 10px"><code>'development'</code></td><td style="padding:4px 10px"><code>/</code></td></tr>
-      <tr><td style="padding:4px 10px"><code>npm run build</code> (<code>vite build</code>), what Pages runs</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokemon-app/</code></td></tr>
-      <tr><td style="padding:4px 10px"><code>npm run preview</code> (<code>vite preview</code>)</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokemon-app/</code> (open <code>localhost:4173/pokemon-app/</code>)</td></tr>
+      <tr><td style="padding:4px 10px"><code>npm run build</code> (<code>vite build</code>), what the workflow runs</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokesearch/</code></td></tr>
+      <tr><td style="padding:4px 10px"><code>npm run preview</code> (<code>vite preview</code>)</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokesearch/</code> (open <code>localhost:4173/pokesearch/</code>)</td></tr>
       <tr><td style="padding:4px 10px">any command with <code>--mode staging</code></td><td style="padding:4px 10px">your own name, e.g. <code>'staging'</code></td><td style="padding:4px 10px"><code>/</code> (it isn't <code>'production'</code>)</td></tr>
     </table>
     <p>If asked: Vitest runs with <code>'test'</code>. Not to be confused with <code>command</code>, the other value Vite passes: only <code>'serve'</code> or <code>'build'</code>.</p>
   </aside>
 </section>
 
-
-<section class="slide" data-seg="Concept" data-at="9">
+<section class="slide" data-seg="Concept" data-at="18">
   <h2>Problem 2: refreshing /about</h2>
   <table class="dbt small">
     <tr><th>Where</th><th>Refresh /about</th><th>Why</th></tr>
@@ -110,12 +230,12 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="11">
+<section class="slide" data-seg="Concept" data-at="19">
   <h2>The hash router: what, how, why</h2>
   <table class="dbt small">
     <tr><th></th><th>Browser router (what we have)</th><th class="pk">Hash router</th></tr>
-    <tr><td>The address</td><td>/pokemon-app/about</td><td class="pk">/pokemon-app/<b>#</b>/about</td></tr>
-    <tr><td>Refresh: the browser asks the server for</td><td>/pokemon-app/about</td><td class="pk">/pokemon-app/ (everything after <b>#</b> stays in the browser)</td></tr>
+    <tr><td>The address</td><td>/pokesearch/about</td><td class="pk">/pokesearch/<b>#</b>/about</td></tr>
+    <tr><td>Refresh: the browser asks the server for</td><td>/pokesearch/about</td><td class="pk">/pokesearch/ (everything after <b>#</b> stays in the browser)</td></tr>
     <tr><td>GitHub Pages answers</td><td>404: no such file</td><td class="pk">index.html ✓</td></tr>
     <tr><td>React Router reads the page from</td><td>the path: <code>/about</code></td><td class="pk">the hash: <code>#/about</code></td></tr>
   </table>
@@ -126,22 +246,23 @@
     <p><b>How (point at the rows, top to bottom):</b></p>
     <ol>
       <li>The <b>#</b> part of a URL (the "hash") is <b>never sent to the server</b>. Browsers have always done this: it was made for jumping to a spot on a page (<code>page.html#section-2</code>).</li>
-      <li>So on a refresh GitHub Pages only sees <code>/pokemon-app/</code>, a real file: it sends index.html.</li>
+      <li>So on a refresh GitHub Pages only sees <code>/pokesearch/</code>, a real file: it sends index.html.</li>
       <li>Our app starts, React Router reads <code>#/about</code> and shows the About page.</li>
     </ol>
     <p><b>Why only in the build:</b> on the dev server clean addresses already work, and our Cypress tests visit <code>/about</code>, not <code>/#/about</code>. So: hash router in production, browser router while developing. That's next slide's code.</p>
+    <p><b>Bonus:</b> it also stops the "404 - Page Not Found" on the home page: the folder name is before the #, so the router never sees it.</p>
     <p><b>The cost:</b> a <code>#</code> in the address. Fine for a portfolio site. With a real server you'd fix it on the server instead.</p>
     <p><b>Optional demo:</b> on any site, add <code>#hello</code> to the address and refresh: open DevTools → Network, the request has no <code>#hello</code> in it.</p>
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: hash" data-at="13">
-  <h2>The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
-  <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1 f2s2 f2s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
+<section class="slide code" data-seg="Code along: hash" data-at="21">
+  <h2>6 · The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f2s1" data-steps="f3s1 f3s2 f3s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production, and add a small test for the built site.</p>
-    <p><b>** CODE ALONG, about 5 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
-<!-- steps:deploy-pages:f2 -->
+    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
+<!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter, createHashRout…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Both router makers…</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// GitHub Pages has no server to send every …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and pick one: hash in the build, normal paths while developing. Run the tests: 33 green (they run in development).</td></tr>
@@ -151,81 +272,69 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: deploy.yml" data-at="18">
-  <h2>Publish with a workflow <span class="say">.github/workflows/deploy.yml</span></h2>
-  <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
+<section class="slide" data-seg="Live: GitHub" data-at="25">
+  <h2>7 · Push again: it's live</h2>
+  <pre class="cmd">git add .
+git commit -m "base and hash router for GitHub Pages"
+git push pages HEAD:main</pre>
+  <ol class="steps small" style="margin-top:22px">
+    <li>Actions tab: a <b>new</b> run of Deploy to GitHub Pages, then green</li>
+    <li>Open the link: the app shows (Ctrl+Shift+R if it's still blank)</li>
+    <li>Click About: <code>…/pokesearch/#/about</code>. Refresh: still About</li>
+  </ol>
+  <p class="bottomline">Every push to main = a new deploy. No extra steps.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We write one workflow file: on every push to main, GitHub builds the app and publishes dist/ to GitHub Pages.</p>
-    <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
-    <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
-<!-- steps:deploy-pages:f3 -->
-<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>name: Deploy to GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">On every push to main: get the code, install, build, pack dist/, publish it. Same YAML as fundamentals week.</td></tr>
-</table>
-<!-- /steps -->
+    <p class="plan"><b>The plan:</b> Push both fixes, watch the second run, and check the live site: home page, About, and a refresh.</p>
+    <p><b>Do, live:</b> the three commands, Actions tab, wait for green (about a minute), open the link.</p>
+    <p><b>Check out loud:</b> Network tab: <code>/pokesearch/assets/…</code> now 200. Search a Pokemon (the API works from a live site too). About → refresh → still About.</p>
+    <p><b>Say:</b> "From now on we never deploy by hand. We push, the workflow builds and publishes."</p>
   </aside>
 </section>
 
-<section class="slide" data-seg="Live" data-at="22">
-  <h2>Deploy, step by step</h2>
-  <ol class="steps small">
-    <li>GitHub → Settings → Pages → Source → <b>GitHub Actions</b></li>
-    <li>Commit <code>deploy.yml</code> (and the base + router changes); <code>git push origin main</code></li>
-    <li>Actions tab: the <b>Deploy to GitHub Pages</b> run turns green</li>
-    <li>Click the link in the run's summary</li>
-    <li>Go to About: <code>…/&lt;repo&gt;/#/about</code>, and refresh</li>
-  </ol>
-  <p class="bottomline">Each deploy = a push to main.</p>
-  <aside class="notes">
-    <p class="plan"><b>The plan:</b> We turn on GitHub Pages, push, and watch the workflow publish the site.</p>
-    <p><b>Do the Source setting first.</b> Without it, the run fails at the <code>deploy-pages</code> step (it says Pages is not set up for GitHub Actions). Fix: set the Source, then <b>Re-run jobs</b>.</p>
-    <p>The run takes about a minute. Open it while it runs: one job, <b>deploy</b>, with each step from the file. The summary shows the live link (from <code>environment: url</code>).</p>
-    <p>Backup, a real run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p></aside>
-</section>
-
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Concept" data-at="27">
   <h2>When the page is blank</h2>
   <table class="dbt small">
     <tr><th>Symptom</th><th>Check</th></tr>
     <tr><td>blank page, 404s for assets in the Network tab</td><td>base matches the repo name, with both slashes</td></tr>
+    <tr><td>our "404 - Page Not Found" on the home page</td><td>hash router in production</td></tr>
     <tr><td>works, refresh on a page gives 404</td><td>hash router in production</td></tr>
     <tr><td>old version still showing</td><td>wait a minute; hard refresh (Ctrl+Shift+R)</td></tr>
-    <tr><td>the run is red at the deploy step</td><td>Settings → Pages → Source: GitHub Actions; re-run</td></tr>
+    <tr><td>the run is red at the deploy step</td><td>Settings → Pages → Source: GitHub Actions; Re-run jobs</td></tr>
     <tr><td>no run at all</td><td>deploy.yml is in <code>.github/workflows/</code>, pushed to main</td></tr>
   </table>
   <p class="bottomline">Network tab first.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> What to check when the deployed page is blank.</p><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
+    <p class="plan"><b>The plan:</b> What to check when a deployed page is blank or wrong. Leave it up during the activity.</p><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
 </section>
 
 <section class="slide activity" data-seg="Activity: deploy" data-at="28">
   <h2>Activity: deploy your own copy</h2>
   <div class="countdown" data-sec="480"></div>
   <ol class="steps">
-    <li>Set base to <b>your</b> repo name</li>
-    <li>Settings → Pages → Source: <b>GitHub Actions</b>; add deploy.yml; push to main</li>
-    <li>Open your URL, go to About, refresh</li>
-    <li>Post your URL in the class chat</li>
+    <li>Your repo → Settings → Pages → Source: <b>GitHub Actions</b></li>
+    <li>Add deploy.yml, base with <b>your</b> repo name, the hash router</li>
+    <li>Push to main; watch the Actions tab</li>
+    <li>Open your URL, go to About, refresh. Post the URL in the class chat</li>
   </ol>
-  <p class="muted small" style="margin-top:24px">Stuck? Use the table on the previous slide.</p>
+  <p class="muted small" style="margin-top:24px">Stuck? The previous slide. All three files: the code repo, branch <code>unit-9-lecture-1-deploy-pages</code>.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p></aside>
+    <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat. 8 minutes.</p><p>Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p><p>No repo of their own on GitHub yet? Same as slide 4: New repository, empty, Public, then push.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="37">
+<section class="slide" data-seg="Wrap up" data-at="36">
   <h2>Mental model</h2>
   <ul>
-    <li>Build = plain files in dist/; GitHub Pages serves files</li>
-    <li>base = the repo folder, only in production</li>
-    <li>Hash router in the build, so refresh works</li>
+    <li>Build = plain files in dist/; GitHub Pages hands out files</li>
+    <li>Settings → Pages → Source: GitHub Actions, once per repo</li>
     <li>deploy.yml builds on GitHub and publishes dist/ on every push to main</li>
+    <li>base = the repo folder; hash router so refresh works. Both only in the build</li>
   </ul>
   <p class="bottomline">Next: run the tests first, and deploy only when they pass.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> The mental model for deploying.</p><p>—</p></aside>
+    <p class="plan"><b>The plan:</b> The mental model for deploying, in four lines.</p><p>Ask: "Which of these would give a blank page if you forgot it?" (base.)</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="37">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>
@@ -254,7 +363,7 @@
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=3"></script>
 <script src="../shared/course/outlet-context.js?v=3"></script>
-<script src="../shared/course/deploy-pages.js?v=4"></script>
+<script src="../shared/course/deploy-pages.js?v=5"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

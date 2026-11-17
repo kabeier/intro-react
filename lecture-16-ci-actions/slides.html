@@ -16,6 +16,12 @@
   .loop div { padding: 18px 26px; border-radius: 10px; border: 3px solid var(--ink); }
   .loop .r { background: #fde2e1; } .loop .g { background: #dcf5e4; } .loop .b { background: #e3ecff; }
   .loop span { color: var(--muted); }
+  .shot-wrap { display: grid; grid-template-columns: 1fr 430px; gap: 34px; flex: 1; min-height: 0; margin-top: 18px; }
+  .shot-wrap img { max-width: 100%; max-height: 640px; object-fit: contain; object-position: top left; border: 2px solid var(--ink); border-radius: 8px; background: #fff; }
+  .shot-steps { list-style: none; padding: 0; margin: 0; }
+  .shot-steps li { position: relative; padding-left: 52px; font-size: 25px; margin: 0 0 16px; }
+  .shot-steps li b.n { position: absolute; left: 0; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #e03131; color: #fff; font: 700 22px/38px var(--display); text-align: center; }
+  .shot-steps code { font-size: 21px; }
 </style>
 </head>
 <body data-minutes="40">
@@ -26,7 +32,7 @@
   <h1>GitHub Actions: test every change, deploy only green.</h1>
   <p class="sub">Lint, build and Cypress on every push and pull request; deploy with GitHub's Pages actions after the tests pass.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today GitHub tests every change for us, and deploys only when the tests pass.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app → Actions</a> in a browser tab. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
+    <p class="plan"><b>The plan:</b> Today GitHub tests every change for us, and deploys only when the tests pass.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open <b>your pokesearch repo from lecture 1 → Actions</b> in a browser tab; you push to it with <code>git push pages HEAD:main</code>. Backup with recorded runs: <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app → Actions</a>. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="1">
@@ -85,19 +91,72 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="14">
-  <h2>Block the merge</h2>
-  <ul>
-    <li>A red check only <b>warns</b> on a pull request</li>
-    <li>Settings → Rules → Rulesets → on main: <b>Require status checks to pass</b> → <code>cypress-run</code></li>
-    <li>Now a red pull request says "Merging is blocked"</li>
-  </ul>
-  <p class="bottomline">The workflow tests; the rule enforces.</p>
+<section class="slide" data-seg="Live: GitHub" data-at="14">
+  <h2>Block the merge · 1 · a new ruleset</h2>
+  <div class="shot-wrap">
+    <img src="img/ruleset-1.png" alt="Settings, Rulesets, the New ruleset menu with New branch ruleset marked">
+    <div>
+      <p class="small">A red check only <b>warns</b> on a pull request. A <b>ruleset</b> makes it a <b>stop</b>.</p>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> The repo's <b>Settings</b> tab</li>
+        <li><b class="n">2</b> <b>Rulesets</b> in the left menu</li>
+        <li><b class="n">3</b> <b>New ruleset</b> ▾</li>
+        <li><b class="n">4</b> <b>New branch ruleset</b></li>
+      </ol>
+    </div>
+  </div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> How to turn a red check into a blocked merge.</p><p>Same as fundamentals week lecture 2, slide 10.</p></aside>
+    <p class="plan"><b>The plan:</b> Turn a red check into a blocked merge with a ruleset. Three screens; this is the first: where to find it.</p>
+    <p><b>Do, live</b> in your pokesearch repo, following the red numbers: Settings → Rulesets (under Code and automation) → New ruleset ▾ → <b>New branch ruleset</b>.</p>
+    <p><b>Say:</b> "The workflow tests. The ruleset enforces: no green, no merge."</p>
+    <p>Same idea as fundamentals week lecture 2, slide 10. Screenshots are from the backup repo (pokemon-app).</p>
+  </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: deploy" data-at="16">
+<section class="slide" data-seg="Live: GitHub" data-at="15">
+  <h2>Block the merge · 2 · name, on, main</h2>
+  <div class="shot-wrap">
+    <img src="img/ruleset-2.png" alt="The new branch ruleset form: name, Active enforcement, Add target and the Default branch marked">
+    <div>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> Ruleset Name: <code>protect main</code></li>
+        <li><b class="n">2</b> Enforcement status: <b>Active</b></li>
+        <li><b class="n">3</b> <b>Add target</b> ▾ → <b>Include default branch</b></li>
+        <li><b class="n">4</b> <b>Default</b> shows up: that's main</li>
+      </ol>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Name the ruleset, switch it on, and point it at main.</p>
+    <p><b>Point at 2:</b> it starts as <b>Disabled</b>. A disabled ruleset does nothing: the most common mistake.</p>
+    <p><b>Point at 3–4:</b> "default branch" = main. Leave the bypass list empty.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live: GitHub" data-at="16">
+  <h2>Block the merge · 3 · require the tests</h2>
+  <div class="shot-wrap">
+    <img src="img/ruleset-3.png" alt="Require status checks to pass ticked, Add checks with cypress-run, then cypress-run listed and the Create button">
+    <div>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> Tick <b>Require status checks to pass</b></li>
+        <li><b class="n">2</b> <b>Add checks</b> ▾</li>
+        <li><b class="n">3</b> Type <code>cypress</code> → pick <b>cypress-run</b> (GitHub Actions)</li>
+        <li><b class="n">4</b> It's listed as a required check</li>
+        <li><b class="n">5</b> Scroll down: <b>Create</b></li>
+      </ol>
+      <p class="bottomline" style="margin-top:30px;font-size:28px">Now a red pull request says "Merging is blocked".</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Make cypress-run a required check, then save. A red pull request can't be merged any more.</p>
+    <p><b>cypress-run</b> is the job name from ci-cd.yml. It only shows in the list after the workflow has run once in this repo, so do this after the first CI run.</p>
+    <p>Leave the other boxes as GitHub sets them (Restrict deletions and Block force pushes come ticked: fine).</p>
+    <p>Then open the red pull request from the activity: the merge button is grey, "Merging is blocked".</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: deploy" data-at="17">
   <h2>Deploy only after green <span class="say">ci-cd.yml: a second job · deploy.yml goes</span></h2>
   <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
   <aside class="notes">
@@ -114,7 +173,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="22">
+<section class="slide" data-seg="Concept" data-at="23">
   <h2>deploy.yml → ci-cd.yml</h2>
   <table class="dbt small">
     <tr><th></th><th>Lecture 1: <code>deploy.yml</code></th><th>Today: <code>ci-cd.yml</code></th></tr>
@@ -131,7 +190,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="23">
+<section class="slide" data-seg="Concept" data-at="24">
   <h2>The chain, on a real repo</h2>
   <table class="dbt small">
     <tr><th>What happened</th><th>cypress-run</th><th>deploy</th><th>Live site</th></tr>
@@ -148,7 +207,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="24">
+<section class="slide" data-seg="Concept" data-at="25">
   <h2>Secrets and permissions</h2>
   <table class="dbt small">
     <tr><th>Do</th><th>Never</th></tr>
@@ -162,20 +221,28 @@
     <p class="plan"><b>The plan:</b> Secrets and permissions: what's safe to put in a workflow.</p><p><b>id-token: write</b>: the deploy job gets a short-lived ID card from GitHub that says "I am the CI/CD workflow of this repo". Pages checks it. No password or token is stored anywhere.</p><p>Repo secrets (Settings → Secrets) for API keys later; never commit .env.</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="25">
+<section class="slide" data-seg="Live: GitHub" data-at="26">
   <h2>Reading a failed run</h2>
-  <ol class="steps small">
-    <li>Actions tab → the red ✗ run → the job</li>
-    <li>Open the first red step; scroll to the first red line</li>
-    <li>Cypress: the test name and its error, same as on your laptop</li>
-    <li>Reproduce locally (<code>npm run cy:run</code>), fix, push again</li>
-  </ol>
-  <p class="bottomline">The first red line is usually the real one.</p>
+  <div class="shot-wrap">
+    <img src="img/failed-log.png" alt="A failed cypress-run job: the red Cypress step open, the first error lines marked">
+    <div>
+      <ol class="shot-steps">
+        <li><b class="n">1</b> Actions → the red ✗ run → the red <b>job</b></li>
+        <li><b class="n">2</b> The red <b>step</b> opens by itself</li>
+        <li><b class="n">3</b> The <b>first red lines</b>: the test name and its error</li>
+      </ol>
+      <p class="small">Then: reproduce on your laptop (<code>npm run cy:run</code>), fix, push again.</p>
+      <p class="bottomline" style="margin-top:30px;font-size:28px">The first red line is usually the real one.</p>
+    </div>
+  </div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> How to read a failed run.</p><p>Screenshots of failed tests: add an <code>actions/upload-artifact</code> step with <code>if: failure()</code> and <code>path: cypress/screenshots</code> (the Cypress action does not upload them by itself).</p></aside>
+    <p class="plan"><b>The plan:</b> How to read a failed run: job, red step, first red line, then reproduce locally.</p>
+    <p><b>Point at 3:</b> "Expected to find content: 'Make Shiny'": the test wanted the old button text. Same message as on your laptop.</p>
+    <p>Skip Fix with Copilot / Explain error for now: read it yourself first.</p>
+    <p>Screenshots of failed tests: add an <code>actions/upload-artifact</code> step with <code>if: failure()</code> and <code>path: cypress/screenshots</code> (the Cypress action does not upload them by itself).</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: your own red X" data-at="26">
+<section class="slide activity" data-seg="Activity: your own red X" data-at="27">
   <h2>Activity: make and read your own red ✗</h2>
   <div class="countdown" data-sec="420"></div>
   <ol class="steps">
@@ -189,7 +256,7 @@
     <p class="plan"><b>The plan:</b> Students make their own red X on purpose, then read it.</p><p>7 minutes. Each student makes a fresh red run. Backup: the red run in kabeier/pokemon-app (<a href="https://github.com/kabeier/pokemon-app/actions/runs/43912868016" target="_blank" rel="noopener">run 43912868016</a>); its log is kept until about Feb 14, 2027.</p><p>Two deploys in one push? The student kept deploy.yml: <code>git rm .github/workflows/deploy.yml</code>, push.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="34">
+<section class="slide" data-seg="Wrap up" data-at="35">
   <h2>The whole pipeline</h2>
   <div class="loop"><div class="b">push / PR</div><span>→</span><div class="b">lint · build · Cypress (dev + built)</div><span>→</span><div class="g">green: deploy</div></div>
   <p class="bottomline" style="margin-top:40px">From a laptop to a live, tested site with one git push.</p>
@@ -197,7 +264,7 @@
     <p class="plan"><b>The plan:</b> The whole pipeline, from one git push to a live site.</p><p>This is the story to tell an employer about your project.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="36">
+<section class="slide" data-seg="Wrap up" data-at="37">
   <h2>Mental model</h2>
   <ul>
     <li>A workflow = triggers + jobs + steps, on a clean machine</li>
@@ -210,7 +277,7 @@
     <p class="plan"><b>The plan:</b> The mental model for GitHub Actions.</p><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="38">
+<section class="slide" data-seg="Wrap up" data-at="39">
   <h2>Homework, Part II</h2>
   <ol class="steps small">
     <li><b>CI/CD in Practice</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Use these projects to build dynamic <i>e2e</i> test suites with Cypress and then scale them to hold CI/CD pipelines that you can confidently discuss with potential employers."</li>
@@ -239,8 +306,8 @@
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=3"></script>
 <script src="../shared/course/outlet-context.js?v=3"></script>
-<script src="../shared/course/deploy-pages.js?v=4"></script>
-<script src="../shared/course/ci-actions.js?v=3"></script>
+<script src="../shared/course/deploy-pages.js?v=5"></script>
+<script src="../shared/course/ci-actions.js?v=4"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

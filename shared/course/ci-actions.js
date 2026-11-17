@@ -28,13 +28,13 @@ Course.register({
     },
     {
       id: 'f2', title: 'Also test the built site',
-      why: 'The dev server is not what users get. A second Cypress step runs the production smoke test against npm run preview, under /pokemon-app/ with the hash router.',
+      why: 'The dev server is not what users get. A second Cypress step runs the production smoke test against npm run preview, under /pokesearch/ with the hash router.',
       steps: [
         {
           id: 'f2s1', file: '.github/workflows/ci-cd.yml', mode: 'append',
-          code: "      - name: Cypress (built site)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run preview\n          wait-on: 'http://localhost:4173/pokemon-app/'\n          config: baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js",
+          code: "      - name: Cypress (built site)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run preview\n          wait-on: 'http://localhost:4173/pokesearch/'\n          config: baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js",
           say: 'Same action, different server: preview serves dist/ on port 4173, at the base path.',
-          notes: [{ match: 'config: baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js', what: 'Points Cypress at the built site and the production specs.', why: 'Catches a wrong base or router before users do.' }],
+          notes: [{ match: 'config: baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js', what: 'Points Cypress at the built site and the production specs.', why: 'Catches a wrong base or router before users do.' }],
         },
       ],
     },

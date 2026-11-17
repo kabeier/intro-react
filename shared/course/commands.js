@@ -291,7 +291,7 @@ Course.commands = {
         {
           cmd: 'npm run build', track: 'both',
           does: 'Builds the production app into the dist/ folder: small, fast files, no dev server needed.',
-          why: 'GitHub Pages serves dist/. The base in vite.config.js (/pokemon-app/) is baked in here.',
+          why: 'GitHub Pages serves dist/. The base in vite.config.js (/pokesearch/) is baked in here.',
           parts: [
             ['npm run', 'Run a package.json script.', 'No.'],
             ['build', 'Our script: vite build.', 'No.'],
@@ -300,13 +300,13 @@ Course.commands = {
         },
         {
           cmd: 'npm run preview', track: 'both',
-          does: 'Serves the built dist/ folder at http://localhost:4173/pokemon-app/.',
+          does: 'Serves the built dist/ folder at http://localhost:4173/pokesearch/.',
           why: 'See the real built site (with its base path) before you deploy.',
           parts: [
             ['npm run', 'Run a package.json script.', 'No.'],
             ['preview', 'Our script: vite preview.', 'No. Run npm run build first: preview shows the last build.'],
           ],
-          mistakes: ['A blank page at localhost:4173/: open /pokemon-app/ (the base).'],
+          mistakes: ['A blank page at localhost:4173/: open /pokesearch/ (the base).'],
         },
         {
           cmd: 'git push origin main', track: 'both',
@@ -383,14 +383,14 @@ Course.commands = {
           mistakes: ['It fails if package-lock.json is missing or does not match package.json: run npm install and commit package-lock.json.'],
         },
         {
-          cmd: 'npx cypress run --config "baseUrl=http://localhost:4173/pokemon-app/,specPattern=cypress/e2e-prod/**/*.cy.js"', track: 'both',
+          cmd: 'npx cypress run --config "baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js"', track: 'both',
           does: 'Runs the production specs against the built site (after npm run build and npm run preview).',
           why: 'The second Cypress step of the workflow, by hand: checks the build, with its base path, before it is deployed.',
           parts: [
             ['npx', 'Runs a command from an installed package, without a script.', 'No.'],
             ['cypress run', 'Run specs headless.', 'cypress open to watch them instead.'],
             ['--config', 'Overrides cypress.config.js for this run only. The settings follow in quotes, with a comma between them.', 'Yes, any setting. Keep the quotes: they stop the shell from treating the * as a file pattern.'],
-            ['baseUrl=http://localhost:4173/pokemon-app/', 'The address to test: the preview server.', 'Must match where npm run preview serves (port 4173 + the base).'],
+            ['baseUrl=http://localhost:4173/pokesearch/', 'The address to test: the preview server.', 'Must match where npm run preview serves (port 4173 + the base).'],
             ['specPattern=cypress/e2e-prod/**/*.cy.js', 'Which files are specs: every .cy.js file in cypress/e2e-prod (** = any folder inside).', 'Point it at another folder to run other specs.'],
           ],
         },
