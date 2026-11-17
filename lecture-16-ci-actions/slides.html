@@ -362,6 +362,7 @@ git fetch code
 git checkout code/unit-9-lecture-2-ci-actions -- \
   .github/workflows/ci-cd.yml cypress/e2e-prod
 git rm .github/workflows/deploy.yml</pre>
+      <p style="margin:8px 0 4px;font-size:19px"><b>.github/workflows/ci-cd.yml</b> lines 37–38: your repo name</p>
       <pre class="cmd" style="margin:8px 0 0;font-size:15px;line-height:1.45;font-variant-ligatures:none"><span style="color:#ff8a80">-  wait-on: 'http://localhost:4173/pokesearch/'</span>
 <span style="color:#6fdc9b">+  wait-on: 'http://localhost:4173/my-pokesearch/'</span>
 <span style="color:#ff8a80">-  config: baseUrl=http://localhost:4173/pokesearch/,specPattern=…</span>
@@ -369,7 +370,7 @@ git rm .github/workflows/deploy.yml</pre>
       <pre class="cmd" style="margin:8px 0 0;font-size:15px;line-height:1.45;font-variant-ligatures:none">git add .
 git commit -m "CI/CD: test, then deploy"
 git push</pre>
-      <p style="margin:10px 0 4px;font-size:19px"><b>Box 2</b> · PokeCard.jsx line 18: <code>'Make Shiny'</code> → <code>'Shine'</code></p>
+      <p style="margin:10px 0 4px;font-size:19px"><b>Box 2</b> · <b>src/components/PokeSearch/PokeCard.jsx</b> line 18: <code>'Make Shiny'</code> → <code>'Shine'</code></p>
       <pre class="cmd" style="margin:0;font-size:15px;line-height:1.45;font-variant-ligatures:none">git switch -c rename-shiny
 git commit -am "Rename Make Shiny to Shine"
 git push -u origin rename-shiny</pre>
