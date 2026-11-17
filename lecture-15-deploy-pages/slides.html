@@ -97,16 +97,45 @@
 <section class="slide" data-seg="Concept" data-at="9">
   <h2>Problem 2: refreshing /about</h2>
   <table class="dbt small">
-    <tr><th>Router</th><th>Address</th><th>Refresh on GitHub Pages</th></tr>
-    <tr><td>browser</td><td>/pokemon-app/about</td><td>404: there is no file called about</td></tr>
-    <tr><td class="pk">hash</td><td class="pk">/pokemon-app/#/about</td><td class="pk">works: the server only sees /pokemon-app/</td></tr>
+    <tr><th>Where</th><th>Refresh /about</th><th>Why</th></tr>
+    <tr><td><code>npm run dev</code> (Vite)</td><td class="pk">works</td><td>Vite sends <b>every</b> address to index.html, so React Router can read the path</td></tr>
+    <tr><td>GitHub Pages</td><td>404</td><td>only <b>real files</b>: it looks for a file called <code>about</code>, finds none</td></tr>
   </table>
-  <p class="bottomline">Hash router in the build; normal paths while developing.</p>
+  <p class="bottomline">Clicking links works everywhere. Only a refresh, or a pasted link, asks the server.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Problem 2: refreshing /about on GitHub Pages gives a 404.</p><p>Hosts with a server (Netlify, Vercel, your own nginx) can send every path to index.html instead.</p></aside>
+    <p class="plan"><b>The plan:</b> Problem 2: refreshing /about works locally but gives a 404 on GitHub Pages. Next slide: the fix.</p>
+    <p><b>Say:</b> "Clicking a Link never asks the server: React Router just changes the page. A refresh, a bookmark or a pasted link does ask the server for that address."</p>
+    <p><b>Point at</b> the two rows: same address, different server. Vite is smart (every address gets index.html); GitHub Pages only hands out files that exist in dist/.</p>
+    <p>If asked: hosts with a real server (Netlify, Vercel, your own nginx) can be told to send every address to index.html. GitHub Pages can't.</p>
+  </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: hash" data-at="11">
+<section class="slide" data-seg="Concept" data-at="11">
+  <h2>The hash router: what, how, why</h2>
+  <table class="dbt small">
+    <tr><th></th><th>Browser router (what we have)</th><th class="pk">Hash router</th></tr>
+    <tr><td>The address</td><td>/pokemon-app/about</td><td class="pk">/pokemon-app/<b>#</b>/about</td></tr>
+    <tr><td>Refresh: the browser asks the server for</td><td>/pokemon-app/about</td><td class="pk">/pokemon-app/ (everything after <b>#</b> stays in the browser)</td></tr>
+    <tr><td>GitHub Pages answers</td><td>404: no such file</td><td class="pk">index.html ✓</td></tr>
+    <tr><td>React Router reads the page from</td><td>the path: <code>/about</code></td><td class="pk">the hash: <code>#/about</code></td></tr>
+  </table>
+  <p class="bottomline">Same routes, same Link, same useNavigate. Only <code>createBrowserRouter</code> → <code>createHashRouter</code>.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> What the hash router is, how it dodges the 404, and why we use it only in the build.</p>
+    <p><b>What:</b> another router from react-router. It keeps the page's address <b>after a #</b> in the URL.</p>
+    <p><b>How (point at the rows, top to bottom):</b></p>
+    <ol>
+      <li>The <b>#</b> part of a URL (the "hash") is <b>never sent to the server</b>. Browsers have always done this: it was made for jumping to a spot on a page (<code>page.html#section-2</code>).</li>
+      <li>So on a refresh GitHub Pages only sees <code>/pokemon-app/</code>, a real file: it sends index.html.</li>
+      <li>Our app starts, React Router reads <code>#/about</code> and shows the About page.</li>
+    </ol>
+    <p><b>Why only in the build:</b> on the dev server clean addresses already work, and our Cypress tests visit <code>/about</code>, not <code>/#/about</code>. So: hash router in production, browser router while developing. That's next slide's code.</p>
+    <p><b>The cost:</b> a <code>#</code> in the address. Fine for a portfolio site. With a real server you'd fix it on the server instead.</p>
+    <p><b>Optional demo:</b> on any site, add <code>#hello</code> to the address and refresh: open DevTools → Network, the request has no <code>#hello</code> in it.</p>
+  </aside>
+</section>
+
+<section class="slide code" data-seg="Code along: hash" data-at="13">
   <h2>The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f1s1" data-steps="f2s1 f2s2 f2s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
   <aside class="notes">
@@ -122,7 +151,7 @@
   </aside>
 </section>
 
-<section class="slide code" data-seg="Code along: deploy.yml" data-at="16">
+<section class="slide code" data-seg="Code along: deploy.yml" data-at="18">
   <h2>Publish with a workflow <span class="say">.github/workflows/deploy.yml</span></h2>
   <div class="livepad" data-lesson="deploy-pages" data-start="f2s3" data-steps="f3s1" data-files=".github/workflows/deploy.yml"></div>
   <aside class="notes">
@@ -137,7 +166,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Live" data-at="20">
+<section class="slide" data-seg="Live" data-at="22">
   <h2>Deploy, step by step</h2>
   <ol class="steps small">
     <li>GitHub → Settings → Pages → Source → <b>GitHub Actions</b></li>
@@ -154,7 +183,7 @@
     <p>Backup, a real run: <a href="https://github.com/kabeier/pokemon-app/actions/runs/43912435485" target="_blank" rel="noopener">Deploy to GitHub Pages in kabeier/pokemon-app</a> (log kept until about Feb 14, 2027).</p></aside>
 </section>
 
-<section class="slide" data-seg="Concept" data-at="23">
+<section class="slide" data-seg="Concept" data-at="25">
   <h2>When the page is blank</h2>
   <table class="dbt small">
     <tr><th>Symptom</th><th>Check</th></tr>
@@ -169,7 +198,7 @@
     <p class="plan"><b>The plan:</b> What to check when the deployed page is blank.</p><p>Repo name with an underscore vs a dash (demo_test2 vs demo-test2) bit the instructor once too.</p></aside>
 </section>
 
-<section class="slide activity" data-seg="Activity: deploy" data-at="26">
+<section class="slide activity" data-seg="Activity: deploy" data-at="28">
   <h2>Activity: deploy your own copy</h2>
   <div class="countdown" data-sec="480"></div>
   <ol class="steps">
@@ -183,7 +212,7 @@
     <p class="plan"><b>The plan:</b> Students deploy their own copy and post the URL in the chat.</p><p>8 minutes. Walk the room: base and the Pages Source setting are 90% of the problems. A run fails at the deploy step = the Source is not GitHub Actions: set it, then Re-run jobs.</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="35">
+<section class="slide" data-seg="Wrap up" data-at="37">
   <h2>Mental model</h2>
   <ul>
     <li>Build = plain files in dist/; GitHub Pages serves files</li>
@@ -196,7 +225,7 @@
     <p class="plan"><b>The plan:</b> The mental model for deploying.</p><p>—</p></aside>
 </section>
 
-<section class="slide" data-seg="Wrap up" data-at="36">
+<section class="slide" data-seg="Wrap up" data-at="38">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>

@@ -287,13 +287,15 @@ The build, the deploy and GitHub Actions run on laptops and on GitHub; the slide
 |---|---|---|---|
 | 2–4 | 1–4 | `npm run build`, `npm run preview` live | dev vs build; the folder problem |
 | 5 | 6 | **N** | base only in production (own repo name); always-on base breaks every Cypress test |
-| 6–7 | 9–11 | **N ×4** | refresh problem; hash router in the build; smoke test |
-| 8 | 16 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages |
-| 9 | 20 | Settings → Pages → Source → **GitHub Actions**; push; open the run and its link | each deploy = a push to main |
-| 10 | 23 | — | blank page checklist |
-| 11 | 26 | timer (8 min) | students deploy their own copy |
-| 12 | 35 | — | mental model |
-| 13 | 36 | — | homework I |
+| 6 | 9 | — | refresh /about: works on Vite, 404 on Pages (only real files) |
+| 7 | 11 | optional: add `#hello` to any URL, Network tab | hash router: the part after # never reaches the server |
+| 8 | 13 | **N ×3** | hash router in the build; smoke test |
+| 9 | 18 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages |
+| 10 | 22 | Settings → Pages → Source → **GitHub Actions**; push; open the run and its link | each deploy = a push to main |
+| 11 | 25 | — | blank page checklist |
+| 12 | 28 | timer (8 min) | students deploy their own copy |
+| 13 | 37 | — | mental model |
+| 14 | 38 | — | homework I |
 
 ## Lecture 2 · GitHub Actions
 | # | Min | Do | Say |
