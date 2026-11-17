@@ -80,6 +80,15 @@
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>vite.config.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import react from '@vitejs/plugin-react'</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">defineConfig can take a function: Vite tells it the mode. Build = production. Use your own repo name between the slashes.</td></tr>
 </table>
 <!-- /steps -->
+    <p><b>What can <code>mode</code> be?</b> Vite picks it from the command you run:</p>
+    <table style="border-collapse:collapse;font-size:15px;margin:6px 0">
+      <tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left">You run</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>mode</code></th><th style="padding:4px 10px;border-bottom:1px solid #34405a;text-align:left"><code>base</code> becomes</th></tr>
+      <tr><td style="padding:4px 10px"><code>npm run dev</code> (<code>vite</code>), and Cypress against it</td><td style="padding:4px 10px"><code>'development'</code></td><td style="padding:4px 10px"><code>/</code></td></tr>
+      <tr><td style="padding:4px 10px"><code>npm run build</code> (<code>vite build</code>), what Pages runs</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokemon-app/</code></td></tr>
+      <tr><td style="padding:4px 10px"><code>npm run preview</code> (<code>vite preview</code>)</td><td style="padding:4px 10px"><code>'production'</code></td><td style="padding:4px 10px"><code>/pokemon-app/</code> (open <code>localhost:4173/pokemon-app/</code>)</td></tr>
+      <tr><td style="padding:4px 10px">any command with <code>--mode staging</code></td><td style="padding:4px 10px">your own name, e.g. <code>'staging'</code></td><td style="padding:4px 10px"><code>/</code> (it isn't <code>'production'</code>)</td></tr>
+    </table>
+    <p>If asked: Vitest runs with <code>'test'</code>. Not to be confused with <code>command</code>, the other value Vite passes: only <code>'serve'</code> or <code>'build'</code>.</p>
   </aside>
 </section>
 
