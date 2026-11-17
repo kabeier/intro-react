@@ -451,6 +451,30 @@ git push -u origin main</pre>
 </section>
 
 <section class="slide" data-seg="Wrap up" data-at="37">
+  <h2>Documentation</h2>
+  <p style="font-size:26px;margin:0 0 12px;max-width:none">Everything from today, in the official docs. Each link opens in a new tab.</p>
+  <table class="dbt small">
+    <tr><th>Taught today</th><th>Docs page</th></tr>
+    <tr><td>A new repo; <code>git remote add</code></td><td><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository" target="_blank" rel="noopener">Creating a repository</a> · <a href="https://docs.github.com/en/get-started/git-basics/managing-remote-repositories#adding-a-remote-repository" target="_blank" rel="noopener">Adding a remote</a></td></tr>
+    <tr><td>Settings → Pages → Source: GitHub Actions</td><td><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow" target="_blank" rel="noopener">Publishing with a custom workflow</a></td></tr>
+    <tr><td><code>deploy.yml</code></td><td><a href="https://vite.dev/guide/static-deploy#github-pages" target="_blank" rel="noopener">Vite: GitHub Pages</a> · <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages" target="_blank" rel="noopener">GitHub: custom workflows for Pages</a></td></tr>
+    <tr><td><code>upload-pages-artifact</code>, <code>deploy-pages</code></td><td><a href="https://github.com/actions/upload-pages-artifact" target="_blank" rel="noopener">upload-pages-artifact</a> · <a href="https://github.com/actions/deploy-pages" target="_blank" rel="noopener">deploy-pages</a></td></tr>
+    <tr><td><code>npm run build</code>, <code>npm run preview</code></td><td><a href="https://vite.dev/guide/static-deploy#testing-the-app-locally" target="_blank" rel="noopener">Vite: testing the app locally</a></td></tr>
+    <tr><td><code>base</code>, only in production</td><td><a href="https://vite.dev/config/shared-options#base" target="_blank" rel="noopener">Vite: base</a> · <a href="https://vite.dev/config/#conditional-config" target="_blank" rel="noopener">Vite: conditional config</a></td></tr>
+    <tr><td><code>mode</code>, <code>import.meta.env.PROD</code></td><td><a href="https://vite.dev/guide/env-and-mode#modes" target="_blank" rel="noopener">Vite: modes</a></td></tr>
+    <tr><td>The hash router</td><td><a href="https://reactrouter.com/api/data-routers/createHashRouter" target="_blank" rel="noopener">createHashRouter</a> · <a href="https://reactrouter.com/api/data-routers/createBrowserRouter" target="_blank" rel="noopener">createBrowserRouter</a></td></tr>
+  </table>
+  <p class="bottomline">Stuck on the homework? Start here.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Where each thing from today lives in the docs, so students can look it up on their own.</p>
+    <p><b>Click Vite: GitHub Pages:</b> our deploy.yml is that recipe. Two small differences: we use Node 24 (same as our Docker image) instead of "lts", and we skip its <code>configure-pages</code> step, because we set the Source by hand.</p>
+    <p><b>Vite: conditional config</b> shows <code>defineConfig(({ command, mode }) =&gt; …)</code>: the same function form as our base line.</p>
+    <p>React Router docs: pick the <b>Data</b> mode tab when a page shows more than one; that's our <code>createBrowserRouter</code> / <code>createHashRouter</code> setup.</p>
+    <p><b>Say:</b> "Every line we wrote today is on one of these pages."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="38">
   <h2>Homework, Part I</h2>
   <ol class="steps small">
     <li><b>Portfolio Projects</b>: "Through out the last 8+ days you've continuously build Front-End SPA with React + Vite. DON'T LET THIS WORK GO TO WASTE. Deploy these projects to Github pages and begin building up your Portfolio as a developer."</li>

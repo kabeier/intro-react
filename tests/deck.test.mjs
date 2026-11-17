@@ -19,8 +19,8 @@ const html = readFileSync(path.join(ROOT, DECK), 'utf8')
 const slides = html.split('<section class="slide').slice(1)
 const test2 = (name, fn) => test(DECK + ': ' + name, fn)
 
-test2('the deck has 13-17 slides, each with presenter notes and a start minute', () => {
-  assert.ok(slides.length >= 13 && slides.length <= 17, 'slides: ' + slides.length)
+test2('the deck has 13-18 slides, each with presenter notes and a start minute', () => {
+  assert.ok(slides.length >= 13 && slides.length <= 18, 'slides: ' + slides.length)
   let last = -1
   for (const [k, s] of slides.entries()) {
     assert.match(s, /<aside class="notes">/, 'notes on slide ' + (k + 1))

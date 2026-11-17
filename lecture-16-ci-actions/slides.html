@@ -413,6 +413,30 @@ git push -u origin rename-shiny</pre>
     <p class="plan"><b>The plan:</b> The mental model for GitHub Actions.</p><p>—</p></aside>
 </section>
 
+<section class="slide" data-seg="Wrap up" data-at="38">
+  <h2>Documentation</h2>
+  <p style="font-size:26px;margin:0 0 12px;max-width:none">Everything from today, in the official docs. Each link opens in a new tab.</p>
+  <table class="dbt small">
+    <tr><th>Taught today</th><th>Docs page</th></tr>
+    <tr><td><code>on:</code> push, pull_request, workflow_dispatch</td><td><a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#on" target="_blank" rel="noopener">Workflow syntax: on</a> · <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request" target="_blank" rel="noopener">pull_request event</a></td></tr>
+    <tr><td><code>permissions:</code></td><td><a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions" target="_blank" rel="noopener">Workflow syntax: permissions</a></td></tr>
+    <tr><td><code>npm ci</code></td><td><a href="https://docs.npmjs.com/cli/commands/npm-ci/" target="_blank" rel="noopener">npm ci</a></td></tr>
+    <tr><td>The Cypress action: <code>start</code>, <code>wait-on</code></td><td><a href="https://github.com/cypress-io/github-action" target="_blank" rel="noopener">cypress-io/github-action</a> · <a href="https://docs.cypress.io/app/continuous-integration/github-actions" target="_blank" rel="noopener">Cypress: GitHub Actions</a></td></tr>
+    <tr><td>Built site: <code>preview</code>, <code>--config</code></td><td><a href="https://vite.dev/guide/cli#vite-preview" target="_blank" rel="noopener">vite preview</a> · <a href="https://docs.cypress.io/app/references/command-line#cypress-run-config-lt-config-gt" target="_blank" rel="noopener">cypress run --config</a></td></tr>
+    <tr><td><code>needs:</code>, <code>if:</code>, <code>github.event_name</code></td><td><a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idneeds" target="_blank" rel="noopener">needs</a> · <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idif" target="_blank" rel="noopener">if</a> · <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context" target="_blank" rel="noopener">github context</a></td></tr>
+    <tr><td>Rulesets: require <code>cypress-run</code></td><td><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets" target="_blank" rel="noopener">About rulesets</a> · <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets#require-status-checks-to-pass-before-merging" target="_blank" rel="noopener">Require status checks</a></td></tr>
+    <tr><td>Secrets; reading a failed run</td><td><a href="https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets" target="_blank" rel="noopener">Using secrets</a> · <a href="https://docs.github.com/en/actions/how-tos/monitor-workflows/use-workflow-run-logs" target="_blank" rel="noopener">Workflow run logs</a></td></tr>
+  </table>
+  <p class="bottomline">Stuck on the homework? Start here.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Where each thing from today lives in the docs, so students can look it up on their own.</p>
+    <p><b>Click needs:</b> the docs say a job that needs another one waits for it, and is skipped if that job fails: our deploy job.</p>
+    <p><b>Click Require status checks:</b> it says commits must first pass on another branch before they reach main. That's why our ruleset comes after the last direct push.</p>
+    <p>Our two-job ci-cd.yml (build and test, then deploy with <code>needs</code>) is the pattern in GitHub's "custom workflows for Pages" page, linked in lecture 1's docs slide.</p>
+    <p><b>Say:</b> "Every line we wrote today is on one of these pages."</p>
+  </aside>
+</section>
+
 <section class="slide" data-seg="Wrap up" data-at="39">
   <h2>Homework, Part II</h2>
   <ol class="steps small">

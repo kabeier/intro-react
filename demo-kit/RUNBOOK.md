@@ -301,7 +301,9 @@ Demo folder: `new_Lectures/intro-gh-pages-deploy` (a copy of intro-react-code; r
 | 13 | 25 | commit + push; Actions; open; About; refresh | it's live; every push = a deploy |
 | 14 | 27 | — | blank page checklist |
 | 15 | 28 | timer (8 min) | students: own repo (any name) + Pages Source, clone `unit-9-lecture-1-deploy-pages`, change only the base to their repo name, push |
-| 16–17 | 36–37 | — | mental model; homework I |
+| 16 | 36 | — | mental model |
+| 17 | 37 | click **Vite: GitHub Pages** | docs per topic; our deploy.yml is Vite's recipe (Node 24, no configure-pages) |
+| 18 | 38 | — | homework I |
 
 ## Lecture 2 · GitHub Actions
 Same demo folder: `git reset --hard demo-l16-<n>-…` then `git push` (red boxes). Push the deploy job **before** the ruleset: after it, direct pushes to main are refused until CI passed elsewhere. Recorded runs in kabeier/pokemon-app are the backup.
@@ -316,7 +318,9 @@ Same demo folder: `git reset --hard demo-l16-<n>-…` then `git push` (red boxes
 | 8–10 | 21–23 | Settings → Rulesets → New ruleset → New branch ruleset; `protect main`, **Active**, Include default branch; Require status checks → `cypress-run`; Create | block the merge (cypress-run only listed after one CI run) |
 | 11–13 | 24–26 | click the runs in kabeier/pokemon-app (red → deploy skipped; PR → skipped; merge → deployed); open the red job | the real chain; secrets; reading a failed run |
 | 14 | 27 | timer (7 min); backup red run: pokemon-app run 43912868016 | students, in their lecture 1 repo: copy ci-cd.yml + e2e-prod from the class code (`git checkout code/unit-9-lecture-2-ci-actions -- …`), delete deploy.yml, change ci-cd.yml lines 37–38 to their repo name, push; then a branch renaming 'Make Shiny', a PR, read the red ✗ |
-| 15–17 | 35–39 | — | pipeline; mental model; homework II |
+| 15–16 | 35–37 | — | pipeline; mental model |
+| 17 | 38 | click **needs** and **Require status checks** | docs per topic |
+| 18 | 39 | — | homework II |
 
 Things to expect: `react-router-dom` from old tutorials; Nav.Link without as={Link} (reloads); `(mode) =>` instead of `({ mode }) =>`; repo name with _ vs -; Ruleset left on Disabled (lecture 2); Pages Source not switched to GitHub Actions (lecture 1: the run fails at the deploy step; set it, Re-run jobs); deploy.yml kept in lecture 2 (two deploys per push: git rm it).
 
