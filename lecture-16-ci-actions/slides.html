@@ -32,7 +32,15 @@
   <h1>GitHub Actions: test every change, deploy only green.</h1>
   <p class="sub">Lint, build and Cypress on every push and pull request; deploy with GitHub's Pages actions after the tests pass.</p>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> Today GitHub tests every change for us, and deploys only when the tests pass.</p><p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open <b>your pokesearch repo from lecture 1 → Actions</b> in a browser tab; you push to it with <code>git push pages HEAD:main</code>. Backup with recorded runs: <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app → Actions</a>. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
+    <p class="plan"><b>The plan:</b> Today GitHub tests every change for us, and deploys only when the tests pass.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · before class, in <code>intro-gh-pages-deploy</code></p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">cd /mnt/storage/CP/new_Lectures/intro-gh-pages-deploy
+git fetch code --tags --force
+# where lecture 1 ended (the pokesearch site is live):
+git reset --hard demo-l16-0-start</pre><p style="margin:6px 0 0">All commands, both lectures: <code>DEMO.md</code> in that folder.</p>
+    </div>
+<p><b>Before class</b>: <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>. Open <b>your pokesearch repo from lecture 1 → Actions</b> in a browser tab. Backup with recorded runs: <a href="https://github.com/kabeier/pokemon-app/actions" target="_blank" rel="noopener">kabeier/pokemon-app → Actions</a>. Fundamentals week's GitHub Actions lectures are the background.</p></aside>
 </section>
 
 <section class="slide" data-seg="Concept" data-at="1">
@@ -52,6 +60,12 @@
   <div class="livepad" data-lesson="ci-actions" data-start="null" data-steps="f1s1" data-files=".github/workflows/ci-cd.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We write a second workflow, ci-cd.yml: on every push and pull request, a clean machine installs, lints, builds and runs Cypress. Later today it also deploys.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 3, after the code-along</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l16-1-ci
+git push</pre><p style="margin:6px 0 0">Actions tab: <b>CI/CD</b> runs (and deploy.yml too, for now). This first run also puts <code>cypress-run</code> in the ruleset list later.</p>
+    </div>
+
     <p><b>Say:</b> "deploy.yml from lecture 1 is still there. For now both run on every push, and deploy.yml doesn't care if the tests are red. We fix that later today."</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Walk the file top to bottom. Checked with actionlint: no findings.</p>
 <!-- steps:ci-actions:f1 -->
@@ -82,6 +96,12 @@
   <div class="livepad" data-lesson="ci-actions" data-start="f1s1" data-steps="f2s1 f2s2" data-files="cypress/e2e-prod/smoke.cy.js .github/workflows/ci-cd.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We add a second Cypress run against the built site, because that's what users really get.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 5</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l16-2-built-site
+git push</pre>
+    </div>
+
     <p><b>** CODE ALONG, about 3 minutes. **</b> N 1: a small smoke test for the built site (open a page by its address, refresh: the hash router at work). N 2: a second Cypress step runs it against <code>npm run preview</code>. Checked with real Cypress: passes with the hash router, fails with the browser router.</p>
 <!-- steps:ci-actions:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
@@ -92,7 +112,47 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Live: GitHub" data-at="14">
+<section class="slide code" data-seg="Code along: deploy" data-at="14">
+  <h2>Deploy only after green <span class="say">ci-cd.yml: a second job · deploy.yml goes</span></h2>
+  <div class="livepad" data-lesson="ci-actions" data-start="f2s2" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> We move the deploy into ci-cd.yml, behind the tests: a deploy job publishes the tested dist/, only after green and only for pushes to main. Then we delete deploy.yml.</p>
+    <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 6</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l16-3-deploy-job
+git push</pre><p style="margin:6px 0 0">Push this <b>before</b> the ruleset (slides 8–10): after it, a direct push to main is refused until CI has passed on another branch.</p>
+    </div>
+
+    <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces in ci-cd.yml: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job. The Pages parts are the same as deploy.yml from lecture 1; new are <code>needs:</code> and <code>if:</code>.</p>
+    <p><b>Then delete deploy.yml</b> (<code>git rm .github/workflows/deploy.yml</code>). <b>Say:</b> "Two workflows that both deploy = the untested one wins the race. One file, one deploy, after green."</p>
+    <p>No setting to change: the Pages Source has been <b>GitHub Actions</b> since lecture 1.</p>
+<!-- steps:ci-actions:f3 -->
+<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Save dist/ for GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete deploy.yml: it deploys every push, even a red one. ci-cd.yml deploys now, only after green.</td></tr>
+</table>
+<!-- /steps -->
+  </aside>
+</section>
+
+<section class="slide" data-seg="Concept" data-at="20">
+  <h2>deploy.yml → ci-cd.yml</h2>
+  <table class="dbt small">
+    <tr><th></th><th>Lecture 1: <code>deploy.yml</code></th><th>Today: <code>ci-cd.yml</code></th></tr>
+    <tr><td>Runs on</td><td>push to main</td><td>push to main <b>and</b> pull requests</td></tr>
+    <tr><td>Tests first?</td><td>no: a red push still goes live</td><td><b>yes</b>: <code>needs: cypress-run</code></td></tr>
+    <tr><td>Pull requests</td><td>—</td><td>tested, never deployed</td></tr>
+    <tr><td>Publishes with</td><td colspan="2" style="text-align:center"><code>upload-pages-artifact</code> → <code>deploy-pages</code> (the same)</td></tr>
+  </table>
+  <p class="bottomline">Same Pages actions. New: the tests stand in front.</p>
+  <aside class="notes">
+    <p class="plan"><b>The plan:</b> Compare lecture 1's workflow with today's, so students see that the publishing stays the same and only the gate is new.</p>
+    <p>Point at the <b>Tests first?</b> row: that's the whole reason for today. Then the last row: the two Pages actions are copied over unchanged.</p>
+    <p><b>Say:</b> "Lecture 1, every push went live. Now only what passed the tests goes live."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Live: GitHub" data-at="21">
   <h2>Block the merge · 1 · a new ruleset</h2>
   <div class="shot-wrap">
     <img src="img/ruleset-1.png" alt="Settings, Rulesets, the New ruleset menu with New branch ruleset marked">
@@ -114,7 +174,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Live: GitHub" data-at="15">
+<section class="slide" data-seg="Live: GitHub" data-at="22">
   <h2>Block the merge · 2 · name, on, main</h2>
   <div class="shot-wrap">
     <img src="img/ruleset-2.png" alt="The new branch ruleset form: name, Active enforcement, Add target and the Default branch marked">
@@ -134,7 +194,7 @@
   </aside>
 </section>
 
-<section class="slide" data-seg="Live: GitHub" data-at="16">
+<section class="slide" data-seg="Live: GitHub" data-at="23">
   <h2>Block the merge · 3 · require the tests</h2>
   <div class="shot-wrap">
     <img src="img/ruleset-3.png" alt="Require status checks to pass ticked, Add checks with cypress-run, then cypress-run listed and the Create button">
@@ -154,40 +214,6 @@
     <p><b>cypress-run</b> is the job name from ci-cd.yml. It only shows in the list after the workflow has run once in this repo, so do this after the first CI run.</p>
     <p>Leave the other boxes as GitHub sets them (Restrict deletions and Block force pushes come ticked: fine).</p>
     <p>Then open the red pull request from the activity: the merge button is grey, "Merging is blocked".</p>
-  </aside>
-</section>
-
-<section class="slide code" data-seg="Code along: deploy" data-at="17">
-  <h2>Deploy only after green <span class="say">ci-cd.yml: a second job · deploy.yml goes</span></h2>
-  <div class="livepad" data-lesson="ci-actions" data-start="f2s2" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
-  <aside class="notes">
-    <p class="plan"><b>The plan:</b> We move the deploy into ci-cd.yml, behind the tests: a deploy job publishes the tested dist/, only after green and only for pushes to main. Then we delete deploy.yml.</p>
-    <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces in ci-cd.yml: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job. The Pages parts are the same as deploy.yml from lecture 1; new are <code>needs:</code> and <code>if:</code>.</p>
-    <p><b>Then delete deploy.yml</b> (<code>git rm .github/workflows/deploy.yml</code>). <b>Say:</b> "Two workflows that both deploy = the untested one wins the race. One file, one deploy, after green."</p>
-    <p>No setting to change: the Pages Source has been <b>GitHub Actions</b> since lecture 1.</p>
-<!-- steps:ci-actions:f3 -->
-<table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Save dist/ for GitHub Pages</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">The test job saves the dist/ it just tested; the deploy job waits for it (needs) and hands that dist/ to GitHub Pages.</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/deploy.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>(deletes code)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Delete deploy.yml: it deploys every push, even a red one. ci-cd.yml deploys now, only after green.</td></tr>
-</table>
-<!-- /steps -->
-  </aside>
-</section>
-
-<section class="slide" data-seg="Concept" data-at="23">
-  <h2>deploy.yml → ci-cd.yml</h2>
-  <table class="dbt small">
-    <tr><th></th><th>Lecture 1: <code>deploy.yml</code></th><th>Today: <code>ci-cd.yml</code></th></tr>
-    <tr><td>Runs on</td><td>push to main</td><td>push to main <b>and</b> pull requests</td></tr>
-    <tr><td>Tests first?</td><td>no: a red push still goes live</td><td><b>yes</b>: <code>needs: cypress-run</code></td></tr>
-    <tr><td>Pull requests</td><td>—</td><td>tested, never deployed</td></tr>
-    <tr><td>Publishes with</td><td colspan="2" style="text-align:center"><code>upload-pages-artifact</code> → <code>deploy-pages</code> (the same)</td></tr>
-  </table>
-  <p class="bottomline">Same Pages actions. New: the tests stand in front.</p>
-  <aside class="notes">
-    <p class="plan"><b>The plan:</b> Compare lecture 1's workflow with today's, so students see that the publishing stays the same and only the gate is new.</p>
-    <p>Point at the <b>Tests first?</b> row: that's the whole reason for today. Then the last row: the two Pages actions are copied over unchanged.</p>
-    <p><b>Say:</b> "Lecture 1, every push went live. Now only what passed the tests goes live."</p>
   </aside>
 </section>
 

@@ -37,16 +37,16 @@
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Today we put the app on the internet, live: a new repo, a workflow that publishes it, and two fixes when the first deploy breaks.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
-      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · before class, in <code>intro-react-code</code></p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">cd intro-react-code
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · before class, in <code>intro-gh-pages-deploy</code></p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">cd /mnt/storage/CP/new_Lectures/intro-gh-pages-deploy
+git fetch code --tags --force
 # where unit 8 ended:
-git checkout unit-8-lecture-2-outlet-context
-# a demo branch, so the taught branch stays clean:
-git switch -c pokesearch-demo
+git reset --hard demo-l15-0-start
 npm install
 # check it runs, then Ctrl+C:
-npm run dev</pre><p style="margin:6px 0 0">Also: logged in to GitHub in the browser, and <b>no</b> <code>pokesearch</code> repo yet. Each slide below has its own red box.</p>
+npm run dev</pre><p style="margin:6px 0 0">Each stage of today is a <b>tag</b>: <code>git reset --hard &lt;tag&gt;</code> jumps the folder (and VS Code) to it, <code>git push</code> sends it. Nothing to type or copy. All commands: <code>DEMO.md</code> in that folder. Also: logged in to GitHub in Chrome, <b>no</b> <code>pokesearch</code> repo yet.</p>
     </div>
+
 
     <p><b>Before class:</b> <b>Ctrl+Shift+R</b>, <b>F</b>, <b>P</b>.</p>
     <ul>
@@ -94,6 +94,7 @@ npm run dev</pre><p style="margin:6px 0 0">Also: logged in to GitHub in the brow
 code dist/index.html        # point at src="/assets/index-….js"</pre>
     </div>
 
+
     <p><b>Do, live:</b> <code>npm run build</code>, open the dist/ folder in VS Code, open dist/index.html. <b>Point at</b> <code>src="/assets/index-….js"</code>: it starts at the root of the site. That's Problem 1 later.</p>
     <p>The hash in the file name changes when the code changes, so browsers never use an old copy.</p>
     <p>dist/ is in .gitignore: never commit it. The workflow builds it on GitHub.</p>
@@ -112,24 +113,23 @@ code dist/index.html        # point at src="/assets/index-….js"</pre>
         <li><b class="n">4</b> No README, no .gitignore: our code has them</li>
         <li><b class="n">5</b> <b>Create repository</b></li>
       </ol>
-      <pre class="cmd">git remote add pages https://github.com/&lt;you&gt;/pokesearch.git
-git push pages HEAD:main</pre>
+      <pre class="cmd">git remote add origin https://github.com/&lt;you&gt;/pokesearch.git
+git push -u origin main</pre>
     </div>
   </div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> Create the pokesearch repo live on GitHub, then push our code to it.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 4, after Create repository</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git remote add pages https://github.com/kabeier/pokesearch.git
-git push pages HEAD:main
-git remote -v               # optional: shows origin (class repo) and pages</pre><p style="margin:6px 0 0">Refresh the repo page on GitHub: the code is there.</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git remote add origin https://github.com/kabeier/pokesearch.git
+git push -u origin main</pre><p style="margin:6px 0 0">Refresh the repo page on GitHub: the code is there. (The class code repo is the remote called <code>code</code>.)</p>
     </div>
+
 
     <p><b>Do, live</b> (the red numbers on the screenshot): + menu top right → New repository → name <code>pokesearch</code> → Public → leave README / .gitignore / license <b>off</b> → Create repository.</p>
     <p><b>Why empty:</b> our code already has a README and .gitignore; a README on GitHub would make the first push fail (the histories differ).</p>
-    <p><b>The push:</b> GitHub's page says <code>git remote add origin …</code>, but our folder already has an <code>origin</code> (the class repo). So we name this one <code>pages</code>: <code>git remote add pages https://github.com/kabeier/pokesearch.git</code>, then <code>git push pages HEAD:main</code> (HEAD = the branch we're on, sent as main). Refresh the repo page: the code is there.</p>
-    <p><b>Students</b> in their own repo just use <code>origin</code> and <code>git push origin main</code>.</p>
-    <p><b>Repo name = the address:</b> it becomes <code>kabeier.github.io/pokesearch/</code>. The folder on your laptop can have any name.</p>
+    <p><b>The push:</b> the two commands GitHub shows on the empty repo page. <code>-u</code> remembers the pairing, so later it is just <code>git push</code>. If a folder already has an <code>origin</code> (a student's class repo), use another name: <code>git remote add pages …</code> and <code>git push -u pages main</code>.</p>
+        <p><b>Repo name = the address:</b> it becomes <code>kabeier.github.io/pokesearch/</code>. The folder on your laptop can have any name.</p>
   </aside>
 </section>
 
@@ -163,12 +163,10 @@ git remote -v               # optional: shows origin (class repo) and pages</pre
   <aside class="notes">
     <p class="plan"><b>The plan:</b> One workflow file: on every push to main, GitHub builds the app and publishes dist/ to Pages.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
-      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 6, make the file</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">mkdir -p .github/workflows
-code .github/workflows/deploy.yml     # type it along with N
-# or, to skip typing:
-git checkout unit-9-lecture-1-deploy-pages -- .github/workflows/deploy.yml</pre>
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 6, during the code-along</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l15-1-workflow     # deploy.yml appears in VS Code</pre>
     </div>
+
 
     <p><b>** CODE ALONG, about 4 minutes. **</b> Same YAML as fundamentals week: trigger, permissions, one job, steps. Walk it top to bottom: checkout, Node 24, <code>npm ci</code>, <code>npm run build</code>, then the two Pages actions: <code>upload-pages-artifact</code> packs dist/, <code>deploy-pages</code> publishes it.</p>
     <p><b>Point at</b> <code>pages: write</code> and <code>id-token: write</code>: the workflow may publish to Pages and prove who it is. No password or token to copy anywhere.</p>
@@ -209,7 +207,7 @@ git checkout unit-9-lecture-1-deploy-pages -- .github/workflows/deploy.yml</pre>
     <div>
       <pre class="cmd" style="margin:0 0 18px">git add .github
 git commit -m "Deploy to GitHub Pages"
-git push pages HEAD:main</pre>
+git push</pre>
       <ol class="shot-steps">
         <li><b class="n">1</b> The <b>Actions</b> tab</li>
         <li><b class="n">2</b> The run: <b>Deploy to GitHub Pages</b></li>
@@ -224,10 +222,9 @@ git push pages HEAD:main</pre>
     <p class="plan"><b>The plan:</b> Push the workflow, watch the run go green, open the site: it's blank. That's on purpose; next slide explains.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 7</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git add .github
-git commit -m "Deploy to GitHub Pages"
-git push pages HEAD:main</pre><p style="margin:6px 0 0">Then the browser: Actions tab → the run → wait for green → open the link → F12 → Console.</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git push</pre><p style="margin:6px 0 0">Then Chrome: Actions tab → the run → wait for green → open the link → F12 → Console.</p>
     </div>
+
 
     <p><b>Do, live:</b> the three git commands, then the Actions tab (red 1). Click the running workflow (2): one job, <b>deploy</b> (3), each step from the file. When it's green, the link is under the job box (4). The screenshots are the backup repo; GitHub shows the link only on the newest deploy.</p>
     <p><b>Open the site:</b> blank. <b>Ask:</b> "The run is green. So why is the page blank?" Open DevTools → <b>Console</b>: red 404s for <code>/assets/index-….js</code>. Click it: it asked <code>kabeier.github.io/assets/…</code>, without <code>/pokesearch/</code>.</p>
@@ -257,11 +254,10 @@ git push pages HEAD:main</pre><p style="margin:6px 0 0">Then the browser: Action
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We fix Problem 1 with base in vite.config.js, only for production. Don't push yet: there's a second problem.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
-      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 9, edit vite.config.js (don't push)</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">code vite.config.js                   # type it along with N
-# or:
-git checkout unit-9-lecture-1-deploy-pages -- vite.config.js</pre>
+      <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 9 (don't push)</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l15-2-base        # vite.config.js changes</pre>
     </div>
+
 
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students type <b>their own</b> repo name.</p>
 <!-- steps:deploy-pages:f2 -->
@@ -332,14 +328,13 @@ git checkout unit-9-lecture-1-deploy-pages -- vite.config.js</pre>
     <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production. A test for the built site comes in lecture 2, where CI runs it.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 12 (don't push yet)</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">code src/router.jsx                   # type it along with N
-# or:
-git checkout unit-9-lecture-1-deploy-pages -- src/router.jsx
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git reset --hard demo-l15-3-hash        # router.jsx changes
 
 # optional, check the build on your laptop (Ctrl+C after):
 npm run build &amp;&amp; npm run preview
 # open localhost:4173/pokesearch/#/about and refresh</pre>
     </div>
+
 
     <p><b>** CODE ALONG, about 3 minutes. **</b> ▶ Run tests: 33 green (the dev tests run in development, so they still use the browser router).</p>
 <!-- steps:deploy-pages:f3 -->
@@ -355,7 +350,7 @@ npm run build &amp;&amp; npm run preview
   <h2>7 · Push again: it's live</h2>
   <pre class="cmd">git add .
 git commit -m "base and hash router for GitHub Pages"
-git push pages HEAD:main</pre>
+git push</pre>
   <ol class="steps small" style="margin-top:22px">
     <li>Actions tab: a <b>new</b> run of Deploy to GitHub Pages, then green</li>
     <li>Open the link: the app shows (Ctrl+Shift+R if it's still blank)</li>
@@ -366,10 +361,9 @@ git push pages HEAD:main</pre>
     <p class="plan"><b>The plan:</b> Push both fixes, watch the second run, and check the live site: home page, About, and a refresh.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 13</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git add .
-git commit -m "base and hash router for GitHub Pages"
-git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches <code>unit-9-lecture-1-deploy-pages</code> exactly.</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git push</pre><p style="margin:6px 0 0">Then Chrome: Actions → new run → green → open the link → About → refresh.</p>
     </div>
+
 
     <p><b>Do, live:</b> the three commands, Actions tab, wait for green (about a minute), open the link.</p>
     <p><b>Check out loud:</b> Network tab: <code>/pokesearch/assets/…</code> now 200. Search a Pokemon (the API works from a live site too). About → refresh → still About.</p>
@@ -430,9 +424,9 @@ git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches 
     <p class="plan"><b>The plan:</b> Walk through Homework Part I. Part II comes with lecture 2.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · after class</p>
-      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git status                  # clean: everything is pushed
-# keep pokesearch-demo and the pages remote: lecture 2 pushes ci-cd.yml from here</pre><p style="margin:6px 0 0">Back to the class code any time: <code>git checkout unit-8-lecture-2-outlet-context</code>.</p>
+      <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git status                  # clean</pre><p style="margin:6px 0 0">Leave the folder as it is: lecture 2 continues here (<code>demo-l16-…</code> tags).</p>
     </div>
+
 <p>Suggest a checklist: live URL in the README, conditional base, hash router, deploy.yml.</p></aside>
 </section>
 

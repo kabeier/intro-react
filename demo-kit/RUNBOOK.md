@@ -280,19 +280,19 @@ Before class: as unit 6. Students `npm install react-router`, then rebuild the i
 
 # Runbook · Unit 9 (CI/CD)
 
-The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokesearch/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); deploy.yml and ci-cd.yml ran for real in kabeier/pokemon-app (Nov 16, 2026: deploy.yml deployed; ci-cd.yml green → deployed, red → skipped, PR → skipped, merge → deployed). In class you make a **new** repo, `pokesearch`, live (demo branch `pokesearch-demo`, remote `pages`); pokemon-app is the backup and the source of the GitHub screenshots (taken Nov 17, 2026). The three deploy stages were checked on a Pages-like file server: deploy.yml only → blank (404 for /assets/…); + base → our own "404 - Page Not Found"; + hash router → works, #/about survives a refresh.
+The build, the deploy and GitHub Actions run on laptops and on GitHub; the slides show the files (the preview still runs the dev app). Checked: the build uses /pokesearch/; the production smoke test passes in real Cypress against `npm run preview` (and fails with the browser router); deploy.yml and ci-cd.yml ran for real in kabeier/pokemon-app (Nov 16, 2026: deploy.yml deployed; ci-cd.yml green → deployed, red → skipped, PR → skipped, merge → deployed). In class you make a **new** repo, `pokesearch`, live (from the demo folder `intro-gh-pages-deploy`); pokemon-app is the backup and the source of the GitHub screenshots (taken Nov 17, 2026). The three deploy stages were checked on a Pages-like file server: deploy.yml only → blank (404 for /assets/…); + base → our own "404 - Page Not Found"; + hash router → works, #/about survives a refresh.
 
 ## Lecture 1 · GitHub Pages
-Start: `intro-react-code` on `unit-8-lecture-2-outlet-context`, then `git switch -c pokesearch-demo`; logged in to GitHub, **no** `pokesearch` repo yet. Every laptop command is in a red box in the slide notes.
+Demo folder: `new_Lectures/intro-gh-pages-deploy` (a copy of intro-react-code; remote `code` = the class repo, `origin` = pokesearch, added live). Each stage is a tag (`demo-l15-…`, `demo-l16-…`): `git reset --hard <tag>`, then `git push`. Commands in a red box per slide, and all in `DEMO.md` there. Logged in to GitHub, **no** `pokesearch` repo yet.
 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 2 | 1 | — | what Pages is; the road: deploy, see it break, fix, deploy |
 | 3 | 3 | `npm run build`, open dist/index.html | dist/ is the website; script path starts with /assets/ |
-| 4 | 5 | github.com → + → New repository: `pokesearch`, Public, empty → Create; `git remote add pages …`; `git push pages HEAD:main` | repo name = the address |
+| 4 | 5 | github.com → + → New repository: `pokesearch`, Public, empty → Create; `git remote add origin …`; `git push -u origin main` | repo name = the address |
 | 5 | 7 | Settings → Pages → Source → **GitHub Actions** | before the workflow's first push |
 | 6 | 8 | **N** | deploy.yml: build on GitHub, upload-pages-artifact, deploy-pages (line-by-line table in the notes) |
-| 7 | 12 | commit + `git push pages HEAD:main`; Actions tab; open the link; DevTools Console | green run, **blank page**: why? |
+| 7 | 12 | `git push` (after `reset --hard demo-l15-1-workflow` on slide 6); Actions tab; open the link; DevTools Console | green run, **blank page**: why? |
 | 8 | 14 | — | Problem 1: the app lives in a folder (the 404 for /assets/) |
 | 9 | 15 | **N** (own repo name) | base only in production; **don't push yet** |
 | 10 | 18 | — | Problem 2: refresh /about = 404 on Pages |
@@ -304,16 +304,16 @@ Start: `intro-react-code` on `unit-8-lecture-2-outlet-context`, then `git switch
 | 16–17 | 36–37 | — | mental model; homework I |
 
 ## Lecture 2 · GitHub Actions
-Push to your `pokesearch` repo from `pokesearch-demo` with `git push pages HEAD:main`; recorded runs in kabeier/pokemon-app are the backup.
+Same demo folder: `git reset --hard demo-l16-<n>-…` then `git push` (red boxes). Push the deploy job **before** the ruleset: after it, direct pushes to main are refused until CI passed elsewhere. Recorded runs in kabeier/pokemon-app are the backup.
 
 | # | Min | Do | Say |
 |---|---|---|---|
 | 2 | 1 | — | CI and CD |
 | 3–4 | 3–9 | **N**; walk the file | ci-cd.yml (one file, two jobs), each step |
 | 5 | 11 | **N ×2** | smoke test for the built site, then the CI step that runs it against `npm run preview` |
-| 6–8 | 14–16 | Settings → Rulesets → New ruleset → New branch ruleset; `protect main`, **Active**, Include default branch; Require status checks → `cypress-run`; Create | block the merge (cypress-run only listed after one CI run) |
-| 9 | 17 | **N ×2** (the deploy job, then delete deploy.yml) | the deploy job: needs, if: push; deploy.yml goes |
-| 10 | 23 | — | deploy.yml → ci-cd.yml: same Pages actions, tests in front |
+| 6 | 14 | **N ×2** (the deploy job, then delete deploy.yml); push it | the deploy job: needs, if: push; deploy.yml goes |
+| 7 | 20 | — | deploy.yml → ci-cd.yml: same Pages actions, tests in front |
+| 8–10 | 21–23 | Settings → Rulesets → New ruleset → New branch ruleset; `protect main`, **Active**, Include default branch; Require status checks → `cypress-run`; Create | block the merge (cypress-run only listed after one CI run) |
 | 11–13 | 24–26 | click the runs in kabeier/pokemon-app (red → deploy skipped; PR → skipped; merge → deployed); open the red job | the real chain; secrets; reading a failed run |
 | 14 | 27 | timer (7 min); backup red run: pokemon-app run 43912868016 | students make and read their own red ✗ |
 | 15–17 | 35–39 | — | pipeline; mental model; homework II |
