@@ -28,12 +28,17 @@ Course.register({
     },
     {
       id: 'f2', title: 'Also test the built site',
-      why: 'The dev server is not what users get. A second Cypress step runs the production smoke test against npm run preview, under /pokesearch/ with the hash router.',
+      why: 'The dev server is not what users get. A small smoke test opens pages by their address and refreshes; a second Cypress step runs it against npm run preview, under /pokesearch/ with the hash router.',
       steps: [
         {
-          id: 'f2s1', file: '.github/workflows/ci-cd.yml', mode: 'append',
+          id: 'f2s1', file: 'cypress/e2e-prod/smoke.cy.js', mode: 'set',
+          code: "// Runs against the BUILT app (npm run build && npm run preview), not the dev server:\n// npx cypress run --config \"baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js\"\nit('opens a page from its address and survives a refresh', () => {\n  cy.visit('/#/about')\n  cy.contains('h2', 'About This App')\n  cy.reload()\n  cy.contains('h2', 'About This App')\n})\n\nit('opens a Pokemon from its address', () => {\n  cy.visit('/#/pokemon/25')\n  cy.contains('h2', 'pikachu')\n})",
+          say: 'First the test: open a page by its address, refresh. It lives outside cypress/e2e, so the normal dev run skips it…',
+        },
+        {
+          id: 'f2s2', file: '.github/workflows/ci-cd.yml', mode: 'append',
           code: "      - name: Cypress (built site)\n        uses: cypress-io/github-action@v7\n        with:\n          install: false\n          start: npm run preview\n          wait-on: 'http://localhost:4173/pokesearch/'\n          config: baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js",
-          say: 'Same action, different server: preview serves dist/ on port 4173, at the base path.',
+          say: '…then CI runs it: same action, different server. preview serves dist/ on port 4173, at the base path.',
           notes: [{ match: 'config: baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js', what: 'Points Cypress at the built site and the production specs.', why: 'Catches a wrong base or router before users do.' }],
         },
       ],

@@ -58,11 +58,6 @@ Course.register({
           say: '…and pick one: hash in the build, normal paths while developing. Run the tests: 33 green (they run in development).',
           notes: [{ match: 'const createRouter = import.meta.env.PROD ? createHashRouter : createBrowserRouter', what: 'import.meta.env.PROD is true only in npm run build.', why: 'Development keeps clean URLs and the tests; the deployed site survives a refresh.' }],
         },
-        {
-          id: 'f3s3', file: 'cypress/e2e-prod/smoke.cy.js', mode: 'set',
-          code: "// Runs against the BUILT app (npm run build && npm run preview), not the dev server:\n// npx cypress run --config \"baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js\"\nit('opens a page from its address and survives a refresh', () => {\n  cy.visit('/#/about')\n  cy.contains('h2', 'About This App')\n  cy.reload()\n  cy.contains('h2', 'About This App')\n})\n\nit('opens a Pokemon from its address', () => {\n  cy.visit('/#/pokemon/25')\n  cy.contains('h2', 'pikachu')\n})",
-          say: 'A small test for the built site: open a page by its address, refresh. It lives outside cypress/e2e, so the normal run skips it.',
-        },
       ],
     },
   ],

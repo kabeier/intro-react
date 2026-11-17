@@ -326,27 +326,26 @@ git checkout unit-9-lecture-1-deploy-pages -- vite.config.js</pre>
 </section>
 
 <section class="slide code" data-seg="Code along: hash" data-at="21">
-  <h2>6 · The hash router in production <span class="say">router.jsx · cypress/e2e-prod</span></h2>
-  <div class="livepad" data-lesson="deploy-pages" data-start="f2s1" data-steps="f3s1 f3s2 f3s3" data-files="src/router.jsx cypress/e2e-prod/smoke.cy.js"></div>
+  <h2>6 · The hash router in production <span class="say">router.jsx</span></h2>
+  <div class="livepad" data-lesson="deploy-pages" data-start="f2s1" data-steps="f3s1 f3s2" data-files="src/router.jsx"></div>
   <aside class="notes">
-    <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production, and add a small test for the built site.</p>
+    <p class="plan"><b>The plan:</b> We fix Problem 2 with the hash router in production. A test for the built site comes in lecture 2, where CI runs it.</p>
     <div style="border:3px solid #e03131;background:#2a1215;border-radius:8px;padding:8px 14px;margin:10px 0">
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 12 (don't push yet)</p>
       <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">code src/router.jsx                   # type it along with N
 # or:
-git checkout unit-9-lecture-1-deploy-pages -- src/router.jsx cypress/e2e-prod/smoke.cy.js
+git checkout unit-9-lecture-1-deploy-pages -- src/router.jsx
 
-# optional, test the built site like the workflow will:
-npm run build && npm run preview      # terminal 1, leave it running
-npx cypress run --config "baseUrl=http://localhost:4173/pokesearch/,specPattern=cypress/e2e-prod/**/*.cy.js"   # terminal 2</pre>
+# optional, check the build on your laptop (Ctrl+C after):
+npm run build &amp;&amp; npm run preview
+# open localhost:4173/pokesearch/#/about and refresh</pre>
     </div>
 
-    <p><b>** CODE ALONG, about 4 minutes. **</b> ▶ Run tests: 33 green (the dev tests). The smoke test runs against the build (checked with real Cypress: passes with the hash router, fails with the browser router).</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> ▶ Run tests: 33 green (the dev tests run in development, so they still use the browser router).</p>
 <!-- steps:deploy-pages:f3 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>import { createBrowserRouter, createHashRout…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Both router makers…</td></tr>
 <tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>src/router.jsx</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// GitHub Pages has no server to send every …</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…and pick one: hash in the build, normal paths while developing. Run the tests: 33 green (they run in development).</td></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 3</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e-prod/smoke.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// Runs against the BUILT app (npm run build…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">A small test for the built site: open a page by its address, refresh. It lives outside cypress/e2e, so the normal run skips it.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -369,7 +368,7 @@ git push pages HEAD:main</pre>
       <p style="margin:0 0 6px"><b style="color:#ff6b6b">▶ RUN ON YOUR LAPTOP</b> · slide 13</p>
       <pre style="margin:0;font-size:15px;line-height:1.5;white-space:pre-wrap">git add .
 git commit -m "base and hash router for GitHub Pages"
-git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches <code>unit-9-lecture-1-deploy-pages</code> exactly (rehearsed).</p>
+git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches <code>unit-9-lecture-1-deploy-pages</code> exactly.</p>
     </div>
 
     <p><b>Do, live:</b> the three commands, Actions tab, wait for green (about a minute), open the link.</p>
@@ -456,7 +455,7 @@ git push pages HEAD:main</pre><p style="margin:6px 0 0">Your branch now matches 
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=3"></script>
 <script src="../shared/course/outlet-context.js?v=3"></script>
-<script src="../shared/course/deploy-pages.js?v=5"></script>
+<script src="../shared/course/deploy-pages.js?v=6"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>

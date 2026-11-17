@@ -79,13 +79,14 @@
 
 <section class="slide code" data-seg="Code along: built site" data-at="11">
   <h2>Also test the built site <span class="say">ci-cd.yml</span></h2>
-  <div class="livepad" data-lesson="ci-actions" data-start="f1s1" data-steps="f2s1" data-files=".github/workflows/ci-cd.yml"></div>
+  <div class="livepad" data-lesson="ci-actions" data-start="f1s1" data-steps="f2s1 f2s2" data-files="cypress/e2e-prod/smoke.cy.js .github/workflows/ci-cd.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We add a second Cypress run against the built site, because that's what users really get.</p>
-    <p><b>** CODE ALONG, about 3 minutes. **</b> The smoke test from lecture 1, against npm run preview.</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> N 1: a small smoke test for the built site (open a page by its address, refresh: the hash router at work). N 2: a second Cypress step runs it against <code>npm run preview</code>. Checked with real Cypress: passes with the hash router, fails with the browser router.</p>
 <!-- steps:ci-actions:f2 -->
 <table style="border-collapse:collapse;font-size:15px;margin:6px 0"><tr><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Press</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">File</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Types</th><th style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Say</th></tr>
-<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Cypress (built site)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">Same action, different server: preview serves dist/ on port 4173, at the base path.</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 1</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>cypress/e2e-prod/smoke.cy.js</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>// Runs against the BUILT app (npm run build…</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">First the test: open a page by its address, refresh. It lives outside cypress/e2e, so the normal dev run skips it…</td></tr>
+<tr><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><b>N 2</b></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>.github/workflows/ci-cd.yml</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top"><code>- name: Cypress (built site)</code></td><td style="padding:4px 10px;border-bottom:1px solid #34405a;vertical-align:top">…then CI runs it: same action, different server. preview serves dist/ on port 4173, at the base path.</td></tr>
 </table>
 <!-- /steps -->
   </aside>
@@ -158,7 +159,7 @@
 
 <section class="slide code" data-seg="Code along: deploy" data-at="17">
   <h2>Deploy only after green <span class="say">ci-cd.yml: a second job · deploy.yml goes</span></h2>
-  <div class="livepad" data-lesson="ci-actions" data-start="f2s1" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
+  <div class="livepad" data-lesson="ci-actions" data-start="f2s2" data-steps="f3s1 f3s2" data-files=".github/workflows/ci-cd.yml .github/workflows/deploy.yml"></div>
   <aside class="notes">
     <p class="plan"><b>The plan:</b> We move the deploy into ci-cd.yml, behind the tests: a deploy job publishes the tested dist/, only after green and only for pushes to main. Then we delete deploy.yml.</p>
     <p><b>** CODE ALONG, about 6 minutes. **</b> Two pieces in ci-cd.yml: one step at the end of cypress-run (save dist/), then the new <code>deploy</code> job. The Pages parts are the same as deploy.yml from lecture 1; new are <code>needs:</code> and <code>if:</code>.</p>
@@ -306,8 +307,8 @@
 <script src="../shared/course/router-pages.js?v=3"></script>
 <script src="../shared/course/router-hooks.js?v=3"></script>
 <script src="../shared/course/outlet-context.js?v=3"></script>
-<script src="../shared/course/deploy-pages.js?v=5"></script>
-<script src="../shared/course/ci-actions.js?v=4"></script>
+<script src="../shared/course/deploy-pages.js?v=6"></script>
+<script src="../shared/course/ci-actions.js?v=5"></script>
 <script src="../shared/filetree.js?v=2"></script>
 <script src="../shared/livepad.js?v=15"></script>
 <script src="../shared/cyrunner.js?v=6"></script>
